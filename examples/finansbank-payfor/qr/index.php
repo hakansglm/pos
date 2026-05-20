@@ -6,16 +6,16 @@ use Mews\Pos\PosInterface;
 // ornegin /examples/finansbank-payfor/3d/_config.php
 require '_config.php';
 
-$transaction = $request->get('tx', PosInterface::TX_TYPE_PAY_AUTH);
+$transaction = $_POST['tx'] ?? PosInterface::TX_TYPE_PAY_AUTH;
 $order       = createPaymentOrder(
     $pos,
     $paymentModel,
     $baseUrl,
     $ip,
-    $request->get('currency', PosInterface::CURRENCY_TRY),
-    $request->get('installment'),
-    $request->get('is_recurring', 0) == 1,
-    $request->get('lang', PosInterface::LANG_TR)
+    $_POST['currency'] ?? PosInterface::CURRENCY_TRY,
+    $_POST['installment'] ?? 0,
+    ($_POST['is_recurring'] ?? 0) == 1,
+    $_POST['lang'] ?? PosInterface::LANG_TR
 );
 $_SESSION['order'] = $order;
 $_SESSION['tx'] = $transaction;

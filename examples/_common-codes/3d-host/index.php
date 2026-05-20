@@ -15,10 +15,10 @@ $order = createPaymentOrder(
     $paymentModel,
     $baseUrl,
     $ip,
-    $request->get('currency', PosInterface::CURRENCY_TRY),
-    $request->get('installment'),
+    $_POST['currency'] ?? PosInterface::CURRENCY_TRY,
+    $_POST['installment'] ?? 0,
     false,
-    $request->get('lang', PosInterface::LANG_TR)
+    $_POST['lang'] ?? PosInterface::LANG_TR
 );
 
 $_SESSION['order'] = $order;

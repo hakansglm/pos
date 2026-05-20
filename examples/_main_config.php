@@ -60,7 +60,14 @@ function doPayment(PosInterface $pos, string $paymentModel, string $transaction,
         throw new \LogicException('Hatalı işlem');
     }
 
-    if (PosInterface::MODEL_3D_SECURE === $paymentModel) {
+    if (in_array($paymentModel, [
+            PosInterface::MODEL_3D_SECURE,
+            PosInterface::MODEL_3D_PAY,
+            PosInterface::MODEL_3D_HOST,
+            PosInterface::MODEL_3D_PAY_HOSTING,
+        ],
+        true
+    )) {
         if (!in_array($transaction, [PosInterface::TX_TYPE_PAY_AUTH, PosInterface::TX_TYPE_PAY_PRE_AUTH], true)) {
             throw new \LogicException('Hatalı işlem');
         }
