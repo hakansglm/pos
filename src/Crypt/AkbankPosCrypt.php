@@ -25,6 +25,7 @@ class AkbankPosCrypt extends AbstractCrypt
 
     /**
      * returns base16 string
+     *
      * @inheritDoc
      */
     public function generateRandomString(int $length = 128): string

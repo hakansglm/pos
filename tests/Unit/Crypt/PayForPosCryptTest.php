@@ -116,5 +116,4 @@ class PayForPosCryptTest extends TestCase
             ],
         ];
     }
-
 }

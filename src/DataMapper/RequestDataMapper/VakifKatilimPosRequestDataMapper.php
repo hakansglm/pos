@@ -37,6 +37,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
      * @param KuveytPosAccount $posAccount
      *
      * {@inheritDoc}
+     *
      * @return array<string, mixed>
      */
     public function create3DPaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, array $responseData): array
@@ -162,6 +163,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
 
     /**
      * @param KuveytPosAccount $posAccount
+     *
      * {@inheritDoc}
      */
     public function createStatusRequestData(AbstractPosAccount $posAccount, array $order): array
@@ -179,6 +181,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
 
     /**
      * @param KuveytPosAccount $posAccount
+     *
      * {@inheritDoc}
      */
     public function createCancelRequestData(AbstractPosAccount $posAccount, array $order): array
@@ -203,6 +206,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
 
     /**
      * @param KuveytPosAccount $posAccount
+     *
      * {@inheritDoc}
      */
     public function createRefundRequestData(AbstractPosAccount $posAccount, array $order, string $refundTxType): array

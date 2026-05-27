@@ -22,7 +22,7 @@ interface ResponseValueFormatterInterface
 
     /**
      * @param string|null             $installment
-     * @param PosInterface::TX_TYPE_* $txType transaction type of the API request
+     * @param PosInterface::TX_TYPE_* $txType      transaction type of the API request
      *
      * @return int<2, max>|0
      */
@@ -41,7 +41,7 @@ interface ResponseValueFormatterInterface
 
     /**
      * @param string                  $dateTime
-     * @param PosInterface::TX_TYPE_* $txType transaction type of the API request
+     * @param PosInterface::TX_TYPE_* $txType   transaction type of the API request
      *
      * @return \DateTimeImmutable formatted date time
      */

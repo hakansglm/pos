@@ -12,14 +12,6 @@ use Mews\Pos\PosInterface;
 class PayForPosResponseDataMapper extends AbstractResponseDataMapper
 {
     /**
-     * @inheritDoc
-     */
-    public static function supports(string $gatewayClass): bool
-    {
-        return PayForPos::class === $gatewayClass;
-    }
-
-    /**
      * Response Codes
      *
      * @var array<int|string, string>
@@ -46,6 +38,13 @@ class PayForPosResponseDataMapper extends AbstractResponseDataMapper
         'M041' => 'reject',
         'M049' => 'invalid_credentials',
     ];
+    /**
+     * @inheritDoc
+     */
+    public static function supports(string $gatewayClass): bool
+    {
+        return PayForPos::class === $gatewayClass;
+    }
 
     /**
      * {@inheritDoc}

@@ -173,6 +173,7 @@ class ParamPosRequestDataMapperTest extends TestCase
                 ksort($actual[$soapAction]);
                 ksort($expected[$soapAction]);
                 $this->assertSame($expected, $actual);
+
                 return true;
             }))
             ->willReturn($soapBody[$soapAction]['Islem_Hash']);
@@ -345,7 +346,6 @@ class ParamPosRequestDataMapperTest extends TestCase
 
     public static function historyRequestDataProvider(): iterable
     {
-
         yield 'with_date_range' => [
             'order'    => [
                 'start_date' => new \DateTimeImmutable('2024-04-13 13:00:00'),

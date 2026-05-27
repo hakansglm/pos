@@ -85,8 +85,8 @@ class PosFactory
     }
 
     /**
-     * @param class-string<PosInterface>       $gatewayClass
-     * @param AbstractPosAccount               $posAccount
+     * @param class-string<PosInterface> $gatewayClass
+     * @param AbstractPosAccount         $posAccount
      * @param array{
      *           name: string,
      *           class?: class-string,
@@ -107,8 +107,6 @@ class PosFactory
         LoggerInterface          $logger,
         ?HttpClientStrategyInterface $httpClientStrategy = null
     ): PosInterface {
-
-
         $crypt                 = CryptFactory::createGatewayCrypt($gatewayClass, $logger);
         $requestValueMapper    = RequestValueMapperFactory::createForGateway($gatewayClass);
         $requestValueFormatter = RequestValueFormatterFactory::createForGateway($gatewayClass);

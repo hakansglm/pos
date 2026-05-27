@@ -118,7 +118,7 @@ class GarantiPosResponseValueMapper extends AbstractResponseValueMapper
 
     /**
      * @param PosInterface::TX_TYPE_*|null $requestTxType request transaction type
-     * @param PosInterface::TX_TYPE_*|null $txType txType of the transaction that is being processed
+     * @param PosInterface::TX_TYPE_*|null $txType        txType of the transaction that is being processed
      *
      * @inheritDoc
      */

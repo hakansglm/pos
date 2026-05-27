@@ -50,7 +50,7 @@ class ParamPosTest extends TestCase
     private MockObject $requestMapperMock;
 
     /** @var ResponseDataMapperInterface & MockObject */
-    public MockObject $responseMapperMock;
+    private MockObject $responseMapperMock;
 
     /** @var CryptInterface & MockObject */
     private MockObject $cryptMock;
@@ -120,21 +120,6 @@ class ParamPosTest extends TestCase
         );
     }
 
-    private function createGateway(array $config, ?AbstractPosAccount $account = null): PosInterface
-    {
-        return new ParamPos(
-            $config,
-            $account ?? $this->account,
-            $this->requestValueMapperMock,
-            $this->requestMapperMock,
-            $this->responseMapperMock,
-            $this->serializerMock,
-            $this->eventDispatcherMock,
-            $this->httpClientStrategyMock,
-            $this->loggerMock
-        );
-    }
-
     /**
      * @return void
      */
@@ -175,7 +160,6 @@ class ParamPosTest extends TestCase
         array   $decodedResponseData,
         $formData
     ): void {
-
         $card = $isWithCard ? $this->card : null;
         $this->requestMapperMock->expects(self::once())
             ->method('create3DEnrollmentCheckRequestData')
@@ -1081,6 +1065,21 @@ class ParamPosTest extends TestCase
                 'isSuccess'           => true,
             ],
         ];
+    }
+
+    private function createGateway(array $config, ?AbstractPosAccount $account = null): PosInterface
+    {
+        return new ParamPos(
+            $config,
+            $account ?? $this->account,
+            $this->requestValueMapperMock,
+            $this->requestMapperMock,
+            $this->responseMapperMock,
+            $this->serializerMock,
+            $this->eventDispatcherMock,
+            $this->httpClientStrategyMock,
+            $this->loggerMock
+        );
     }
 
     private function configureClientResponse(

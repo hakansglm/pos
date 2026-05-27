@@ -38,6 +38,7 @@ class GarantiPosResponseValueFormatter extends AbstractResponseValueFormatter
 
     /**
      * 100001 => 1000.01
+     *
      * @inheritDoc
      */
     public function formatAmount($amount, string $txType): float

@@ -32,18 +32,6 @@ class EstPosResponseValueMapper extends AbstractResponseValueMapper
     ];
 
     /**
-     * @var array<string, PosInterface::TX_TYPE_*>
-     */
-    private array $historyResponseTxTypeMappings = [
-        /**
-         * S: Auth/PreAuth/PostAuth
-         * C: Refund
-         */
-        'S' => PosInterface::TX_TYPE_PAY_AUTH,
-        'C' => PosInterface::TX_TYPE_REFUND,
-    ];
-
-    /**
      * D : Başarısız işlem
      * A : Otorizasyon, gün sonu kapanmadan
      * C : Ön otorizasyon kapama, gün sonu kapanmadan
@@ -53,6 +41,7 @@ class EstPosResponseValueMapper extends AbstractResponseValueMapper
      * S : Satış
      * R : Teknik İptal gerekiyor
      * V : İptal
+     *
      * @inheritdoc
      */
     protected array $orderStatusMappings = [
@@ -64,6 +53,18 @@ class EstPosResponseValueMapper extends AbstractResponseValueMapper
         'PN'   => PosInterface::PAYMENT_STATUS_PAYMENT_PENDING,
         'CNCL' => PosInterface::PAYMENT_STATUS_CANCELED,
         'V'    => PosInterface::PAYMENT_STATUS_CANCELED,
+    ];
+
+    /**
+     * @var array<string, PosInterface::TX_TYPE_*>
+     */
+    private array $historyResponseTxTypeMappings = [
+        /**
+         * S: Auth/PreAuth/PostAuth
+         * C: Refund
+         */
+        'S' => PosInterface::TX_TYPE_PAY_AUTH,
+        'C' => PosInterface::TX_TYPE_REFUND,
     ];
 
     /**

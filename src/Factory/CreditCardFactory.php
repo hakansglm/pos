@@ -24,12 +24,12 @@ class CreditCardFactory
      * @phpstan-param CreditCardInterface::CARD_TYPE_* $cardType
      *
      * @param PosInterface $pos
-     * @param string       $number      credit card number with or without spaces
-     * @param string       $expireYear  accepts year in 1, 2 and 4 digit format. accepted year formats '1' (2001), '02' (2002), '20' (2020), '2024' (2024)
-     * @param string       $expireMonth single digit or double digit month values are accepted
+     * @param string       $number         credit card number with or without spaces
+     * @param string       $expireYear     accepts year in 1, 2 and 4 digit format. accepted year formats '1' (2001), '02' (2002), '20' (2020), '2024' (2024)
+     * @param string       $expireMonth    single digit or double digit month values are accepted
      * @param string       $cvv
      * @param string|null  $cardHolderName
-     * @param string|null  $cardType    bankaya gore zorunlu
+     * @param string|null  $cardType       bankaya gore zorunlu
      *
      * @return CreditCardInterface
      *
@@ -66,12 +66,12 @@ class CreditCardFactory
     /**
      * @phpstan-param CreditCardInterface::CARD_TYPE_* $cardType
      *
-     * @param string      $number      credit card number with or without spaces
-     * @param string      $expireYear  accepts year in 1, 2 and 4 digit format. accepted year formats '1' (2001), '02' (2002), '20' (2020), '2024' (2024)
-     * @param string      $expireMonth single digit or double digit month values are accepted
+     * @param string      $number         credit card number with or without spaces
+     * @param string      $expireYear     accepts year in 1, 2 and 4 digit format. accepted year formats '1' (2001), '02' (2002), '20' (2020), '2024' (2024)
+     * @param string      $expireMonth    single digit or double digit month values are accepted
      * @param string      $cvv
      * @param string|null $cardHolderName
-     * @param string|null $cardType    bankaya gore zorunlu
+     * @param string|null $cardType       bankaya gore zorunlu
      *
      * @return CreditCardInterface
      *
@@ -87,7 +87,6 @@ class CreditCardFactory
         ?string $cardHolderName = null,
         ?string $cardType = null
     ): CreditCardInterface {
-
         $number = \preg_replace('/\s+/', '', $number);
         if (null === $number) {
             throw new DomainException(\sprintf('Bad credit card number %s', $number));
@@ -100,7 +99,6 @@ class CreditCardFactory
 
     /**
      * @param string $expireYear  accepts year in 1, 2 and 4 digit format. accepted year formats '1' (2001), '02', (2002), '20' (2020), '2024' (2024)
-     *
      * @param string $expireMonth single digit or double digit month values are accepted
      *
      * @return DateTimeImmutable

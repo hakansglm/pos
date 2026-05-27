@@ -28,6 +28,7 @@ class PayFlexAccount extends AbstractPosAccount
 
     /**
      * Banka tarafından Üye işyerine iletilmektedir
+     *
      * @var self::MERCHANT_TYPE_*
      */
     private int $merchantType;
@@ -45,9 +46,9 @@ class PayFlexAccount extends AbstractPosAccount
 
     /**
      * @param string                $bank
-     * @param string                $merchantId Isyeri No
-     * @param string                $password   Isyeri Sifre
-     * @param string                $terminalId Terminal No
+     * @param string                $merchantId    Isyeri No
+     * @param string                $password      Isyeri Sifre
+     * @param string                $terminalId    Terminal No
      * @param self::MERCHANT_TYPE_* $merchantType
      * @param string|null           $subMerchantId
      */

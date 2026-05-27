@@ -151,6 +151,7 @@ class InterPos extends AbstractGateway
 
     /**
      * Deniz bank dokumantasyonunda history sorgusu ile alakali hic bir bilgi yok
+     *
      * @inheritDoc
      */
     public function history(array $data): array

@@ -59,6 +59,7 @@ class EstPosRequestDataMapper extends AbstractRequestDataMapper
 
     /**
      * {@inheritDoc}
+     *
      * @return array{PbOrder?: array{OrderType: string, OrderFrequencyInterval: string, OrderFrequencyCycle: string, TotalNumberPayments: string}, Type: string, IPAddress: string, OrderId: string, Total: string, Currency: string, Taksit: string, Number: string, Expires: string, Cvv2Val: string, Mode: string, Name: string, Password: string, ClientId: string}
      */
     public function createNonSecurePaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, CreditCardInterface $creditCard): array
@@ -163,6 +164,7 @@ class EstPosRequestDataMapper extends AbstractRequestDataMapper
 
     /**
      * {@inheritDoc}
+     *
      * @return array{OrderId: string, Currency: string, Type: string, Total?: string, Name: string, Password: string, ClientId: string}
      */
     public function createRefundRequestData(AbstractPosAccount $posAccount, array $order, string $refundTxType): array
@@ -184,6 +186,7 @@ class EstPosRequestDataMapper extends AbstractRequestDataMapper
 
     /**
      * {@inheritDoc}
+     *
      * @return array{OrderId: string, Extra: array<string, string>&array, Name: string, Password: string, ClientId: string}
      */
     public function createOrderHistoryRequestData(AbstractPosAccount $posAccount, array $order): array

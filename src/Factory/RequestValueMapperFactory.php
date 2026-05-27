@@ -56,7 +56,6 @@ class RequestValueMapperFactory
      */
     public static function createForGateway(string $gatewayClass): RequestValueMapperInterface
     {
-
         /** @var class-string<RequestValueMapperInterface> $valueMapperClass */
         foreach (self::$requestValueMapperClasses as $valueMapperClass) {
             if ($valueMapperClass::supports($gatewayClass)) {

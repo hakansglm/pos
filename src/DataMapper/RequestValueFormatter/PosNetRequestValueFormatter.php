@@ -13,21 +13,15 @@ use Mews\Pos\PosInterface;
 class PosNetRequestValueFormatter implements RequestValueFormatterInterface
 {
     /**
-     * @inheritDoc
-     */
-    public static function supports(string $gatewayClass): bool
-    {
-        return PosNet::class === $gatewayClass;
-    }
-
-    /**
      * PosNet requires order id with specific length
+     *
      * @var int
      */
     private const ORDER_ID_LENGTH = 20;
 
     /**
      * order id total length including prefix;
+     *
      * @var int
      */
     private const ORDER_ID_TOTAL_LENGTH = 24;
@@ -39,12 +33,20 @@ class PosNetRequestValueFormatter implements RequestValueFormatterInterface
     private const ORDER_ID_3D_PAY_PREFIX = ''; //?
 
     private const ORDER_ID_REGULAR_PREFIX = '';  //?
+    /**
+     * @inheritDoc
+     */
+    public static function supports(string $gatewayClass): bool
+    {
+        return PosNet::class === $gatewayClass;
+    }
 
 
     /**
      * 0 => '00'
      * 1 => '00'
      * 2 => '02'
+     *
      * @inheritDoc
      */
     public function formatInstallment(int $installment): string

@@ -24,6 +24,7 @@ abstract class AbstractRequestValueMapper implements RequestValueMapperInterface
 
     /**
      * period mapping for recurring orders
+     *
      * @var array<'DAY'|'WEEK'|'MONTH'|'YEAR', string>
      */
     protected array $recurringOrderFrequencyMappings = [];

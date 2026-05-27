@@ -136,7 +136,7 @@ interface RequestDataMapperInterface
 
     /**
      * @param AbstractPosAccount   $posAccount
-     * @param array<string, mixed> $data bankaya gore degisen ozel degerler
+     * @param array<string, mixed> $data       bankaya gore degisen ozel degerler
      *
      * @return array<string, mixed>
      *

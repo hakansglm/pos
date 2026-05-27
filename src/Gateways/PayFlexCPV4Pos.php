@@ -268,19 +268,20 @@ class PayFlexCPV4Pos extends AbstractGateway
 
     /**
      * get 3D Payment status to make sure that payment was successful
+     *
      * @param array<string, mixed> $gatewayResponseData
      * @param array<string, mixed> $order
      *
      * @return  array{ErrorCode: string}|array{
-     *      Rc: string,
-     *      AuthCode: string,
-     *      TransactionId: string,
-     *      PaymentToken: string,
-     *      MaskedPan: string}|array{
-     *      Rc: string,
-     *      Message: string,
-     *      TransactionId: string,
-     *      PaymentToken: string}
+     *         Rc: string,
+     *         AuthCode: string,
+     *         TransactionId: string,
+     *         PaymentToken: string,
+     *         MaskedPan: string}|array{
+     *         Rc: string,
+     *         Message: string,
+     *         TransactionId: string,
+     *         PaymentToken: string}
      *
      * @throws ClientExceptionInterface
      */

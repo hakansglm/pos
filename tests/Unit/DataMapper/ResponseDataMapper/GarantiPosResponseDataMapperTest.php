@@ -323,6 +323,7 @@ class GarantiPosResponseDataMapperTest extends TestCase
 
     /**
      * Doing integration test because of the iteration, sorting and conditional statements it is difficult to mock values.
+     *
      * @dataProvider orderHistoryTestDataProvider
      */
     public function testOrderMapHistoryResponse(array $responseData, array $expectedData): void

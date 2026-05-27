@@ -62,6 +62,7 @@ abstract class AbstractResponseDataMapper implements ResponseDataMapperInterface
 
     /**
      * Returns default payment response data
+     *
      * @phpstan-param PosInterface::TX_TYPE_PAY_* $txType
      * @phpstan-param PosInterface::MODEL_*|null  $paymentModel
      *

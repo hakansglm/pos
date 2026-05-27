@@ -48,6 +48,7 @@ class AkbankPosResponseValueMapper extends AbstractResponseValueMapper
      * S: Şüpheli
      * V: İptal
      * R: Reversal
+     *
      * @var array<string, PosInterface::PAYMENT_STATUS_*>
      */
     protected array $orderStatusMappings = [

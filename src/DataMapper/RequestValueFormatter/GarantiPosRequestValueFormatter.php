@@ -22,6 +22,7 @@ class GarantiPosRequestValueFormatter implements RequestValueFormatterInterface
      * 0 => ''
      * 1 => ''
      * 2 => '2'
+     *
      * @inheritDoc
      */
     public function formatInstallment(int $installment): string

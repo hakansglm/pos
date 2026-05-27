@@ -41,12 +41,12 @@ abstract class AbstractHttpClient implements HttpClientInterface
     protected LoggerInterface $logger;
 
     /**
-     * @param non-empty-string           $baseApiUrl
-     * @param ClientInterface            $psrClient
-     * @param RequestFactoryInterface    $requestFactory
-     * @param StreamFactoryInterface     $streamFactory
-     * @param SerializerInterface        $serializer
-     * @param LoggerInterface            $logger
+     * @param non-empty-string        $baseApiUrl
+     * @param ClientInterface         $psrClient
+     * @param RequestFactoryInterface $requestFactory
+     * @param StreamFactoryInterface  $streamFactory
+     * @param SerializerInterface     $serializer
+     * @param LoggerInterface         $logger
      */
     public function __construct(
         string                  $baseApiUrl,
@@ -129,7 +129,6 @@ abstract class AbstractHttpClient implements HttpClientInterface
         ?AbstractPosAccount $account = null,
         bool                $decode = true
     ) {
-
         try {
             $url ??= $this->getApiURL($txType, $paymentModel, $order['transaction_type'] ?? null);
         } catch (\Exception $e) {

@@ -193,7 +193,7 @@ class PayFlexCPV4PosRequestDataMapper extends AbstractRequestDataMapper
     /**
      * {@inheritDoc}
      *
-     * @param array<string, int|string|float|null>|null             $order kullanilmiyor
+     * @param array<string, int|string|float|null>|null             $order     kullanilmiyor
      * @param array{CommonPaymentUrl: string, PaymentToken: string} $extraData
      *
      * @return array{gateway: string, method: 'GET', inputs: array{Ptkn: string}}

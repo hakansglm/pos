@@ -32,11 +32,11 @@ abstract class AbstractCreditCard implements CreditCardInterface
     /**
      * @phpstan-param CreditCardInterface::CARD_TYPE_*|null $cardType
      *
-     * @param string            $number   credit card number with or without spaces
+     * @param string            $number         credit card number with or without spaces
      * @param DateTimeImmutable $expDate
      * @param string            $cvv
      * @param string|null       $cardHolderName
-     * @param string|null       $cardType examples values: 'visa', 'master', '1', '2'
+     * @param string|null       $cardType       examples values: 'visa', 'master', '1', '2'
      *
      * @throws \LogicException
      */

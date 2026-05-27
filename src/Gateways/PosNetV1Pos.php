@@ -61,6 +61,7 @@ class PosNetV1Pos extends AbstractGateway
 
     /**
      * Kullanıcı doğrulama sonucunun sorgulanması ve verilerin doğruluğunun teyit edilmesi için kullanılır.
+     *
      * @inheritDoc
      */
     public function make3DPayment(array $gatewayResponseData, array $order, string $txType, ?CreditCardInterface $creditCard = null): array

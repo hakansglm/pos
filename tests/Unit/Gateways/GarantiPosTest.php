@@ -121,21 +121,6 @@ class GarantiPosTest extends TestCase
         );
     }
 
-    private function createGateway(array $config, ?AbstractPosAccount $account = null): PosInterface
-    {
-        return new GarantiPos(
-            $config,
-            $account ?? $this->account,
-            $this->requestValueMapper,
-            $this->requestMapperMock,
-            $this->responseMapperMock,
-            $this->serializerMock,
-            $this->eventDispatcherMock,
-            $this->httpClientStrategyMock,
-            $this->loggerMock,
-        );
-    }
-
     /**
      * @return void
      */
@@ -857,6 +842,21 @@ class GarantiPosTest extends TestCase
                 ],
             ],
         ];
+    }
+
+    private function createGateway(array $config, ?AbstractPosAccount $account = null): PosInterface
+    {
+        return new GarantiPos(
+            $config,
+            $account ?? $this->account,
+            $this->requestValueMapper,
+            $this->requestMapperMock,
+            $this->responseMapperMock,
+            $this->serializerMock,
+            $this->eventDispatcherMock,
+            $this->httpClientStrategyMock,
+            $this->loggerMock,
+        );
     }
 
     private function configureClientResponse(

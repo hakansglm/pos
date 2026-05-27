@@ -48,6 +48,7 @@ class EstPosResponseDataMapper extends AbstractResponseDataMapper
 
     /**
      * @param PaymentStatusModel $rawPaymentResponseData
+     *
      * {@inheritDoc}
      */
     public function mapPaymentResponse(array $rawPaymentResponseData, string $txType, array $order): array
@@ -94,6 +95,7 @@ class EstPosResponseDataMapper extends AbstractResponseDataMapper
 
     /**
      * @param PaymentStatusModel|null $rawPaymentResponseData
+     *
      * {@inheritdoc}
      */
     public function map3DPaymentData(array $raw3DAuthResponseData, ?array $rawPaymentResponseData, string $txType, array $order): array
@@ -247,6 +249,7 @@ class EstPosResponseDataMapper extends AbstractResponseDataMapper
 
     /**
      * @param PaymentStatusModel $rawResponseData
+     *
      * {@inheritdoc}
      */
     public function mapRefundResponse(array $rawResponseData): array
@@ -340,6 +343,7 @@ class EstPosResponseDataMapper extends AbstractResponseDataMapper
 
     /**
      * @param PaymentStatusModel $rawResponseData
+     *
      * {@inheritdoc}
      */
     public function mapStatusResponse(array $rawResponseData): array

@@ -41,7 +41,7 @@ class KuveytPosHttpClient extends AbstractHttpClient
      * @inheritDoc
      *
      * @throws UnsupportedTransactionTypeException
-     * @throws \InvalidArgumentException when a transaction type is not provided
+     * @throws \InvalidArgumentException           when a transaction type is not provided
      */
     public function getApiURL(?string $txType = null, ?string $paymentModel = null, ?string $orderTxType = null): string
     {

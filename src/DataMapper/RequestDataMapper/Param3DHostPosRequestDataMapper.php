@@ -89,6 +89,7 @@ class Param3DHostPosRequestDataMapper extends AbstractRequestDataMapper
 
     /**
      * {@inheritDoc}
+     *
      * @return array<string, string|array<string, string>>
      */
     public function createNonSecurePaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, CreditCardInterface $creditCard): array

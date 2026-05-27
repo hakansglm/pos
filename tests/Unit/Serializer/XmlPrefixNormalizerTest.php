@@ -60,18 +60,18 @@ class XmlPrefixNormalizerTest extends TestCase
         $data = [
             'a' => [
                 'b' => [
-                    'c' => 'value'
-                ]
-            ]
+                    'c' => 'value',
+                ],
+            ],
         ];
         $context = ['xml_prefix' => 'pre'];
 
         $expected = [
             'pre:a' => [
                 'pre:b' => [
-                    'pre:c' => 'value'
-                ]
-            ]
+                    'pre:c' => 'value',
+                ],
+            ],
         ];
 
         $this->assertSame($expected, $this->normalizer->normalize($data, 'xml', $context));

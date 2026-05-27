@@ -161,6 +161,7 @@ class PayForPos extends AbstractGateway
     /**
      * Fetches Transaction history (both failed and successful) for the given date ReqDate
      * Note: history request to gateway returns JSON response
+     *
      * @inheritDoc
      */
     public function history(array $data): array
@@ -171,6 +172,7 @@ class PayForPos extends AbstractGateway
     /**
      * Fetches transaction history (both failed and successful, refund|pre|post|cancel) related to the queried order
      * Note: history request to gateway returns JSON response
+     *
      * @inheritDoc
      */
     public function orderHistory(array $order): array

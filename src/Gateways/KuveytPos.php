@@ -79,6 +79,7 @@ class KuveytPos extends AbstractGateway
 
     /**
      * Kuveyt bank dokumantasyonunda history sorgusu ile alakali hic bir bilgi yok
+     *
      * @inheritDoc
      */
     public function history(array $data): array
@@ -88,6 +89,7 @@ class KuveytPos extends AbstractGateway
 
     /**
      * Kuveyt bank dokumantasyonunda history sorgusu ile alakali hic bir bilgi yok
+     *
      * @inheritDoc
      */
     public function orderHistory(array $order): array
@@ -185,6 +187,14 @@ class KuveytPos extends AbstractGateway
     }
 
     /**
+     * @inheritDoc
+     */
+    public function customQuery(array $requestData, ?string $apiUrl = null): array
+    {
+        throw new UnsupportedTransactionTypeException();
+    }
+
+    /**
      * @phpstan-param PosInterface::MODEL_3D_*                                          $paymentModel
      * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
      *
@@ -242,13 +252,5 @@ class KuveytPos extends AbstractGateway
         );
 
         return $result;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function customQuery(array $requestData, ?string $apiUrl = null): array
-    {
-        throw new UnsupportedTransactionTypeException();
     }
 }

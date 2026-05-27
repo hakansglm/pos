@@ -408,6 +408,7 @@ class PosNetResponseDataMapper extends AbstractResponseDataMapper
 
     /**
      * "100001" => 1000.01
+     *
      * @param string $amount
      *
      * @return float
@@ -419,6 +420,7 @@ class PosNetResponseDataMapper extends AbstractResponseDataMapper
 
     /**
      * "1,16" => 1.16
+     *
      * @param string $amount
      *
      * @return float

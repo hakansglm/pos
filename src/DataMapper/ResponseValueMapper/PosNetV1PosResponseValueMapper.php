@@ -33,6 +33,15 @@ class PosNetV1PosResponseValueMapper extends AbstractResponseValueMapper
     ];
 
     /**
+     * @inheritDoc
+     */
+    protected array $orderStatusMappings = [
+        PosInterface::TX_TYPE_PAY_AUTH => PosInterface::PAYMENT_STATUS_PAYMENT_COMPLETED,
+        PosInterface::TX_TYPE_CANCEL   => PosInterface::PAYMENT_STATUS_CANCELED,
+        PosInterface::TX_TYPE_REFUND   => PosInterface::PAYMENT_STATUS_FULLY_REFUNDED,
+    ];
+
+    /**
      * @var array<string|int, PosInterface::CURRENCY_*>
      */
     private array $orderStatusCurrencyMappings = [
@@ -42,15 +51,6 @@ class PosNetV1PosResponseValueMapper extends AbstractResponseValueMapper
         '826' => PosInterface::CURRENCY_GBP,
         '392' => PosInterface::CURRENCY_JPY,
         '643' => PosInterface::CURRENCY_RUB,
-    ];
-
-    /**
-     * @inheritDoc
-     */
-    protected array $orderStatusMappings = [
-        PosInterface::TX_TYPE_PAY_AUTH => PosInterface::PAYMENT_STATUS_PAYMENT_COMPLETED,
-        PosInterface::TX_TYPE_CANCEL   => PosInterface::PAYMENT_STATUS_CANCELED,
-        PosInterface::TX_TYPE_REFUND   => PosInterface::PAYMENT_STATUS_FULLY_REFUNDED,
     ];
 
     /**

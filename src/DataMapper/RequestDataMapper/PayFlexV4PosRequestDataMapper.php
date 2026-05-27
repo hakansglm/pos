@@ -108,6 +108,7 @@ class PayFlexV4PosRequestDataMapper extends AbstractRequestDataMapper
 
     /**
      * @param PayFlexAccount $posAccount
+     *
      * {@inheritDoc}
      */
     public function createNonSecurePaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, CreditCardInterface $creditCard): array
@@ -157,6 +158,7 @@ class PayFlexV4PosRequestDataMapper extends AbstractRequestDataMapper
 
     /**
      * {@inheritDoc}
+     *
      * @return array{MerchantCriteria: array{HostMerchantId: string, MerchantPassword: string}, TransactionCriteria: array{TransactionId: string, OrderId: string, AuthCode: string}}
      */
     public function createStatusRequestData(AbstractPosAccount $posAccount, array $order): array
@@ -185,6 +187,7 @@ class PayFlexV4PosRequestDataMapper extends AbstractRequestDataMapper
 
     /**
      * {@inheritDoc}
+     *
      * @return array{MerchantId: string, Password: string, TransactionType: string,
      *     ReferenceTransactionId: string, ClientIp: string}
      */
@@ -203,6 +206,7 @@ class PayFlexV4PosRequestDataMapper extends AbstractRequestDataMapper
 
     /**
      * {@inheritDoc}
+     *
      * @return array{MerchantId: string, Password: string, TransactionType: string, ReferenceTransactionId: string,
      *     ClientIp: string, CurrencyAmount: string}
      */
@@ -249,7 +253,7 @@ class PayFlexV4PosRequestDataMapper extends AbstractRequestDataMapper
     /**
      * {@inheritDoc}
      *
-     * @param array<string, int|string|float|null>|null                         $order kullanilmiyor
+     * @param array<string, int|string|float|null>|null                         $order     kullanilmiyor
      * @param array{PaReq: string, TermUrl: string, MD: string, ACSUrl: string} $extraData
      *
      * @return array{gateway: string, method: 'POST', inputs: array{PaReq: string, TermUrl: string, MD: string}}

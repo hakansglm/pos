@@ -179,5 +179,4 @@ class EstV3PosCryptTest extends TestCase
             ],
         ];
     }
-
 }

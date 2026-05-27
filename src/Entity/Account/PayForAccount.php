@@ -17,12 +17,12 @@ class PayForAccount extends AbstractPosAccount
     /**
      * AbstractPosAccount constructor.
      *
-     * @param string               $bank
-     * @param string               $merchantId   Üye işyeri numarası.
-     * @param string               $userCode     Otorizasyon sistemi kullanıcı kodu.
-     * @param string               $userPassword Otorizasyon sistemi kullanıcı şifresi.
-     * @param string|null          $merchantPass 3D Secure şifresidir.
-     * @param self::MBR_ID_*       $mbrId        Kurum kodudur.
+     * @param string         $bank
+     * @param string         $merchantId   Üye işyeri numarası.
+     * @param string         $userCode     Otorizasyon sistemi kullanıcı kodu.
+     * @param string         $userPassword Otorizasyon sistemi kullanıcı şifresi.
+     * @param string|null    $merchantPass 3D Secure şifresidir.
+     * @param self::MBR_ID_* $mbrId        Kurum kodudur.
      */
     public function __construct(
         string  $bank,

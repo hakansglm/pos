@@ -20,6 +20,7 @@ class InterPosRequestDataMapper extends AbstractRequestDataMapper
 {
     /**
      * MOTO (Mail Order Telephone Order) 0 for false, 1 for true
+     *
      * @var string
      */
     protected const MOTO = '0';
@@ -87,6 +88,7 @@ class InterPosRequestDataMapper extends AbstractRequestDataMapper
 
     /**
      * {@inheritDoc}
+     *
      * @return array{TxnType: string, SecureType: string, OrderId: null, orgOrderId: mixed, PurchAmount: mixed, Currency: string, MOTO: string, UserCode: string, UserPass: string, ShopCode: string}
      */
     public function createNonSecurePostAuthPaymentRequestData(AbstractPosAccount $posAccount, array $order): array
@@ -106,6 +108,7 @@ class InterPosRequestDataMapper extends AbstractRequestDataMapper
 
     /**
      * {@inheritDoc}
+     *
      * @return array{OrderId: null, orgOrderId: string, TxnType: string, SecureType: string, Lang: string, UserCode: string, UserPass: string, ShopCode: string}
      */
     public function createStatusRequestData(AbstractPosAccount $posAccount, array $order): array
@@ -123,6 +126,7 @@ class InterPosRequestDataMapper extends AbstractRequestDataMapper
 
     /**
      * {@inheritDoc}
+     *
      * @return array{OrderId: null, orgOrderId: string, TxnType: string, SecureType: string, Lang: string, UserCode: string, UserPass: string, ShopCode: string}
      */
     public function createCancelRequestData(AbstractPosAccount $posAccount, array $order): array
@@ -140,6 +144,7 @@ class InterPosRequestDataMapper extends AbstractRequestDataMapper
 
     /**
      * {@inheritDoc}
+     *
      * @return array{OrderId: null, orgOrderId: string, PurchAmount: string, TxnType: string, SecureType: string, Lang: string, MOTO: string, UserCode: string, UserPass: string, ShopCode: string}
      */
     public function createRefundRequestData(AbstractPosAccount $posAccount, array $order, string $refundTxType): array

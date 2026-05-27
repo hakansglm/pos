@@ -42,7 +42,7 @@ class PosNetRequestDataMapper extends AbstractRequestDataMapper
 
     /**
      * @param PosNetAccount                                                     $posAccount
-     * @param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType kullanilmiyor
+     * @param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType     kullanilmiyor
      *
      * {@inheritDoc}
      */

@@ -18,7 +18,6 @@ use Mews\Pos\PosInterface;
 
 /**
  * @since 1.1.0
- *
  * @link https://sanalpos-prep.akbank.com/#entry
  */
 class AkbankPos extends AbstractGateway

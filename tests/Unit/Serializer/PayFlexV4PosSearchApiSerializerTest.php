@@ -130,5 +130,4 @@ class PayFlexV4PosSearchApiSerializerTest extends TestCase
 ',
         ];
     }
-
 }

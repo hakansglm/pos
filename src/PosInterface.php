@@ -125,10 +125,10 @@ interface PosInterface
      *
      * @return non-empty-string|array{gateway: string, method: 'POST'|'GET', inputs: array<string, string>} Banka response'u HTML olduğu durumda string döner.
      *
-     * @throws \RuntimeException when request to the bank to get 3D form data failed
-     * @throws ClientExceptionInterface when request to the bank to get 3D form data failed
-     * @throws \InvalidArgumentException when card data is not provided when it is required for the given payment model
-     * @throws \LogicException when given payment model or transaction type is not supported
+     * @throws \RuntimeException                   when request to the bank to get 3D form data failed
+     * @throws ClientExceptionInterface            when request to the bank to get 3D form data failed
+     * @throws \InvalidArgumentException           when card data is not provided when it is required for the given payment model
+     * @throws \LogicException                     when given payment model or transaction type is not supported
      * @throws UnsupportedTransactionTypeException
      * @throws ClientExceptionInterface
      */
@@ -136,6 +136,7 @@ interface PosInterface
 
     /**
      * Regular Payment
+     *
      * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
      *
      * @param array<string, mixed> $order
@@ -165,12 +166,13 @@ interface PosInterface
 
     /**
      * Make 3D Payment
+     *
      * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
      *
      * @param array<string, string>    $gatewayResponseData 3D otorizasyon sonucunda gateway tarafından POST/GET edilen veriler.
      * @param array<string, mixed>     $order
      * @param string                   $txType
-     * @param CreditCardInterface|null $creditCard simdilik sadece PayFlexV4Pos icin card isteniyor.
+     * @param CreditCardInterface|null $creditCard          simdilik sadece PayFlexV4Pos icin card isteniyor.
      *
      * @return array<string, mixed>
      *
@@ -183,6 +185,7 @@ interface PosInterface
 
     /**
      * Just returns formatted data of 3d_pay payment response
+     *
      * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
      *
      * @param array<string, string> $gatewayResponseData Ödeme sonucu gateway tarafından POST/GET edilen veriler.
@@ -199,6 +202,7 @@ interface PosInterface
 
     /**
      * Just returns formatted data of host payment response
+     *
      * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
      *
      * @param array<string, string> $gatewayResponseData Ödeme sonucu gateway tarafından POST/GET edilen veriler.

@@ -20,6 +20,7 @@ class PayForPosRequestDataMapper extends AbstractRequestDataMapper
 {
     /**
      * MOTO (Mail Order Telephone Order) 0 for false, 1 for true
+     *
      * @var string
      */
     private const MOTO = '0';

@@ -21,7 +21,7 @@ interface SerializerInterface
 
     /**
      * @param class-string<PosInterface> $gatewayClass
-     * @param string|null                $apiName todo strict type
+     * @param string|null                $apiName      todo strict type
      *
      * @return bool
      */
@@ -40,7 +40,7 @@ interface SerializerInterface
     /**
      * @phpstan-param PosInterface::TX_TYPE_* $txType
      *
-     * @param string $data response received from the bank
+     * @param string $data   response received from the bank
      * @param string $txType
      *
      * @return array<string, mixed>

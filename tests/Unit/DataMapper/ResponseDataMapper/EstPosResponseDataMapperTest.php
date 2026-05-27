@@ -359,6 +359,7 @@ class EstPosResponseDataMapperTest extends TestCase
 
     /**
      * Doing integration test because of the iteration, and conditional statements it is difficult to mock values.
+     *
      * @dataProvider statusRecurringOrderTestDataProvider
      */
     public function testMapStatusResponseRecurringOrder(array $responseData, array $expectedData): void
@@ -425,6 +426,7 @@ class EstPosResponseDataMapperTest extends TestCase
 
     /**
      * Doing integration test because of the iteration, sorting and conditional statements it is difficult to mock values.
+     *
      * @dataProvider orderHistoryTestDataProvider
      */
     public function testMapOrderHistoryResponse(array $responseData, array $expectedData): void

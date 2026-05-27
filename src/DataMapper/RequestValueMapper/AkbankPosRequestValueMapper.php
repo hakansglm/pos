@@ -12,14 +12,6 @@ use Mews\Pos\PosInterface;
 class AkbankPosRequestValueMapper extends AbstractRequestValueMapper
 {
     /**
-     * @inheritDoc
-     */
-    public static function supports(string $gatewayClass): bool
-    {
-        return AkbankPos::class === $gatewayClass;
-    }
-
-    /**
      * {@inheritDoc}
      */
     protected array $txTypeMappings = [
@@ -80,4 +72,11 @@ class AkbankPosRequestValueMapper extends AbstractRequestValueMapper
         PosInterface::LANG_TR => 'TR',
         PosInterface::LANG_EN => 'EN',
     ];
+    /**
+     * @inheritDoc
+     */
+    public static function supports(string $gatewayClass): bool
+    {
+        return AkbankPos::class === $gatewayClass;
+    }
 }

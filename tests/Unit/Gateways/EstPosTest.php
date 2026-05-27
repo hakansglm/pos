@@ -131,21 +131,6 @@ class EstPosTest extends TestCase
         );
     }
 
-    private function createGateway(array $config, ?AbstractPosAccount $account = null): PosInterface
-    {
-        return new EstPos(
-            $config,
-            $account ?? $this->account,
-            $this->requestValueMapper,
-            $this->requestMapperMock,
-            $this->responseMapperMock,
-            $this->serializerMock,
-            $this->eventDispatcherMock,
-            $this->httpClientStrategyMock,
-            $this->loggerMock,
-        );
-    }
-
     /**
      * @return void
      */
@@ -971,6 +956,21 @@ class EstPosTest extends TestCase
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay, pre]',
             ],
         ];
+    }
+
+    private function createGateway(array $config, ?AbstractPosAccount $account = null): PosInterface
+    {
+        return new EstPos(
+            $config,
+            $account ?? $this->account,
+            $this->requestValueMapper,
+            $this->requestMapperMock,
+            $this->responseMapperMock,
+            $this->serializerMock,
+            $this->eventDispatcherMock,
+            $this->httpClientStrategyMock,
+            $this->loggerMock,
+        );
     }
 
     private function configureClientResponse(

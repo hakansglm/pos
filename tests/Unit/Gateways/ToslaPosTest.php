@@ -112,21 +112,6 @@ class ToslaPosTest extends TestCase
         $this->card = CreditCardFactory::createForGateway($this->pos, '5555444433332222', '21', '12', '122', 'ahmet', CreditCardInterface::CARD_TYPE_VISA);
     }
 
-    private function createGateway(array $config, ?AbstractPosAccount $account = null): PosInterface
-    {
-        return new ToslaPos(
-            $config,
-            $account ?? $this->account,
-            $this->requestValueMapper,
-            $this->requestMapperMock,
-            $this->responseMapperMock,
-            $this->serializerMock,
-            $this->eventDispatcherMock,
-            $this->httpClientStrategyMock,
-            $this->loggerMock,
-        );
-    }
-
     public function testInit(): void
     {
         $this->assertSame($this->config, $this->pos->getConfig());
@@ -382,7 +367,6 @@ class ToslaPosTest extends TestCase
         array  $formData,
         string $gatewayUrl
     ): void {
-
         $card = $isWithCard ? $this->card : null;
         $this->requestMapperMock->expects(self::once())
             ->method('create3DEnrollmentCheckRequestData')
@@ -1071,6 +1055,21 @@ class ToslaPosTest extends TestCase
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay, pre]',
             ],
         ];
+    }
+
+    private function createGateway(array $config, ?AbstractPosAccount $account = null): PosInterface
+    {
+        return new ToslaPos(
+            $config,
+            $account ?? $this->account,
+            $this->requestValueMapper,
+            $this->requestMapperMock,
+            $this->responseMapperMock,
+            $this->serializerMock,
+            $this->eventDispatcherMock,
+            $this->httpClientStrategyMock,
+            $this->loggerMock,
+        );
     }
 
     private function configureClientResponse(

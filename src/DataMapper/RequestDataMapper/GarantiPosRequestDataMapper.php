@@ -27,6 +27,7 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
      * MotoInd; işlemin MAilOrder bir işlem olup olmadığı bilgisinin gönderildiği alandır.
      * Y (also E) ise işlem mail order bir işlemdir.
      * N (also H) ise işlem ecommerce işlemidir.
+     *
      * @var string
      */
     private const MOTO = 'N';
@@ -297,6 +298,7 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
 
     /**
      * @param GarantiPosAccount $posAccount
+     *
      * {@inheritDoc}
      */
     public function createHistoryRequestData(AbstractPosAccount $posAccount, array $data = []): array

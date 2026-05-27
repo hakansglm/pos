@@ -49,6 +49,7 @@ class VakifKatilimPosResponseValueMapper extends AbstractResponseValueMapper
 
     /**
      * in '0949' or '949' formats
+     *
      * @inheritDoc
      */
     public function mapCurrency($currency, ?string $apiRequestTxType = null): ?string

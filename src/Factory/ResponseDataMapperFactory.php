@@ -64,7 +64,6 @@ class ResponseDataMapperFactory
         ResponseValueMapperInterface    $valueMapper,
         LoggerInterface                 $logger
     ): ResponseDataMapperInterface {
-
         /** @var class-string<ResponseDataMapperInterface> $responseDataMapperClass */
         foreach (self::$responseDataMapperClasses as $responseDataMapperClass) {
             if ($responseDataMapperClass::supports($gatewayClass)) {

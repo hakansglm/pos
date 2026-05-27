@@ -313,36 +313,6 @@ class ToslaPosResponseDataMapper extends AbstractResponseDataMapper
     }
 
     /**
-     * @param string $mdStatus
-     *
-     * @return string
-     */
-    protected function mapResponseTransactionSecurity(string $mdStatus): string
-    {
-        $transactionSecurity = 'MPI fallback';
-        if ('1' === $mdStatus) {
-            $transactionSecurity = 'Full 3D Secure';
-        } elseif (\in_array($mdStatus, ['2', '3', '4'])) {
-            $transactionSecurity = 'Half 3D Secure';
-        }
-
-        return $transactionSecurity;
-    }
-
-
-    /**
-     * Get ProcReturnCode
-     *
-     * @param array<string, mixed> $response
-     *
-     * @return string|null
-     */
-    protected function getProcReturnCode(array $response): ?string
-    {
-        return $response['BankResponseCode'] ?? null;
-    }
-
-    /**
      * @param array<string, mixed> $rawResponseData
      *
      * @return array<string, mixed>
@@ -394,5 +364,35 @@ class ToslaPosResponseDataMapper extends AbstractResponseDataMapper
         }
 
         return $defaultResponse;
+    }
+
+    /**
+     * @param string $mdStatus
+     *
+     * @return string
+     */
+    protected function mapResponseTransactionSecurity(string $mdStatus): string
+    {
+        $transactionSecurity = 'MPI fallback';
+        if ('1' === $mdStatus) {
+            $transactionSecurity = 'Full 3D Secure';
+        } elseif (\in_array($mdStatus, ['2', '3', '4'])) {
+            $transactionSecurity = 'Half 3D Secure';
+        }
+
+        return $transactionSecurity;
+    }
+
+
+    /**
+     * Get ProcReturnCode
+     *
+     * @param array<string, mixed> $response
+     *
+     * @return string|null
+     */
+    protected function getProcReturnCode(array $response): ?string
+    {
+        return $response['BankResponseCode'] ?? null;
     }
 }

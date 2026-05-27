@@ -39,6 +39,7 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
      * @param KuveytPosAccount $posAccount
      *
      * {@inheritDoc}
+     *
      * @return array{APIVersion: string, HashData: string, CustomerIPAddress: mixed, KuveytTurkVPosAdditionalData: array{AdditionalData: array{Key: string, Data: mixed}}, TransactionType: string, InstallmentCount: mixed, Amount: mixed, DisplayAmount: int, CurrencyCode: mixed, MerchantOrderId: mixed, TransactionSecurity: mixed, MerchantId: string, CustomerId: string, UserName: string}
      */
     public function create3DPaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, array $responseData): array
@@ -159,6 +160,7 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
 
     /**
      * @param KuveytPosAccount $posAccount
+     *
      * {@inheritDoc}
      */
     public function createStatusRequestData(AbstractPosAccount $posAccount, array $order): array
@@ -220,6 +222,7 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
 
     /**
      * @param KuveytPosAccount $posAccount
+     *
      * {@inheritDoc}
      */
     public function createCancelRequestData(AbstractPosAccount $posAccount, array $order): array
@@ -270,6 +273,7 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
 
     /**
      * @param KuveytPosAccount $posAccount
+     *
      * {@inheritDoc}
      */
     public function createRefundRequestData(AbstractPosAccount $posAccount, array $order, string $refundTxType): array

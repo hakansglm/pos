@@ -112,21 +112,6 @@ class AkbankPosTest extends TestCase
         $this->card = CreditCardFactory::create('5555444433332222', '21', '12', '122', 'ahmet', CreditCardInterface::CARD_TYPE_VISA);
     }
 
-    private function createGateway(array $config, ?AbstractPosAccount $account = null): PosInterface
-    {
-        return new AkbankPos(
-            $config,
-            $account ?? $this->account,
-            $this->requestValueMapper,
-            $this->requestMapperMock,
-            $this->responseMapperMock,
-            $this->serializerMock,
-            $this->eventDispatcherMock,
-            $this->httpClientStrategyMock,
-            $this->loggerMock,
-        );
-    }
-
     public function testInit(): void
     {
         $this->assertSame($this->config, $this->pos->getConfig());
@@ -1059,6 +1044,21 @@ class AkbankPosTest extends TestCase
                 ],
             ],
         ];
+    }
+
+    private function createGateway(array $config, ?AbstractPosAccount $account = null): PosInterface
+    {
+        return new AkbankPos(
+            $config,
+            $account ?? $this->account,
+            $this->requestValueMapper,
+            $this->requestMapperMock,
+            $this->responseMapperMock,
+            $this->serializerMock,
+            $this->eventDispatcherMock,
+            $this->httpClientStrategyMock,
+            $this->loggerMock,
+        );
     }
 
     private function configureClientResponse(

@@ -111,21 +111,6 @@ class PosNetV1PosTest extends TestCase
         $this->card = CreditCardFactory::createForGateway($this->pos, '5555444433332222', '21', '12', '122', 'ahmet');
     }
 
-    private function createGateway(array $config, ?AbstractPosAccount $account = null): PosInterface
-    {
-        return new PosNetV1Pos(
-            $config,
-            $account ?? $this->account,
-            $this->requestValueMapper,
-            $this->requestMapperMock,
-            $this->responseMapperMock,
-            $this->serializerMock,
-            $this->eventDispatcherMock,
-            $this->httpClientStrategyMock,
-            $this->loggerMock,
-        );
-    }
-
     /**
      * @return void
      */
@@ -758,6 +743,21 @@ class PosNetV1PosTest extends TestCase
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay, pre]',
             ],
         ];
+    }
+
+    private function createGateway(array $config, ?AbstractPosAccount $account = null): PosInterface
+    {
+        return new PosNetV1Pos(
+            $config,
+            $account ?? $this->account,
+            $this->requestValueMapper,
+            $this->requestMapperMock,
+            $this->responseMapperMock,
+            $this->serializerMock,
+            $this->eventDispatcherMock,
+            $this->httpClientStrategyMock,
+            $this->loggerMock,
+        );
     }
 
     private function configureClientResponse(

@@ -143,7 +143,7 @@ trait PaymentTestTrait
         return $statusOrder;
     }
 
-    public function createCancelOrder(string $gatewayClass, array $lastResponse): array
+    private function createCancelOrder(string $gatewayClass, array $lastResponse): array
     {
         if ([] === $lastResponse) {
             throw new \LogicException('ödeme verisi bulunamadı, önce ödeme yapınız');

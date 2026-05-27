@@ -30,6 +30,7 @@ class InterPosResponseValueFormatter extends AbstractResponseValueFormatter
     /**
      * 0 => 0.0
      * 1.056,2 => 1056.2
+     *
      * @inheritDoc
      */
     public function formatAmount($amount, string $txType): float

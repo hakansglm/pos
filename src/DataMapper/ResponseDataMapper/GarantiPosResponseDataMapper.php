@@ -56,6 +56,7 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
 
     /**
      * @param PaymentStatusModel $rawPaymentResponseData
+     *
      * {@inheritDoc}
      */
     public function mapPaymentResponse(array $rawPaymentResponseData, string $txType, array $order): array
@@ -99,6 +100,7 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
 
     /**
      * @param PaymentStatusModel|null $rawPaymentResponseData
+     *
      * {@inheritdoc}
      */
     public function map3DPaymentData(array $raw3DAuthResponseData, ?array $rawPaymentResponseData, string $txType, array $order): array
@@ -234,6 +236,7 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
 
     /**
      * @param PaymentStatusModel|array<string, string> $rawResponseData
+     *
      * {@inheritdoc}
      */
     public function mapCancelResponse(array $rawResponseData): array
@@ -266,6 +269,7 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
 
     /**
      * @param PaymentStatusModel|array<string, string> $rawResponseData
+     *
      * {@inheritdoc}
      */
     public function mapStatusResponse(array $rawResponseData): array

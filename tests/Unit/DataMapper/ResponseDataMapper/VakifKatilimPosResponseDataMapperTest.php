@@ -356,6 +356,7 @@ class VakifKatilimPosResponseDataMapperTest extends TestCase
 
     /**
      * Doing integration test because of the iteration, sorting and conditional statements it is difficult to mock values.
+     *
      * @dataProvider historyTestDataProvider
      */
     public function testMapHistoryResponse(array $responseData, array $expectedData): void

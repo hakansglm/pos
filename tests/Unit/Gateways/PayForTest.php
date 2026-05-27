@@ -45,7 +45,7 @@ class PayForTest extends TestCase
     private MockObject $requestMapperMock;
 
     /** @var ResponseDataMapperInterface & MockObject */
-    public MockObject $responseMapperMock;
+    private MockObject $responseMapperMock;
 
     /** @var CryptInterface & MockObject */
     private MockObject $cryptMock;
@@ -117,21 +117,6 @@ class PayForTest extends TestCase
             '122',
             'ahmet',
             CreditCardInterface::CARD_TYPE_VISA
-        );
-    }
-
-    private function createGateway(array $config, ?AbstractPosAccount $account = null): PosInterface
-    {
-        return new PayForPos(
-            $config,
-            $account ?? $this->account,
-            $this->requestValueMapper,
-            $this->requestMapperMock,
-            $this->responseMapperMock,
-            $this->serializerMock,
-            $this->eventDispatcherMock,
-            $this->httpClientStrategyMock,
-            $this->loggerMock,
         );
     }
 
@@ -890,6 +875,21 @@ class PayForTest extends TestCase
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay, pre]',
             ],
         ];
+    }
+
+    private function createGateway(array $config, ?AbstractPosAccount $account = null): PosInterface
+    {
+        return new PayForPos(
+            $config,
+            $account ?? $this->account,
+            $this->requestValueMapper,
+            $this->requestMapperMock,
+            $this->responseMapperMock,
+            $this->serializerMock,
+            $this->eventDispatcherMock,
+            $this->httpClientStrategyMock,
+            $this->loggerMock,
+        );
     }
 
     private function configureClientResponse(

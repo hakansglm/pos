@@ -48,7 +48,7 @@ class Param3DHostPosTest extends TestCase
     private MockObject $requestMapperMock;
 
     /** @var ResponseDataMapperInterface & MockObject */
-    public MockObject $responseMapperMock;
+    private MockObject $responseMapperMock;
 
     /** @var CryptInterface & MockObject */
     private MockObject $cryptMock;
@@ -106,21 +106,6 @@ class Param3DHostPosTest extends TestCase
             ->willReturn($this->cryptMock);
 
         $this->pos = $this->createGateway($this->config);
-    }
-
-    private function createGateway(array $config, ?AbstractPosAccount $account = null): PosInterface
-    {
-        return new Param3DHostPos(
-            $config,
-            $account ?? $this->account,
-            $this->requestValueMapperMock,
-            $this->requestMapperMock,
-            $this->responseMapperMock,
-            $this->serializerMock,
-            $this->eventDispatcherMock,
-            $this->httpClientStrategyMock,
-            $this->loggerMock
-        );
     }
 
     /**
@@ -376,6 +361,21 @@ class Param3DHostPosTest extends TestCase
             'decodedResponseData' => Param3DHostPosRequestDataMapperTest::threeDFormDataProvider()['3d_host_form_data']['extra_data'],
             'formData'            => Param3DHostPosRequestDataMapperTest::threeDFormDataProvider()['3d_host_form_data']['expected'],
         ];
+    }
+
+    private function createGateway(array $config, ?AbstractPosAccount $account = null): PosInterface
+    {
+        return new Param3DHostPos(
+            $config,
+            $account ?? $this->account,
+            $this->requestValueMapperMock,
+            $this->requestMapperMock,
+            $this->responseMapperMock,
+            $this->serializerMock,
+            $this->eventDispatcherMock,
+            $this->httpClientStrategyMock,
+            $this->loggerMock
+        );
     }
 
     private function configureClientResponse(

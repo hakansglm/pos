@@ -25,6 +25,7 @@ class ParamPosRequestValueFormatter implements RequestValueFormatterInterface
      * 0 => '1'
      * 1 => '1'
      * 2 => '2'
+     *
      * @inheritDoc
      */
     public function formatInstallment(int $installment): string

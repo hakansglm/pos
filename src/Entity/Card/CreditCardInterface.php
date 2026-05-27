@@ -25,6 +25,7 @@ interface CreditCardInterface
 
     /**
      * returns card number without white spaces
+     *
      * @return string
      */
     public function getNumber(): string;

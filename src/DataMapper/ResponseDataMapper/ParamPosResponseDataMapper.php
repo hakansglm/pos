@@ -83,53 +83,6 @@ class ParamPosResponseDataMapper extends AbstractResponseDataMapper
     }
 
     /**
-     * @param array<string, mixed>        $rawPaymentResponseData
-     * @param PosInterface::TX_TYPE_PAY_* $txType
-     * @param array<string, mixed>        $order
-     *
-     * @return array<string, mixed>
-     */
-    private function map3DPaymentResponse(array $rawPaymentResponseData, string $txType, array $order): array
-    {
-        $this->logger->debug('mapping payment response', [$rawPaymentResponseData]);
-
-        $defaultResponse = $this->getDefaultPaymentResponse($txType, PosInterface::MODEL_NON_SECURE);
-        if ([] === $rawPaymentResponseData) {
-            return $defaultResponse;
-        }
-
-        $rawPaymentResponseData = $this->emptyStringsToNull($rawPaymentResponseData);
-
-        $payResult = $rawPaymentResponseData['TP_WMD_PayResponse']['TP_WMD_PayResult'];
-
-        $procReturnCode = $this->getProcReturnCode($payResult);
-        $status         = self::TX_DECLINED;
-        if ($procReturnCode > 0 && $payResult['Dekont_ID'] > 0) {
-            $status = self::TX_APPROVED;
-        }
-
-        $mappedResponse = [
-            'proc_return_code' => $procReturnCode,
-            'status'           => $status,
-            'error_code'       => self::TX_APPROVED === $status ? null : $procReturnCode,
-            'error_message'    => self::TX_APPROVED === $status ? null : ($payResult['Sonuc_Ack'] ?? $payResult['Bank_HostMsg']),
-            'all'              => $rawPaymentResponseData,
-        ];
-        if (self::TX_APPROVED === $status) {
-            $mappedResponse['order_id']         = $payResult['Siparis_ID'];
-            $mappedResponse['transaction_id']   = $payResult['Bank_Trans_ID'];
-            $mappedResponse['auth_code']        = $payResult['Bank_AuthCode'];
-            $mappedResponse['ref_ret_num']      = $payResult['Bank_HostRefNum'];
-            $mappedResponse['currency']         = $order['currency'];
-            $mappedResponse['transaction_time'] = $this->valueFormatter->formatDateTime('now', $txType);
-        }
-
-        $this->logger->debug('mapped payment response', $mappedResponse);
-
-        return $this->mergeArraysPreferNonNullValues($defaultResponse, $mappedResponse);
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function map3DPaymentData(array $raw3DAuthResponseData, ?array $rawPaymentResponseData, string $txType, array $order): array
@@ -409,6 +362,53 @@ class ParamPosResponseDataMapper extends AbstractResponseDataMapper
     protected function getProcReturnCode(array $response): ?int
     {
         return $response['Sonuc'] ?? $response['TURKPOS_RETVAL_Sonuc'] ?? null;
+    }
+
+    /**
+     * @param array<string, mixed>        $rawPaymentResponseData
+     * @param PosInterface::TX_TYPE_PAY_* $txType
+     * @param array<string, mixed>        $order
+     *
+     * @return array<string, mixed>
+     */
+    private function map3DPaymentResponse(array $rawPaymentResponseData, string $txType, array $order): array
+    {
+        $this->logger->debug('mapping payment response', [$rawPaymentResponseData]);
+
+        $defaultResponse = $this->getDefaultPaymentResponse($txType, PosInterface::MODEL_NON_SECURE);
+        if ([] === $rawPaymentResponseData) {
+            return $defaultResponse;
+        }
+
+        $rawPaymentResponseData = $this->emptyStringsToNull($rawPaymentResponseData);
+
+        $payResult = $rawPaymentResponseData['TP_WMD_PayResponse']['TP_WMD_PayResult'];
+
+        $procReturnCode = $this->getProcReturnCode($payResult);
+        $status         = self::TX_DECLINED;
+        if ($procReturnCode > 0 && $payResult['Dekont_ID'] > 0) {
+            $status = self::TX_APPROVED;
+        }
+
+        $mappedResponse = [
+            'proc_return_code' => $procReturnCode,
+            'status'           => $status,
+            'error_code'       => self::TX_APPROVED === $status ? null : $procReturnCode,
+            'error_message'    => self::TX_APPROVED === $status ? null : ($payResult['Sonuc_Ack'] ?? $payResult['Bank_HostMsg']),
+            'all'              => $rawPaymentResponseData,
+        ];
+        if (self::TX_APPROVED === $status) {
+            $mappedResponse['order_id']         = $payResult['Siparis_ID'];
+            $mappedResponse['transaction_id']   = $payResult['Bank_Trans_ID'];
+            $mappedResponse['auth_code']        = $payResult['Bank_AuthCode'];
+            $mappedResponse['ref_ret_num']      = $payResult['Bank_HostRefNum'];
+            $mappedResponse['currency']         = $order['currency'];
+            $mappedResponse['transaction_time'] = $this->valueFormatter->formatDateTime('now', $txType);
+        }
+
+        $this->logger->debug('mapped payment response', $mappedResponse);
+
+        return $this->mergeArraysPreferNonNullValues($defaultResponse, $mappedResponse);
     }
 
     /**

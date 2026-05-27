@@ -41,7 +41,7 @@ class ToslaPosHttpClient extends AbstractHttpClient
      * @inheritDoc
      *
      * @throws UnsupportedTransactionTypeException
-     * @throws \InvalidArgumentException when a transaction type or payment model are not provided
+     * @throws \InvalidArgumentException           when a transaction type or payment model are not provided
      */
     public function getApiURL(?string $txType = null, ?string $paymentModel = null, ?string $orderTxType = null): string
     {

@@ -83,6 +83,7 @@ class VakifKatilimPos extends AbstractGateway
     /**
      * 3D Host Model'de array döner,
      * 3D Model'de ise HTML form içeren string döner.
+     *
      * @inheritDoc
      */
     public function get3DFormData(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null, bool $createWithoutCard = true)

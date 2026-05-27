@@ -28,7 +28,7 @@ class AccountFactory
      * @phpstan-param PosInterface::MODEL_* $model
      *
      * @param non-empty-string      $bank
-     * @param non-empty-string      $clientId Üye iş yeri (Mağaza) numarası
+     * @param non-empty-string      $clientId     Üye iş yeri (Mağaza) numarası
      * @param non-empty-string      $kullaniciAdi
      * @param non-empty-string      $password
      * @param non-empty-string      $model
@@ -113,9 +113,9 @@ class AccountFactory
      * @phpstan-param PosInterface::MODEL_* $model
      *
      * @param non-empty-string      $bank
-     * @param non-empty-string      $merchantId Üye işyeri Numarası
+     * @param non-empty-string      $merchantId     Üye işyeri Numarası
      * @param non-empty-string      $userId
-     * @param non-empty-string      $password   Terminal UserID şifresi
+     * @param non-empty-string      $password       Terminal UserID şifresi
      * @param non-empty-string      $terminalId
      * @param non-empty-string      $model
      * @param non-empty-string|null $storeKey
@@ -138,10 +138,10 @@ class AccountFactory
      * @phpstan-param PosInterface::MODEL_* $model
      *
      * @param non-empty-string      $bank
-     * @param non-empty-string      $merchantId Mağaza Numarası / Üye iş yeri tekil numarası
-     * @param non-empty-string      $username   Yönetim panelinden oluşturulan api rollü kullanıcı adı
-     * @param non-empty-string      $customerId CustomerNumber, Müşteri No
-     * @param non-empty-string      $storeKey   Oluşturulan APİ kullanıcısının şifre bilgisidir.
+     * @param non-empty-string      $merchantId    Mağaza Numarası / Üye iş yeri tekil numarası
+     * @param non-empty-string      $username      Yönetim panelinden oluşturulan api rollü kullanıcı adı
+     * @param non-empty-string      $customerId    CustomerNumber, Müşteri No
+     * @param non-empty-string      $storeKey      Oluşturulan APİ kullanıcısının şifre bilgisidir.
      * @param non-empty-string      $model
      * @param non-empty-string|null $subMerchantId
      *
@@ -182,9 +182,9 @@ class AccountFactory
      * @phpstan-param PosInterface::MODEL_*           $model
      *
      * @param non-empty-string      $bank
-     * @param non-empty-string      $merchantId Üye işyeri numarası
-     * @param non-empty-string      $password   Üye işyeri şifres
-     * @param non-empty-string      $terminalNo İşlemin hangi terminal üzerinden gönderileceği bilgisi. dVB007000...
+     * @param non-empty-string      $merchantId    Üye işyeri numarası
+     * @param non-empty-string      $password      Üye işyeri şifres
+     * @param non-empty-string      $terminalNo    İşlemin hangi terminal üzerinden gönderileceği bilgisi. dVB007000...
      * @param non-empty-string      $model
      * @param int                   $merchantType
      * @param non-empty-string|null $subMerchantId

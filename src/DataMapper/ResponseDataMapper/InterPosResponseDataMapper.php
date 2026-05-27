@@ -292,6 +292,7 @@ class InterPosResponseDataMapper extends AbstractResponseDataMapper
 
     /**
      * returns mapped data of the common response data among all 3d models.
+     *
      * @phpstan-param PosInterface::MODEL_3D_*                                          $paymentModel
      * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
      *

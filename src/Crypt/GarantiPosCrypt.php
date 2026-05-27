@@ -25,6 +25,7 @@ class GarantiPosCrypt extends AbstractCrypt
 
     /**
      * @param GarantiPosAccount $posAccount
+     *
      * {@inheritDoc}
      */
     public function create3DHash(AbstractPosAccount $posAccount, array $formInputs): string
@@ -79,6 +80,7 @@ class GarantiPosCrypt extends AbstractCrypt
      * Make Hash Data
      *
      * @param GarantiPosAccount $posAccount
+     *
      * {@inheritDoc}
      */
     public function createHash(AbstractPosAccount $posAccount, array $requestData): string
