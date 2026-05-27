@@ -25,29 +25,6 @@ abstract class AbstractResponseValueMapper implements ResponseValueMapperInterfa
     protected array $orderStatusMappings = [];
 
     /**
-     * @param array<PosInterface::CURRENCY_*, string|int>                                 $currencyMappings
-     * @param array<PosInterface::TX_TYPE_*, string|array<PosInterface::MODEL_*, string>> $txTypeMappings
-     * @param array<PosInterface::MODEL_*, string|int>                                    $secureTypeMappings
-     */
-    public function __construct(
-        array $currencyMappings,
-        array $txTypeMappings,
-        array $secureTypeMappings
-    ) {
-        if ([] !== $currencyMappings) {
-            $this->currencyMappings = \array_flip($currencyMappings);
-        }
-
-        if ([] !== $txTypeMappings) {
-            $this->txTypeMappings = $txTypeMappings;
-        }
-
-        if ([] !== $secureTypeMappings) {
-            $this->secureTypeMappings = \array_flip($secureTypeMappings);
-        }
-    }
-
-    /**
      * @inheritDoc
      */
     public function mapTxType($txType, ?string $paymentModel = null): ?string

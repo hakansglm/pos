@@ -9,7 +9,6 @@ namespace Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\PayForPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseValueFormatter\ResponseValueFormatterInterface;
 use Mews\Pos\DataMapper\ResponseValueMapper\ResponseValueMapperInterface;
-use Mews\Pos\Factory\RequestValueMapperFactory;
 use Mews\Pos\Factory\ResponseValueFormatterFactory;
 use Mews\Pos\Factory\ResponseValueMapperFactory;
 use Mews\Pos\Gateways\AkbankPos;
@@ -347,10 +346,9 @@ class PayForPosResponseDataMapperTest extends TestCase
      */
     public function testMapOrderHistoryResponse(array $responseData, array $expectedData): void
     {
-        $requestValueMapper = RequestValueMapperFactory::createForGateway(PayForPos::class);
         $responseDataMapper = new PayForPosResponseDataMapper(
             ResponseValueFormatterFactory::createForGateway(PayForPos::class),
-            ResponseValueMapperFactory::createForGateway(PayForPos::class, $requestValueMapper),
+            ResponseValueMapperFactory::createForGateway(PayForPos::class),
             $this->logger
         );
         $actualData = $responseDataMapper->mapOrderHistoryResponse($responseData);
@@ -389,10 +387,9 @@ class PayForPosResponseDataMapperTest extends TestCase
      */
     public function testMapHistoryResponse(array $responseData, array $expectedData): void
     {
-        $requestValueMapper = RequestValueMapperFactory::createForGateway(PayForPos::class);
         $responseDataMapper = new PayForPosResponseDataMapper(
             ResponseValueFormatterFactory::createForGateway(PayForPos::class),
-            ResponseValueMapperFactory::createForGateway(PayForPos::class, $requestValueMapper),
+            ResponseValueMapperFactory::createForGateway(PayForPos::class),
             $this->logger
         );
         $actualData = $responseDataMapper->mapHistoryResponse($responseData);

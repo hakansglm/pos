@@ -10,7 +10,6 @@ use Mews\Pos\DataMapper\ResponseDataMapper\ToslaPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseValueFormatter\ResponseValueFormatterInterface;
 use Mews\Pos\DataMapper\ResponseValueMapper\ResponseValueMapperInterface;
 use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Factory\RequestValueMapperFactory;
 use Mews\Pos\Factory\ResponseValueFormatterFactory;
 use Mews\Pos\Factory\ResponseValueMapperFactory;
 use Mews\Pos\Gateways\AkbankPos;
@@ -279,10 +278,9 @@ class ToslaPosResponseDataMapperTest extends TestCase
      */
     public function testMapOrderHistoryResponse(array $responseData, array $expectedData): void
     {
-        $requestValueMapper = RequestValueMapperFactory::createForGateway(ToslaPos::class);
         $responseDataMapper = new ToslaPosResponseDataMapper(
             ResponseValueFormatterFactory::createForGateway(ToslaPos::class),
-            ResponseValueMapperFactory::createForGateway(ToslaPos::class, $requestValueMapper),
+            ResponseValueMapperFactory::createForGateway(ToslaPos::class),
             $this->logger
         );
         $actualData = $responseDataMapper->mapOrderHistoryResponse($responseData);

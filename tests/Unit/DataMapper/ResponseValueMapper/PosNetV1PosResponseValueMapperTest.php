@@ -7,8 +7,6 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseValueMapper;
 
 use Mews\Pos\DataMapper\ResponseValueMapper\PosNetV1PosResponseValueMapper;
-use Mews\Pos\Factory\RequestValueMapperFactory;
-use Mews\Pos\Factory\ResponseValueMapperFactory;
 use Mews\Pos\Gateways\EstV3Pos;
 use Mews\Pos\Gateways\PosNetV1Pos;
 use Mews\Pos\PosInterface;
@@ -25,10 +23,7 @@ class PosNetV1PosResponseValueMapperTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->mapper = ResponseValueMapperFactory::createForGateway(
-            PosNetV1Pos::class,
-            RequestValueMapperFactory::createForGateway(PosNetV1Pos::class)
-        );
+        $this->mapper = new PosNetV1PosResponseValueMapper();
     }
 
     public function testSupports(): void

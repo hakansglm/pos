@@ -11,7 +11,6 @@ use Mews\Pos\DataMapper\ResponseDataMapper\ResponseDataMapperInterface;
 use Mews\Pos\DataMapper\ResponseValueFormatter\ResponseValueFormatterInterface;
 use Mews\Pos\DataMapper\ResponseValueMapper\ResponseValueMapperInterface;
 use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Factory\RequestValueMapperFactory;
 use Mews\Pos\Factory\ResponseValueFormatterFactory;
 use Mews\Pos\Factory\ResponseValueMapperFactory;
 use Mews\Pos\Gateways\AkbankPos;
@@ -328,10 +327,9 @@ class GarantiPosResponseDataMapperTest extends TestCase
      */
     public function testOrderMapHistoryResponse(array $responseData, array $expectedData): void
     {
-        $requestValueMapper = RequestValueMapperFactory::createForGateway(GarantiPos::class);
         $responseDataMapper = new GarantiPosResponseDataMapper(
             ResponseValueFormatterFactory::createForGateway(GarantiPos::class),
-            ResponseValueMapperFactory::createForGateway(GarantiPos::class, $requestValueMapper),
+            ResponseValueMapperFactory::createForGateway(GarantiPos::class),
             $this->logger
         );
 
@@ -370,10 +368,9 @@ class GarantiPosResponseDataMapperTest extends TestCase
      */
     public function testMapHistoryResponse(array $responseData, array $expectedData): void
     {
-        $requestValueMapper = RequestValueMapperFactory::createForGateway(GarantiPos::class);
         $responseDataMapper = new GarantiPosResponseDataMapper(
             ResponseValueFormatterFactory::createForGateway(GarantiPos::class),
-            ResponseValueMapperFactory::createForGateway(GarantiPos::class, $requestValueMapper),
+            ResponseValueMapperFactory::createForGateway(GarantiPos::class),
             $this->logger
         );
 

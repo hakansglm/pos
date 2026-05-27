@@ -7,8 +7,6 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseValueMapper;
 
 use Mews\Pos\DataMapper\ResponseValueMapper\EstPosResponseValueMapper;
-use Mews\Pos\Factory\RequestValueMapperFactory;
-use Mews\Pos\Factory\ResponseValueMapperFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\EstPos;
 use Mews\Pos\Gateways\EstV3Pos;
@@ -26,10 +24,7 @@ class EstPosResponseValueMapperTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->mapper = ResponseValueMapperFactory::createForGateway(
-            EstV3Pos::class,
-            RequestValueMapperFactory::createForGateway(EstV3Pos::class)
-        );
+        $this->mapper = new EstPosResponseValueMapper();
     }
 
     public function testSupports(): void
@@ -134,5 +129,4 @@ class EstPosResponseValueMapperTest extends TestCase
             ['regular', PosInterface::TX_TYPE_PAY_POST_AUTH, PosInterface::MODEL_NON_SECURE],
         ];
     }
-
 }

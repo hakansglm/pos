@@ -11,7 +11,6 @@ use Mews\Pos\DataMapper\ResponseDataMapper\ResponseDataMapperInterface;
 use Mews\Pos\DataMapper\ResponseValueFormatter\ResponseValueFormatterInterface;
 use Mews\Pos\DataMapper\ResponseValueMapper\ResponseValueMapperInterface;
 use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Factory\RequestValueMapperFactory;
 use Mews\Pos\Factory\ResponseValueFormatterFactory;
 use Mews\Pos\Factory\ResponseValueMapperFactory;
 use Mews\Pos\Gateways\AkbankPos;
@@ -364,10 +363,9 @@ class EstPosResponseDataMapperTest extends TestCase
      */
     public function testMapStatusResponseRecurringOrder(array $responseData, array $expectedData): void
     {
-        $requestValueMapper = RequestValueMapperFactory::createForGateway(EstV3Pos::class);
         $responseDataMapper = new EstPosResponseDataMapper(
             ResponseValueFormatterFactory::createForGateway(EstV3Pos::class),
-            ResponseValueMapperFactory::createForGateway(EstV3Pos::class, $requestValueMapper),
+            ResponseValueMapperFactory::createForGateway(EstV3Pos::class),
             $this->logger
         );
 
@@ -431,10 +429,9 @@ class EstPosResponseDataMapperTest extends TestCase
      */
     public function testMapOrderHistoryResponse(array $responseData, array $expectedData): void
     {
-        $requestValueMapper = RequestValueMapperFactory::createForGateway(EstV3Pos::class);
         $responseDataMapper = new EstPosResponseDataMapper(
             ResponseValueFormatterFactory::createForGateway(EstV3Pos::class),
-            ResponseValueMapperFactory::createForGateway(EstV3Pos::class, $requestValueMapper),
+            ResponseValueMapperFactory::createForGateway(EstV3Pos::class),
             $this->logger
         );
 

@@ -124,7 +124,7 @@ class PosFactory
         );
 
         $responseValueFormatter = ResponseValueFormatterFactory::createForGateway($gatewayClass);
-        $responseValueMapper    = ResponseValueMapperFactory::createForGateway($gatewayClass, $requestValueMapper);
+        $responseValueMapper    = ResponseValueMapperFactory::createForGateway($gatewayClass);
         $responseDataMapper     = ResponseDataMapperFactory::createGatewayResponseMapper($gatewayClass, $responseValueFormatter, $responseValueMapper, $logger);
         $serializer             = SerializerFactory::createGatewaySerializer($gatewayClass);
 

@@ -6,15 +6,27 @@
 
 namespace Mews\Pos\DataMapper\ResponseValueMapper;
 
-use Mews\Pos\Gateways\KuveytPos;
 use Mews\Pos\Gateways\VakifKatilimPos;
 use Mews\Pos\PosInterface;
 
-/**
- * Value mapper for Boa Gateways such as KuveytPos and VakifKatilimPos
- */
-class BoaPosResponseValueMapper extends AbstractResponseValueMapper
+class VakifKatilimPosResponseValueMapper extends AbstractResponseValueMapper
 {
+    /** @var array<string, PosInterface::CURRENCY_*> */
+    protected array $currencyMappings = [
+        '0949' => PosInterface::CURRENCY_TRY,
+        '0840' => PosInterface::CURRENCY_USD,
+        '0978' => PosInterface::CURRENCY_EUR,
+        '0826' => PosInterface::CURRENCY_GBP,
+        '0392' => PosInterface::CURRENCY_JPY,
+        '0810' => PosInterface::CURRENCY_RUB,
+    ];
+
+    /** @var array<string|int, PosInterface::MODEL_*> */
+    protected array $secureTypeMappings = [
+        '3' => PosInterface::MODEL_3D_SECURE,
+        '5' => PosInterface::MODEL_NON_SECURE,
+    ];
+
     /**
      * Order Status Codes
      *
@@ -32,8 +44,7 @@ class BoaPosResponseValueMapper extends AbstractResponseValueMapper
      */
     public static function supports(string $gatewayClass): bool
     {
-        return KuveytPos::class === $gatewayClass
-            || VakifKatilimPos::class === $gatewayClass;
+        return VakifKatilimPos::class === $gatewayClass;
     }
 
     /**

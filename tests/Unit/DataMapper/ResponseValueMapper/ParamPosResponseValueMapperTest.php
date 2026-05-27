@@ -7,8 +7,6 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseValueMapper;
 
 use Mews\Pos\DataMapper\ResponseValueMapper\ParamPosResponseValueMapper;
-use Mews\Pos\Factory\RequestValueMapperFactory;
-use Mews\Pos\Factory\ResponseValueMapperFactory;
 use Mews\Pos\Gateways\EstV3Pos;
 use Mews\Pos\Gateways\Param3DHostPos;
 use Mews\Pos\Gateways\ParamPos;
@@ -26,10 +24,7 @@ class ParamPosResponseValueMapperTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->mapper = ResponseValueMapperFactory::createForGateway(
-            ParamPos::class,
-            RequestValueMapperFactory::createForGateway(ParamPos::class)
-        );
+        $this->mapper = new ParamPosResponseValueMapper();
     }
 
     public function testSupports(): void

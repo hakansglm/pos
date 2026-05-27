@@ -6,30 +6,24 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseValueMapper;
 
-use Mews\Pos\DataMapper\ResponseValueMapper\BoaPosResponseValueMapper;
-use Mews\Pos\Factory\RequestValueMapperFactory;
-use Mews\Pos\Factory\ResponseValueMapperFactory;
+use Mews\Pos\DataMapper\ResponseValueMapper\KuveytPosResponseValueMapper;
 use Mews\Pos\Gateways\EstV3Pos;
 use Mews\Pos\Gateways\KuveytPos;
-use Mews\Pos\Gateways\VakifKatilimPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Mews\Pos\DataMapper\ResponseValueMapper\BoaPosResponseValueMapper
+ * @covers \Mews\Pos\DataMapper\ResponseValueMapper\KuveytPosResponseValueMapper
  * @covers \Mews\Pos\DataMapper\ResponseValueMapper\AbstractResponseValueMapper
  */
-class BoaPosResponseValueMapperTest extends TestCase
+class KuveytPosResponseValueMapperTest extends TestCase
 {
-    private BoaPosResponseValueMapper $mapper;
+    private KuveytPosResponseValueMapper $mapper;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->mapper = ResponseValueMapperFactory::createForGateway(
-            KuveytPos::class,
-            RequestValueMapperFactory::createForGateway(KuveytPos::class)
-        );
+        $this->mapper = new KuveytPosResponseValueMapper();
     }
 
     public function testSupports(): void
@@ -38,7 +32,7 @@ class BoaPosResponseValueMapperTest extends TestCase
         $this->assertTrue($result);
 
         $result = $this->mapper::supports(VakifKatilimPos::class);
-        $this->assertTrue($result);
+        $this->assertFalse($result);
 
         $result = $this->mapper::supports(EstV3Pos::class);
         $this->assertFalse($result);

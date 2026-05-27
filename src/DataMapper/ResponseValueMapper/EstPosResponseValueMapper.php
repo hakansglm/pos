@@ -12,6 +12,25 @@ use Mews\Pos\PosInterface;
 
 class EstPosResponseValueMapper extends AbstractResponseValueMapper
 {
+    /** @var array<string|int, PosInterface::CURRENCY_*> */
+    protected array $currencyMappings = [
+        '949' => PosInterface::CURRENCY_TRY,
+        '840' => PosInterface::CURRENCY_USD,
+        '978' => PosInterface::CURRENCY_EUR,
+        '826' => PosInterface::CURRENCY_GBP,
+        '392' => PosInterface::CURRENCY_JPY,
+        '643' => PosInterface::CURRENCY_RUB,
+    ];
+
+    /** @var array<string, PosInterface::MODEL_*> */
+    protected array $secureTypeMappings = [
+        '3d'             => PosInterface::MODEL_3D_SECURE,
+        '3d_pay'         => PosInterface::MODEL_3D_PAY,
+        '3d_pay_hosting' => PosInterface::MODEL_3D_PAY_HOSTING,
+        '3d_host'        => PosInterface::MODEL_3D_HOST,
+        'regular'        => PosInterface::MODEL_NON_SECURE,
+    ];
+
     /**
      * @var array<string, PosInterface::TX_TYPE_*>
      */

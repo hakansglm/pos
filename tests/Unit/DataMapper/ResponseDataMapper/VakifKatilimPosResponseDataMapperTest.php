@@ -10,7 +10,6 @@ use Mews\Pos\DataMapper\ResponseDataMapper\VakifKatilimPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseValueFormatter\ResponseValueFormatterInterface;
 use Mews\Pos\DataMapper\ResponseValueMapper\ResponseValueMapperInterface;
 use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Factory\RequestValueMapperFactory;
 use Mews\Pos\Factory\ResponseValueFormatterFactory;
 use Mews\Pos\Factory\ResponseValueMapperFactory;
 use Mews\Pos\Gateways\AkbankPos;
@@ -47,8 +46,7 @@ class VakifKatilimPosResponseDataMapperTest extends TestCase
 
         $this->responseValueFormatterMock = $this->createMock(ResponseValueFormatterInterface::class);
         $this->responseValueMapperMock    = $this->createMock(ResponseValueMapperInterface::class);
-        $requestValueMapper     = RequestValueMapperFactory::createForGateway(VakifKatilimPos::class);
-        $this->responseValueMapper    = ResponseValueMapperFactory::createForGateway(VakifKatilimPos::class, $requestValueMapper);
+        $this->responseValueMapper    = ResponseValueMapperFactory::createForGateway(VakifKatilimPos::class);
 
         $this->responseDataMapper = new VakifKatilimPosResponseDataMapper(
             $this->responseValueFormatterMock,

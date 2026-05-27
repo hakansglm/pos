@@ -11,8 +11,29 @@ use Mews\Pos\PosInterface;
 
 class PosNetV1PosResponseValueMapper extends AbstractResponseValueMapper
 {
+    /** @var array<string, PosInterface::CURRENCY_*> */
+    protected array $currencyMappings = [
+        'TL' => PosInterface::CURRENCY_TRY,
+        'US' => PosInterface::CURRENCY_USD,
+        'EU' => PosInterface::CURRENCY_EUR,
+        'GB' => PosInterface::CURRENCY_GBP,
+        'JP' => PosInterface::CURRENCY_JPY,
+        'RU' => PosInterface::CURRENCY_RUB,
+    ];
+
+    /** @var array<PosInterface::TX_TYPE_*, string> */
+    protected array $txTypeMappings = [
+        PosInterface::TX_TYPE_PAY_AUTH       => 'Sale',
+        PosInterface::TX_TYPE_PAY_PRE_AUTH   => 'Auth',
+        PosInterface::TX_TYPE_PAY_POST_AUTH  => 'Capture',
+        PosInterface::TX_TYPE_CANCEL         => 'Reverse',
+        PosInterface::TX_TYPE_REFUND         => 'Return',
+        PosInterface::TX_TYPE_REFUND_PARTIAL => 'Return',
+        PosInterface::TX_TYPE_STATUS         => 'TransactionInquiry',
+    ];
+
     /**
-     * @var array<int, PosInterface::CURRENCY_*>
+     * @var array<string|int, PosInterface::CURRENCY_*>
      */
     private array $orderStatusCurrencyMappings = [
         '949' => PosInterface::CURRENCY_TRY,

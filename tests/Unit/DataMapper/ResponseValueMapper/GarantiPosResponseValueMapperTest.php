@@ -7,8 +7,6 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseValueMapper;
 
 use Mews\Pos\DataMapper\ResponseValueMapper\GarantiPosResponseValueMapper;
-use Mews\Pos\Factory\RequestValueMapperFactory;
-use Mews\Pos\Factory\ResponseValueMapperFactory;
 use Mews\Pos\Gateways\EstV3Pos;
 use Mews\Pos\Gateways\GarantiPos;
 use Mews\Pos\PosInterface;
@@ -25,10 +23,7 @@ class GarantiPosResponseValueMapperTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->mapper = ResponseValueMapperFactory::createForGateway(
-            GarantiPos::class,
-            RequestValueMapperFactory::createForGateway(GarantiPos::class)
-        );
+        $this->mapper = new GarantiPosResponseValueMapper();
     }
 
     public function testSupports(): void

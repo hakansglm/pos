@@ -9,7 +9,6 @@ namespace Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\AkbankPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseValueFormatter\ResponseValueFormatterInterface;
 use Mews\Pos\DataMapper\ResponseValueMapper\ResponseValueMapperInterface;
-use Mews\Pos\Factory\RequestValueMapperFactory;
 use Mews\Pos\Factory\ResponseValueFormatterFactory;
 use Mews\Pos\Factory\ResponseValueMapperFactory;
 use Mews\Pos\Gateways\AkbankPos;
@@ -262,10 +261,9 @@ class AkbankPosResponseDataMapperTest extends TestCase
      */
     public function testMapOrderHistoryResponse(array $responseData, array $expectedData): void
     {
-        $requestValueMapper = RequestValueMapperFactory::createForGateway(AkbankPos::class);
         $responseDataMapper = new AkbankPosResponseDataMapper(
             ResponseValueFormatterFactory::createForGateway(AkbankPos::class),
-            ResponseValueMapperFactory::createForGateway(AkbankPos::class, $requestValueMapper),
+            ResponseValueMapperFactory::createForGateway(AkbankPos::class),
             $this->logger
         );
 

@@ -7,8 +7,6 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseValueMapper;
 
 use Mews\Pos\DataMapper\ResponseValueMapper\PayForPosResponseValueMapper;
-use Mews\Pos\Factory\RequestValueMapperFactory;
-use Mews\Pos\Factory\ResponseValueMapperFactory;
 use Mews\Pos\Gateways\EstV3Pos;
 use Mews\Pos\Gateways\PayForPos;
 use Mews\Pos\PosInterface;
@@ -25,10 +23,7 @@ class PayForPosResponseValueMapperTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->mapper = ResponseValueMapperFactory::createForGateway(
-            PayForPos::class,
-            RequestValueMapperFactory::createForGateway(PayForPos::class)
-        );
+        $this->mapper = new PayForPosResponseValueMapper();
     }
 
     public function testSupports(): void

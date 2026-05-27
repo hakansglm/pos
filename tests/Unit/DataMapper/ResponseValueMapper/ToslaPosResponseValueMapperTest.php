@@ -7,8 +7,6 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseValueMapper;
 
 use Mews\Pos\DataMapper\ResponseValueMapper\ToslaPosResponseValueMapper;
-use Mews\Pos\Factory\RequestValueMapperFactory;
-use Mews\Pos\Factory\ResponseValueMapperFactory;
 use Mews\Pos\Gateways\EstV3Pos;
 use Mews\Pos\Gateways\ToslaPos;
 use Mews\Pos\PosInterface;
@@ -25,10 +23,7 @@ class ToslaPosResponseValueMapperTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->mapper = ResponseValueMapperFactory::createForGateway(
-            ToslaPos::class,
-            RequestValueMapperFactory::createForGateway(ToslaPos::class)
-        );
+        $this->mapper = new ToslaPosResponseValueMapper();
     }
 
     public function testSupports(): void
