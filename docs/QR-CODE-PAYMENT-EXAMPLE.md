@@ -85,13 +85,7 @@ $formData = $pos->get3DFormData(
     $order,
     \Mews\Pos\PosInterface::MODEL_NON_SECURE, // QR code odeme icin MODEL_NON_SECURE kullanilir
     $transactionType,
-    $card,
-    /**
-     * MODEL_3D_SECURE veya MODEL_3D_PAY ödemelerde kredi kart verileri olmadan
-     * form verisini oluşturmak için true yapabilirsiniz.
-     * Yine de bazı gatewaylerde kartsız form verisi oluşturulamıyor.
-     */
-    true
+    $card
 );
 
 unset($formData['inputs']['Rnd']);

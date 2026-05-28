@@ -118,8 +118,7 @@ try {
         $order,
         $paymentModel,
         $transactionType,
-        $card,
-        false
+        $card
     );
 } catch (\Exception|\Error $e) {
     var_dump($e);

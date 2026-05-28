@@ -235,7 +235,7 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
              * form verisini oluşturmak için true yapabilirsiniz.
              * Yine de bazı gatewaylerde kartsız form verisi oluşturulamıyor.
              */
-            false
+            false // optional, default: false
         );
     } catch (\InvalidArgumentException $e) {
         // örneğin kart bilgisi sağlanmadığında bu exception'i alırsınız.

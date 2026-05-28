@@ -171,7 +171,7 @@ try {
          * form verisini oluşturmak için true yapabilirsiniz.
          * Yine de bazı gatewaylerde kartsız form verisi oluşturulamıyor.
          */
-        false
+        false // default: false
     );
 } catch (\InvalidArgumentException $e) {
     // örneğin kart bilgisi sağlanmadığında bu exception'i alırsınız.

@@ -187,7 +187,7 @@ class ParamPosTest extends TestCase
             )
             ->willReturn($formData);
 
-        $actual = $this->pos->get3DFormData($order, $paymentModel, $txType, $card);
+        $actual = $this->pos->get3DFormData($order, $paymentModel, $txType, $card, !$isWithCard);
 
         $this->assertSame($actual, $formData);
     }
