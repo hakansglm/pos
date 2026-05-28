@@ -1,5 +1,10 @@
 
-## 3D Secure ile Ön otorizasyon ve Ön Otorizasyon kapama örneği
+## 3D Secure ile Ön Otorizasyon ve Ön Otorizasyon kapama örneği
+
+Ön Otorizasyon/Provizyon işlemi hem _NonSecure_ hem de _3D_ ödemeler için desteklenmektedir.
+Aşağıdaki örnek 3D Secure ödeme model örneğidir.
+
+Ön Otorizasyon/Provizyon Kapama işlemi ise sadece _NonSecure_ ödeme modeli ile gerçekleştirilir.
 
 ```sh
 $ cp ./vendor/mews/pos/config/pos_test.php ./pos_test_ayarlar.php
