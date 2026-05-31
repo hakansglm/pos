@@ -18,19 +18,6 @@ class ToslaPosResponseDataMapper extends AbstractResponseDataMapper
     public const PROCEDURE_SUCCESS_CODE = '00';
 
     /**
-     * Response Codes
-     *
-     * @var array<int|string, string>
-     */
-    protected array $codes = [
-        self::PROCEDURE_SUCCESS_CODE => self::TX_APPROVED,
-        0                            => self::TX_APPROVED,
-        101                          => 'transaction_not_found',
-        998                          => 'invalid_transaction',
-        999                          => 'general_error',
-    ];
-
-    /**
      * @inheritDoc
      */
     public static function supports(string $gatewayClass): bool
@@ -68,7 +55,6 @@ class ToslaPosResponseDataMapper extends AbstractResponseDataMapper
             'ref_ret_num'      => $rawPaymentResponseData['HostReferenceNumber'],
             'proc_return_code' => $procReturnCode,
             'status'           => $status,
-            'status_detail'    => $this->getStatusDetail($errorCode),
             'error_code'       => self::TX_APPROVED === $status ? null : $procReturnCode,
             'error_message'    => self::TX_APPROVED === $status ? null : $rawPaymentResponseData['Message'],
             'all'              => $rawPaymentResponseData,
@@ -166,7 +152,6 @@ class ToslaPosResponseDataMapper extends AbstractResponseDataMapper
             'error_code'       => self::TX_DECLINED === $status ? $errorCode : null,
             'error_message'    => self::TX_DECLINED === $status ? $rawResponseData['Message'] : null,
             'status'           => $status,
-            'status_detail'    => $this->getStatusDetail($errorCode),
             'all'              => $rawResponseData,
         ];
     }
@@ -193,7 +178,6 @@ class ToslaPosResponseDataMapper extends AbstractResponseDataMapper
             'error_code'       => self::TX_DECLINED === $status ? $errorCode : null,
             'error_message'    => self::TX_DECLINED === $status ? $rawResponseData['Message'] : null,
             'status'           => $status,
-            'status_detail'    => $this->getStatusDetail($errorCode),
             'all'              => $rawResponseData,
         ];
     }
@@ -222,7 +206,6 @@ class ToslaPosResponseDataMapper extends AbstractResponseDataMapper
         $defaultResponse['order_status']     = $this->valueMapper->mapOrderStatus($rawResponseData['RequestStatus']);
         $defaultResponse['transaction_type'] = $this->valueMapper->mapTxType($rawResponseData['TransactionType']);
         $defaultResponse['status']           = $status;
-        $defaultResponse['status_detail']    = $this->getStatusDetail($errorCode);
 
         $isPaymentTransaction = \in_array(
             $defaultResponse['transaction_type'],
@@ -281,7 +264,6 @@ class ToslaPosResponseDataMapper extends AbstractResponseDataMapper
             'error_code'       => self::TX_DECLINED === $status ? $errorCode : null,
             'error_message'    => self::TX_DECLINED === $status ? ($rawResponseData['message'] ?? $rawResponseData['Message']) : null,
             'status'           => $status,
-            'status_detail'    => $this->getStatusDetail($errorCode),
             'trans_count'      => self::TX_APPROVED === $status ? \count($rawResponseData['Transactions']) : 0,
             'transactions'     => $mappedTransactions,
             'all'              => $rawResponseData,
@@ -337,7 +319,6 @@ class ToslaPosResponseDataMapper extends AbstractResponseDataMapper
         $defaultResponse['order_status']     = $this->valueMapper->mapOrderStatus($rawResponseData['RequestStatus']);
         $defaultResponse['transaction_type'] = $this->valueMapper->mapTxType($rawResponseData['TransactionType']);
         $defaultResponse['status']           = $status;
-        $defaultResponse['status_detail']    = $this->getStatusDetail($errorCode);
 
         $isPaymentTransaction = \in_array(
             $defaultResponse['transaction_type'],

@@ -328,7 +328,6 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
                 'capture_amount'    => null,
                 'currency'          => null,
                 'status'            => 'declined',
-                'status_detail'     => 'invalid_credentials',
                 'error_code'        => '9065',
                 'error_message'     => 'Üye isyeri bulunamadi',
                 'masked_number'     => null,
@@ -398,7 +397,6 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
                 'capture_amount'    => null,
                 'currency'          => PosInterface::CURRENCY_TRY,
                 'status'            => 'approved',
-                'status_detail'     => 'approved',
                 'error_code'        => null,
                 'error_message'     => null,
                 'masked_number'     => null,
@@ -443,7 +441,6 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
                 'error_code'       => null,
                 'error_message'    => null,
                 'status'           => 'approved',
-                'status_detail'    => 'approved',
             ],
         ];
 
@@ -462,7 +459,6 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
                 'error_code'       => '1059',
                 'error_message'    => 'İşlemin tamamı iade edilmiş.',
                 'status'           => 'declined',
-                'status_detail'    => 'invalid_transaction',
             ],
         ];
     }
@@ -497,7 +493,6 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
                 'error_code'       => null,
                 'error_message'    => null,
                 'status'           => 'approved',
-                'status_detail'    => 'approved',
             ],
         ];
 
@@ -516,7 +511,6 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
                 'error_code'       => '1083',
                 'error_message'    => 'Referans islem daha önceden iptal edilmis.',
                 'status'           => 'declined',
-                'status_detail'    => 'invalid_transaction',
             ],
         ];
     }
@@ -564,7 +558,6 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
                 'order_id'          => '202303095646',
                 'proc_return_code'  => '0000',
                 'status'            => 'approved',
-                'status_detail'     => 'approved',
                 'error_code'        => null,
                 'error_message'     => null,
                 'currency'          => 'TRY',
@@ -615,7 +608,6 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
                 'order_id'          => '202303095646',
                 'proc_return_code'  => '0000',
                 'status'            => 'approved',
-                'status_detail'     => 'approved',
                 'error_code'        => null,
                 'error_message'     => null,
                 'currency'          => 'TRY',
@@ -657,7 +649,6 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
                 'order_id'          => '20230309EF68',
                 'proc_return_code'  => '0312',
                 'status'            => 'declined',
-                'status_detail'     => 'reject',
                 'error_code'        => '0312',
                 'error_message'     => 'RED-GEÇERSİZ KART',
                 'currency'          => 'TRY',
@@ -683,7 +674,6 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
                 'order_id'          => null,
                 'proc_return_code'  => '9039',
                 'status'            => 'declined',
-                'status_detail'     => 'invalid_credentials',
                 'error_code'        => '9039',
                 'error_message'     => 'Üye işyeri bulunamadı.',
                 'currency'          => null,
@@ -736,7 +726,6 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
                     'auth_code'            => null,
                     'order_id'             => 'order-id-123',
                     'status'               => 'declined',
-                    'status_detail'        => null,
                     'error_code'           => '1105',
                     'error_message'        => 'Üye isyeri IP si sistemde tanimli degil',
                     'amount'               => null,
@@ -804,7 +793,6 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
                     'auth_code'            => null,
                     'order_id'             => '202303091489',
                     'status'               => 'declined',
-                    'status_detail'        => 'reject',
                     'error_code'           => '0312',
                     'error_message'        => 'RED-GEÇERSİZ KART',
                     'amount'               => 1.01,
@@ -873,7 +861,6 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
                     'auth_code'            => '822641',
                     'order_id'             => 'order-id-123',
                     'status'               => 'approved',
-                    'status_detail'        => 'approved',
                     'error_code'           => null,
                     'error_message'        => null,
                     'amount'               => 100.0,

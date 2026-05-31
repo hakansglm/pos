@@ -13,18 +13,6 @@ use Mews\Pos\PosInterface;
 class InterPosResponseDataMapper extends AbstractResponseDataMapper
 {
     /**
-     * Response Codes
-     *
-     * @var array<int|string, string>
-     */
-    protected array $codes = [
-        self::PROCEDURE_SUCCESS_CODE => self::TX_APPROVED,
-        '81'                         => 'invalid_credentials',
-        'E31'                        => 'invalid_transaction',
-        'E39'                        => 'invalid_transaction',
-    ];
-
-    /**
      * @inheritDoc
      */
     public static function supports(string $gatewayClass): bool
@@ -53,7 +41,6 @@ class InterPosResponseDataMapper extends AbstractResponseDataMapper
 
         $result['proc_return_code'] = $procReturnCode;
         $result['status']           = $status;
-        $result['status_detail']    = $this->getStatusDetail($procReturnCode);
         $result['order_id']         = $rawPaymentResponseData['OrderId'];
         $result['transaction_id']   = $rawPaymentResponseData['TransId'];
         $result['auth_code']        = $rawPaymentResponseData['AuthCode'];
@@ -141,7 +128,6 @@ class InterPosResponseDataMapper extends AbstractResponseDataMapper
             'error_code'       => $rawResponseData['ErrorCode'],
             'error_message'    => $rawResponseData['ErrorMessage'],
             'status'           => $status,
-            'status_detail'    => $this->getStatusDetail($procReturnCode),
             'all'              => $rawResponseData,
         ];
     }
@@ -163,7 +149,6 @@ class InterPosResponseDataMapper extends AbstractResponseDataMapper
 
         $defaultResponse['proc_return_code'] = $procReturnCode;
         $defaultResponse['status']           = $status;
-        $defaultResponse['status_detail']    = $this->getStatusDetail($procReturnCode);
         $defaultResponse['order_id']         = $rawResponseData['OrderId'];
         $defaultResponse['transaction_id']   = $rawResponseData['TransId'];
         $defaultResponse['error_code']       = self::TX_APPROVED !== $status ? $procReturnCode : null;
@@ -272,7 +257,6 @@ class InterPosResponseDataMapper extends AbstractResponseDataMapper
 
         $result['proc_return_code'] = $procReturnCode;
         $result['status']           = $status;
-        $result['status_detail']    = $this->getStatusDetail($procReturnCode);
         $result['order_id']         = $rawPaymentResponseData['OrderId'];
         $result['transaction_id']   = $rawPaymentResponseData['TransId'];
         $result['auth_code']        = $rawPaymentResponseData['AuthCode'];
@@ -343,7 +327,6 @@ class InterPosResponseDataMapper extends AbstractResponseDataMapper
             'md_error_message'     => $raw3DAuthResponseData['ErrorMessage'],
             'error_code'           => $paymentResponseData['error_code'] ?? $raw3DAuthResponseData['ErrorCode'],
             'error_message'        => $paymentResponseData['error_message'] ?? $raw3DAuthResponseData['ErrorMessage'],
-            'status_detail'        => $paymentResponseData['status_detail'] ?? $this->getStatusDetail($procReturnCode),
         ];
 
         if (PosInterface::MODEL_3D_SECURE === $paymentModel) {

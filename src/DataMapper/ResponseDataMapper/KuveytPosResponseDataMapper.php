@@ -13,18 +13,6 @@ use Mews\Pos\PosInterface;
 class KuveytPosResponseDataMapper extends AbstractResponseDataMapper
 {
     /**
-     * Response Codes
-     *
-     * @var array<int|string, string>
-     */
-    protected array $codes = [
-        self::PROCEDURE_SUCCESS_CODE => self::TX_APPROVED,
-        'ApiUserNotDefined'          => 'invalid_transaction',
-        'EmptyMDException'           => 'invalid_transaction',
-        'HashDataError'              => 'invalid_transaction',
-    ];
-
-    /**
      * @inheritDoc
      */
     public static function supports(string $gatewayClass): bool
@@ -54,7 +42,6 @@ class KuveytPosResponseDataMapper extends AbstractResponseDataMapper
 
         $result['proc_return_code'] = $procReturnCode;
         $result['status']           = $status;
-        $result['status_detail']    = $this->getStatusDetail($procReturnCode);
         $result['all']              = $rawPaymentResponseData;
 
         if (self::TX_APPROVED !== $status) {
@@ -212,7 +199,6 @@ class KuveytPosResponseDataMapper extends AbstractResponseDataMapper
             'ref_ret_num'      => null,
             'status'           => $status,
             'error_code'       => null,
-            'status_detail'    => null,
             'all'              => $rawResponseData,
         ];
 
@@ -273,7 +259,6 @@ class KuveytPosResponseDataMapper extends AbstractResponseDataMapper
             'ref_ret_num'      => null,
             'status'           => $status,
             'error_code'       => null,
-            'status_detail'    => null,
             'all'              => $rawResponseData,
         ];
 
@@ -406,7 +391,6 @@ class KuveytPosResponseDataMapper extends AbstractResponseDataMapper
             'md_status'            => null,
             'payment_model'        => null,
             'status'               => $status,
-            'status_detail'        => self::TX_APPROVED !== $status ? $this->getStatusDetail($procReturnCode) : null,
             'amount'               => null,
             'currency'             => null,
             'masked_number'        => null,

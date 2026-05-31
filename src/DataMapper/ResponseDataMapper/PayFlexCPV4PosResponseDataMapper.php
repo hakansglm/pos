@@ -16,15 +16,6 @@ class PayFlexCPV4PosResponseDataMapper extends AbstractResponseDataMapper
     public const PROCEDURE_SUCCESS_CODE = '0000';
 
     /**
-     * Response Codes
-     *
-     * @var array<string, string>
-     */
-    protected array $codes = [
-        self::PROCEDURE_SUCCESS_CODE => self::TX_APPROVED,
-    ];
-
-    /**
      * @inheritDoc
      */
     public static function supports(string $gatewayClass): bool
@@ -199,7 +190,7 @@ class PayFlexCPV4PosResponseDataMapper extends AbstractResponseDataMapper
      *
      * @return array{order_id: string|null, transaction_id: string|null, auth_code: string|null,
      *     ref_ret_num: string|null, proc_return_code: string|null,
-     *     status: string, status_detail: string|null, error_code: string|null,
+     *     status: string, error_code: string|null,
      *     error_message: string|null, all: array<string, string|null>}
      */
     private function getCommonPaymentResponse(array $responseData, string $txType, string $paymentModel): array
@@ -222,7 +213,6 @@ class PayFlexCPV4PosResponseDataMapper extends AbstractResponseDataMapper
 
         $response['proc_return_code'] = $resultCode;
         $response['status']           = $status;
-        $response['status_detail']    = null;
         $response['error_code']       = (self::TX_DECLINED === $status) ? $resultCode : null;
         $response['error_message']    = $errorMsg;
         $response['all']              = $responseData;

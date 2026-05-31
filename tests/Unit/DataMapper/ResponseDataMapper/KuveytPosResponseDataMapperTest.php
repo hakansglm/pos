@@ -394,7 +394,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 'batch_num'         => null,
                 'proc_return_code'  => 'MetaDataNotFound',
                 'status'            => 'declined',
-                'status_detail'     => null,
                 'error_code'        => 'MetaDataNotFound',
                 'error_message'     => 'Ödeme detayı bulunamadı.',
                 'installment_count' => null,
@@ -416,7 +415,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 'batch_num'         => null,
                 'proc_return_code'  => null,
                 'status'            => 'declined',
-                'status_detail'     => null,
                 'error_code'        => null,
                 'error_message'     => null,
                 'installment_count' => null,
@@ -470,7 +468,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 'batch_num'         => '1906',
                 'proc_return_code'  => '00',
                 'status'            => 'approved',
-                'status_detail'     => 'approved',
                 'error_code'        => null,
                 'error_message'     => null,
                 'remote_order_id'   => '4480',
@@ -522,7 +519,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                     'order_id'             => null,
                     'proc_return_code'     => 'InvalidTransactionSecurity',
                     'status'               => 'declined',
-                    'status_detail'        => null,
                     'error_code'           => 'InvalidTransactionSecurity',
                     'payment_model'        => null,
                     'installment_count'    => null,
@@ -618,7 +614,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                     'order_id'             => 'MP-15',
                     'proc_return_code'     => 'MetaDataNotFound',
                     'status'               => 'declined',
-                    'status_detail'        => null,
                     'error_code'           => 'MetaDataNotFound',
                     'payment_model'        => '3d',
                     'installment_count'    => null,
@@ -693,7 +688,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                     'order_id'             => 'Order 123',
                     'proc_return_code'     => 'EmptyMDException',
                     'status'               => 'declined',
-                    'status_detail'        => 'invalid_transaction',
                     'error_code'           => 'EmptyMDException',
                     'payment_model'        => '3d',
                     'installment_count'    => null,
@@ -727,7 +721,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                     'batch_num'            => null,
                     'proc_return_code'     => 'HashDataError',
                     'status'               => 'declined',
-                    'status_detail'        => 'invalid_transaction',
                     'error_code'           => 'HashDataError',
                     'error_message'        => null,
                     'md_status'            => null,
@@ -831,7 +824,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                     'order_id'             => '660723214',
                     'proc_return_code'     => '00',
                     'status'               => 'approved',
-                    'status_detail'        => 'approved',
                     'amount'               => 1.0,
                     'currency'             => PosInterface::CURRENCY_TRY,
                     'error_code'           => null,
@@ -1026,7 +1018,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                     'order_id'             => '2024042111A0',
                     'proc_return_code'     => '00',
                     'status'               => 'approved',
-                    'status_detail'        => 'approved',
                     'amount'               => 1.01,
                     'currency'             => 'TRY',
                     'error_code'           => null,
@@ -1064,7 +1055,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 'capture_amount'    => null,
                 'status'            => 'declined',
                 'error_code'        => null,
-                'status_detail'     => null,
                 'capture'           => null,
                 'capture_time'      => null,
                 'transaction_time'  => null,
@@ -1156,7 +1146,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 'status'            => 'approved',
                 'error_code'        => null,
                 'error_message'     => null,
-                'status_detail'     => null,
                 'capture'           => true,
                 'remote_order_id'   => '114293600',
                 'currency'          => PosInterface::CURRENCY_TRY,
@@ -1202,7 +1191,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 'ref_ret_num'       => null,
                 'refund_amount'     => null,
                 'status'            => 'declined',
-                'status_detail'     => null,
                 'transaction_id'    => null,
                 'transaction_type'  => null,
                 'transaction_time'  => null,
@@ -1295,7 +1283,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 'refund_amount'     => null,
                 'remote_order_id'   => '155768281',
                 'status'            => 'approved',
-                'status_detail'     => null,
                 'transaction_id'    => '539768',
                 'transaction_type'  => null,
                 'transaction_time'  => new \DateTimeImmutable('2024-04-24T16:03:42.07'),
@@ -1388,7 +1375,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 'refund_amount'     => null,
                 'remote_order_id'   => '155768281',
                 'status'            => 'approved',
-                'status_detail'     => null,
                 'transaction_id'    => '539768',
                 'transaction_type'  => null,
                 'transaction_time'  => new \DateTimeImmutable('2024-04-24T16:03:42.07'),
@@ -1481,7 +1467,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 'refund_amount'     => null,
                 'remote_order_id'   => '155768298',
                 'status'            => 'approved',
-                'status_detail'     => null,
                 'transaction_id'    => '539788',
                 'transaction_type'  => null,
                 'transaction_time'  => new \DateTimeImmutable('2024-04-24T16:33:44.01'),
@@ -1528,7 +1513,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 'ref_ret_num'      => '318923298433',
                 'status'           => 'approved',
                 'error_code'       => null,
-                'status_detail'    => null,
                 'remote_order_id'  => '114293600',
             ],
         ];
@@ -1559,7 +1543,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 'ref_ret_num'      => null,
                 'status'           => 'declined',
                 'error_code'       => null,
-                'status_detail'    => null,
             ],
         ];
         yield 'fail_already_cancelled' => [
@@ -1605,7 +1588,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 'ref_ret_num'      => null,
                 'status'           => 'declined',
                 'error_code'       => '21',
-                'status_detail'    => null,
             ],
         ];
         yield 'tdv2_fail_already_cancelled' => [
@@ -1643,7 +1625,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 'ref_ret_num'      => null,
                 'status'           => 'declined',
                 'error_code'       => '21',
-                'status_detail'    => null,
             ],
         ];
     }
@@ -1683,7 +1664,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 'ref_ret_num'      => '319013298460',
                 'status'           => 'declined',
                 'error_code'       => '28',
-                'status_detail'    => null,
                 'remote_order_id'  => '114293625',
             ],
         ];
@@ -1715,7 +1695,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 'ref_ret_num'      => null,
                 'status'           => 'declined',
                 'error_code'       => null,
-                'status_detail'    => null,
             ],
         ];
         yield 'tdv2_fail_partial_refund_not_allowed' => [
@@ -1752,7 +1731,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 'status'           => 'declined',
                 'error_code'       => 'DbLayerError',
                 'error_message'    => 'Kısmi iade işlemi, satışla aynı gün içerisindeyse tutarın tamamı için yapılamaz. Tutarın tamamı için iptal işlemi yapabilirsiniz.',
-                'status_detail'    => null,
             ],
         ];
 
@@ -1790,7 +1768,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 'ref_ret_num'      => '319014298463',
                 'status'           => 'approved',
                 'error_code'       => null,
-                'status_detail'    => null,
                 'remote_order_id'  => '114293626',
             ],
         ];
@@ -1829,7 +1806,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 'ref_ret_num'      => '411415539590',
                 'remote_order_id'  => '155767855',
                 'status'           => 'approved',
-                'status_detail'    => null,
                 'transaction_id'   => '539590',
             ],
         ];
@@ -1869,7 +1845,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 'ref_ret_num'      => '411220539231',
                 'remote_order_id'  => '155767811',
                 'status'           => 'approved',
-                'status_detail'    => null,
                 'transaction_id'   => '539231',
             ],
         ];

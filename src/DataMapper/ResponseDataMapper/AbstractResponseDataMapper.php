@@ -16,9 +16,6 @@ abstract class AbstractResponseDataMapper implements ResponseDataMapperInterface
     /** @var string */
     public const PROCEDURE_SUCCESS_CODE = '00';
 
-    /** @var array<int|string, string> */
-    protected array $codes = [];
-
     protected ResponseValueFormatterInterface $valueFormatter;
 
     protected ResponseValueMapperInterface $valueMapper;
@@ -70,7 +67,7 @@ abstract class AbstractResponseDataMapper implements ResponseDataMapperInterface
      * @param string|null $paymentModel
      *
      * @return array{order_id: null, transaction_id: null, auth_code: null, ref_ret_num: null, proc_return_code: null,
-     *     status: string, status_detail: null, error_code: null, error_message: null, all: null}
+     *     status: string, error_code: null, error_message: null, all: null}
      */
     protected function getDefaultPaymentResponse(string $txType, ?string $paymentModel): array
     {
@@ -88,7 +85,6 @@ abstract class AbstractResponseDataMapper implements ResponseDataMapperInterface
             'batch_num'         => null,
             'proc_return_code'  => null,
             'status'            => self::TX_DECLINED,
-            'status_detail'     => null,
             'error_code'        => null,
             'error_message'     => null,
             'all'               => null,
@@ -117,7 +113,6 @@ abstract class AbstractResponseDataMapper implements ResponseDataMapperInterface
             'capture_amount'    => null,
             'status'            => self::TX_DECLINED,
             'error_code'        => null,
-            'status_detail'     => null,
             'capture'           => null,
             'currency'          => null,
             'masked_number'     => null,
@@ -148,21 +143,10 @@ abstract class AbstractResponseDataMapper implements ResponseDataMapperInterface
             'capture_amount'   => null,
             'status'           => self::TX_DECLINED,
             'error_code'       => null,
-            'status_detail'    => null,
             'capture'          => null,
             'currency'         => null,
             'masked_number'    => null,
         ];
-    }
-
-    /**
-     * @param string|null $procReturnCode
-     *
-     * @return string|null
-     */
-    protected function getStatusDetail(?string $procReturnCode): ?string
-    {
-        return null !== $procReturnCode ? $this->codes[$procReturnCode] ?? null : null;
     }
 
     /**

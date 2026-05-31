@@ -13,17 +13,6 @@ use Mews\Pos\PosInterface;
 class VakifKatilimPosResponseDataMapper extends AbstractResponseDataMapper
 {
     /**
-     * Response Codes
-     *
-     * @var array<int|string, string>
-     */
-    protected array $codes = [
-        self::PROCEDURE_SUCCESS_CODE => self::TX_APPROVED,
-        'CardNotEnrolled'            => 'reject',
-        '51'                         => 'reject',
-    ];
-
-    /**
      * @inheritDoc
      */
     public static function supports(string $gatewayClass): bool
@@ -53,7 +42,6 @@ class VakifKatilimPosResponseDataMapper extends AbstractResponseDataMapper
 
         $result['proc_return_code'] = $procReturnCode;
         $result['status']           = $status;
-        $result['status_detail']    = $this->getStatusDetail($procReturnCode);
         $result['order_id']         = $rawPaymentResponseData['MerchantOrderId'];
         $result['remote_order_id']  = $rawPaymentResponseData['OrderId'];
         $result['all']              = $rawPaymentResponseData;
@@ -154,7 +142,6 @@ class VakifKatilimPosResponseDataMapper extends AbstractResponseDataMapper
         $defaultResponse['transaction_security'] = null;
         $defaultResponse['proc_return_code']     = $procReturnCode;
         $defaultResponse['status']               = $status;
-        $defaultResponse['status_detail']        = $this->getStatusDetail($procReturnCode);
         $defaultResponse['all']                  = $raw3DAuthResponseData;
 
         if (self::TX_APPROVED !== $status) {
@@ -230,7 +217,6 @@ class VakifKatilimPosResponseDataMapper extends AbstractResponseDataMapper
             'ref_ret_num'      => null,
             'status'           => $status,
             'error_code'       => null,
-            'status_detail'    => null,
             'all'              => $rawResponseData,
         ];
 
@@ -289,7 +275,6 @@ class VakifKatilimPosResponseDataMapper extends AbstractResponseDataMapper
             'error_code'       => null,
             'error_message'    => null,
             'status'           => $status,
-            'status_detail'    => null !== $procReturnCode ? $this->getStatusDetail($procReturnCode) : null,
             'trans_count'      => \count($mappedTransactions),
             'transactions'     => $mappedTransactions,
             'all'              => $rawResponseData,
@@ -334,7 +319,6 @@ class VakifKatilimPosResponseDataMapper extends AbstractResponseDataMapper
             'error_code'       => null,
             'error_message'    => null,
             'status'           => $status,
-            'status_detail'    => null !== $procReturnCode ? $this->getStatusDetail($procReturnCode) : null,
             'trans_count'      => \count($mappedTransactions),
             'transactions'     => $mappedTransactions,
             'all'              => $rawResponseData,
@@ -412,7 +396,6 @@ class VakifKatilimPosResponseDataMapper extends AbstractResponseDataMapper
             'md_status'            => null,
             'payment_model'        => PosInterface::MODEL_3D_SECURE,
             'status'               => $status,
-            'status_detail'        => $this->getStatusDetail($procReturnCode),
             'amount'               => null,
             'currency'             => null,
             'tx_status'            => null,
@@ -456,7 +439,6 @@ class VakifKatilimPosResponseDataMapper extends AbstractResponseDataMapper
 
         $defaultResponse['proc_return_code'] = $procReturnCode;
         $defaultResponse['status']           = $status;
-        $defaultResponse['status_detail']    = $this->getStatusDetail($procReturnCode);
         $defaultResponse['error_code']       = self::TX_APPROVED === $status ? null : $procReturnCode;
         $defaultResponse['error_message']    = self::TX_APPROVED === $status ? null : $rawTx['ResponseExplain'];
         $defaultResponse['currency']         = null !== $rawTx['FEC'] ? $this->valueMapper->mapCurrency($rawTx['FEC'], $txType) : null;
@@ -516,7 +498,6 @@ class VakifKatilimPosResponseDataMapper extends AbstractResponseDataMapper
 
         $result['proc_return_code'] = $procReturnCode;
         $result['status']           = $status;
-        $result['status_detail']    = $this->getStatusDetail($procReturnCode);
         $result['all']              = $rawPaymentResponseData;
 
         if (self::TX_APPROVED !== $status) {

@@ -16,20 +16,6 @@ class PayFlexV4PosResponseDataMapper extends AbstractResponseDataMapper
     public const PROCEDURE_SUCCESS_CODE = '0000';
 
     /**
-     * Response Codes
-     *
-     * @var array<string|int, string>
-     */
-    protected array $codes = [
-        self::PROCEDURE_SUCCESS_CODE => self::TX_APPROVED,
-        '0312'                       => 'reject',
-        '1083'                       => 'invalid_transaction',
-        '1059'                       => 'invalid_transaction',
-        '9039'                       => 'invalid_credentials',
-        '9065'                       => 'invalid_credentials',
-    ];
-
-    /**
      * @inheritDoc
      */
     public static function supports(string $gatewayClass): bool
@@ -64,7 +50,6 @@ class PayFlexV4PosResponseDataMapper extends AbstractResponseDataMapper
             'status'               => $threeDAuthStatus,
             'currency'             => $paymentResponseData['currency'] ?? $this->valueMapper->mapCurrency($raw3DAuthResponseData['PurchCurrency'], $txType),
             'installment_count'    => $paymentResponseData['installment_count'] ?? $this->valueFormatter->formatInstallment($raw3DAuthResponseData['InstallmentCount'], $txType),
-            'status_detail'        => null,
             'error_code'           => self::TX_DECLINED === $threeDAuthStatus ? $raw3DAuthResponseData['ErrorCode'] : null,
             'error_message'        => self::TX_DECLINED === $threeDAuthStatus ? $raw3DAuthResponseData['ErrorMessage'] : null,
             'md_status'            => $mdStatus,
@@ -122,7 +107,6 @@ class PayFlexV4PosResponseDataMapper extends AbstractResponseDataMapper
             'error_code'       => (self::TX_DECLINED === $status) ? $resultCode : null,
             'error_message'    => (self::TX_DECLINED === $status) ? $rawResponseData['ResultDetail'] : null,
             'status'           => $status,
-            'status_detail'    => $this->getStatusDetail($resultCode),
             'all'              => $rawResponseData,
         ];
     }
@@ -150,7 +134,6 @@ class PayFlexV4PosResponseDataMapper extends AbstractResponseDataMapper
         }
 
         $defaultResponse['status']        = $status;
-        $defaultResponse['status_detail'] = $this->getStatusDetail($procReturnCode);
         if (self::TX_DECLINED === $status) {
             $defaultResponse['error_code']    = $procReturnCode;
             $defaultResponse['error_message'] = $responseInfo['ResponseMessage'];
@@ -297,7 +280,6 @@ class PayFlexV4PosResponseDataMapper extends AbstractResponseDataMapper
 
         $response['proc_return_code'] = $resultCode;
         $response['status']           = $status;
-        $response['status_detail']    = $this->getStatusDetail($resultCode);
         $response['error_code']       = (self::TX_DECLINED === $status) ? $resultCode : null;
         $response['error_message']    = (self::TX_DECLINED === $status) ? $responseData['ResultDetail'] : null;
         $response['all']              = $responseData;

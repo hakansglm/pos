@@ -41,10 +41,6 @@
         <dt class="col-sm-3">Error Code:</dt>
         <dd class="col-sm-9"><?= $response['error_code'] ?: '-'; ?></dd>
     </dl>
-    <dl class="row">
-        <dt class="col-sm-3">Status Detail:</dt>
-        <dd class="col-sm-9"><?= $response['status_detail'] ?: '-'; ?></dd>
-    </dl>
     <hr>
     <dl class="row">
         <dt class="col-sm-3">Error Message:</dt>

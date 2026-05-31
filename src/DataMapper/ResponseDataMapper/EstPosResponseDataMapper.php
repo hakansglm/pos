@@ -17,28 +17,6 @@ use Mews\Pos\PosInterface;
 class EstPosResponseDataMapper extends AbstractResponseDataMapper
 {
     /**
-     * Response Codes
-     *
-     * @var array<int|string, string>
-     */
-    protected array $codes = [
-        self::PROCEDURE_SUCCESS_CODE => self::TX_APPROVED,
-
-        '01' => 'bank_call',
-        '02' => 'bank_call',
-        '05' => 'reject',
-        '09' => 'try_again',
-        '12' => 'invalid_transaction',
-        '28' => 'reject',
-        '51' => 'insufficient_balance',
-        '54' => 'expired_card',
-        '57' => 'does_not_allow_card_holder',
-        '62' => 'restricted_card',
-        '77' => 'request_rejected',
-        '99' => 'general_error',
-    ];
-
-    /**
      * @inheritDoc
      */
     public static function supports(string $gatewayClass): bool
@@ -81,7 +59,6 @@ class EstPosResponseDataMapper extends AbstractResponseDataMapper
             'ref_ret_num'      => $rawPaymentResponseData['HostRefNum'],
             'proc_return_code' => $procReturnCode,
             'status'           => $status,
-            'status_detail'    => $this->getStatusDetail($procReturnCode),
             'error_code'       => self::TX_APPROVED === $status ? null : $extra['ERRORCODE'],
             'error_message'    => self::TX_APPROVED === $status ? null : $rawPaymentResponseData['ErrMsg'],
             'recurring_id'     => $extra['RECURRINGID'] ?? null, // set when recurring payment is made
@@ -192,7 +169,6 @@ class EstPosResponseDataMapper extends AbstractResponseDataMapper
             $response['transaction_id']   = $raw3DAuthResponseData['TransId'];
             $response['transaction_time'] = $this->valueFormatter->formatDateTime($raw3DAuthResponseData['EXTRA_TRXDATE'], $txType);
             $response['ref_ret_num']      = $raw3DAuthResponseData['HostRefNum'];
-            $response['status_detail']    = $this->getStatusDetail($procReturnCode);
             $response['error_message']    = $raw3DAuthResponseData['ErrMsg'];
             $response['error_code']       = isset($raw3DAuthResponseData['ErrMsg']) ? $procReturnCode : null;
         }
@@ -273,7 +249,6 @@ class EstPosResponseDataMapper extends AbstractResponseDataMapper
             'error_code'       => null,
             'error_message'    => $rawResponseData['ErrMsg'],
             'status'           => $status,
-            'status_detail'    => $this->getStatusDetail($procReturnCode),
             'all'              => $rawResponseData,
         ];
 
@@ -326,7 +301,6 @@ class EstPosResponseDataMapper extends AbstractResponseDataMapper
             'num_code'         => null,
             'error_message'    => $rawResponseData['ErrMsg'],
             'status'           => $status,
-            'status_detail'    => $this->getStatusDetail($procReturnCode),
             'all'              => $rawResponseData,
         ];
 
@@ -369,7 +343,6 @@ class EstPosResponseDataMapper extends AbstractResponseDataMapper
         $defaultResponse['transaction_id']   = $rawResponseData['TransId'];
         $defaultResponse['error_message']    = self::TX_APPROVED === $status ? null : $rawResponseData['ErrMsg'];
         $defaultResponse['status']           = $status;
-        $defaultResponse['status_detail']    = $this->getStatusDetail($procReturnCode);
 
         $result = $defaultResponse;
         if (self::TX_APPROVED === $status) {
@@ -453,7 +426,6 @@ class EstPosResponseDataMapper extends AbstractResponseDataMapper
             'trans_count'      => (int) $rawResponseData['Extra']['TRXCOUNT'],
             'transactions'     => \array_reverse($transactions),
             'status'           => $status,
-            'status_detail'    => $this->getStatusDetail($procReturnCode),
             'all'              => $rawResponseData,
         ];
     }
@@ -528,7 +500,6 @@ class EstPosResponseDataMapper extends AbstractResponseDataMapper
             $transaction['status'] = self::TX_APPROVED;
         }
 
-        $transaction['status_detail']  = $this->getStatusDetail($transaction['proc_return_code']);
         $transaction['transaction_id'] = $rawTx[10];
 
         $transaction['transaction_type'] = $this->valueMapper->mapTxType($rawTx[0]);
@@ -572,7 +543,6 @@ class EstPosResponseDataMapper extends AbstractResponseDataMapper
             'proc_return_code' => $procReturnCode,
             'transaction_type' => null === $chargeType ? null : $this->valueMapper->mapTxType($chargeType),
             'status'           => $status,
-            'status_detail'    => $this->getStatusDetail($procReturnCode),
             'transaction_time' => isset($extra[\sprintf('AUTH_DTTM_%d', $i)]) ? $this->valueFormatter->formatDateTime($extra[\sprintf('AUTH_DTTM_%d', $i)], $txType) : null,
             'capture_time'     => isset($extra[\sprintf('CAPTURE_DTTM_%d', $i)]) ? $this->valueFormatter->formatDateTime($extra[\sprintf('CAPTURE_DTTM_%d', $i)], $txType) : null,
             'transaction_id'   => $extra[\sprintf('TRANS_ID_%d', $i)] ?? null,

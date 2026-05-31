@@ -215,7 +215,6 @@ class ParamPosResponseDataMapper extends AbstractResponseDataMapper
             'error_code'       => self::TX_APPROVED !== $status ? $procReturnCode : null,
             'error_message'    => self::TX_APPROVED !== $status ? $cancelResponse['Sonuc_Str'] : null,
             'status'           => $status,
-            'status_detail'    => null,
             'all'              => $rawResponseData,
         ];
         if (self::TX_APPROVED === $status && isset($rawResponseData['TP_Islem_Iptal_Iade_Kismi2Response'])) {
@@ -251,7 +250,6 @@ class ParamPosResponseDataMapper extends AbstractResponseDataMapper
         $defaultResponse['transaction_id']   = $dtBilgi['Bank_Trans_ID'];
         $defaultResponse['error_message']    = self::TX_APPROVED === $status ? null : $statusResponse['Sonuc_Str'];
         $defaultResponse['status']           = $status;
-        $defaultResponse['status_detail']    = null;
 
         $result = $defaultResponse;
         if (self::TX_APPROVED === $status) {
@@ -324,7 +322,6 @@ class ParamPosResponseDataMapper extends AbstractResponseDataMapper
             'error_code'       => null,
             'error_message'    => null,
             'status'           => $status,
-            'status_detail'    => null,
             'trans_count'      => \count($mappedTransactions),
             'transactions'     => $mappedTransactions,
             'all'              => $rawResponseData,

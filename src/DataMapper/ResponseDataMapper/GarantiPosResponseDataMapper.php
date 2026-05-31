@@ -23,30 +23,6 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
     protected ResponseValueMapperInterface $valueMapper;
 
     /**
-     * Response Codes
-     *
-     * @var array<int|string, string>
-     */
-    protected array $codes = [
-        self::PROCEDURE_SUCCESS_CODE => self::TX_APPROVED,
-
-        '96' => 'general_error',
-        '01' => 'bank_call',
-        '02' => 'bank_call',
-        '05' => 'reject',
-        '09' => 'try_again',
-        '12' => 'invalid_transaction',
-        '28' => 'reject',
-        '51' => 'insufficient_balance',
-        '54' => 'expired_card',
-        '57' => 'does_not_allow_card_holder',
-        '62' => 'restricted_card',
-        '77' => 'request_rejected',
-        '92' => 'invalid_transaction',
-        '99' => 'general_error',
-    ];
-
-    /**
      * @inheritDoc
      */
     public static function supports(string $gatewayClass): bool
@@ -87,7 +63,6 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
             'status'           => $status,
             'currency'         => $order['currency'],
             'amount'           => $order['amount'],
-            'status_detail'    => $this->getStatusDetail($procReturnCode),
             'error_code'       => self::TX_APPROVED !== $status ? $transaction['Response']['ReasonCode'] : null,
             'error_message'    => self::TX_APPROVED !== $status ? $transaction['Response']['ErrorMsg'] : null,
             'all'              => $rawPaymentResponseData,
@@ -156,7 +131,6 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
                 'all'              => $rawPaymentResponseData,
                 'proc_return_code' => $procReturnCode,
                 'status'           => $paymentStatus,
-                'status_detail'    => $this->getStatusDetail($procReturnCode),
             ];
 
             $mappedPaymentResponse = $this->mergeArraysPreferNonNullValues($defaultPaymentResponse, $mappedPaymentResponse);
@@ -262,7 +236,6 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
             'error_code'       => $transaction['Response']['Code'] ?? null,
             'error_message'    => $transaction['Response']['ErrorMsg'] ?? null,
             'status'           => $status,
-            'status_detail'    => $this->getStatusDetail($procReturnCode),
             'all'              => $rawResponseData,
         ];
     }
@@ -297,7 +270,6 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
             'proc_return_code'  => $procReturnCode,
             'order_status'      => null !== $orderInqResult['Status'] ? $this->valueMapper->mapOrderStatus($orderInqResult['Status'], $txType) : null,
             'status'            => $status,
-            'status_detail'     => $this->getStatusDetail($procReturnCode),
             'error_code'        => self::TX_APPROVED === $status ? null : $transaction['Response']['Code'],
             'error_message'     => self::TX_APPROVED === $status ? null : $transaction['Response']['ErrorMsg'],
         ];
@@ -347,7 +319,6 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
             'error_code'       => self::TX_DECLINED === $status ? $procReturnCode : null,
             'error_message'    => self::TX_DECLINED === $status ? $rawResponseData['Transaction']['Response']['ErrorMsg'] : null,
             'status'           => $status,
-            'status_detail'    => $this->getStatusDetail($procReturnCode),
             'trans_count'      => \count($mappedTransactions),
             'transactions'     => $mappedTransactions,
             'all'              => $rawResponseData,
@@ -384,7 +355,6 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
             'error_code'       => self::TX_DECLINED === $status ? $procReturnCode : null,
             'error_message'    => self::TX_DECLINED === $status ? $rawResponseData['Transaction']['Response']['ErrorMsg'] : null,
             'status'           => $status,
-            'status_detail'    => $this->getStatusDetail($procReturnCode),
             'trans_count'      => \count($mappedTransactions),
             'transactions'     => $mappedTransactions,
             'all'              => $rawResponseData,
@@ -437,7 +407,6 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
             'proc_return_code'     => $procReturnCode,
             'md_status'            => $mdStatus,
             'status'               => $status,
-            'status_detail'        => $this->getStatusDetail($procReturnCode),
             'masked_number'        => null,
             'amount'               => $this->valueFormatter->formatAmount($raw3DAuthResponseData['txnamount'], $txType),
             'currency'             => $this->valueMapper->mapCurrency($raw3DAuthResponseData['txncurrencycode'], $txType),
@@ -510,7 +479,6 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
         $defaultResponse['ref_ret_num']      = $rawTx['RetrefNum'] ?? null;
         $defaultResponse['proc_return_code'] = $procReturnCode;
         $defaultResponse['status']           = $status;
-        $defaultResponse['status_detail']    = $this->getStatusDetail($procReturnCode);
         $defaultResponse['error_code']       = self::TX_APPROVED === $status ? null : $procReturnCode;
         $defaultResponse['transaction_type'] = $rawTx['Type'] === null ? null : $this->valueMapper->mapTxType($rawTx['Type']);
 
@@ -555,7 +523,6 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
         $defaultResponse['transaction_type'] = null !== $rawTx['TrxType'] ? $this->valueMapper->mapTxType($rawTx['TrxType']) : null;
         $defaultResponse['order_status']     = null !== $rawTx['Status'] ? $this->valueMapper->mapOrderStatus($rawTx['Status'], $txType, $defaultResponse['transaction_type']) : null;
         $defaultResponse['status']           = $status;
-        $defaultResponse['status_detail']    = $this->getStatusDetail($procReturnCode);
         $defaultResponse['error_code']       = self::TX_APPROVED === $status ? null : $procReturnCode;
         $defaultResponse['error_message']    = self::TX_APPROVED === $status ? null : $rawTx['SysErrMsg'];
 

@@ -16,35 +16,6 @@ class PosNetV1PosResponseDataMapper extends AbstractResponseDataMapper
     public const PROCEDURE_SUCCESS_CODE = '00';
 
     /**
-     * Response Codes
-     *
-     * @var array<int|string, string>
-     */
-    protected array $codes = [
-        self::PROCEDURE_SUCCESS_CODE => self::TX_APPROVED,
-        '0'                          => 'declined',
-        '2'                          => 'declined',
-        '0001'                       => 'bank_call',
-        '0005'                       => 'reject',
-        '0007'                       => 'bank_call',
-        '0012'                       => 'reject',
-        '0014'                       => 'reject',
-        '0030'                       => 'bank_call',
-        '0041'                       => 'reject',
-        '0043'                       => 'reject',
-        '0051'                       => 'reject',
-        '0053'                       => 'bank_call',
-        '0054'                       => 'reject',
-        '0057'                       => 'reject',
-        '0058'                       => 'reject',
-        '0062'                       => 'reject',
-        '0065'                       => 'reject',
-        '0091'                       => 'bank_call',
-        '0123'                       => 'transaction_not_found',
-        '0444'                       => 'bank_call',
-    ];
-
-    /**
      * @inheritDoc
      */
     public static function supports(string $gatewayClass): bool
@@ -66,10 +37,7 @@ class PosNetV1PosResponseDataMapper extends AbstractResponseDataMapper
 
         $rawPaymentResponseData = $this->emptyStringsToNull($rawPaymentResponseData);
         $procReturnCode         = $this->getProcReturnCode($rawPaymentResponseData);
-        if (
-            self::PROCEDURE_SUCCESS_CODE === $procReturnCode
-            && $this->getStatusDetail($procReturnCode) === self::TX_APPROVED
-        ) {
+        if (self::PROCEDURE_SUCCESS_CODE === $procReturnCode) {
             $status = self::TX_APPROVED;
         }
 
@@ -82,7 +50,6 @@ class PosNetV1PosResponseDataMapper extends AbstractResponseDataMapper
             'ref_ret_num'      => $rawPaymentResponseData['ReferenceCode'] ?? null,
             'proc_return_code' => $procReturnCode,
             'status'           => $status,
-            'status_detail'    => $this->getStatusDetail($procReturnCode),
             'error_code'       => $status !== self::TX_APPROVED ? $procReturnCode : null,
             'error_message'    => $status !== self::TX_APPROVED ? $rawPaymentResponseData['ServiceResponseData']['ResponseDescription'] : null,
             'all'              => $rawPaymentResponseData,
@@ -178,7 +145,6 @@ class PosNetV1PosResponseDataMapper extends AbstractResponseDataMapper
             'transaction_type' => null,
             'proc_return_code' => $procReturnCode,
             'status'           => $status,
-            'status_detail'    => $this->getStatusDetail($procReturnCode),
             'error_code'       => self::TX_APPROVED !== $status ? $procReturnCode : null,
             'error_message'    => self::TX_APPROVED !== $status ? $rawResponseData['ServiceResponseData']['ResponseDescription'] : null,
             'all'              => $rawResponseData,
@@ -203,7 +169,6 @@ class PosNetV1PosResponseDataMapper extends AbstractResponseDataMapper
 
         $defaultResponse['proc_return_code'] = $procReturnCode;
         $defaultResponse['status']           = $status;
-        $defaultResponse['status_detail']    = $this->getStatusDetail($procReturnCode);
         $defaultResponse['error_code']       = self::TX_APPROVED === $status ? null : $procReturnCode;
         $defaultResponse['error_message']    = self::TX_APPROVED === $status ? null : $rawResponseData['ServiceResponseData']['ResponseDescription'];
 
@@ -345,10 +310,7 @@ class PosNetV1PosResponseDataMapper extends AbstractResponseDataMapper
 
         $rawPaymentResponseData = $this->emptyStringsToNull($rawPaymentResponseData);
         $procReturnCode         = $this->getProcReturnCode($rawPaymentResponseData);
-        if (
-            self::PROCEDURE_SUCCESS_CODE === $procReturnCode
-            && $this->getStatusDetail($procReturnCode) === self::TX_APPROVED
-        ) {
+        if (self::PROCEDURE_SUCCESS_CODE === $procReturnCode) {
             $status = self::TX_APPROVED;
         }
 
@@ -358,7 +320,6 @@ class PosNetV1PosResponseDataMapper extends AbstractResponseDataMapper
             'ref_ret_num'      => $rawPaymentResponseData['ReferenceCode'] ?? null,
             'proc_return_code' => $procReturnCode,
             'status'           => $status,
-            'status_detail'    => $this->getStatusDetail($procReturnCode),
             'error_code'       => $status !== self::TX_APPROVED ? $procReturnCode : null,
             'error_message'    => $status !== self::TX_APPROVED ? $rawPaymentResponseData['ServiceResponseData']['ResponseDescription'] : null,
             'all'              => $rawPaymentResponseData,

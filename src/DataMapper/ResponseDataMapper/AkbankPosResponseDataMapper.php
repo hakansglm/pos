@@ -21,15 +21,6 @@ class AkbankPosResponseDataMapper extends AbstractResponseDataMapper
     public const PROCEDURE_SUCCESS_CODE = 'VPS-0000';
 
     /**
-     * Response Codes
-     *
-     * @var array<int|string, string>
-     */
-    protected array $codes = [
-        self::PROCEDURE_SUCCESS_CODE => self::TX_APPROVED,
-    ];
-
-    /**
      * @var AkbankPosResponseValueMapper
      */
     protected ResponseValueMapperInterface $valueMapper;
@@ -72,7 +63,6 @@ class AkbankPosResponseDataMapper extends AbstractResponseDataMapper
             'transaction_time'  => self::TX_APPROVED === $status ? $this->valueFormatter->formatDateTime($rawPaymentResponseData['txnDateTime'], $txType) : null,
             'proc_return_code'  => $procReturnCode,
             'status'            => $status,
-            'status_detail'     => $this->getStatusDetail($procReturnCode),
             'error_code'        => self::TX_APPROVED === $status ? null : $procReturnCode,
             'error_message'     => self::TX_APPROVED === $status ? null : $rawPaymentResponseData['hostMessage'] ?? $rawPaymentResponseData['responseMessage'],
             'all'               => $rawPaymentResponseData,
@@ -192,7 +182,6 @@ class AkbankPosResponseDataMapper extends AbstractResponseDataMapper
             'error_code'       => null,
             'error_message'    => null,
             'status'           => $status,
-            'status_detail'    => $this->getStatusDetail($procReturnCode),
             'all'              => $rawResponseData,
         ];
         if (self::TX_APPROVED === $status) {
@@ -229,7 +218,6 @@ class AkbankPosResponseDataMapper extends AbstractResponseDataMapper
             'error_code'       => null,
             'error_message'    => null,
             'status'           => $status,
-            'status_detail'    => $this->getStatusDetail($procReturnCode),
             'all'              => $rawResponseData,
         ];
         if (self::TX_APPROVED === $status) {
@@ -310,7 +298,6 @@ class AkbankPosResponseDataMapper extends AbstractResponseDataMapper
             'trans_count'      => \count($transactions),
             'transactions'     => $transactions,
             'status'           => $status,
-            'status_detail'    => $this->getStatusDetail($procReturnCode),
             'all'              => $rawResponseData,
         ];
     }
@@ -337,7 +324,6 @@ class AkbankPosResponseDataMapper extends AbstractResponseDataMapper
             'error_code'       => null,
             'error_message'    => null,
             'status'           => $status,
-            'status_detail'    => null !== $procReturnCode ? $this->getStatusDetail($procReturnCode) : null,
             'trans_count'      => \count($mappedTransactions),
             'transactions'     => $mappedTransactions,
             'all'              => $rawResponseData,
@@ -405,7 +391,6 @@ class AkbankPosResponseDataMapper extends AbstractResponseDataMapper
             $transaction['status'] = self::TX_APPROVED;
         }
 
-        $transaction['status_detail']     = $this->getStatusDetail($transaction['proc_return_code']);
         $transaction['currency']          = $this->valueMapper->mapCurrency($rawTx['currencyCode'], $txType);
         $transaction['installment_count'] = $this->valueFormatter->formatInstallment($rawTx['installCount'], $txType);
         $transaction['transaction_type']  = $this->valueMapper->mapTxType($rawTx['txnCode']);
@@ -468,7 +453,6 @@ class AkbankPosResponseDataMapper extends AbstractResponseDataMapper
             $transaction['status'] = self::TX_APPROVED;
         }
 
-        $transaction['status_detail']     = $this->getStatusDetail($transaction['proc_return_code']);
         $transaction['recurring_order']   = $rawTx['recurringOrder'];
         $transaction['masked_number']     = $rawTx['maskedCardNumber'];
         $transaction['currency']          = $this->valueMapper->mapCurrency($rawTx['currencyCode'], $txType);
@@ -512,7 +496,6 @@ class AkbankPosResponseDataMapper extends AbstractResponseDataMapper
         }
 
         $transaction['order_id']      = null;
-        $transaction['status_detail'] = $this->getStatusDetail($transaction['proc_return_code']);
 
         $transaction['currency']          = $this->valueMapper->mapCurrency($rawTx['currencyCode'], $txType);
         $transaction['installment_count'] = $this->valueFormatter->formatInstallment($rawTx['installmentCount'], $txType);

@@ -16,35 +16,6 @@ class PosNetResponseDataMapper extends AbstractResponseDataMapper
     public const PROCEDURE_SUCCESS_CODE = '1';
 
     /**
-     * Response Codes
-     *
-     * @var array<int|string, string>
-     */
-    protected array $codes = [
-        self::PROCEDURE_SUCCESS_CODE => self::TX_APPROVED,
-        '0'                          => 'declined',
-        '2'                          => 'declined',
-        '0001'                       => 'bank_call',
-        '0005'                       => 'reject',
-        '0007'                       => 'bank_call',
-        '0012'                       => 'reject',
-        '0014'                       => 'reject',
-        '0030'                       => 'bank_call',
-        '0041'                       => 'reject',
-        '0043'                       => 'reject',
-        '0051'                       => 'reject',
-        '0053'                       => 'bank_call',
-        '0054'                       => 'reject',
-        '0057'                       => 'reject',
-        '0058'                       => 'reject',
-        '0062'                       => 'reject',
-        '0065'                       => 'reject',
-        '0091'                       => 'bank_call',
-        '0123'                       => 'transaction_not_found',
-        '0444'                       => 'bank_call',
-    ];
-
-    /**
      * @inheritDoc
      */
     public static function supports(string $gatewayClass): bool
@@ -81,7 +52,6 @@ class PosNetResponseDataMapper extends AbstractResponseDataMapper
         $defaultResponse['ref_ret_num']      = $rawPaymentResponseData['hostlogkey'] ?? null;
         $defaultResponse['proc_return_code'] = $procReturnCode;
         $defaultResponse['status']           = $status;
-        $defaultResponse['status_detail']    = $this->getStatusDetail($errorCode ?? $procReturnCode);
         $defaultResponse['error_code']       = $errorCode;
         $defaultResponse['error_message']    = $rawPaymentResponseData['respText'] ?? null;
         $defaultResponse['all']              = $rawPaymentResponseData;
@@ -140,7 +110,6 @@ class PosNetResponseDataMapper extends AbstractResponseDataMapper
             'currency'             => $this->valueMapper->mapCurrency((string) $oosResolveMerchantDataResponse['currency'], $txType),
             'proc_return_code'     => $procReturnCode,
             'status'               => $status,
-            'status_detail'        => $this->getStatusDetail($procReturnCode),
             'md_status'            => $mdStatus,
             'md_error_message'     => $oosResolveMerchantDataResponse['mdErrorMessage'] ?? null,
             '3d_all'               => $raw3DAuthResponseData,
@@ -210,7 +179,6 @@ class PosNetResponseDataMapper extends AbstractResponseDataMapper
             'transaction_type' => $transactionType,
             'proc_return_code' => $procReturnCode,
             'status'           => $status,
-            'status_detail'    => $this->getStatusDetail($procReturnCode),
             'error_code'       => $errorCode,
             'error_message'    => $rawResponseData['respText'] ?? null,
             'all'              => $rawResponseData,
@@ -267,7 +235,6 @@ class PosNetResponseDataMapper extends AbstractResponseDataMapper
 
         $defaultResponse['proc_return_code'] = $procReturnCode;
         $defaultResponse['status']           = $status;
-        $defaultResponse['status_detail']    = $this->getStatusDetail($procReturnCode);
         $defaultResponse['error_code']       = self::TX_APPROVED !== $status ? $errorCode : null;
         $defaultResponse['error_message']    = self::TX_APPROVED !== $status ? ($rawResponseData['respText'] ?? null) : null;
 
@@ -342,7 +309,6 @@ class PosNetResponseDataMapper extends AbstractResponseDataMapper
             'transaction_type' => $transactionType,
             'proc_return_code' => $procReturnCode,
             'status'           => $status,
-            'status_detail'    => $this->getStatusDetail($procReturnCode),
             'error_code'       => $errorCode,
             'error_message'    => $rawResponseData['respText'] ?? null,
             'refunds'          => $refunds,
@@ -463,7 +429,6 @@ class PosNetResponseDataMapper extends AbstractResponseDataMapper
         $defaultResponse['ref_ret_num']      = $rawPaymentResponseData['hostlogkey'] ?? null;
         $defaultResponse['proc_return_code'] = $procReturnCode;
         $defaultResponse['status']           = $status;
-        $defaultResponse['status_detail']    = $this->getStatusDetail($errorCode ?? $procReturnCode);
         $defaultResponse['error_code']       = $errorCode;
         $defaultResponse['error_message']    = $rawPaymentResponseData['respText'] ?? null;
         $defaultResponse['all']              = $rawPaymentResponseData;
