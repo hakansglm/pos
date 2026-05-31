@@ -278,11 +278,6 @@ class PosNetRequestDataMapper extends AbstractRequestDataMapper
     {
         $order = $this->preparePaymentOrder($order);
 
-        // todo check if we can remove this code
-        if (null === $creditCard->getHolderName() && isset($order['name'])) {
-            $creditCard->setHolderName($order['name']);
-        }
-
         return [
             'mid'            => $posAccount->getClientId(),
             'tid'            => $posAccount->getTerminalId(),
