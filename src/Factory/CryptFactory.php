@@ -12,6 +12,7 @@ use Mews\Pos\Crypt\EstPosCrypt;
 use Mews\Pos\Crypt\EstV3PosCrypt;
 use Mews\Pos\Crypt\GarantiPosCrypt;
 use Mews\Pos\Crypt\InterPosCrypt;
+use Mews\Pos\Crypt\IyzicoPosCrypt;
 use Mews\Pos\Crypt\KuveytPosCrypt;
 use Mews\Pos\Crypt\NullCrypt;
 use Mews\Pos\Crypt\ParamPosCrypt;
@@ -37,6 +38,7 @@ class CryptFactory
         EstV3PosCrypt::class,
         GarantiPosCrypt::class,
         InterPosCrypt::class,
+        IyzicoPosCrypt::class,
         KuveytPosCrypt::class,
         ParamPosCrypt::class,
         PayFlexCPV4Crypt::class,

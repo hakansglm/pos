@@ -9,6 +9,7 @@ namespace Mews\Pos;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Exceptions\HashMismatchException;
+use Mews\Pos\Exceptions\UnsupportedFormFormatException;
 use Mews\Pos\Exceptions\UnsupportedPaymentModelException;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Psr\Http\Client\ClientExceptionInterface;
@@ -111,17 +112,25 @@ interface PosInterface
     /** @var string */
     public const PAYMENT_STATUS_PRE_AUTH_COMPLETED = 'PRE_AUTH_COMPLETED';
 
+    /** @var string */
+    public const FORM_FORMAT_ARRAY = 'array';
+
+    /** @var string */
+    public const FORM_FORMAT_HTML = 'html';
+
     /**
      * returns form data, key values, necessary for 3D payment
      *
      * @phpstan-param PosInterface::MODEL_3D_*                                          $paymentModel
      * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
+     * @phpstan-param PosInterface::FORM_FORMAT_* $formFormat
      *
      * @param array<string, mixed>     $order
      * @param string                   $paymentModel
      * @param string                   $txType
      * @param CreditCardInterface|null $creditCard
      * @param bool                     $createWithoutCard 3D ve 3D_PAY ödemelerde kart bilgisi olmadan 3D formu oluşturulmasına izin verir.
+     * @param string|null              $formFormat        İstenen dönüş formatı. Null ise gateway'in varsayılan formatı kullanılır.
      *
      * @return non-empty-string|array{gateway: string, method: 'POST'|'GET', inputs: array<string, string>} Banka response'u HTML olduğu durumda string döner.
      *
@@ -130,9 +139,17 @@ interface PosInterface
      * @throws \InvalidArgumentException           when card data is not provided when it is required for the given payment model
      * @throws \LogicException                     when given payment model or transaction type is not supported
      * @throws UnsupportedTransactionTypeException
+     * @throws UnsupportedFormFormatException      when the requested $formFormat is not supported by the gateway
      * @throws ClientExceptionInterface
      */
-    public function get3DFormData(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null, bool $createWithoutCard = false);
+    public function get3DFormData(
+        array $order,
+        string $paymentModel,
+        string $txType,
+        ?CreditCardInterface $creditCard = null,
+        bool $createWithoutCard = false,
+        ?string $formFormat = null
+    );
 
     /**
      * Regular Payment

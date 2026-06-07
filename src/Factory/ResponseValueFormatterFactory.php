@@ -9,6 +9,7 @@ namespace Mews\Pos\Factory;
 use DomainException;
 use Mews\Pos\DataMapper\ResponseValueFormatter\BasicResponseValueFormatter;
 use Mews\Pos\DataMapper\ResponseValueFormatter\BoaPosResponseValueFormatter;
+use Mews\Pos\DataMapper\ResponseValueFormatter\IyzicoPosResponseValueFormatter;
 use Mews\Pos\DataMapper\ResponseValueFormatter\EstPosResponseValueFormatter;
 use Mews\Pos\DataMapper\ResponseValueFormatter\GarantiPosResponseValueFormatter;
 use Mews\Pos\DataMapper\ResponseValueFormatter\InterPosResponseValueFormatter;
@@ -31,6 +32,7 @@ class ResponseValueFormatterFactory
         EstPosResponseValueFormatter::class,
         GarantiPosResponseValueFormatter::class,
         InterPosResponseValueFormatter::class,
+        IyzicoPosResponseValueFormatter::class,
         BoaPosResponseValueFormatter::class,
         ParamPosResponseValueFormatter::class,
         PosNetResponseValueFormatter::class,

@@ -9,6 +9,7 @@ namespace Mews\Pos\Factory;
 use DomainException;
 use Mews\Pos\DataMapper\ResponseDataMapper\AkbankPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\EstPosResponseDataMapper;
+use Mews\Pos\DataMapper\ResponseDataMapper\IyzicoPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\GarantiPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\InterPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\KuveytPosResponseDataMapper;
@@ -39,6 +40,7 @@ class ResponseDataMapperFactory
         EstPosResponseDataMapper::class,
         GarantiPosResponseDataMapper::class,
         InterPosResponseDataMapper::class,
+        IyzicoPosResponseDataMapper::class,
         KuveytPosResponseDataMapper::class,
         ParamPosResponseDataMapper::class,
         PayFlexCPV4PosResponseDataMapper::class,

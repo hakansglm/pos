@@ -14,6 +14,7 @@ use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Entity\Account\PayFlexAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
+use Mews\Pos\Exceptions\UnsupportedFormFormatException;
 use Mews\Pos\Exceptions\UnsupportedPaymentModelException;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\PosInterface;
@@ -176,9 +177,13 @@ class PayFlexCPV4Pos extends AbstractGateway
      *
      * @return array{gateway: string, method: 'POST'|'GET', inputs: array<string, string>}
      */
-    public function get3DFormData(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null, bool $createWithoutCard = false): array
+    public function get3DFormData(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null, bool $createWithoutCard = false, ?string $formFormat = null): array
     {
         $this->check3DFormInputs($paymentModel, $txType, $creditCard, $createWithoutCard);
+
+        if (PosInterface::FORM_FORMAT_HTML === $formFormat) {
+            throw new UnsupportedFormFormatException();
+        }
 
         /** @var array{CommonPaymentUrl: string|null, PaymentToken: string|null, ErrorCode: string|null, ResponseMessage: string|null} $data */
         $data = $this->registerPayment($order, $txType, $paymentModel, $creditCard);

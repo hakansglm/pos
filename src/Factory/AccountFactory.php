@@ -8,6 +8,7 @@ namespace Mews\Pos\Factory;
 
 use Mews\Pos\Entity\Account\AkbankPosAccount;
 use Mews\Pos\Entity\Account\EstPosAccount;
+use Mews\Pos\Entity\Account\IyzicoPosAccount;
 use Mews\Pos\Entity\Account\GarantiPosAccount;
 use Mews\Pos\Entity\Account\InterPosAccount;
 use Mews\Pos\Entity\Account\KuveytPosAccount;
@@ -57,6 +58,19 @@ class AccountFactory
     public static function createAkbankPosAccount(string $bank, string $merchantSafeId, string $terminalSafeId, string $secretKey, ?string $subMerchantId = null): AkbankPosAccount
     {
         return new AkbankPosAccount($bank, $merchantSafeId, $terminalSafeId, $secretKey, $subMerchantId);
+    }
+
+    /**
+     * @param non-empty-string      $bank
+     * @param non-empty-string      $apiKey
+     * @param non-empty-string      $secretKey
+     * @param non-empty-string|null $subMerchantKey
+     *
+     * @return IyzicoPosAccount
+     */
+    public static function createIyzicoPosAccount(string $bank, string $apiKey, string $secretKey, ?string $subMerchantKey = null): IyzicoPosAccount
+    {
+        return new IyzicoPosAccount($bank, $apiKey, $secretKey, $subMerchantKey);
     }
 
     /**

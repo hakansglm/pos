@@ -19,6 +19,7 @@ use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Entity\Account\PayFlexAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
+use Mews\Pos\Exceptions\UnsupportedFormFormatException;
 use Mews\Pos\Exceptions\UnsupportedPaymentModelException;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Factory\AccountFactory;
@@ -189,19 +190,20 @@ class PayFlexV4PosTest extends TestCase
      * @dataProvider threeDFormDataBadInputsProvider
      */
     public function testGet3DFormDataWithBadInputs(
-        array  $order,
-        string $paymentModel,
-        string $txType,
-        bool   $isWithCard,
-        string $expectedExceptionClass,
-        string $expectedExceptionMsg
+        array   $order,
+        string  $paymentModel,
+        string  $txType,
+        bool    $isWithCard,
+        string  $expectedExceptionClass,
+        string  $expectedExceptionMsg,
+        ?string $formFormat = null
     ): void {
         $card = $isWithCard ? $this->card : null;
 
         $this->expectException($expectedExceptionClass);
         $this->expectExceptionMessage($expectedExceptionMsg);
 
-        $this->pos->get3DFormData($order, $paymentModel, $txType, $card);
+        $this->pos->get3DFormData($order, $paymentModel, $txType, $card, false, $formFormat);
     }
 
     /**
@@ -752,6 +754,15 @@ class PayFlexV4PosTest extends TestCase
                 'isWithCard'             => true,
                 'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay, pre]',
+            ],
+            'unsupported_form_format'   => [
+                'order'                  => ['id' => '2020110828BC'],
+                'paymentModel'           => PosInterface::MODEL_3D_SECURE,
+                'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
+                'isWithCard'             => true,
+                'expectedExceptionClass' => UnsupportedFormFormatException::class,
+                'expectedExceptionMsg'   => 'Unsupported 3D form format!',
+                'formFormat'             => PosInterface::FORM_FORMAT_HTML,
             ],
         ];
     }

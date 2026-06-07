@@ -11,10 +11,13 @@ use Http\Discovery\Psr18ClientDiscovery;
 use Mews\Pos\Client\AkbankPosHttpClient;
 use Mews\Pos\Client\GenericPosHttpClientStrategy;
 use Mews\Pos\Client\EstPosHttpClient;
+use Mews\Pos\Client\IyzicoPos3DFormHttpClient;
+use Mews\Pos\Client\IyzicoPosHttpClient;
 use Mews\Pos\Client\GarantiPosHttpClient;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\HttpClientStrategyInterface;
 use Mews\Pos\Client\InterPosHttpClient;
+use Mews\Pos\Client\IyzicoPosQueryApiHttpClient;
 use Mews\Pos\Client\KuveytPos3DFormHttpClient;
 use Mews\Pos\Client\KuveytPosHttpClient;
 use Mews\Pos\Client\KuveytPosSoapApiHttpClient;
@@ -48,6 +51,9 @@ class PosHttpClientStrategyFactory
         EstPosHttpClient::class,
         GarantiPosHttpClient::class,
         InterPosHttpClient::class,
+        IyzicoPosHttpClient::class,
+        IyzicoPos3DFormHttpClient::class,
+        IyzicoPosQueryApiHttpClient::class,
         KuveytPos3DFormHttpClient::class,
         KuveytPosHttpClient::class,
         KuveytPosSoapApiHttpClient::class,

@@ -15,6 +15,7 @@ use Mews\Pos\Entity\Account\PayForAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exceptions\HashMismatchException;
+use Mews\Pos\Exceptions\UnsupportedFormFormatException;
 use Mews\Pos\PosInterface;
 
 /**
@@ -186,9 +187,13 @@ class PayForPos extends AbstractGateway
      *
      * @return array{gateway: string, method: 'POST'|'GET', inputs: array<string, string>}
      */
-    public function get3DFormData(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null, bool $createWithoutCard = false): array
+    public function get3DFormData(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null, bool $createWithoutCard = false, ?string $formFormat = null): array
     {
         $this->check3DFormInputs($paymentModel, $txType, $creditCard, $createWithoutCard);
+
+        if (PosInterface::FORM_FORMAT_HTML === $formFormat) {
+            throw new UnsupportedFormFormatException();
+        }
 
         $this->logger->debug('preparing 3D form data', [
             'payment_model' => $paymentModel,

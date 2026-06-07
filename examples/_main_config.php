@@ -171,6 +171,10 @@ function createPaymentOrder(
         $order['lang'] = $lang;
     }
 
+    if ($pos instanceof \Mews\Pos\Gateways\IyzicoPos) {
+        $order = array_merge($order, createGatewaySpecificOrderFields($ip, $paymentModel));
+    }
+
     if ($tekrarlanan) {
         // Desteleyen Gatewayler: GarantiPos, EstPos, PayFlexV4, AkbankPos
 

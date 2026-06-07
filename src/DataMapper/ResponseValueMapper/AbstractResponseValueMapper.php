@@ -49,7 +49,7 @@ abstract class AbstractResponseValueMapper implements ResponseValueMapperInterfa
     /**
      * @inheritDoc
      */
-    public function mapSecureType(string $securityType, ?string $apiRequestTxType = null): ?string
+    public function mapSecureType($securityType, ?string $apiRequestTxType = null): ?string
     {
         if ([] === $this->secureTypeMappings) {
             throw new \LogicException('Secure type mapping is not supported');

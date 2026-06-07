@@ -8,6 +8,9 @@ namespace Mews\Pos\Factory;
 
 use Mews\Pos\Client\AkbankPosHttpClient;
 use Mews\Pos\Client\HttpClientInterface;
+use Mews\Pos\Client\IyzicoPos3DFormHttpClient;
+use Mews\Pos\Client\IyzicoPosHttpClient;
+use Mews\Pos\Client\IyzicoPosQueryApiHttpClient;
 use Mews\Pos\Client\KuveytPosSoapApiHttpClient;
 use Mews\Pos\Client\PosNetV1PosHttpClient;
 use Mews\Pos\Crypt\CryptInterface;
@@ -53,6 +56,20 @@ class PosHttpClientFactory
                 $serializer,
                 $logger,
                 $crypt
+            );
+        }
+        if (IyzicoPosHttpClient::class === $clientClass
+            || IyzicoPos3DFormHttpClient::class === $clientClass
+            || IyzicoPosQueryApiHttpClient::class === $clientClass) {
+            return new $clientClass(
+                $baseApiUrl,
+                $psr18client,
+                $requestFactory,
+                $streamFactory,
+                $serializer,
+                $logger,
+                $crypt,
+                $requestValueMapper
             );
         }
         if (PosNetV1PosHttpClient::class === $clientClass || KuveytPosSoapApiHttpClient::class === $clientClass) {

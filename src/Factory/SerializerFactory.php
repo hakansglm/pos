@@ -11,6 +11,8 @@ use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Serializer\AkbankPosSerializer;
 use Mews\Pos\Serializer\EstPosSerializer;
+use Mews\Pos\Serializer\IyzicoPosQueryApiSerializer;
+use Mews\Pos\Serializer\IyzicoPosSerializer;
 use Mews\Pos\Serializer\GarantiPosSerializer;
 use Mews\Pos\Serializer\InterPosSerializer;
 use Mews\Pos\Serializer\KuveytPosSerializer;
@@ -46,6 +48,8 @@ class SerializerFactory
             EstPosSerializer::class,
             GarantiPosSerializer::class,
             InterPosSerializer::class,
+            IyzicoPosSerializer::class,
+            IyzicoPosQueryApiSerializer::class,
             KuveytPosSerializer::class,
             KuveytPosSoapApiSerializer::class,
             ParamPosSerializer::class,

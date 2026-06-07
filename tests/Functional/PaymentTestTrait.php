@@ -9,6 +9,7 @@ namespace Mews\Pos\Tests\Functional;
 use Mews\Pos\Gateways\EstPos;
 use Mews\Pos\Gateways\EstV3Pos;
 use Mews\Pos\Gateways\GarantiPos;
+use Mews\Pos\Gateways\IyzicoPos;
 use Mews\Pos\Gateways\PayForPos;
 use Mews\Pos\Gateways\ToslaPos;
 use Mews\Pos\Gateways\VakifKatilimPos;
@@ -47,6 +48,10 @@ trait PaymentTestTrait
             ], true)) {
             $order['success_url'] = 'http://localhost/response.php';
             $order['fail_url']    = 'http://localhost/response.php';
+        }
+
+        if ($this->pos instanceof IyzicoPos) {
+            $order = array_merge($order, $this->getIyzicoOrderExtraFields());
         }
 
         if ($tekrarlanan) {
@@ -89,7 +94,7 @@ trait PaymentTestTrait
             $postAuth['ref_ret_num'] = $lastResponse['ref_ret_num'];
         }
 
-        if (\Mews\Pos\Gateways\PayFlexV4Pos::class === $gatewayClass) {
+        if (\Mews\Pos\Gateways\PayFlexV4Pos::class === $gatewayClass || IyzicoPos::class === $gatewayClass) {
             $postAuth['transaction_id'] = $lastResponse['transaction_id'];
         }
 
@@ -107,6 +112,12 @@ trait PaymentTestTrait
             'currency' => $lastResponse['currency'],
             'ip'       => '127.0.0.1',
         ];
+        if (\Mews\Pos\Gateways\IyzicoPos::class === $gatewayClass) {
+            if (isset($lastResponse['transaction_id'])) {
+                $statusOrder['transaction_id'] = $lastResponse['transaction_id'];
+            }
+        }
+
         if (\Mews\Pos\Gateways\KuveytPos::class === $gatewayClass) {
             $statusOrder['remote_order_id'] = $lastResponse['remote_order_id']; // OrderId
         }
@@ -174,6 +185,8 @@ trait PaymentTestTrait
         } elseif (\Mews\Pos\Gateways\PayFlexV4Pos::class === $gatewayClass || \Mews\Pos\Gateways\PayFlexCPV4Pos::class === $gatewayClass) {
             // çalışmazsa $lastResponse['all']['ReferenceTransactionId']; ile denenmesi gerekiyor.
             $cancelOrder['transaction_id'] = $lastResponse['transaction_id'];
+        } elseif (IyzicoPos::class === $gatewayClass) {
+            $cancelOrder['transaction_id'] = $lastResponse['transaction_id'];
         } elseif (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNet::class === $gatewayClass) {
             /**
              * payment_model:
@@ -209,7 +222,7 @@ trait PaymentTestTrait
     private function createOrderHistoryOrder(string $gatewayClass, array $lastResponse): array
     {
         $order = [];
-        if (EstPos::class === $gatewayClass || EstV3Pos::class === $gatewayClass) {
+        if (EstPos::class === $gatewayClass || EstV3Pos::class === $gatewayClass || IyzicoPos::class === $gatewayClass) {
             $order = [
                 'id' => $lastResponse['order_id'],
             ];
@@ -252,6 +265,13 @@ trait PaymentTestTrait
                 'start_date' => $txTime->modify('-1 day'),
                 'end_date'   => $txTime->modify('+1 day'),
             ];
+        } elseif (\Mews\Pos\Gateways\IyzicoPos::class === $gatewayClass) {
+            $order = [
+                'id' => $lastResponse['order_id'],
+            ];
+            if (isset($lastResponse['transaction_id'])) {
+                $order['transaction_id'] = $lastResponse['transaction_id'];
+            }
         }
 
         return $order;
@@ -264,6 +284,13 @@ trait PaymentTestTrait
             return [
                 // odeme tarihi
                 'transaction_date' => $extraData['transaction_date'] ?? $txTime,
+            ];
+        }
+
+        if (IyzicoPos::class === $gatewayClass) {
+            return [
+                'transaction_date' => $extraData['transaction_date'] ?? $txTime,
+                'page'             => 1,
             ];
         }
 
@@ -339,6 +366,8 @@ trait PaymentTestTrait
         } elseif (\Mews\Pos\Gateways\PayFlexV4Pos::class === $gatewayClass || \Mews\Pos\Gateways\PayFlexCPV4Pos::class === $gatewayClass) {
             // çalışmazsa $lastResponse['all']['ReferenceTransactionId']; ile denenmesi gerekiyor.
             $refundOrder['transaction_id'] = $lastResponse['transaction_id'];
+        } elseif (IyzicoPos::class === $gatewayClass) {
+            $refundOrder['transaction_id'] = $lastResponse['transaction_id'];
         } elseif (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNet::class === $gatewayClass) {
             /**
              * payment_model:
@@ -349,5 +378,59 @@ trait PaymentTestTrait
         }
 
         return $refundOrder;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function getIyzicoOrderExtraFields(): array
+    {
+        return [
+            'buyer' => [
+                'id'                   => 'BY789',
+                'name'                 => 'John',
+                'surname'              => 'Doe',
+                'identity_number'      => '74300864791',
+                'email'                => 'email@email.com',
+                'gsm_number'           => '+905350000000',
+                'registration_address' => 'Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1',
+                'city'                 => 'Istanbul',
+                'country'              => 'Turkey',
+                'zip_code'             => '34732',
+                'ip'                   => '127.0.0.1',
+            ],
+            'shipping_address' => [
+                'contact_name' => 'John Doe',
+                'city'         => 'Istanbul',
+                'country'      => 'Turkey',
+                'address'      => 'Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1',
+                'zip_code'     => '34732',
+            ],
+            'billing_address' => [
+                'contact_name' => 'John Doe',
+                'city'         => 'Istanbul',
+                'country'      => 'Turkey',
+                'address'      => 'Nidakule Göztepe, Merdivenköy Mah. Bora Sok. No:1',
+                'zip_code'     => '34732',
+            ],
+            'basket_items' => [
+                [
+                    'id'        => 'BI101',
+                    'name'      => 'Binocular',
+                    'category1' => 'Collectibles',
+                    'category2' => 'Accessories',
+                    'item_type' => 'PHYSICAL',
+                    'price'     => 0.3,
+                ],
+                [
+                    'id'        => 'BI102',
+                    'name'      => 'Game code',
+                    'category1' => 'Game',
+                    'category2' => 'Online Game Items',
+                    'item_type' => 'VIRTUAL',
+                    'price'     => 9.71,
+                ],
+            ],
+        ];
     }
 }

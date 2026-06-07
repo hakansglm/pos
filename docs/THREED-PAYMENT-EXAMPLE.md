@@ -235,8 +235,19 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
              * form verisini oluşturmak için true yapabilirsiniz.
              * Yine de bazı gatewaylerde kartsız form verisi oluşturulamıyor.
              */
-            false // optional, default: false
+            false, // optional, default: false
+            /**
+             * İsteğe bağlı: 3D form verisinin dönüş formatını belirtir.
+             * PosInterface::FORM_FORMAT_ARRAY: gateway URL, HTTP metodu ve form alanlarını içeren dizi döner.
+             * PosInterface::FORM_FORMAT_HTML: hazır HTML form string'i döner.
+             * Belirtilmezse (null) gateway'in varsayılan formatı kullanılır.
+             * Desteklenmeyen format talep edilirse UnsupportedFormFormatException fırlatılır.
+             */
+            // null // $formFormat, default: null
         );
+    } catch (\Mews\Pos\Exceptions\UnsupportedFormFormatException $e) {
+        var_dump($e);
+        exit;
     } catch (\InvalidArgumentException $e) {
         // örneğin kart bilgisi sağlanmadığında bu exception'i alırsınız.
         var_dump($e);
@@ -249,6 +260,11 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
     }
     ```
     ```php
+    <?php if (is_string($formData)) : ?>
+        <?= $formData; ?>
+    <?php elseif ($formData['method'] === 'GET' && $formData['inputs'] === []):
+        header('Location: '.$formData['gateway']);
+    else: ?>
     // $formData içeriği HTML forma render ediyoruz ve kullanıcıyı banka gateway'ine yönlendiriyoruz.
     <form method="<?= $formData['method']; ?>" action="<?= $formData['gateway']; ?>"  class="redirect-form" role="form">
         <?php foreach ($formData['inputs'] as $key => $value) : ?>
@@ -267,6 +283,7 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
             redirectForm.submit();
         }
     </script>
+    <?php endif; ?>
     ```
     **response.php (gateway'den döndükten sonra çalışacak kod)**
 

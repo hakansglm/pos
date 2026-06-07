@@ -13,7 +13,12 @@ require '../../_templates/_header.php';
 function createOrderHistoryOrder(string $gatewayClass, array $lastResponse): array
 {
     $order = [];
-    if (\Mews\Pos\Gateways\EstPos::class === $gatewayClass || \Mews\Pos\Gateways\EstV3Pos::class === $gatewayClass) {
+    if (
+        \Mews\Pos\Gateways\EstPos::class === $gatewayClass
+        || \Mews\Pos\Gateways\EstV3Pos::class === $gatewayClass
+        || \Mews\Pos\Gateways\IyzicoPos::class === $gatewayClass
+        || \Mews\Pos\Gateways\PayForPos::class === $gatewayClass
+    ) {
         $order = [
             'id' => $lastResponse['order_id'],
         ];
@@ -34,10 +39,6 @@ function createOrderHistoryOrder(string $gatewayClass, array $lastResponse): arr
             'page'             => 1, // optional, default: 1
             'page_size'        => 10, // optional, default: 10
         ];
-    } elseif (\Mews\Pos\Gateways\PayForPos::class === $gatewayClass) {
-        $order = [
-            'id' => $lastResponse['order_id'],
-        ];
     } elseif (\Mews\Pos\Gateways\GarantiPos::class === $gatewayClass) {
         $order = [
             'id'       => $lastResponse['order_id'],
@@ -55,6 +56,13 @@ function createOrderHistoryOrder(string $gatewayClass, array $lastResponse): arr
             'start_date' => $txTime->modify('-1 day'),
             'end_date'   => $txTime->modify('+1 day'),
         ];
+    } elseif (\Mews\Pos\Gateways\IyzicoPos::class === $gatewayClass) {
+        $order = [
+            'id' => $lastResponse['order_id'],
+        ];
+        if (isset($lastResponse['transaction_id'])) {
+            $order['transaction_id'] = $lastResponse['transaction_id'];
+        }
     }
 
     return $order;

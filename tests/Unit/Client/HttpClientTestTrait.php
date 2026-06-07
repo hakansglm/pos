@@ -13,25 +13,28 @@ use Psr\Http\Message\StreamInterface;
 trait HttpClientTestTrait
 {
     /**
-     * @param string                                    $requestBody
+     * @param string|null                               $requestBody null for requests with no body (e.g. GET)
      * @param array<array{name: string, value: string}> $headers
      *
      * @return RequestInterface
      */
-    private function prepareHttpRequest(string $requestBody, array $headers): RequestInterface
+    private function prepareHttpRequest(?string $requestBody, array $headers): RequestInterface
     {
-        $requestStream = $this->createMock(StreamInterface::class);
-        $request       = $this->createMock(RequestInterface::class);
+        $request = $this->createMock(RequestInterface::class);
 
-        $this->streamFactory->expects($this->once())
-            ->method('createStream')
-            ->with($requestBody)
-            ->willReturn($requestStream);
+        if (null !== $requestBody) {
+            $requestStream = $this->createMock(StreamInterface::class);
 
-        $request->expects($this->once())
-            ->method('withBody')
-            ->with($requestStream)
-            ->willReturn($request);
+            $this->streamFactory->expects($this->once())
+                ->method('createStream')
+                ->with($requestBody)
+                ->willReturn($requestStream);
+
+            $request->expects($this->once())
+                ->method('withBody')
+                ->with($requestStream)
+                ->willReturn($request);
+        }
 
         if (count($headers) === 1) {
             $request->expects(self::once())

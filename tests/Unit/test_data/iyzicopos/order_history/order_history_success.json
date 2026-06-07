@@ -1,0 +1,112 @@
+{
+    "status": "success",
+    "locale": "tr",
+    "systemTime": 1781209780751,
+    "conversationId": "20260611C995",
+    "payments": [
+        {
+            "paymentId": 35790626,
+            "paymentStatus": 1,
+            "paymentRefundStatus": "TOTALLY_REFUNDED",
+            "price": 10.01,
+            "paidPrice": 10.01,
+            "installment": 1,
+            "merchantCommissionRate": 0,
+            "merchantCommissionRateAmount": 0,
+            "iyziCommissionRateAmount": 0.349349,
+            "iyziCommissionFee": 0.25,
+            "paymentConversationId": "20260611C995",
+            "fraudStatus": 1,
+            "cardType": "CREDIT_CARD",
+            "cardAssociation": "VISA",
+            "cardFamily": "Denizbank CC",
+            "binNumber": "460345",
+            "lastFourDigits": "0000",
+            "basketId": "29035615",
+            "currency": "TRY",
+            "connectorName": "IYZI_POS",
+            "authCode": "099030",
+            "threeDS": false,
+            "phase": "AUTH",
+            "acquirerBankName": "iyziPos",
+            "hostReference": "mock00003iyzihostrfn",
+            "createdDate": "2026-06-11T23:29:31Z",
+            "cancels": [
+                {
+                    "refundId": 5661418,
+                    "cancelConversationId": "20260611C995",
+                    "refundPrice": 10.01,
+                    "refundStatus": 1,
+                    "createdDate": "2026-06-11T23:29:34Z",
+                    "currencyCode": "TRY",
+                    "authCode": "911288",
+                    "hostReference": "mock00003iyzihostrfn-02"
+                }
+            ],
+            "itemTransactions": [
+                {
+                    "paymentTransactionId": 37705909,
+                    "transactionStatus": 2,
+                    "price": 9.71,
+                    "paidPrice": 9.71,
+                    "merchantCommissionRate": 0,
+                    "merchantCommissionRateAmount": 0,
+                    "iyziCommissionRateAmount": 0.338879,
+                    "iyziCommissionFee": 0.24250749,
+                    "blockageRate": 0,
+                    "blockageRateAmountMerchant": 0,
+                    "blockageRateAmountSubMerchant": 0,
+                    "blockageResolvedDate": "2026-06-19T00:00:00Z",
+                    "subMerchantPrice": 0,
+                    "subMerchantPayoutRate": 0,
+                    "subMerchantPayoutAmount": 0,
+                    "merchantPayoutAmount": 9.12861351,
+                    "convertedPayout": {
+                        "paidPrice": 9.71,
+                        "iyziCommissionRateAmount": 0.338879,
+                        "iyziCommissionFee": 0.24250749,
+                        "blockageRateAmountMerchant": 0,
+                        "blockageRateAmountSubMerchant": 0,
+                        "subMerchantPayoutAmount": 0,
+                        "merchantPayoutAmount": 9.12861351,
+                        "iyziConversionRate": 0,
+                        "iyziConversionRateAmount": 0,
+                        "currency": "TRY"
+                    },
+                    "refunds": []
+                },
+                {
+                    "paymentTransactionId": 37705908,
+                    "transactionStatus": 2,
+                    "price": 0.3,
+                    "paidPrice": 0.3,
+                    "merchantCommissionRate": 0,
+                    "merchantCommissionRateAmount": 0,
+                    "iyziCommissionRateAmount": 0.01047,
+                    "iyziCommissionFee": 0.00749251,
+                    "blockageRate": 0,
+                    "blockageRateAmountMerchant": 0,
+                    "blockageRateAmountSubMerchant": 0,
+                    "blockageResolvedDate": "2026-06-19T00:00:00Z",
+                    "subMerchantPrice": 0,
+                    "subMerchantPayoutRate": 0,
+                    "subMerchantPayoutAmount": 0,
+                    "merchantPayoutAmount": 0.28203749,
+                    "convertedPayout": {
+                        "paidPrice": 0.3,
+                        "iyziCommissionRateAmount": 0.01047,
+                        "iyziCommissionFee": 0.00749251,
+                        "blockageRateAmountMerchant": 0,
+                        "blockageRateAmountSubMerchant": 0,
+                        "subMerchantPayoutAmount": 0,
+                        "merchantPayoutAmount": 0.28203749,
+                        "iyziConversionRate": 0,
+                        "iyziConversionRateAmount": 0,
+                        "currency": "TRY"
+                    },
+                    "refunds": []
+                }
+            ]
+        }
+    ]
+}

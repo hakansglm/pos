@@ -10,6 +10,9 @@ use Mews\Pos\Client\AkbankPosHttpClient;
 use Mews\Pos\Client\EstPosHttpClient;
 use Mews\Pos\Client\GarantiPosHttpClient;
 use Mews\Pos\Client\InterPosHttpClient;
+use Mews\Pos\Client\IyzicoPos3DFormHttpClient;
+use Mews\Pos\Client\IyzicoPosHttpClient;
+use Mews\Pos\Client\IyzicoPosQueryApiHttpClient;
 use Mews\Pos\Client\KuveytPos3DFormHttpClient;
 use Mews\Pos\Client\KuveytPosHttpClient;
 use Mews\Pos\Client\ParamPosHttpClient;
@@ -25,6 +28,7 @@ use Mews\Pos\Client\ToslaPosHttpClient;
 use Mews\Pos\Client\VakifKatilimPos3DFormHttpClient;
 use Mews\Pos\Client\VakifKatilimPosHttpClient;
 use Mews\Pos\Crypt\CryptInterface;
+use Mews\Pos\Crypt\IyzicoPosCrypt;
 use Mews\Pos\DataMapper\RequestValueMapper\RequestValueMapperInterface;
 use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Serializer\SerializerInterface;
@@ -39,13 +43,13 @@ class HttpClientFactoryTest extends TestCase
     /**
      * @dataProvider createForGatewayDataProvider
      */
-    public function testCreateForGateway(string $clientClass): void
+    public function testCreateForGateway(string $clientClass, string $cryptClass = CryptInterface::class): void
     {
-        $client  = PosHttpClientFactory::create(
+        $client = PosHttpClientFactory::create(
             $clientClass,
             '',
             $this->createMock(SerializerInterface::class),
-            $this->createMock(CryptInterface::class),
+            $this->createMock($cryptClass),
             $this->createMock(RequestValueMapperInterface::class),
             $this->createMock(LoggerInterface::class),
             $this->createMock(ClientInterface::class),
@@ -63,9 +67,11 @@ class HttpClientFactoryTest extends TestCase
             [EstPosHttpClient::class],
             [GarantiPosHttpClient::class],
             [InterPosHttpClient::class],
+            [IyzicoPos3DFormHttpClient::class,    IyzicoPosCrypt::class],
+            [IyzicoPosHttpClient::class,           IyzicoPosCrypt::class],
+            [IyzicoPosQueryApiHttpClient::class,   IyzicoPosCrypt::class],
             [KuveytPos3DFormHttpClient::class],
             [KuveytPosHttpClient::class],
-            [ParamPosHttpClient::class],
             [ParamPosHttpClient::class],
             [PayFlexCPV4Pos3DFormHttpClient::class],
             [PayFlexCPV4PosHttpClient::class],

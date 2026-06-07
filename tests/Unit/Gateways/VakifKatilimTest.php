@@ -16,6 +16,7 @@ use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Entity\Account\KuveytPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
+use Mews\Pos\Exceptions\UnsupportedFormFormatException;
 use Mews\Pos\Exceptions\UnsupportedPaymentModelException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
@@ -221,20 +222,21 @@ class VakifKatilimTest extends TestCase
      * @dataProvider threeDFormDataBadInputsProvider
      */
     public function testGet3DFormDataWithBadInputs(
-        array  $order,
-        string $paymentModel,
-        string $txType,
-        bool   $isWithCard,
-        bool   $createWithoutCard,
-        string $expectedExceptionClass,
-        string $expectedExceptionMsg
+        array   $order,
+        string  $paymentModel,
+        string  $txType,
+        bool    $isWithCard,
+        bool    $createWithoutCard,
+        string  $expectedExceptionClass,
+        string  $expectedExceptionMsg,
+        ?string $formFormat = null
     ): void {
         $card = $isWithCard ? $this->card : null;
 
         $this->expectException($expectedExceptionClass);
         $this->expectExceptionMessage($expectedExceptionMsg);
 
-        $this->pos->get3DFormData($order, $paymentModel, $txType, $card, $createWithoutCard);
+        $this->pos->get3DFormData($order, $paymentModel, $txType, $card, $createWithoutCard, $formFormat);
     }
 
     /**
@@ -797,6 +799,26 @@ class VakifKatilimTest extends TestCase
                 'create_with_card'       => false,
                 'expectedExceptionClass' => \LogicException::class,
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay]',
+            ],
+            'unsupported_form_format_3d_host'   => [
+                'order'                  => ['id' => '2020110828BC'],
+                'paymentModel'           => PosInterface::MODEL_3D_HOST,
+                'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
+                'isWithCard'             => false,
+                'create_without_card'    => false,
+                'expectedExceptionClass' => UnsupportedFormFormatException::class,
+                'expectedExceptionMsg'   => 'Unsupported 3D form format!',
+                'formFormat'             => PosInterface::FORM_FORMAT_HTML,
+            ],
+            'unsupported_form_format_3d_secure' => [
+                'order'                  => ['id' => '2020110828BC'],
+                'paymentModel'           => PosInterface::MODEL_3D_SECURE,
+                'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
+                'isWithCard'             => true,
+                'create_without_card'    => false,
+                'expectedExceptionClass' => UnsupportedFormFormatException::class,
+                'expectedExceptionMsg'   => 'Unsupported 3D form format!',
+                'formFormat'             => PosInterface::FORM_FORMAT_ARRAY,
             ],
         ];
     }

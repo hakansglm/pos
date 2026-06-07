@@ -42,6 +42,7 @@ body:
         - PosNetV1Pos
         - ToslaPos
         - VakifKatilimPos
+        - IyzicoPos
       default: 0
     validations:
       required: true

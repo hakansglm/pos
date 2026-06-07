@@ -18,6 +18,7 @@ use Mews\Pos\Entity\Account\ParamPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exceptions\HashMismatchException;
+use Mews\Pos\Exceptions\UnsupportedFormFormatException;
 use Mews\Pos\Exceptions\UnsupportedPaymentModelException;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Factory\AccountFactory;
@@ -181,18 +182,19 @@ class Param3DHostPosTest extends TestCase
      * @dataProvider threeDFormDataBadInputsProvider
      */
     public function testGet3DFormDataWithBadInputs(
-        array  $order,
-        string $paymentModel,
-        string $txType,
-        bool   $isWithCard,
-        string $expectedExceptionClass,
-        string $expectedExceptionMsg
+        array   $order,
+        string  $paymentModel,
+        string  $txType,
+        bool    $isWithCard,
+        string  $expectedExceptionClass,
+        string  $expectedExceptionMsg,
+        ?string $formFormat = null
     ): void {
         $card = $isWithCard ? $this->createMock(CreditCardInterface::class) : null;
         $this->expectException($expectedExceptionClass);
         $this->expectExceptionMessage($expectedExceptionMsg);
 
-        $this->pos->get3DFormData($order, $paymentModel, $txType, $card);
+        $this->pos->get3DFormData($order, $paymentModel, $txType, $card, false, $formFormat);
     }
 
     public function testMake3DPayment(): void
@@ -345,6 +347,15 @@ class Param3DHostPosTest extends TestCase
                 'isWithCard'             => true,
                 'expectedExceptionClass' => \LogicException::class,
                 'expectedExceptionMsg'   => 'Mews\Pos\Gateways\Param3DHostPos ödeme altyapıda [pay] işlem tipi [3d_host] ödeme model(ler) desteklemektedir. Sağlanan ödeme model: [3d].',
+            ],
+            'unsupported_form_format'   => [
+                'order'                  => ['id' => '2020110828BC'],
+                'paymentModel'           => PosInterface::MODEL_3D_HOST,
+                'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
+                'isWithCard'             => false,
+                'expectedExceptionClass' => UnsupportedFormFormatException::class,
+                'expectedExceptionMsg'   => 'Unsupported 3D form format!',
+                'formFormat'             => PosInterface::FORM_FORMAT_HTML,
             ],
         ];
     }

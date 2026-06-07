@@ -19,6 +19,7 @@ use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Entity\Account\PayFlexAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
+use Mews\Pos\Exceptions\UnsupportedFormFormatException;
 use Mews\Pos\Exceptions\UnsupportedPaymentModelException;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Factory\AccountFactory;
@@ -251,18 +252,19 @@ class PayFlexCPV4PosTest extends TestCase
      * @dataProvider threeDFormDataBadInputsProvider
      */
     public function testGet3DFormDataWithBadInputs(
-        array  $order,
-        string $paymentModel,
-        string $txType,
-        bool   $isWithCard,
-        bool   $createWithoutCard,
-        string $expectedExceptionClass
+        array   $order,
+        string  $paymentModel,
+        string  $txType,
+        bool    $isWithCard,
+        bool    $createWithoutCard,
+        string  $expectedExceptionClass,
+        ?string $formFormat = null
     ): void {
         $card = $isWithCard ? $this->card : null;
 
         $this->expectException($expectedExceptionClass);
 
-        $this->pos->get3DFormData($order, $paymentModel, $txType, $card, $createWithoutCard);
+        $this->pos->get3DFormData($order, $paymentModel, $txType, $card, $createWithoutCard, $formFormat);
     }
 
     public function testMake3DPayment(): void
@@ -530,6 +532,15 @@ class PayFlexCPV4PosTest extends TestCase
                 'isWithCard'             => false,
                 'create_without_card'    => true,
                 'expectedExceptionClass' => \LogicException::class,
+            ],
+            'unsupported_form_format'   => [
+                'order'                  => ['id' => '2020110828BC'],
+                'paymentModel'           => PosInterface::MODEL_3D_PAY,
+                'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
+                'isWithCard'             => true,
+                'create_without_card'    => false,
+                'expectedExceptionClass' => UnsupportedFormFormatException::class,
+                'formFormat'             => PosInterface::FORM_FORMAT_HTML,
             ],
         ];
     }

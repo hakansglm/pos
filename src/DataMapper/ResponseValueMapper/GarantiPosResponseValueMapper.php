@@ -83,7 +83,7 @@ class GarantiPosResponseValueMapper extends AbstractResponseValueMapper
     /**
      * @inheritDoc
      */
-    public function mapSecureType(string $securityType, ?string $apiRequestTxType = null): ?string
+    public function mapSecureType($securityType, ?string $apiRequestTxType = null): ?string
     {
         if (PosInterface::TX_TYPE_HISTORY === $apiRequestTxType) {
             // mappings for the field SafeType of history response

@@ -17,6 +17,7 @@ use Mews\Pos\Entity\Account\PayForAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exceptions\HashMismatchException;
+use Mews\Pos\Exceptions\UnsupportedFormFormatException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateways\PayForPos;
@@ -178,20 +179,21 @@ class PayForTest extends TestCase
      * @dataProvider threeDFormDataBadInputsProvider
      */
     public function testGet3DFormDataWithBadInputs(
-        array  $order,
-        string $paymentModel,
-        string $txType,
-        bool   $isWithCard,
-        bool   $createWithoutCard,
-        string $expectedExceptionClass,
-        string $expectedExceptionMessage
+        array   $order,
+        string  $paymentModel,
+        string  $txType,
+        bool    $isWithCard,
+        bool    $createWithoutCard,
+        string  $expectedExceptionClass,
+        string  $expectedExceptionMessage,
+        ?string $formFormat = null
     ): void {
         $card = $isWithCard ? $this->card : null;
 
         $this->expectException($expectedExceptionClass);
         $this->expectExceptionMessage($expectedExceptionMessage);
 
-        $this->pos->get3DFormData($order, $paymentModel, $txType, $card, $createWithoutCard);
+        $this->pos->get3DFormData($order, $paymentModel, $txType, $card, $createWithoutCard, $formFormat);
     }
 
     /**
@@ -873,6 +875,16 @@ class PayForTest extends TestCase
                 'create_with_card'       => false,
                 'expectedExceptionClass' => \LogicException::class,
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay, pre]',
+            ],
+            'unsupported_form_format'   => [
+                'order'                  => ['id' => '2020110828BC'],
+                'paymentModel'           => PosInterface::MODEL_3D_HOST,
+                'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
+                'isWithCard'             => false,
+                'create_without_card'    => false,
+                'expectedExceptionClass' => UnsupportedFormFormatException::class,
+                'expectedExceptionMsg'   => 'Unsupported 3D form format!',
+                'formFormat'             => PosInterface::FORM_FORMAT_HTML,
             ],
         ];
     }

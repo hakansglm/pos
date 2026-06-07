@@ -19,6 +19,6 @@
     setTimeout(function () {
         document.forms['redirect-form'].submit();
     }, 1000);
-<\/script>
+</script>
 </body>
 </html>

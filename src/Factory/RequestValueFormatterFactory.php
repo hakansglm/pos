@@ -9,6 +9,7 @@ namespace Mews\Pos\Factory;
 use DomainException;
 use Mews\Pos\DataMapper\RequestValueFormatter\AkbankPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\EstPosRequestValueFormatter;
+use Mews\Pos\DataMapper\RequestValueFormatter\IyzicoPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\GarantiPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\InterPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\KuveytPosRequestValueFormatter;
@@ -37,6 +38,7 @@ class RequestValueFormatterFactory
         EstPosRequestValueFormatter::class,
         GarantiPosRequestValueFormatter::class,
         InterPosRequestValueFormatter::class,
+        IyzicoPosRequestValueFormatter::class,
         KuveytPosRequestValueFormatter::class,
         VakifKatilimPosRequestValueFormatter::class,
         ParamPosRequestValueFormatter::class,

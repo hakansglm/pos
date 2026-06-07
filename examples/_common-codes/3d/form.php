@@ -12,6 +12,7 @@ use Mews\Pos\PosInterface;
 // ilgili bankanin _config.php dosyasi load ediyoruz.
 // ornegin /examples/finansbank-payfor/3d/_config.php
 require '_config.php';
+require '../../_templates/_header.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: '.$baseUrl.'index.php');
@@ -28,6 +29,7 @@ $order       = createPaymentOrder(
     ($_POST['is_recurring'] ?? 0) == 1,
     $_POST['lang'] ?? PosInterface::LANG_TR
 );
+
 $_SESSION['order'] = $order;
 $_SESSION['tx'] = $transaction;
 
@@ -63,7 +65,7 @@ if (in_array(get_class($pos), $formVerisiniOlusturmakIcinApiIstegiGonderenGatewa
     });
 }
 
-// KuveytVos TDV2.0.0 icin ozel biri durum
+// KuveytPos TDV2.0.0 icin ozel biri durum
 $eventDispatcher->addListener(
     RequestDataPreparedEvent::class,
     function (RequestDataPreparedEvent $requestDataPreparedEvent): void {
@@ -171,7 +173,15 @@ try {
          * form verisini oluşturmak için true yapabilirsiniz.
          * Yine de bazı gatewaylerde kartsız form verisi oluşturulamıyor.
          */
-        false // default: false
+        false, // default: false
+        /**
+         * İsteğe bağlı: 3D form verisinin dönüş formatını belirtir.
+         * PosInterface::FORM_FORMAT_ARRAY: gateway URL, HTTP metodu ve form alanlarını içeren dizi döner.
+         * PosInterface::FORM_FORMAT_HTML: hazır HTML form string'i döner.
+         * Belirtilmezse (null) gateway'in varsayılan formatı kullanılır.
+         * Desteklenmeyen format talep edilirse UnsupportedFormFormatException fırlatılır.
+         */
+        // null // $formFormat, default: null
     );
 } catch (\InvalidArgumentException $e) {
     // örneğin kart bilgisi sağlanmadığında bu exception'i alırsınız.
@@ -241,7 +251,9 @@ $flowType = $_POST['payment_flow_type'] ?? null;
 <?php if ('by_redirection' === $flowType) : ?>
     <?php if (is_string($formData)) : ?>
         <?= $formData; ?>
-    <?php else: ?>
+    <?php elseif ($formData['inputs'] === [] && $formData['method'] === 'GET'):
+        header('Location: '.$formData['gateway']);
+    else: ?>
         <!--
         Sık kullanılan yöntem, 3D form verisini bir HTML form içine basıp JS ile otomatik submit ediyoruz.
         Submit sonucu kullanıcı banka sayfasıne yönlendirilir, işlem sonucundan ise duruma göre websitinizin
@@ -257,8 +269,12 @@ $flowType = $_POST['payment_flow_type'] ?? null;
         </script>
     <?php endif; ?>
 <?php elseif ('by_iframe' === $flowType || 'by_popup_window' === $flowType):
+    $gatewayUrl   = null;
+    $renderedForm = null;
     if (is_string($formData)) {
         $renderedForm = $formData;
+    } elseif ($formData['method'] === 'GET' && $formData['inputs'] === []) {
+        $gatewayUrl = $formData['gateway'];
     } else {
         ob_start();
         include('../../_templates/_redirect_iframe_or_popup_window_form.php');
@@ -330,17 +346,18 @@ $flowType = $_POST['payment_flow_type'] ?? null;
             myModal.hide();
         });
 
-        /**
-         * modal box'ta iframe ile ödeme yöntemi seçilmiş.
-         * modal box içinde yeni iframe oluşturuyoruz ve iframe içine $renderedForm verisini basıyoruz.
-         */
+        const iframeSrc    = <?= json_encode($gatewayUrl); ?>;
+        const iframeSrcdoc = <?= json_encode($renderedForm); ?>;
+
         let iframe = document.createElement('iframe');
         document.getElementById("iframe-modal-body").appendChild(iframe);
         iframe.style.height = '500px';
         iframe.style.width = '410px';
-        iframe.contentWindow.document.open();
-        iframe.contentWindow.document.write(`<?= $renderedForm; ?>`);
-        iframe.contentWindow.document.close();
+        if (iframeSrc !== null) {
+            iframe.src = iframeSrc;
+        } else {
+            iframe.srcdoc = iframeSrcdoc;
+        }
         let modalElement = document.getElementById('iframe-modal');
         let myModal = new bootstrap.Modal(modalElement, {
             keyboard: false
@@ -361,18 +378,23 @@ $flowType = $_POST['payment_flow_type'] ?? null;
 <?php elseif ('by_popup_window' === $flowType) : ?>
     <script>
 
+        const gatewayUrl   = <?= json_encode($gatewayUrl); ?>;
+        const renderedForm = <?= json_encode($renderedForm); ?>;
+
         windowWidth = 400;
         let leftPosition = (screen.width / 2) - (windowWidth / 2);
-        let popupWindow = window.open('about:blank', 'popup_window', 'toolbar=no,scrollbars=no,location=no,statusbar=no,menubar=no,resizable=no,width=' + windowWidth + ',height=500,left=' + leftPosition + ',top=234');
+        let popupUrl = gatewayUrl !== null
+            ? gatewayUrl
+            : URL.createObjectURL(new Blob([renderedForm], {type: 'text/html'}));
+        let popupWindow = window.open(
+            popupUrl,
+            'popup_window',
+            'toolbar=no,scrollbars=no,location=no,statusbar=no,menubar=no,resizable=no,width=' + windowWidth + ',height=500,left=' + leftPosition + ',top=234'
+        );
         if (null === popupWindow) {
             // pop up bloke edilmis.
             alert("pop window'a izin veriniz.");
         } else {
-            /**
-             * Popup ile ödeme yöntemi seçilmiş.
-             * Popup window içine $renderedForm verisini basıyoruz.
-             */
-            popupWindow.document.write(`<?= $renderedForm; ?>`);
 
             // fokusu popup windowa odakla
             window.target = 'popup_window';

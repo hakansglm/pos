@@ -36,7 +36,9 @@ function createRefundOrder(string $gatewayClass, array $lastResponse, string $ip
     } elseif (\Mews\Pos\Gateways\PayFlexV4Pos::class === $gatewayClass || \Mews\Pos\Gateways\PayFlexCPV4Pos::class === $gatewayClass) {
         // çalışmazsa $lastResponse['all']['ReferenceTransactionId']; ile denenmesi gerekiyor.
         $refundOrder['transaction_id'] = $lastResponse['transaction_id'];
-    } elseif (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNet::class === $gatewayClass) {
+    } elseif (\Mews\Pos\Gateways\IyzicoPos::class === $gatewayClass) {
+        $refundOrder['transaction_id'] = $lastResponse['transaction_id'];
+    }  elseif (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNet::class === $gatewayClass) {
         /**
          * payment_model: siparis olusturulurken kullanilan odeme modeli.
          * orderId'yi dogru şekilde formatlamak icin zorunlu.

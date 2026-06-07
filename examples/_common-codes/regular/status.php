@@ -17,6 +17,11 @@ function createStatusOrder(string $gatewayClass, array $lastResponse, string $ip
         'currency' => $lastResponse['currency'],
         'ip'       => filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? $ip : '127.0.0.1',
     ];
+    if (\Mews\Pos\Gateways\IyzicoPos::class === $gatewayClass) {
+        if (isset($lastResponse['transaction_id'])) {
+            $statusOrder['transaction_id'] = $lastResponse['transaction_id'];
+        }
+    }
     if (\Mews\Pos\Gateways\KuveytPos::class === $gatewayClass) {
         $statusOrder['remote_order_id'] = $lastResponse['remote_order_id']; // OrderId
     }

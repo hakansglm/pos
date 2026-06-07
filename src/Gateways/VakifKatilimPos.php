@@ -14,6 +14,7 @@ use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Entity\Account\KuveytPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
+use Mews\Pos\Exceptions\UnsupportedFormFormatException;
 use Mews\Pos\Exceptions\UnsupportedPaymentModelException;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\PosInterface;
@@ -86,13 +87,17 @@ class VakifKatilimPos extends AbstractGateway
      *
      * @inheritDoc
      */
-    public function get3DFormData(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null, bool $createWithoutCard = false)
+    public function get3DFormData(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null, bool $createWithoutCard = false, ?string $formFormat = null)
     {
         $this->check3DFormInputs($paymentModel, $txType, $creditCard, $createWithoutCard);
 
         $this->logger->debug('preparing 3D form data');
 
         if (PosInterface::MODEL_3D_HOST === $paymentModel) {
+            if (PosInterface::FORM_FORMAT_HTML === $formFormat) {
+                throw new UnsupportedFormFormatException();
+            }
+
             return $this->requestDataMapper->create3DFormData(
                 $this->account,
                 $order,
@@ -100,6 +105,10 @@ class VakifKatilimPos extends AbstractGateway
                 $txType,
                 $this->get3DGatewayURL($paymentModel)
             );
+        }
+
+        if (PosInterface::FORM_FORMAT_ARRAY === $formFormat) {
+            throw new UnsupportedFormFormatException();
         }
 
         return $this->sendEnrollmentRequest(

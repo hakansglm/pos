@@ -10,6 +10,7 @@ use DomainException;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\RequestDataMapper\AkbankPosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestDataMapper\EstPosRequestDataMapper;
+use Mews\Pos\DataMapper\RequestDataMapper\IyzicoPosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestDataMapper\EstV3PosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestDataMapper\GarantiPosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestDataMapper\InterPosRequestDataMapper;
@@ -43,6 +44,7 @@ class RequestDataMapperFactory
         EstV3PosRequestDataMapper::class,
         GarantiPosRequestDataMapper::class,
         InterPosRequestDataMapper::class,
+        IyzicoPosRequestDataMapper::class,
         KuveytPosRequestDataMapper::class,
         ParamPosRequestDataMapper::class,
         Param3DHostPosRequestDataMapper::class,

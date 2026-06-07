@@ -15,6 +15,7 @@ use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Entity\Account\KuveytPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
+use Mews\Pos\Exceptions\UnsupportedFormFormatException;
 use Mews\Pos\Exceptions\UnsupportedPaymentModelException;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\PosInterface;
@@ -102,9 +103,13 @@ class KuveytPos extends AbstractGateway
      *
      * @return string
      */
-    public function get3DFormData(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null, bool $createWithoutCard = false): string
+    public function get3DFormData(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null, bool $createWithoutCard = false, ?string $formFormat = null): string
     {
         $this->check3DFormInputs($paymentModel, $txType, $creditCard, $createWithoutCard);
+
+        if (PosInterface::FORM_FORMAT_ARRAY === $formFormat) {
+            throw new UnsupportedFormFormatException();
+        }
 
         $this->logger->debug('preparing 3D form data');
 

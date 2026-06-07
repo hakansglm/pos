@@ -8,8 +8,6 @@ use Mews\Pos\PosInterface;
 // ornegin /examples/finansbank-payfor/3d-host/_config.php
 require '_config.php';
 
-require '../../_templates/_header.php';
-
 $order = createPaymentOrder(
     $pos,
     $paymentModel,
@@ -71,6 +69,16 @@ try {
         $order,
         PosInterface::MODEL_3D_HOST,
         $transaction
+        // null,  // $creditCard, default: null
+        // false, // $createWithoutCard, default: false
+        /**
+         * İsteğe bağlı: 3D form verisinin dönüş formatını belirtir.
+         * PosInterface::FORM_FORMAT_ARRAY: gateway URL, HTTP metodu ve form alanlarını içeren dizi döner.
+         * PosInterface::FORM_FORMAT_HTML: hazır HTML form string'i döner.
+         * Belirtilmezse (null) gateway'in varsayılan formatı kullanılır.
+         * Desteklenmeyen format talep edilirse UnsupportedFormFormatException fırlatılır.
+         */
+        // null   // $formFormat, default: null
     );
 } catch (\LogicException $e) {
     // ödeme modeli veya işlem tipi desteklenmiyorsa bu exception'i alırsınız.
@@ -78,6 +86,23 @@ try {
 } catch (\Exception $e) {
     dd($e);
 }
-
-require '../../_templates/_redirect_form.php';
-require '../../_templates/_footer.php';
+?>
+<?php if (is_string($formData)):
+    require '../../_templates/_header.php';
+    echo $formData;
+    require '../../_templates/_footer.php';
+elseif ($formData['inputs'] === [] && $formData['method'] === 'GET'):
+   header('Location: '.$formData['gateway']);
+else:
+    require '../../_templates/_header.php';
+    require '../../_templates/_redirect_form.php';
+    require '../../_templates/_footer.php';
+?>
+    <script>
+        // Formu JS ile otomatik submit ederek kullaniciyi banka gatewayine yonlendiriyoruz.
+        let redirectForm = document.querySelector('form.redirect-form');
+        if (redirectForm) {
+            redirectForm.submit();
+        }
+    </script>
+<?php endif; ?>

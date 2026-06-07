@@ -1,0 +1,15 @@
+{
+    "status": "success",
+    "locale": "tr",
+    "systemTime": 1781209779555,
+    "conversationId": "202606118557",
+    "paymentId": "35790641",
+    "price": 1,
+    "currency": "TRY",
+    "authCode": "912578",
+    "hostReference": "mock00003iyzihostrfn-02",
+    "refundHostReference": "mock00003iyzihostrfn-02",
+    "retryable": false,
+    "signature": "df8a614684b9a5477e5222ca6ec4d61d8cfeb44adcff7885363bb5ef57da5175",
+    "transactionType": "REFUND"
+}

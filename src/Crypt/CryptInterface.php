@@ -69,7 +69,7 @@ interface CryptInterface
 
 
     /**
-     * generates random string for using as a nonce in requests
+     * generates a random string for using as nonce in requests
      *
      * @param int<1, max> $length
      *

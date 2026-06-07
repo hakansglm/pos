@@ -28,12 +28,12 @@ interface ResponseValueMapperInterface
     public function mapTxType($txType, ?string $paymentModel = null): ?string;
 
     /**
-     * @param string                  $securityType
+     * @param string|bool|int         $securityType
      * @param PosInterface::TX_TYPE_* $apiRequestTxType the transaction type of the API request.
      *
      * @return PosInterface::MODEL_*|null
      */
-    public function mapSecureType(string $securityType, string $apiRequestTxType): ?string;
+    public function mapSecureType($securityType, string $apiRequestTxType): ?string;
 
     /**
      * @param string|int              $currency

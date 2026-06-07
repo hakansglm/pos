@@ -1,0 +1,23 @@
+{
+    "order_id": "20260611C995",
+    "auth_code": "099030",
+    "proc_return_code": "success",
+    "transaction_id": "35790626",
+    "transaction_time": null,
+    "capture_time": null,
+    "error_message": null,
+    "ref_ret_num": "mock00003iyzihostrfn",
+    "order_status": "SUCCESS",
+    "transaction_type": null,
+    "first_amount": 10.01,
+    "capture_amount": 10.01,
+    "status": "approved",
+    "error_code": null,
+    "capture": null,
+    "currency": "TRY",
+    "masked_number": "460345******0000",
+    "refund_amount": null,
+    "installment_count": 0,
+    "refund_time": null,
+    "cancel_time": null
+}

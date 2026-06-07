@@ -64,6 +64,9 @@
                         <li class="nav-item">
                             <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\VakifKatilimPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/vakif-katilim/index.php">VakifKatilimPos</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\IyzicoPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/iyzico/index.php">IyziCo</a>
+                        </li>
                     </ul>
                 </div>
                 </div>

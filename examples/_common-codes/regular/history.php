@@ -18,6 +18,15 @@ function createHistoryOrder(string $gatewayClass, array $extraData, string $ip):
             'transaction_date' => $extraData['transaction_date'] ?? $txTime,
         ];
     }
+    if (\Mews\Pos\Gateways\IyzicoPos::class === $gatewayClass) {
+        return [
+            // odeme tarihi
+            'transaction_date' => $extraData['transaction_date'] ?? $txTime,
+            //'transaction_date' => $extraData['transaction_date'] ?? $txTime->modify('-3 days'),
+            'page'       => 1,
+        ];
+    }
+
 
     if (\Mews\Pos\Gateways\VakifKatilimPos::class === $gatewayClass) {
         return [
