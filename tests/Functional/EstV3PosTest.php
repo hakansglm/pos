@@ -36,11 +36,11 @@ class EstV3PosTest extends TestCase
 
         $account = AccountFactory::createEstPosAccount(
             'payten_v3_hash',
-            '700655000200',
-            'ISBANKAPI',
-            'ISBANK07',
+            (string) getenv('PAYTEN_TERMINAL_ID'),
+            (string) getenv('PAYTEN_USERNAME'),
+            (string) getenv('PAYTEN_PASSWORD'),
             PosInterface::MODEL_3D_SECURE,
-            'TRPS0200',
+            (string) getenv('PAYTEN_STORE_KEY'),
         );
         $this->eventDispatcher = new EventDispatcher();
 

@@ -6,15 +6,15 @@ use Mews\Pos\PosInterface;
 require '../_payment_config.php';
 
 $baseUrl = $bankTestsUrl.'/3d-pay/';
-//account bilgileri kendi account bilgilerinizle degistiriniz
+
 $account = AccountFactory::createGarantiPosAccount(
     'garanti',
-    '7000679',
-    'PROVAUT',
-    '123qweASD/',
-    '30691298',
+    (string) getenv('GARANTI_MERCHANT_ID'),
+    (string) getenv('GARANTI_USERNAME'),
+    (string) getenv('GARANTI_PASSWORD'),
+    (string) getenv('GARANTI_TERMINAL_ID'),
     PosInterface::MODEL_3D_PAY,
-    '12345678'
+    (string) getenv('GARANTI_STORE_KEY')
 );
 
 $pos = getGateway($account, $eventDispatcher);

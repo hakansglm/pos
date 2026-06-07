@@ -35,10 +35,10 @@ class ParamPosTest extends TestCase
 
         $account = AccountFactory::createParamPosAccount(
             'param-pos',
-            10738,
-            'Test',
-            'Test',
-            '0c13d406-873b-403b-9c09-a5766840d98c'
+            (int) getenv('PARAMPOS_MERCHANT_ID'),
+            (string) getenv('PARAMPOS_USERNAME'),
+            (string) getenv('PARAMPOS_PASSWORD'),
+            (string) getenv('PARAMPOS_CLIENT_SECRET')
         );
 
         $this->eventDispatcher = new EventDispatcher();

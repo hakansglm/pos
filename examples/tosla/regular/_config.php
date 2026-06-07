@@ -5,12 +5,12 @@ use Mews\Pos\PosInterface;
 require '../_payment_config.php';
 
 $baseUrl = $bankTestsUrl.'/regular/';
-//account bilgileri kendi account bilgilerinizle degistiriniz
+
 $account = \Mews\Pos\Factory\AccountFactory::createToslaPosAccount(
     'tosla',
-    '1000000494',
-    'POS_ENT_Test_001',
-    'POS_ENT_Test_001!*!*',
+    (string) getenv('TOSLA_MERCHANT_ID'),
+    (string) getenv('TOSLA_USERNAME'),
+    (string) getenv('TOSLA_PASSWORD'),
 );
 
 $pos = getGateway($account, $eventDispatcher);

@@ -36,14 +36,14 @@ class GarantiPosTest extends TestCase
 
         $account = AccountFactory::createGarantiPosAccount(
             'garanti',
-            '7000679',
-            'PROVAUT',
-            '123qweASD/',
-            '30691298',
+            (string) getenv('GARANTI_MERCHANT_ID'),
+            (string) getenv('GARANTI_USERNAME'),
+            (string) getenv('GARANTI_PASSWORD'),
+            (string) getenv('GARANTI_TERMINAL_ID'),
             PosInterface::MODEL_3D_SECURE,
-            '12345678',
-            'PROVRFN',
-            '123qweASD/'
+            (string) getenv('GARANTI_STORE_KEY'),
+            (string) getenv('GARANTI_REFUND_USERNAME'),
+            (string) getenv('GARANTI_REFUND_PASSWORD')
         );
 
         $this->eventDispatcher = new EventDispatcher();

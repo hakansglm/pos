@@ -5,15 +5,14 @@ use Mews\Pos\PosInterface;
 require '../_payment_config.php';
 
 $baseUrl = $bankTestsUrl.'/3d-host/';
-//account bilgileri kendi account bilgilerinizle degistiriniz
+
 $account = \Mews\Pos\Factory\AccountFactory::createParamPosAccount(
     'param-3d-host-pos',
-    10738,
-    'Test',
-    'Test',
-    '0C13D406-873B-403B-9C09-A5766840D98C'
+    (int) getenv('PARAMPOS_3DHOST_MERCHANT_ID'),
+    (string) getenv('PARAMPOS_3DHOST_USERNAME'),
+    (string) getenv('PARAMPOS_3DHOST_PASSWORD'),
+    (string) getenv('PARAMPOS_3DHOST_CLIENT_SECRET')
 );
-
 
 $pos = getGateway($account, $eventDispatcher);
 

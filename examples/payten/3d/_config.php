@@ -5,14 +5,14 @@ use Mews\Pos\PosInterface;
 require '../_payment_config.php';
 
 $baseUrl = $bankTestsUrl.'/3d/';
-//account bilgileri kendi account bilgilerinizle degistiriniz
+
 $account = \Mews\Pos\Factory\AccountFactory::createEstPosAccount(
     'payten_v3_hash',
-    '700655000200',
-    'ISBANKAPI',
-    'ISBANK07',
+    (string) getenv('PAYTEN_TERMINAL_ID'),
+    (string) getenv('PAYTEN_USERNAME'),
+    (string) getenv('PAYTEN_PASSWORD'),
     PosInterface::MODEL_3D_SECURE,
-    'TRPS0200'
+    (string) getenv('PAYTEN_STORE_KEY')
 );
 
 $pos = getGateway($account, $eventDispatcher);

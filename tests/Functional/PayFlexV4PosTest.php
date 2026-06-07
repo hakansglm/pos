@@ -34,9 +34,9 @@ class PayFlexV4PosTest extends TestCase
 
         $account = AccountFactory::createPayFlexAccount(
             'vakifbank',
-            '000100000013506',
-            '123456',
-            'VP000579',
+            (string) getenv('PAYFLEX_CP_MERCHANT_ID'),
+            (string) getenv('PAYFLEX_CP_MERCHANT_PASSWORD'),
+            (string) getenv('PAYFLEX_CP_TERMINAL_ID'),
         );
 
         $this->eventDispatcher = new EventDispatcher();

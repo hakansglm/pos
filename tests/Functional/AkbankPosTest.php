@@ -37,16 +37,16 @@ class AkbankPosTest extends TestCase
 
         $account = AccountFactory::createAkbankPosAccount(
             'akbank-pos',
-            '2023090417500272654BD9A49CF07574',
-            '2023090417500284633D137A249DBBEB',
-            '3230323330393034313735303032363031353172675f357637355f3273387373745f7233725f73323333383737335f323272383774767276327672323531355f',
+            (string) getenv('AKBANKPOS_MERCHANT_ID'),
+            (string) getenv('AKBANKPOS_TERMINAL_ID'),
+            (string) getenv('AKBANKPOS_API_KEY'),
         );
 
         $recurringAccount = AccountFactory::createAkbankPosAccount(
             'akbank-pos',
-            '20230225213454627757B485BC1211C0',
-            '20230225213454678B3D03B9C0057F40',
-            '3230323330323235323133343534353438373832315f38747231375f67326776733233725f76723837725f3735727367673538313737383535337335765f7432',
+            (string) getenv('AKBANKPOS_RECURRING_MERCHANT_ID'),
+            (string) getenv('AKBANKPOS_RECURRING_TERMINAL_ID'),
+            (string) getenv('AKBANKPOS_RECURRING_API_KEY'),
         );
 
         $this->eventDispatcher = new EventDispatcher();

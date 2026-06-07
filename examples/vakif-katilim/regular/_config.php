@@ -8,10 +8,10 @@ $baseUrl = $bankTestsUrl.'/regular/';
 
 $account = \Mews\Pos\Factory\AccountFactory::createKuveytPosAccount(
     'vakif-katilim',
-    '1',
-    'APIUSER',
-    '11111',
-    'kdsnsksl',
+    (string) getenv('VAKIF_KATILIM_MERCHANT_ID'),
+    (string) getenv('VAKIF_KATILIM_USERNAME'),
+    (string) getenv('VAKIF_KATILIM_CUSTOMER_NUMBER'),
+    (string) getenv('VAKIF_KATILIM_PASSWORD'),
 );
 
 $pos = getGateway($account, $eventDispatcher);

@@ -4,14 +4,15 @@ require '../_payment_config.php';
 
 $baseUrl = $bankTestsUrl.'/regular/';
 
-$userCode =  'InterTestApi';
-$userPass = '3';
-$shopCode = '3123';
 //$merchantPass non secure islemler icin kullanilmiyor
-//account bilgileri kendi account bilgilerinizle degistiriniz
-$account = \Mews\Pos\Factory\AccountFactory::createInterPosAccount('denizbank', $shopCode, $userCode, $userPass);
+$account = \Mews\Pos\Factory\AccountFactory::createInterPosAccount(
+    'denizbank',
+    (string) getenv('INTERPOS_SHOP_CODE'),
+    (string) getenv('INTERPOS_USER_CODE'),
+    (string) getenv('INTERPOS_USER_PASS'),
+);
 
 $pos = getGateway($account, $eventDispatcher);
 
 $templateTitle = 'Regular Payment';
-$paymentModel = \Mews\Pos\PosInterface::MODEL_NON_SECURE;
+$paymentModel  = \Mews\Pos\PosInterface::MODEL_NON_SECURE;

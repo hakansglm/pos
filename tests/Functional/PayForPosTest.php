@@ -37,11 +37,11 @@ class PayForPosTest extends TestCase
 
         $account = AccountFactory::createPayForAccount(
             'qnbfinansbank-payfor',
-            '085300000009704',
-            'QNB_API_KULLANICI_3DPAY',
-            'UcBN0',
+            (string) getenv('FINANSBANK_MERCHANT_ID'),
+            (string) getenv('FINANSBANK_USERNAME'),
+            (string) getenv('FINANSBANK_PASSWORD'),
             PosInterface::MODEL_3D_SECURE,
-            '12345678',
+            (string) getenv('FINANSBANK_STORE_KEY'),
             PosInterface::LANG_TR,
             PayForAccount::MBR_ID_FINANSBANK
         );

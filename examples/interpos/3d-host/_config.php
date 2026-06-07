@@ -7,18 +7,16 @@ require '../_payment_config.php';
 $baseUrl = $bankTestsUrl.'/3d-host/';
 
 //$userCode ve $userPass 3d-host odemede kullanilmiyor.
-$userCode =  '';
+$userCode = '';
 $userPass = '';
-$shopCode = '3123';
-$merchantPass = 'gDg1N';
-//account bilgileri kendi account bilgilerinizle degistiriniz
+
 $account = \Mews\Pos\Factory\AccountFactory::createInterPosAccount(
     'denizbank',
-    $shopCode,
+    (string) getenv('INTERPOS_SHOP_CODE'),
     $userCode,
     $userPass,
     PosInterface::MODEL_3D_HOST,
-    $merchantPass
+    (string) getenv('INTERPOS_MERCHANT_PASS')
 );
 
 $pos = getGateway($account, $eventDispatcher);

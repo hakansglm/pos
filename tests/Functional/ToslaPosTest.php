@@ -35,9 +35,9 @@ class ToslaPosTest extends TestCase
 
         $account = AccountFactory::createToslaPosAccount(
             'tosla',
-            '1000000494',
-            'POS_ENT_Test_001',
-            'POS_ENT_Test_001!*!*',
+            (string) getenv('TOSLA_MERCHANT_ID'),
+            (string) getenv('TOSLA_USERNAME'),
+            (string) getenv('TOSLA_PASSWORD'),
         );
 
         $this->eventDispatcher = new EventDispatcher();

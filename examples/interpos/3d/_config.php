@@ -5,18 +5,14 @@ use Mews\Pos\PosInterface;
 require '../_payment_config.php';
 
 $baseUrl = $bankTestsUrl.'/3d/';
-//account bilgileri kendi account bilgilerinizle degistiriniz
-$userCode =  'InterTestApi';
-$userPass = '3';
-$shopCode = '3123';
-$merchantPass = 'gDg1N';
+
 $account = \Mews\Pos\Factory\AccountFactory::createInterPosAccount(
     'denizbank',
-    $shopCode,
-    $userCode,
-    $userPass,
+    (string) getenv('INTERPOS_SHOP_CODE'),
+    (string) getenv('INTERPOS_USER_CODE'),
+    (string) getenv('INTERPOS_USER_PASS'),
     PosInterface::MODEL_3D_SECURE,
-    $merchantPass
+    (string) getenv('INTERPOS_MERCHANT_PASS')
 );
 
 $pos = getGateway($account, $eventDispatcher);

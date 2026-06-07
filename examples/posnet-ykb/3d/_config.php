@@ -9,12 +9,12 @@ $baseUrl = $bankTestsUrl.'/3d/';
 // NOT: PosNet testleri lokalde yapilamiyor.
 //      Ortam farketmeksizin Yapikrediyle iletisime gecip, sunucu IP adresinize izin verilmesini sağlamanız gerekiyor.
 
-//account bilgileri kendi account bilgilerinizle degistiriniz
+
 $account = AccountFactory::createPosNetAccount(
     'yapikredi',
-    '6706598320',
-    '67322946',
-    '27426',
+    (string) getenv('POSNET_YKB_MERCHANT_ID'),
+    (string) getenv('POSNET_YKB_TERMINAL_ID'),
+    (string) getenv('POSNET_YKB_POS_ID'),
     PosInterface::MODEL_3D_SECURE,
     '10,10,10,10,10,10,10,10'
 );

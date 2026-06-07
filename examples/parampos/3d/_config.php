@@ -5,13 +5,13 @@ use Mews\Pos\PosInterface;
 require '../_payment_config.php';
 
 $baseUrl = $bankTestsUrl.'/3d/';
-//account bilgileri kendi account bilgilerinizle degistiriniz
+
 $account = \Mews\Pos\Factory\AccountFactory::createParamPosAccount(
     'param-pos',
-    10738, // CLIENT_CODE Terminal ID
-    'Test', // CLIENT_USERNAME Kullanıcı adı
-    'Test', // CLIENT_PASSWORD Şifre
-    '0c13d406-873b-403b-9c09-a5766840d98c' // GUID Üye İşyeri ait anahtarı
+    (int) getenv('PARAMPOS_MERCHANT_ID'), // CLIENT_CODE Terminal ID
+    (string) getenv('PARAMPOS_USERNAME'), // CLIENT_USERNAME Kullanıcı adı
+    (string) getenv('PARAMPOS_PASSWORD'), // CLIENT_PASSWORD Şifre
+    (string) getenv('PARAMPOS_CLIENT_SECRET') // GUID Üye İşyeri ait anahtarı
 );
 
 $pos = getGateway($account, $eventDispatcher);

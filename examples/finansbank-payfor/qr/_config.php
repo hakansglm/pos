@@ -5,15 +5,14 @@ use Mews\Pos\PosInterface;
 require '../_payment_config.php';
 
 $baseUrl = $bankTestsUrl.'/qr/';
-//account bilgileri kendi account bilgilerinizle degistiriniz
 
 $account = \Mews\Pos\Factory\AccountFactory::createPayForAccount(
     'qnbfinansbank-payfor',
-    '007200000000711',
-    'QR_TEST',
-    'IGhq8',
+    (string) getenv('FINANSBANK_QR_MERCHANT_ID'),
+    (string) getenv('FINANSBANK_QR_USERNAME'),
+    (string) getenv('FINANSBANK_QR_PASSWORD'),
     PosInterface::MODEL_3D_HOST,
-    '88921532',
+    (string) getenv('FINANSBANK_QR_STORE_KEY'),
     \Mews\Pos\Entity\Account\PayForAccount::MBR_ID_FINANSBANK // ya da PayForAccount::MBR_ID_ZIRAAT_KATILIM
 );
 

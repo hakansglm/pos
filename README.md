@@ -49,7 +49,7 @@ sistemlerinin kullanılabilmesidir.
 - [Popup Windowda veya Iframe icinde odeme yapma](#popup-windowda-veya-iframe-icinde-odeme-yapma)
 - [Troubleshoots](#troubleshoots)
 - [Genel Kültür](#genel-kultur)
-- [Docker ile test ortamı](#docker-ile-test-ortami)
+- [Docker ile examples kodlarin denenmesi](#docker-ile-examples-kodlarin-denenmesi)
 
 ### Ozellikler
 
@@ -313,11 +313,21 @@ inceleyebilirsiniz.
   Genel olarak _miktar_ bilgisi _istenmez_, ancak bazı Gateway'ler ister.
   İşlemin kütüphanedeki karşılığı `PosInterface::TX_TYPE_CANCEL`
 
-## Docker ile test ortami
+## Docker ile examples kodlarin denenmesi
 
 1. Makinenizde Docker kurulu olması gerekir.
-2. Projenin root klasöründe `docker-compose up -d` komutu çalıştırınız.
-3. docker container'de `composer install` çalıştırınız.
+2. Örnekleri çalıştırmadan önce banka hesap bilgilerini ortam değişkenleri
+aracılığıyla sağlamanız gerekmektedir: `examples/.env.dist` dosyasını `examples/.env` olarak kopyalayın:
+   ```shell
+   cp examples/.env.dist examples/.env
+   ```
+3. `examples/.env` dosyasını açıp kullanmak istediğiniz banka(lar)a ait hesap
+   bilgilerini (merchant ID, şifre, API anahtarı vb.) doldurun.
+4. Projenin root klasöründe `docker-compose up -d` komutu çalıştırınız.
+5. docker container'de `composer install` çalıştırınız.
+   ```shell
+   docker compose exec -it web composer install
+   ```
 
 **Note**: localhost port 80 boş olması gerekiyor.
 Sorunsuz çalışması durumda kod örneklerine http://localhost/payten/3d/index.php

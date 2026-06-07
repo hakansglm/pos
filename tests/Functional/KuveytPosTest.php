@@ -36,10 +36,10 @@ class KuveytPosTest extends TestCase
 
         $account = \Mews\Pos\Factory\AccountFactory::createKuveytPosAccount(
             'kuveytpos',
-            '496',
-            'apitest',
-            '400235',
-            'api123',
+            (string) getenv('KUVEYTPOS_MERCHANT_ID'),
+            (string) getenv('KUVEYTPOS_USERNAME'),
+            (string) getenv('KUVEYTPOS_CUSTOMER_NUMBER'),
+            (string) getenv('KUVEYTPOS_PASSWORD'),
             PosInterface::MODEL_3D_SECURE
         );
 

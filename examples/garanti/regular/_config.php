@@ -5,17 +5,17 @@ use Mews\Pos\PosInterface;
 require '../_payment_config.php';
 
 $baseUrl = $bankTestsUrl.'/regular/';
-//account bilgileri kendi account bilgilerinizle degistiriniz
+
 $account = \Mews\Pos\Factory\AccountFactory::createGarantiPosAccount(
     'garanti',
-    '7000679',
-    'PROVAUT',
-    '123qweASD/',
-    '30691298',
+    (string) getenv('GARANTI_MERCHANT_ID'),
+    (string) getenv('GARANTI_USERNAME'),
+    (string) getenv('GARANTI_PASSWORD'),
+    (string) getenv('GARANTI_TERMINAL_ID'),
     PosInterface::MODEL_NON_SECURE,
     null,
-    'PROVRFN',
-    '123qweASD/'
+    (string) getenv('GARANTI_REFUND_USERNAME'),
+    (string) getenv('GARANTI_REFUND_PASSWORD')
 );
 
 $pos = getGateway($account, $eventDispatcher);

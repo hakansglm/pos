@@ -6,15 +6,11 @@ require '../_payment_config.php';
 
 $baseUrl = $bankTestsUrl.'/regular/';
 
-$hostMerchantId = '000100000013506';
-$hostTerminalId = 'VP000579';
-$merchantPassword  = '123456';
-//account bilgileri kendi account bilgilerinizle degistiriniz
 $account = \Mews\Pos\Factory\AccountFactory::createPayFlexAccount(
     'vakifbank-cp',
-    $hostMerchantId,
-    $merchantPassword,
-    $hostTerminalId,
+    (string) getenv('PAYFLEX_CP_MERCHANT_ID'),
+    (string) getenv('PAYFLEX_CP_MERCHANT_PASSWORD'),
+    (string) getenv('PAYFLEX_CP_TERMINAL_ID'),
     PosInterface::MODEL_NON_SECURE
 );
 

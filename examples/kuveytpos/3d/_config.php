@@ -5,13 +5,13 @@ use Mews\Pos\PosInterface;
 require '../_payment_config.php';
 
 $baseUrl = $bankTestsUrl.'/3d/';
-//account bilgileri kendi account bilgilerinizle degistiriniz
+
 $account = \Mews\Pos\Factory\AccountFactory::createKuveytPosAccount(
     'kuveytpos',
-    '496',
-    'apitest',
-    '400235',
-    'api123',
+    (string) getenv('KUVEYTPOS_MERCHANT_ID'),
+    (string) getenv('KUVEYTPOS_USERNAME'),
+    (string) getenv('KUVEYTPOS_CUSTOMER_NUMBER'),
+    (string) getenv('KUVEYTPOS_PASSWORD'),
     PosInterface::MODEL_3D_SECURE
 );
 
