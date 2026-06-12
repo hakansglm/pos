@@ -42,7 +42,6 @@ class PayForPosTest extends TestCase
             (string) getenv('FINANSBANK_PASSWORD'),
             PosInterface::MODEL_3D_SECURE,
             (string) getenv('FINANSBANK_STORE_KEY'),
-            PosInterface::LANG_TR,
             PayForAccount::MBR_ID_FINANSBANK
         );
         $this->eventDispatcher = new EventDispatcher();
@@ -52,7 +51,7 @@ class PayForPosTest extends TestCase
         $this->card = CreditCardFactory::createForGateway(
             $this->pos,
             '4155650100416111',
-            '25',
+            '28',
             '1',
             '123',
             'John Doe',
@@ -274,7 +273,7 @@ class PayForPosTest extends TestCase
 
         $formData = $this->pos->get3DFormData(
             $order,
-            PosInterface::MODEL_3D_PAY,
+            PosInterface::MODEL_3D_SECURE,
             PosInterface::TX_TYPE_PAY_AUTH,
             $this->card
         );

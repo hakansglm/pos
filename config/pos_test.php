@@ -93,9 +93,9 @@ return [
             'class'             => \Mews\Pos\Gateways\PayForPos::class,
             'lang'              => \Mews\Pos\PosInterface::LANG_TR,
             'gateway_endpoints' => [
-                'payment_api'     => 'https://vpostest.qnbfinansbank.com/Gateway/XMLGate.aspx',
-                'gateway_3d'      => 'https://vpostest.qnbfinansbank.com/Gateway/Default.aspx',
-                'gateway_3d_host' => 'https://vpostest.qnbfinansbank.com/Gateway/3DHost.aspx',
+                'payment_api'     => 'https://vpostest.qnb.com.tr/Gateway/XMLGate.aspx',
+                'gateway_3d'      => 'https://vpostest.qnb.com.tr/Gateway/Default.aspx',
+                'gateway_3d_host' => 'https://vpostest.qnb.com.tr/Gateway/3DHost.aspx',
             ],
         ],
         'ziraat-katilim-payfor' => [
