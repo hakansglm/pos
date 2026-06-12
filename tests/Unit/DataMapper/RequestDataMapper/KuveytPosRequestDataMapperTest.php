@@ -356,18 +356,88 @@ class KuveytPosRequestDataMapperTest extends TestCase
         ];
     }
 
+    /**
+     * @dataProvider missingRequiredOrderFieldDataProvider
+     */
+    public function testCreate3DEnrollmentCheckRequestDataThrowsOnMissingField(array $order): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->requestDataMapper->create3DEnrollmentCheckRequestData(
+            $this->account,
+            $order,
+            PosInterface::MODEL_3D_SECURE,
+            PosInterface::TX_TYPE_PAY_AUTH,
+            $this->card
+        );
+    }
+
+    public static function missingRequiredOrderFieldDataProvider(): array
+    {
+        $base = [
+            'id'              => '2020110828BC',
+            'amount'          => 10.01,
+            'installment'     => '0',
+            'currency'        => PosInterface::CURRENCY_TRY,
+            'success_url'     => 'http://localhost/3d/success.php',
+            'fail_url'        => 'http://localhost/3d/fail.php',
+            'ip'              => '127.0.0.1',
+            'payment_channel' => '02',
+            'buyer'           => [
+                'email'         => 'test@test.com',
+                'gsm_number_cc' => '90',
+                'gsm_number'    => '5001234567',
+            ],
+            'billing_address' => [
+                'city'     => 'Istanbul',
+                'country'  => '792',
+                'address'  => 'Test Street No 1',
+                'zip_code' => '34000',
+                'state'    => '40',
+            ],
+        ];
+
+        $missingPaymentChannel = $base;
+        unset($missingPaymentChannel['payment_channel']);
+
+        $missingBuyer = $base;
+        unset($missingBuyer['buyer']);
+
+        $missingBillingAddress = $base;
+        unset($missingBillingAddress['billing_address']);
+
+        return [
+            'missing_payment_channel' => [$missingPaymentChannel],
+            'missing_buyer'           => [$missingBuyer],
+            'missing_billing_address' => [$missingBillingAddress],
+        ];
+    }
+
     public static function create3DEnrollmentCheckRequestDataDataProvider(): array
     {
         return [
             [
                 'order'        => [
-                    'id'          => '2020110828BC',
-                    'amount'      => 10.01,
-                    'installment' => '0',
-                    'currency'    => PosInterface::CURRENCY_TRY,
-                    'success_url' => 'http://localhost/finansbank-payfor/3d/success.php',
-                    'fail_url'    => 'http://localhost/finansbank-payfor/3d/fail.php',
-                    'ip'          => '127.0.0.1',
+                    'id'              => '2020110828BC',
+                    'amount'          => 10.01,
+                    'installment'     => '0',
+                    'currency'        => PosInterface::CURRENCY_TRY,
+                    'success_url'     => 'http://localhost/finansbank-payfor/3d/success.php',
+                    'fail_url'        => 'http://localhost/finansbank-payfor/3d/fail.php',
+                    'ip'              => '127.0.0.1',
+                    'payment_channel' => '02',
+                    'buyer'           => [
+                        'email'         => 'test@example.com',
+                        'gsm_number_cc' => '90',
+                        'gsm_number'    => '5001234567',
+                    ],
+                    'billing_address' => [
+                        'city'     => 'Istanbul',
+                        'country'  => '792',
+                        'address'  => 'Test Street No 1',
+                        'zip_code' => '34000',
+                        'state'    => '40',
+                    ],
                 ],
                 'txType'       => PosInterface::TX_TYPE_PAY_AUTH,
                 'expectedData' => [
@@ -392,7 +462,20 @@ class KuveytPosRequestDataMapperTest extends TestCase
                     'CardExpireDateMonth' => '01',
                     'CardCVV2'            => '123',
                     'DeviceData'          => [
-                        'ClientIP' => '127.0.0.1',
+                        'ClientIP'      => '127.0.0.1',
+                        'DeviceChannel' => '02',
+                    ],
+                    'CardHolderData'      => [
+                        'BillAddrCity'     => 'Istanbul',
+                        'BillAddrCountry'  => '792',
+                        'BillAddrLine1'    => 'Test Street No 1',
+                        'BillAddrPostCode' => '34000',
+                        'BillAddrState'    => '40',
+                        'Email'            => 'test@example.com',
+                        'MobilePhone'      => [
+                            'Cc'         => '90',
+                            'Subscriber' => '5001234567',
+                        ],
                     ],
                 ],
             ],

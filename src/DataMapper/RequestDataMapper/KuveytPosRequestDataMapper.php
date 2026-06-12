@@ -74,19 +74,29 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
      * @phpstan-param PosInterface::MODEL_3D_*                                          $paymentModel
      * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
      *
-     * @param KuveytPosAccount                     $kuveytPosAccount
-     * @param array<string, int|string|float|null> $order
-     * @param string                               $paymentModel
-     * @param string                               $txType
-     * @param CreditCardInterface|null             $creditCard
+     * @param KuveytPosAccount         $kuveytPosAccount
+     * @param array<string, mixed>     $order
+     * @param string                   $paymentModel
+     * @param string                   $txType
+     * @param CreditCardInterface|null $creditCard
      *
-     * @return array<string, array<string, string>|int|string|float>
+     * @return array<string, mixed>
      *
      * @throws UnsupportedTransactionTypeException
      */
     public function create3DEnrollmentCheckRequestData(KuveytPosAccount $kuveytPosAccount, array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): array
     {
         $order = $this->preparePaymentOrder($order);
+
+        if (!isset($order['payment_channel'])) {
+            throw new \InvalidArgumentException('payment_channel is required in $order');
+        }
+        if (!isset($order['billing_address'])) {
+            throw new \InvalidArgumentException('billing_address is required in $order');
+        }
+        if (!isset($order['buyer'])) {
+            throw new \InvalidArgumentException('buyer is required in $order');
+        }
 
         $requestData = $this->getRequestAccountData($kuveytPosAccount) + [
                 'APIVersion'          => self::API_VERSION,
@@ -101,7 +111,20 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
                 'OkUrl'               => (string) $order['success_url'],
                 'FailUrl'             => (string) $order['fail_url'],
                 'DeviceData'          => [
-                    'ClientIP' => (string) $order['ip'],
+                    'ClientIP'      => (string) $order['ip'],
+                    'DeviceChannel' => (string) $order['payment_channel'],
+                ],
+                'CardHolderData'      => [
+                    'BillAddrCity'     => (string) $order['billing_address']['city'],
+                    'BillAddrCountry'  => (string) $order['billing_address']['country'],
+                    'BillAddrLine1'    => (string) $order['billing_address']['address'],
+                    'BillAddrPostCode' => (string) $order['billing_address']['zip_code'],
+                    'BillAddrState'    => (string) $order['billing_address']['state'],
+                    'Email'            => (string) $order['buyer']['email'],
+                    'MobilePhone'      => [
+                        'Cc'         => (string) $order['buyer']['gsm_number_cc'],
+                        'Subscriber' => (string) $order['buyer']['gsm_number'],
+                    ],
                 ],
             ];
 

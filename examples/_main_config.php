@@ -171,7 +171,7 @@ function createPaymentOrder(
         $order['lang'] = $lang;
     }
 
-    if ($pos instanceof \Mews\Pos\Gateways\IyzicoPos) {
+    if ($pos instanceof \Mews\Pos\Gateways\IyzicoPos || $pos instanceof \Mews\Pos\Gateways\KuveytPos) {
         $order = array_merge($order, createGatewaySpecificOrderFields($ip, $paymentModel));
     }
 
