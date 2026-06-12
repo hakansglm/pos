@@ -24,17 +24,19 @@ use Psr\Log\LoggerInterface;
 class PosHttpClientFactory
 {
     /**
-     * @param class-string<HttpClientInterface> $clientClass
-     * @param non-empty-string                  $baseApiUrl
-     * @param SerializerInterface               $serializer
-     * @param CryptInterface                    $crypt
-     * @param RequestValueMapperInterface       $requestValueMapper
-     * @param LoggerInterface                   $logger
-     * @param ClientInterface                   $psr18client
-     * @param RequestFactoryInterface           $requestFactory
-     * @param StreamFactoryInterface            $streamFactory
+     * @template T of HttpClientInterface
      *
-     * @return HttpClientInterface
+     * @param class-string<T>             $clientClass
+     * @param non-empty-string            $baseApiUrl
+     * @param SerializerInterface         $serializer
+     * @param CryptInterface              $crypt
+     * @param RequestValueMapperInterface $requestValueMapper
+     * @param LoggerInterface             $logger
+     * @param ClientInterface             $psr18client
+     * @param RequestFactoryInterface     $requestFactory
+     * @param StreamFactoryInterface      $streamFactory
+     *
+     * @return T
      */
     public static function create(
         string                      $clientClass,
@@ -48,7 +50,7 @@ class PosHttpClientFactory
         StreamFactoryInterface      $streamFactory
     ): HttpClientInterface {
         if (AkbankPosHttpClient::class === $clientClass) {
-            return new $clientClass(
+            $client = new $clientClass(
                 $baseApiUrl,
                 $psr18client,
                 $requestFactory,
@@ -57,11 +59,10 @@ class PosHttpClientFactory
                 $logger,
                 $crypt
             );
-        }
-        if (IyzicoPosHttpClient::class === $clientClass
+        } elseif (IyzicoPosHttpClient::class === $clientClass
             || IyzicoPos3DFormHttpClient::class === $clientClass
             || IyzicoPosQueryApiHttpClient::class === $clientClass) {
-            return new $clientClass(
+            $client = new $clientClass(
                 $baseApiUrl,
                 $psr18client,
                 $requestFactory,
@@ -71,9 +72,8 @@ class PosHttpClientFactory
                 $crypt,
                 $requestValueMapper
             );
-        }
-        if (PosNetV1PosHttpClient::class === $clientClass || KuveytPosSoapApiHttpClient::class === $clientClass) {
-            return new $clientClass(
+        } elseif (PosNetV1PosHttpClient::class === $clientClass || KuveytPosSoapApiHttpClient::class === $clientClass) {
+            $client = new $clientClass(
                 $baseApiUrl,
                 $psr18client,
                 $requestFactory,
@@ -82,15 +82,18 @@ class PosHttpClientFactory
                 $logger,
                 $requestValueMapper
             );
+        } else {
+            $client = new $clientClass(
+                $baseApiUrl,
+                $psr18client,
+                $requestFactory,
+                $streamFactory,
+                $serializer,
+                $logger
+            );
         }
 
-        return new $clientClass(
-            $baseApiUrl,
-            $psr18client,
-            $requestFactory,
-            $streamFactory,
-            $serializer,
-            $logger
-        );
+        /** @var T $client */
+        return $client;
     }
 }

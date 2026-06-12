@@ -21,14 +21,15 @@ use Psr\Log\NullLogger;
 class PosFactory
 {
     /**
+     * @template T of PosInterface
+     *
      * @phpstan-param array{
      *     banks: array<string, array{
      *          name: string,
-     *          class?: class-string<PosInterface>,
+     *          class?: class-string<T>,
      *          lang?: PosInterface::LANG_*,
      *          gateway_endpoints: array{
      *              payment_api: non-empty-string,
-     *              payment_api2?: non-empty-string,
      *              query_api?: non-empty-string}
      *         }>
      *     }                                   $config
@@ -39,7 +40,7 @@ class PosFactory
      * @param HttpClientStrategyInterface|null $httpClientStrategy
      * @param LoggerInterface|null             $logger
      *
-     * @return PosInterface
+     * @return T
      *
      * @throws BankClassNullException
      * @throws BankNotFoundException
@@ -85,8 +86,10 @@ class PosFactory
     }
 
     /**
-     * @param class-string<PosInterface> $gatewayClass
-     * @param AbstractPosAccount         $posAccount
+     * @template T of PosInterface
+     *
+     * @param class-string<T>    $gatewayClass
+     * @param AbstractPosAccount $posAccount
      * @param array{
      *           name: string,
      *           class?: class-string,
@@ -97,7 +100,7 @@ class PosFactory
      * @param LoggerInterface                  $logger
      * @param HttpClientStrategyInterface|null $httpClientStrategy
      *
-     * @return PosInterface
+     * @return T
      */
     private static function doCreatePosGateway(
         string                   $gatewayClass,
