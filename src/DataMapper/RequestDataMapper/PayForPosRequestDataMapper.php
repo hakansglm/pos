@@ -221,46 +221,33 @@ class PayForPosRequestDataMapper extends AbstractRequestDataMapper
     {
         $order = $this->preparePaymentOrder($order);
 
-        $inputs = [
-            'MbrId'            => $posAccount->getMbrId(),
-            'MerchantID'       => $posAccount->getClientId(),
-            'UserCode'         => $posAccount->getUsername(),
-            'OrderId'          => (string) $order['id'],
-            'Lang'             => $this->getLang($order),
-            'SecureType'       => $this->valueMapper->mapSecureType($paymentModel),
-            'TxnType'          => $this->valueMapper->mapTxType($txType),
-            'PurchAmount'      => (string) $this->valueFormatter->formatAmount($order['amount']),
-            'InstallmentCount' => (string) $this->valueFormatter->formatInstallment($order['installment']),
-            'Currency'         => (string) $this->valueMapper->mapCurrency($order['currency']),
-            'OkUrl'            => (string) $order['success_url'],
-            'FailUrl'          => (string) $order['fail_url'],
-            'Rnd'              => $this->crypt->generateRandomString(),
-        ];
-
-        if ($creditCard instanceof CreditCardInterface) {
-            $inputs['CardHolderName'] = $creditCard->getHolderName() ?? '';
-            $inputs['Pan']            = $creditCard->getNumber();
-            $inputs['Expiry']         = $this->valueFormatter->formatCardExpDate($creditCard->getExpirationDate(), 'Expiry');
-            $inputs['Cvv2']           = $creditCard->getCvv();
-        }
-
-        $event = new Before3DFormHashCalculatedEvent(
-            $inputs,
-            $posAccount->getBank(),
-            $txType,
-            $paymentModel,
-            PayForPos::class
-        );
-        $this->eventDispatcher->dispatch($event);
-        $inputs = $event->getFormInputs();
-
-        $inputs['Hash'] = $this->crypt->create3DHash($posAccount, $inputs);
+        $inputs = $this->common3DFormDataGenerator($posAccount, $order, $paymentModel, $txType, $creditCard);
 
         return [
             'gateway' => $gatewayURL, //to be filled by the caller
             'method'  => 'POST',
             'inputs'  => $inputs,
         ];
+    }
+
+    /**
+     * Returns the request body for the iyzico 3D initialize endpoint.
+     *
+     * @param PayForAccount                                                     $posAccount
+     * @param array<string, mixed>                                              $order
+     * @param PosInterface::MODEL_3D_*                                          $paymentModel
+     * @param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
+     *
+     * @return array<string, mixed>
+     */
+    public function create3DEnrollmentCheckRequestData(
+        AbstractPosAccount   $posAccount,
+        array                $order,
+        string               $paymentModel,
+        string               $txType,
+        ?CreditCardInterface $creditCard = null
+    ): array {
+        return $this->common3DFormDataGenerator($posAccount, $order, $paymentModel, $txType, $creditCard);
     }
 
     /**
@@ -304,6 +291,62 @@ class PayForPosRequestDataMapper extends AbstractRequestDataMapper
         return [
             'id' => $order['id'],
         ];
+    }
+
+    /**
+     *
+     * @param PayForAccount                                                     $posAccount
+     * @param array<string, mixed>                                              $order
+     * @param PosInterface::MODEL_3D_*                                          $paymentModel
+     * @param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
+     *
+     * @return array<string, string>
+     */
+    private function common3DFormDataGenerator(
+        AbstractPosAccount $posAccount,
+        array $order,
+        string $paymentModel,
+        string $txType,
+        ?CreditCardInterface $creditCard
+    ): array {
+        $order = $this->preparePaymentOrder($order);
+
+        $formData = [
+            'MbrId'            => $posAccount->getMbrId(),
+            'MerchantID'       => $posAccount->getClientId(),
+            'UserCode'         => $posAccount->getUsername(),
+            'OrderId'          => (string) $order['id'],
+            'Lang'             => $this->getLang($order),
+            'SecureType'       => $this->valueMapper->mapSecureType($paymentModel),
+            'TxnType'          => $this->valueMapper->mapTxType($txType),
+            'PurchAmount'      => (string) $this->valueFormatter->formatAmount($order['amount']),
+            'InstallmentCount' => (string) $this->valueFormatter->formatInstallment($order['installment']),
+            'Currency'         => (string) $this->valueMapper->mapCurrency($order['currency']),
+            'OkUrl'            => (string) $order['success_url'],
+            'FailUrl'          => (string) $order['fail_url'],
+            'Rnd'              => $this->crypt->generateRandomString(),
+        ];
+
+        if ($creditCard instanceof CreditCardInterface) {
+            $formData['CardHolderName'] = $creditCard->getHolderName() ?? '';
+            $formData['Pan']            = $creditCard->getNumber();
+            $formData['Expiry']         = $this->valueFormatter->formatCardExpDate($creditCard->getExpirationDate(), 'Expiry');
+            $formData['Cvv2']           = $creditCard->getCvv();
+        }
+
+        $event = new Before3DFormHashCalculatedEvent(
+            $formData,
+            $posAccount->getBank(),
+            $txType,
+            $paymentModel,
+            PayForPos::class
+        );
+        $this->eventDispatcher->dispatch($event);
+        $formData = $event->getFormInputs();
+
+        $formData['Hash'] = $this->crypt->create3DHash($posAccount, $formData);
+
+        return $formData;
     }
 
     /**

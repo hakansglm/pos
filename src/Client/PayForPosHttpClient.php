@@ -8,6 +8,7 @@ namespace Mews\Pos\Client;
 
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Gateways\PayForPos;
+use Mews\Pos\PosInterface;
 use Mews\Pos\Serializer\EncodedData;
 use Psr\Http\Message\RequestInterface;
 
@@ -26,7 +27,7 @@ class PayForPosHttpClient extends AbstractHttpClient
      */
     public function supportsTx(string $txType, string $paymentModel, ?string $orderTxType = null): bool
     {
-        return true;
+        return PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD !== $txType;
     }
 
     /**

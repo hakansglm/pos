@@ -9,7 +9,7 @@ namespace Mews\Pos\Tests\Unit\Gateways;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\HttpClientStrategyInterface;
 use Mews\Pos\Crypt\CryptInterface;
-use Mews\Pos\DataMapper\RequestDataMapper\RequestDataMapperInterface;
+use Mews\Pos\DataMapper\RequestDataMapper\PayForPosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestValueMapper\PayForPosRequestValueMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\ResponseDataMapperInterface;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
@@ -33,7 +33,7 @@ use Psr\Log\LoggerInterface;
  * @covers \Mews\Pos\Gateways\PayForPos
  * @covers \Mews\Pos\Gateways\AbstractGateway
  */
-class PayForTest extends TestCase
+class PayForPosTest extends TestCase
 {
     private PayForAccount $account;
 
@@ -42,7 +42,7 @@ class PayForTest extends TestCase
     /** @var PayForPos */
     private PosInterface $pos;
 
-    /** @var RequestDataMapperInterface & MockObject */
+    /** @var PayForPosRequestDataMapper & MockObject */
     private MockObject $requestMapperMock;
 
     /** @var ResponseDataMapperInterface & MockObject */
@@ -95,7 +95,7 @@ class PayForTest extends TestCase
         );
 
         $this->requestValueMapper     = new PayForPosRequestValueMapper();
-        $this->requestMapperMock      = $this->createMock(RequestDataMapperInterface::class);
+        $this->requestMapperMock      = $this->createMock(PayForPosRequestDataMapper::class);
         $this->responseMapperMock     = $this->createMock(ResponseDataMapperInterface::class);
         $this->serializerMock         = $this->createMock(SerializerInterface::class);
         $this->cryptMock              = $this->createMock(CryptInterface::class);
@@ -173,6 +173,108 @@ class PayForTest extends TestCase
         $actual = $this->pos->get3DFormData($order, $paymentModel, $txType, $card, !$isWithCard);
 
         $this->assertSame(['formData'], $actual);
+    }
+
+    /**
+     * @dataProvider get3DFormDataHtmlFormatDataProvider
+     */
+    public function testGet3DFormDataHtmlFormat(string $paymentModel, string $txType): void
+    {
+        $order        = ['id' => '124'];
+        $requestData  = ['MerchantId' => '085300000009704', 'hash' => 'abc'];
+        $htmlResponse = '<html><body>3d-form</body></html>';
+
+        $this->requestMapperMock->expects(self::once())
+            ->method('create3DEnrollmentCheckRequestData')
+            ->with($this->account, $order, $paymentModel, $txType, $this->card)
+            ->willReturn($requestData);
+
+        $this->eventDispatcherMock->expects(self::once())
+            ->method('dispatch')
+            ->willReturnArgument(0);
+
+        $this->httpClientStrategyMock->expects(self::once())
+            ->method('getClient')
+            ->with(PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, $paymentModel)
+            ->willReturn($this->httpClientMock);
+
+        $this->httpClientMock->expects(self::once())
+            ->method('request')
+            ->with($txType, $paymentModel, $requestData, $order)
+            ->willReturn($htmlResponse);
+
+        $actual = $this->pos->get3DFormData($order, $paymentModel, $txType, $this->card, false, PosInterface::FORM_FORMAT_HTML);
+
+        $this->assertSame($htmlResponse, $actual);
+    }
+
+    public function testGet3DFormDataHtmlFormatWithEventModifiedRequestData(): void
+    {
+        $order           = ['id' => '124'];
+        $txType          = PosInterface::TX_TYPE_PAY_AUTH;
+        $paymentModel    = PosInterface::MODEL_3D_SECURE;
+        $requestData     = ['MerchantId' => '085300000009704', 'hash' => 'abc'];
+        $modifiedData    = ['MerchantId' => '085300000009704', 'hash' => 'xyz', 'extra' => '1'];
+        $htmlResponse    = '<html><body>3d-form</body></html>';
+
+        $this->requestMapperMock->expects(self::once())
+            ->method('create3DEnrollmentCheckRequestData')
+            ->with($this->account, $order, $paymentModel, $txType, $this->card)
+            ->willReturn($requestData);
+
+        $this->eventDispatcherMock->expects(self::once())
+            ->method('dispatch')
+            ->willReturnCallback(static function (RequestDataPreparedEvent $event) use ($modifiedData): RequestDataPreparedEvent {
+                $event->setRequestData($modifiedData);
+
+                return $event;
+            });
+
+        $this->httpClientStrategyMock->expects(self::once())
+            ->method('getClient')
+            ->with(PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, $paymentModel)
+            ->willReturn($this->httpClientMock);
+
+        $this->httpClientMock->expects(self::once())
+            ->method('request')
+            ->with($txType, $paymentModel, $modifiedData, $order)
+            ->willReturn($htmlResponse);
+
+        $actual = $this->pos->get3DFormData($order, $paymentModel, $txType, $this->card, false, PosInterface::FORM_FORMAT_HTML);
+
+        $this->assertSame($htmlResponse, $actual);
+    }
+
+    public function testGet3DFormDataHtmlFormatEmptyResponse(): void
+    {
+        $order        = ['id' => '124'];
+        $txType       = PosInterface::TX_TYPE_PAY_AUTH;
+        $paymentModel = PosInterface::MODEL_3D_SECURE;
+        $requestData  = ['MerchantId' => '085300000009704'];
+
+        $this->requestMapperMock->expects(self::once())
+            ->method('create3DEnrollmentCheckRequestData')
+            ->with($this->account, $order, $paymentModel, $txType, $this->card)
+            ->willReturn($requestData);
+
+        $this->eventDispatcherMock->expects(self::once())
+            ->method('dispatch')
+            ->willReturnArgument(0);
+
+        $this->httpClientStrategyMock->expects(self::once())
+            ->method('getClient')
+            ->with(PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, $paymentModel)
+            ->willReturn($this->httpClientMock);
+
+        $this->httpClientMock->expects(self::once())
+            ->method('request')
+            ->with($txType, $paymentModel, $requestData, $order)
+            ->willReturn('');
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('3D form verisi oluşturulamadı');
+
+        $this->pos->get3DFormData($order, $paymentModel, $txType, $this->card, false, PosInterface::FORM_FORMAT_HTML);
     }
 
     /**
@@ -825,6 +927,14 @@ class PayForTest extends TestCase
                     'id' => '2020110828BC',
                 ],
             ],
+        ];
+    }
+
+    public static function get3DFormDataHtmlFormatDataProvider(): array
+    {
+        return [
+            '3d_secure' => [PosInterface::MODEL_3D_SECURE, PosInterface::TX_TYPE_PAY_AUTH],
+            '3d_pay'    => [PosInterface::MODEL_3D_PAY, PosInterface::TX_TYPE_PAY_AUTH],
         ];
     }
 

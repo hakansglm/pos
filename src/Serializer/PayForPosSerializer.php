@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Serializer;
 
+use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Gateways\PayForPos;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
@@ -30,7 +31,7 @@ class PayForPosSerializer implements SerializerInterface
      */
     public static function supports(string $gatewayClass, ?string $apiName = null): bool
     {
-        return PayForPos::class === $gatewayClass;
+        return PayForPos::class === $gatewayClass && HttpClientInterface::API_NAME_GATEWAY_3D_API !== $apiName;
     }
 
     /**

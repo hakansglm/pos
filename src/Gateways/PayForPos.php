@@ -16,7 +16,9 @@ use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exceptions\HashMismatchException;
 use Mews\Pos\Exceptions\UnsupportedFormFormatException;
+use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\PosInterface;
+use Psr\Http\Client\ClientExceptionInterface;
 
 /**
  * Class PayForPos
@@ -70,7 +72,7 @@ class PayForPos extends AbstractGateway
      */
     public function make3DPayment(array $gatewayResponseData, array $order, string $txType, ?CreditCardInterface $creditCard = null): array
     {
-        $paymentModel   = PosInterface::MODEL_3D_SECURE;
+        $paymentModel = PosInterface::MODEL_3D_SECURE;
 
         if (!$this->is3DAuthSuccess($gatewayResponseData)) {
             $this->response = $this->responseDataMapper->map3DPaymentData($gatewayResponseData, null, $txType, $order);
@@ -184,14 +186,12 @@ class PayForPos extends AbstractGateway
 
     /**
      * {@inheritDoc}
-     *
-     * @return array{gateway: string, method: 'POST'|'GET', inputs: array<string, string>}
      */
-    public function get3DFormData(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null, bool $createWithoutCard = false, ?string $formFormat = null): array
+    public function get3DFormData(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null, bool $createWithoutCard = false, ?string $formFormat = null)
     {
         $this->check3DFormInputs($paymentModel, $txType, $creditCard, $createWithoutCard);
 
-        if (PosInterface::FORM_FORMAT_HTML === $formFormat) {
+        if ($formFormat === PosInterface::FORM_FORMAT_HTML && PosInterface::MODEL_3D_HOST === $paymentModel) {
             throw new UnsupportedFormFormatException();
         }
 
@@ -201,6 +201,16 @@ class PayForPos extends AbstractGateway
             'order'         => $order,
         ]);
 
+        if ($formFormat === PosInterface::FORM_FORMAT_HTML) {
+            $htmlForm = $this->initialize3DForm($order, $paymentModel, $txType, $creditCard);
+
+            if ('' === $htmlForm) {
+                throw new \RuntimeException('3D form verisi oluşturulamadı');
+            }
+
+            return $htmlForm;
+        }
+
         return $this->requestDataMapper->create3DFormData(
             $this->account,
             $order,
@@ -209,5 +219,60 @@ class PayForPos extends AbstractGateway
             $this->get3DGatewayURL($paymentModel),
             $creditCard
         );
+    }
+
+    /**
+     * @param array<string, mixed>                                              $order
+     * @param PosInterface::MODEL_3D_*                                          $paymentModel
+     * @param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
+     * @param CreditCardInterface|null                                          $creditCard
+     *
+     * @return string
+     *
+     * @throws UnsupportedTransactionTypeException
+     * @throws ClientExceptionInterface
+     */
+    private function initialize3DForm(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): string
+    {
+        $requestData = $this->requestDataMapper->create3DEnrollmentCheckRequestData(
+            $this->account,
+            $order,
+            $paymentModel,
+            $txType,
+            $creditCard
+        );
+
+        $event = new RequestDataPreparedEvent(
+            $requestData,
+            $this->account->getBank(),
+            $txType,
+            \get_class($this),
+            $order,
+            $paymentModel
+        );
+        /** @var RequestDataPreparedEvent $event */
+        $event = $this->eventDispatcher->dispatch($event);
+        if ($requestData !== $event->getRequestData()) {
+            $this->logger->debug('Request data is changed via listeners', [
+                'txType'      => $event->getTxType(),
+                'bank'        => $event->getBank(),
+                'initialData' => $requestData,
+                'updatedData' => $event->getRequestData(),
+            ]);
+            $requestData = $event->getRequestData();
+        }
+
+        /** @var string $result */
+        $result = $this->clientStrategy->getClient(
+            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
+            $paymentModel,
+        )->request(
+            $txType,
+            $paymentModel,
+            $requestData,
+            $order
+        );
+
+        return $result;
     }
 }

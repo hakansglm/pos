@@ -214,6 +214,9 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
              * PosInterface::FORM_FORMAT_HTML: hazır HTML form string'i döner.
              * Belirtilmezse (null) gateway'in varsayılan formatı kullanılır.
              * Desteklenmeyen format talep edilirse UnsupportedFormFormatException fırlatılır.
+             *
+             * PayForPos'da IP M047 IP kısıtlaması sorunu yaşarsanız PosInterface::FORM_FORMAT_HTML değeri kullanarak sorunu
+             * çözebilirsiniz.
              */
             // null // $formFormat, default: null
         );

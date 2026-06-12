@@ -158,6 +158,7 @@ class PosHttpClientStrategyFactoryTest extends TestCase
                 PayForPos::class,
                 [
                     HttpClientInterface::API_NAME_PAYMENT_API,
+                    HttpClientInterface::API_NAME_GATEWAY_3D_API,
                 ],
             ],
             [

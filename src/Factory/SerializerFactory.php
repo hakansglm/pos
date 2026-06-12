@@ -21,6 +21,7 @@ use Mews\Pos\Serializer\ParamPosSerializer;
 use Mews\Pos\Serializer\PayFlexCPV4PosSerializer;
 use Mews\Pos\Serializer\PayFlexV4PosSearchApiSerializer;
 use Mews\Pos\Serializer\PayFlexV4PosSerializer;
+use Mews\Pos\Serializer\PayForPos3DFormApiSerializer;
 use Mews\Pos\Serializer\PayForPosSerializer;
 use Mews\Pos\Serializer\PosNetSerializer;
 use Mews\Pos\Serializer\PosNetV1PosSerializer;
@@ -56,6 +57,7 @@ class SerializerFactory
             PayFlexCPV4PosSerializer::class,
             PayFlexV4PosSearchApiSerializer::class,
             PayFlexV4PosSerializer::class,
+            PayForPos3DFormApiSerializer::class,
             PayForPosSerializer::class,
             PosNetSerializer::class,
             PosNetV1PosSerializer::class,

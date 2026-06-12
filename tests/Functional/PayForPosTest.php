@@ -283,6 +283,27 @@ class PayForPosTest extends TestCase
     }
 
     /**
+     * @testWith ["3d"]
+     *           ["3d_pay"]
+     */
+    public function testGet3DFormDataAsHtml($paymentModel): void
+    {
+        $order = $this->createPaymentOrder($paymentModel);
+
+        $formData = $this->pos->get3DFormData(
+            $order,
+            $paymentModel,
+            PosInterface::TX_TYPE_PAY_AUTH,
+            PosInterface::MODEL_3D_HOST === $paymentModel ? null : $this->card,
+            false,
+            PosInterface::FORM_FORMAT_HTML
+        );
+
+        $this->assertIsString($formData);
+        $this->assertNotEmpty($formData);
+    }
+
+    /**
      * @depends testNonSecurePostPaymentSuccess
      */
     public function testRefundFail(array $lastResponse): array

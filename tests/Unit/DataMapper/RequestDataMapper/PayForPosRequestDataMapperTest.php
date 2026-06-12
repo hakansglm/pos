@@ -208,6 +208,47 @@ class PayForPosRequestDataMapperTest extends TestCase
     }
 
     /**
+     * @dataProvider threeDFormDataProvider
+     */
+    public function testCreate3DEnrollmentCheckRequestData(
+        string $account,
+        array  $order,
+        string $gatewayURL,
+        string $txType,
+        string $paymentModel,
+        bool   $isWithCard,
+        array  $expected
+    ): void {
+        $card = $isWithCard ? $this->card : null;
+
+        $this->crypt->expects(self::once())
+            ->method('create3DHash')
+            ->willReturn($expected['inputs']['Hash']);
+
+        $this->crypt->expects(self::once())
+            ->method('generateRandomString')
+            ->willReturn($expected['inputs']['Rnd']);
+
+        $this->dispatcher->expects(self::once())
+            ->method('dispatch')
+            ->with($this->callback(static fn ($dispatchedEvent): bool => $dispatchedEvent instanceof Before3DFormHashCalculatedEvent
+                && PayForPos::class === $dispatchedEvent->getGatewayClass()
+                && $txType === $dispatchedEvent->getTxType()
+                && $paymentModel === $dispatchedEvent->getPaymentModel()
+                && count($dispatchedEvent->getFormInputs()) > 3));
+
+        $actual = $this->requestDataMapper->create3DEnrollmentCheckRequestData(
+            $this->accounts[$account],
+            $order,
+            $paymentModel,
+            $txType,
+            $card
+        );
+
+        $this->assertSame($expected['inputs'], $actual);
+    }
+
+    /**
      * @dataProvider createStatusRequestDataDataProvider
      */
     public function testCreateStatusRequestData(string $account, array $order, array $expected): void
