@@ -223,9 +223,11 @@ class PayFlexV4Pos extends AbstractGateway
      */
     private function sendEnrollmentRequest(array $order, CreditCardInterface $creditCard, string $txType, string $paymentModel): array
     {
-        $requestData = $this->requestDataMapper->create3DEnrollmentCheckRequestData(
+        $requestData = $this->requestDataMapper->create3DFormInitializeRequestData(
             $this->account,
             $order,
+            $paymentModel,
+            $txType,
             $creditCard
         );
 

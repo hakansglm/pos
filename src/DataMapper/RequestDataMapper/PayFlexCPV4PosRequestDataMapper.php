@@ -66,7 +66,7 @@ class PayFlexCPV4PosRequestDataMapper extends AbstractRequestDataMapper
      *
      * @throws UnsupportedTransactionTypeException
      */
-    public function create3DEnrollmentCheckRequestData(AbstractPosAccount $posAccount, array $order, string $txType, string $paymentModel, ?CreditCardInterface $creditCard = null): array
+    public function create3DFormInitializeRequestData(AbstractPosAccount $posAccount, array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): array
     {
         $order = $this->preparePaymentOrder($order);
 

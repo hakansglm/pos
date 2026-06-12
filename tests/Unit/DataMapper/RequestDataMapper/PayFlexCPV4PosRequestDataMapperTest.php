@@ -103,11 +103,11 @@ class PayFlexCPV4PosRequestDataMapperTest extends TestCase
             ->with($this->account, $hashCalculationData)
             ->willReturn($expectedData['HashedData']);
 
-        $actual = $this->requestDataMapper->create3DEnrollmentCheckRequestData(
+        $actual = $this->requestDataMapper->create3DFormInitializeRequestData(
             $posAccount,
             $order,
-            $txType,
             PosInterface::MODEL_3D_SECURE,
+            $txType,
             $creditCard
         );
         $this->assertSame($expectedData, $actual);

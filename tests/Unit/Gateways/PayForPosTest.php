@@ -185,7 +185,7 @@ class PayForPosTest extends TestCase
         $htmlResponse = '<html><body>3d-form</body></html>';
 
         $this->requestMapperMock->expects(self::once())
-            ->method('create3DEnrollmentCheckRequestData')
+            ->method('create3DFormInitializeRequestData')
             ->with($this->account, $order, $paymentModel, $txType, $this->card)
             ->willReturn($requestData);
 
@@ -218,7 +218,7 @@ class PayForPosTest extends TestCase
         $htmlResponse    = '<html><body>3d-form</body></html>';
 
         $this->requestMapperMock->expects(self::once())
-            ->method('create3DEnrollmentCheckRequestData')
+            ->method('create3DFormInitializeRequestData')
             ->with($this->account, $order, $paymentModel, $txType, $this->card)
             ->willReturn($requestData);
 
@@ -253,7 +253,7 @@ class PayForPosTest extends TestCase
         $requestData  = ['MerchantId' => '085300000009704'];
 
         $this->requestMapperMock->expects(self::once())
-            ->method('create3DEnrollmentCheckRequestData')
+            ->method('create3DFormInitializeRequestData')
             ->with($this->account, $order, $paymentModel, $txType, $this->card)
             ->willReturn($requestData);
 

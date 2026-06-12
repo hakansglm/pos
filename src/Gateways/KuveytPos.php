@@ -217,7 +217,7 @@ class KuveytPos extends AbstractGateway
      */
     private function getCommon3DFormData(KuveytPosAccount $kuveytPosAccount, array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): string
     {
-        $requestData = $this->requestDataMapper->create3DEnrollmentCheckRequestData(
+        $requestData = $this->requestDataMapper->create3DFormInitializeRequestData(
             $kuveytPosAccount,
             $order,
             $paymentModel,

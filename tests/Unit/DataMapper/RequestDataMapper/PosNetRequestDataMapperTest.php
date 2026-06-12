@@ -145,9 +145,9 @@ class PosNetRequestDataMapperTest extends TestCase
     /**
      * @dataProvider threeDEnrollmentCheckRequestDataProvider
      */
-    public function testCreate3DEnrollmentCheckRequestData(array $order, string $txType, array $expectedData): void
+    public function testCreate3DFormInitializeRequestData(array $order, string $txType, array $expectedData): void
     {
-        $actual = $this->requestDataMapper->create3DEnrollmentCheckRequestData($this->account, $order, $txType, $this->card);
+        $actual = $this->requestDataMapper->create3DFormInitializeRequestData($this->account, $order, PosInterface::MODEL_3D_SECURE, $txType, $this->card);
         $this->assertSame($expectedData, $actual);
     }
 
@@ -155,11 +155,23 @@ class PosNetRequestDataMapperTest extends TestCase
     /**
      * @return void
      */
-    public function testCreate3DEnrollmentCheckRequestDataFailTooLongOrderId(): void
+    public function testCreate3DFormInitializeRequestDataFailTooLongOrderId(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->order['id'] = 'd32458293945098y439244343';
-        $this->requestDataMapper->create3DEnrollmentCheckRequestData($this->account, $this->order, PosInterface::TX_TYPE_PAY_AUTH, $this->card);
+        $this->requestDataMapper->create3DFormInitializeRequestData($this->account, $this->order, PosInterface::MODEL_3D_SECURE, PosInterface::TX_TYPE_PAY_AUTH, $this->card);
+    }
+
+    public function testCreate3DFormInitializeRequestDataThrowsWithoutCard(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->requestDataMapper->create3DFormInitializeRequestData(
+            $this->account,
+            $this->order,
+            PosInterface::MODEL_3D_SECURE,
+            PosInterface::TX_TYPE_PAY_AUTH,
+            null
+        );
     }
 
     /**

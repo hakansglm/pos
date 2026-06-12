@@ -164,8 +164,8 @@ class PayFlexV4PosTest extends TestCase
         $requestData = ['request-data'];
         $order       = $this->order;
         $this->requestMapperMock->expects(self::once())
-            ->method('create3DEnrollmentCheckRequestData')
-            ->with($this->pos->getAccount(), $order, $this->card)
+            ->method('create3DFormInitializeRequestData')
+            ->with($this->pos->getAccount(), $order, PosInterface::MODEL_3D_SECURE, PosInterface::TX_TYPE_PAY_AUTH, $this->card)
             ->willReturn($requestData);
 
         $this->configureClientResponse(
@@ -221,8 +221,8 @@ class PayFlexV4PosTest extends TestCase
         $requestData        = ['request-data'];
 
         $this->requestMapperMock->expects(self::once())
-            ->method('create3DEnrollmentCheckRequestData')
-            ->with($this->pos->getAccount(), $order, $card)
+            ->method('create3DFormInitializeRequestData')
+            ->with($this->pos->getAccount(), $order, PosInterface::MODEL_3D_SECURE, PosInterface::TX_TYPE_PAY_AUTH, $card)
             ->willReturn($requestData);
 
         $this->configureClientResponse(
@@ -270,8 +270,8 @@ class PayFlexV4PosTest extends TestCase
         $requestData        = ['request-data'];
 
         $this->requestMapperMock->expects(self::once())
-            ->method('create3DEnrollmentCheckRequestData')
-            ->with($this->pos->getAccount(), $order, $card)
+            ->method('create3DFormInitializeRequestData')
+            ->with($this->pos->getAccount(), $order, PosInterface::MODEL_3D_SECURE, PosInterface::TX_TYPE_PAY_AUTH, $card)
             ->willReturn($requestData);
 
         $this->configureClientResponse(

@@ -154,4 +154,40 @@ interface RequestDataMapperInterface
      * @return array<string, mixed>
      */
     public function createCustomQueryRequestData(AbstractPosAccount $posAccount, array $requestData): array;
+
+    /**
+     * Builds the request data sent to the bank to initiate or verify a 3D Secure payment step.
+     *
+     * Depending on the gateway this method serves one of three roles:
+     *
+     * 1. **Enrollment check** (PayFlexV4, PayFlexCPV4, VakifKatilim, KuveytPos)
+     *    Verifies whether the card is enrolled in 3D Secure.
+     *    The bank responds with ECI/CAVV values and a redirect URL.
+     *    The customer is then redirected to the issuing bank's ACS page.
+     *
+     * 2. **Session initialization** (iyzico, Tosla, PayFor)
+     *    Registers a payment session with the bank's 3D system.
+     *    The bank responds with a token or HTML form for the customer to complete authentication.
+     *
+     * 3. **Hosted payment form preparation** (Param, Param3DHost)
+     *    Builds a SOAP envelope that the bank uses to render a hosted 3D payment form.
+     *    The response contains encrypted form data that must be passed to the hosted page.
+     *
+     * Gateways that do not use this step (e.g. EstPos, Garanti, Akbank) throw \BadMethodCallException.
+     *
+     * @param AbstractPosAccount       $posAccount
+     * @param array<string, mixed>     $order        Normalized order array
+     * @param string                   $paymentModel PosInterface::MODEL_3D_*
+     * @param string                   $txType       PosInterface::TX_TYPE_PAY_*
+     * @param CreditCardInterface|null $creditCard   Required for non-hosted models
+     *
+     * @return array<string, mixed>
+     */
+    public function create3DFormInitializeRequestData(
+        AbstractPosAccount   $posAccount,
+        array                $order,
+        string               $paymentModel,
+        string               $txType,
+        ?CreditCardInterface $creditCard = null
+    ): array;
 }

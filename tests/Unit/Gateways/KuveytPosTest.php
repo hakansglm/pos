@@ -188,7 +188,7 @@ class KuveytPosTest extends TestCase
         );
 
         $this->requestMapperMock->expects(self::once())
-            ->method('create3DEnrollmentCheckRequestData')
+            ->method('create3DFormInitializeRequestData')
             ->with(
                 $this->pos->getAccount(),
                 $this->order,

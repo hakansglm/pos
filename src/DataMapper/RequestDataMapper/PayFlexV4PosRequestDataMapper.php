@@ -73,8 +73,12 @@ class PayFlexV4PosRequestDataMapper extends AbstractRequestDataMapper
      *
      * @return array
      */
-    public function create3DEnrollmentCheckRequestData(AbstractPosAccount $posAccount, array $order, CreditCardInterface $creditCard): array
+    public function create3DFormInitializeRequestData(AbstractPosAccount $posAccount, array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): array
     {
+        if (!$creditCard instanceof CreditCardInterface) {
+            throw new \InvalidArgumentException('Bu işlem için kredi kartı bilgileri gereklidir.');
+        }
+
         $order = $this->preparePaymentOrder($order);
 
         $requestData = [

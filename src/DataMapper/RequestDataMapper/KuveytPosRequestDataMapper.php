@@ -74,7 +74,7 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
      * @phpstan-param PosInterface::MODEL_3D_*                                          $paymentModel
      * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
      *
-     * @param KuveytPosAccount         $kuveytPosAccount
+     * @param KuveytPosAccount         $posAccount
      * @param array<string, mixed>     $order
      * @param string                   $paymentModel
      * @param string                   $txType
@@ -84,7 +84,7 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
      *
      * @throws UnsupportedTransactionTypeException
      */
-    public function create3DEnrollmentCheckRequestData(KuveytPosAccount $kuveytPosAccount, array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): array
+    public function create3DFormInitializeRequestData(AbstractPosAccount $posAccount, array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): array
     {
         $order = $this->preparePaymentOrder($order);
 
@@ -98,7 +98,7 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
             throw new \InvalidArgumentException('buyer is required in $order');
         }
 
-        $requestData = $this->getRequestAccountData($kuveytPosAccount) + [
+        $requestData = $this->getRequestAccountData($posAccount) + [
                 'APIVersion'          => self::API_VERSION,
                 'TransactionType'     => $this->valueMapper->mapTxType($txType),
                 'TransactionSecurity' => $this->valueMapper->mapSecureType($paymentModel),
@@ -137,7 +137,7 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
             $requestData['CardCVV2']            = $creditCard->getCvv();
         }
 
-        $requestData['HashData'] = $this->crypt->createHash($kuveytPosAccount, $requestData);
+        $requestData['HashData'] = $this->crypt->createHash($posAccount, $requestData);
 
         return $requestData;
     }

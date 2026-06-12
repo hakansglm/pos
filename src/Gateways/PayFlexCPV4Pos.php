@@ -229,11 +229,11 @@ class PayFlexCPV4Pos extends AbstractGateway
      */
     private function registerPayment(array $order, string $txType, string $paymentModel, ?CreditCardInterface $creditCard = null): array
     {
-        $requestData = $this->requestDataMapper->create3DEnrollmentCheckRequestData(
+        $requestData = $this->requestDataMapper->create3DFormInitializeRequestData(
             $this->account,
             $order,
-            $txType,
             $paymentModel,
+            $txType,
             $creditCard
         );
 

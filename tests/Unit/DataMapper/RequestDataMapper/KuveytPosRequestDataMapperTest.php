@@ -92,9 +92,9 @@ class KuveytPosRequestDataMapperTest extends TestCase
     }
 
     /**
-     * @dataProvider create3DEnrollmentCheckRequestDataDataProvider
+     * @dataProvider create3DFormInitializeRequestDataDataProvider
      */
-    public function testCreate3DEnrollmentCheckRequestData(array $order, string $txType, array $expectedData): void
+    public function testCreate3DFormInitializeRequestData(array $order, string $txType, array $expectedData): void
     {
         $account = $this->account;
         $card    = $this->card;
@@ -103,7 +103,7 @@ class KuveytPosRequestDataMapperTest extends TestCase
             ->method('createHash')
             ->willReturn('request-3d-hash');
 
-        $actualData = $this->requestDataMapper->create3DEnrollmentCheckRequestData(
+        $actualData = $this->requestDataMapper->create3DFormInitializeRequestData(
             $account,
             $order,
             PosInterface::MODEL_3D_SECURE,
@@ -359,11 +359,11 @@ class KuveytPosRequestDataMapperTest extends TestCase
     /**
      * @dataProvider missingRequiredOrderFieldDataProvider
      */
-    public function testCreate3DEnrollmentCheckRequestDataThrowsOnMissingField(array $order): void
+    public function testCreate3DFormInitializeRequestDataThrowsOnMissingField(array $order): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        $this->requestDataMapper->create3DEnrollmentCheckRequestData(
+        $this->requestDataMapper->create3DFormInitializeRequestData(
             $this->account,
             $order,
             PosInterface::MODEL_3D_SECURE,
@@ -413,7 +413,7 @@ class KuveytPosRequestDataMapperTest extends TestCase
         ];
     }
 
-    public static function create3DEnrollmentCheckRequestDataDataProvider(): array
+    public static function create3DFormInitializeRequestDataDataProvider(): array
     {
         return [
             [

@@ -240,7 +240,7 @@ class PayForPosRequestDataMapper extends AbstractRequestDataMapper
      *
      * @return array<string, mixed>
      */
-    public function create3DEnrollmentCheckRequestData(
+    public function create3DFormInitializeRequestData(
         AbstractPosAccount   $posAccount,
         array                $order,
         string               $paymentModel,

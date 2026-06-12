@@ -370,7 +370,7 @@ class ToslaPosTest extends TestCase
     ): void {
         $card = $isWithCard ? $this->card : null;
         $this->requestMapperMock->expects(self::once())
-            ->method('create3DEnrollmentCheckRequestData')
+            ->method('create3DFormInitializeRequestData')
             ->with($this->pos->getAccount(), $order)
             ->willReturn($requestData);
 
@@ -429,7 +429,7 @@ class ToslaPosTest extends TestCase
         $requestData = ['request-data'];
         $order       = ['order'];
         $this->requestMapperMock->expects(self::once())
-            ->method('create3DEnrollmentCheckRequestData')
+            ->method('create3DFormInitializeRequestData')
             ->with($this->pos->getAccount(), $order)
             ->willReturn($requestData);
 

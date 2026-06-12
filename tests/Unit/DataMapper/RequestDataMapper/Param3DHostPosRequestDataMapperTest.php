@@ -85,16 +85,17 @@ class Param3DHostPosRequestDataMapperTest extends TestCase
     /**
      * @dataProvider paymentRegisterRequestDataProvider
      */
-    public function testCreate3DEnrollmentCheckRequestData(array $order, string $txType, string $soapAction, array $expected): void
+    public function testCreate3DFormInitializeRequestData(array $order, string $txType, string $soapAction, array $expected): void
     {
         $soapBody = $expected['soap:Body'];
         $this->crypt->expects(self::once())
             ->method('generateRandomString')
             ->willReturn($soapBody[$soapAction]['Islem_ID']);
 
-        $actual = $this->requestDataMapper->create3DEnrollmentCheckRequestData(
+        $actual = $this->requestDataMapper->create3DFormInitializeRequestData(
             $this->account,
             $order,
+            PosInterface::MODEL_3D_HOST,
             $txType
         );
 

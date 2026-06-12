@@ -216,9 +216,10 @@ class Param3DHostPos extends AbstractGateway
      */
     private function registerPayment(array $order, string $paymentModel, string $txType): array
     {
-        $requestData = $this->requestDataMapper->create3DEnrollmentCheckRequestData(
+        $requestData = $this->requestDataMapper->create3DFormInitializeRequestData(
             $this->account,
             $order,
+            $paymentModel,
             $txType
         );
 

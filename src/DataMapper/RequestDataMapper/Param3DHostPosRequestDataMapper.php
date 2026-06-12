@@ -57,7 +57,7 @@ class Param3DHostPosRequestDataMapper extends AbstractRequestDataMapper
      *
      * @return array<string, mixed>
      */
-    public function create3DEnrollmentCheckRequestData(AbstractPosAccount $posAccount, array $order, string $txType): array
+    public function create3DFormInitializeRequestData(AbstractPosAccount $posAccount, array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): array
     {
         $order = $this->preparePaymentOrder($order);
 

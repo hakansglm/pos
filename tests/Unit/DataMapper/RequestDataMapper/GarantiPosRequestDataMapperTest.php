@@ -25,6 +25,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 /**
  * @covers \Mews\Pos\DataMapper\RequestDataMapper\GarantiPosRequestDataMapper
  * @covers \Mews\Pos\DataMapper\RequestDataMapper\AbstractRequestDataMapper
+ * @covers \Mews\Pos\DataMapper\RequestDataMapper\AbstractRequestDataMapper
  */
 class GarantiPosRequestDataMapperTest extends TestCase
 {
@@ -305,6 +306,17 @@ class GarantiPosRequestDataMapperTest extends TestCase
             $account,
             $order,
             PosInterface::TX_TYPE_REFUND
+        );
+    }
+
+    public function testCreate3DFormInitializeRequestDataThrowsByDefault(): void
+    {
+        $this->expectException(\BadMethodCallException::class);
+        $this->requestDataMapper->create3DFormInitializeRequestData(
+            $this->account,
+            [],
+            'model',
+            'txType'
         );
     }
 

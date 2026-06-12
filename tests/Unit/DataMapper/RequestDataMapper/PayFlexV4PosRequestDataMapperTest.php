@@ -105,10 +105,22 @@ class PayFlexV4PosRequestDataMapperTest extends TestCase
             ->method('generateRandomString')
             ->willReturn($expected['VerifyEnrollmentRequestId']);
 
-        $actual = $this->requestDataMapper->create3DEnrollmentCheckRequestData($this->account, $order, $creditCard);
+        $actual = $this->requestDataMapper->create3DFormInitializeRequestData($this->account, $order, PosInterface::MODEL_3D_SECURE, PosInterface::TX_TYPE_PAY_AUTH, $creditCard);
         $this->assertSame($expected, $actual);
     }
 
+
+    public function testCreate3DFormInitializeRequestDataThrowsWithoutCard(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->requestDataMapper->create3DFormInitializeRequestData(
+            $this->account,
+            ['amount' => 100, 'currency' => 'TRY'],
+            PosInterface::MODEL_3D_SECURE,
+            PosInterface::TX_TYPE_PAY_AUTH,
+            null
+        );
+    }
 
     /**
      * @dataProvider createNonSecurePaymentRequestDataDataProvider

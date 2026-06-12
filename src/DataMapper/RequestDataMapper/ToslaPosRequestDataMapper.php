@@ -32,7 +32,7 @@ class ToslaPosRequestDataMapper extends AbstractRequestDataMapper
      *
      * @return array<string, string|int|float>
      */
-    public function create3DEnrollmentCheckRequestData(AbstractPosAccount $posAccount, array $order): array
+    public function create3DFormInitializeRequestData(AbstractPosAccount $posAccount, array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): array
     {
         $order = $this->preparePaymentOrder($order);
 

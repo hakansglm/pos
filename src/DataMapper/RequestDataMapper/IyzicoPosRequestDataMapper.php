@@ -43,10 +43,11 @@ class IyzicoPosRequestDataMapper extends AbstractRequestDataMapper
      *
      * @return array<string, mixed>
      */
-    public function create3DEnrollmentCheckRequestData(
+    public function create3DFormInitializeRequestData(
         AbstractPosAccount   $posAccount,
         array                $order,
         string               $paymentModel,
+        string               $txType,
         ?CreditCardInterface $creditCard = null
     ): array {
         return $this->buildPaymentRequestData($posAccount, $order, $paymentModel, $creditCard);

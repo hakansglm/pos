@@ -203,7 +203,7 @@ class VakifKatilimPos extends AbstractGateway
      */
     private function sendEnrollmentRequest(KuveytPosAccount $kuveytPosAccount, array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): string
     {
-        $requestData = $this->requestDataMapper->create3DEnrollmentCheckRequestData($kuveytPosAccount, $order, $paymentModel, $txType, $creditCard);
+        $requestData = $this->requestDataMapper->create3DFormInitializeRequestData($kuveytPosAccount, $order, $paymentModel, $txType, $creditCard);
 
         $event = new RequestDataPreparedEvent(
             $requestData,

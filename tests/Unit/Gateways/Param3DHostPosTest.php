@@ -148,7 +148,7 @@ class Param3DHostPosTest extends TestCase
     ): void {
         $paymentModel = PosInterface::MODEL_3D_HOST;
         $this->requestMapperMock->expects(self::once())
-            ->method('create3DEnrollmentCheckRequestData')
+            ->method('create3DFormInitializeRequestData')
             ->with($this->pos->getAccount(), $order)
             ->willReturn($requestData);
 

@@ -255,9 +255,10 @@ class PosNet extends AbstractGateway
      */
     private function getOosTransactionData(array $order, string $txType, string $paymentModel, CreditCardInterface $creditCard): array
     {
-        $requestData = $this->requestDataMapper->create3DEnrollmentCheckRequestData(
+        $requestData = $this->requestDataMapper->create3DFormInitializeRequestData(
             $this->account,
             $order,
+            $paymentModel,
             $txType,
             $creditCard
         );

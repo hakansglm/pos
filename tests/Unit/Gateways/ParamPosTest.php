@@ -163,7 +163,7 @@ class ParamPosTest extends TestCase
     ): void {
         $card = $isWithCard ? $this->card : null;
         $this->requestMapperMock->expects(self::once())
-            ->method('create3DEnrollmentCheckRequestData')
+            ->method('create3DFormInitializeRequestData')
             ->with($this->pos->getAccount(), $order)
             ->willReturn($requestData);
 
@@ -206,7 +206,7 @@ class ParamPosTest extends TestCase
         array  $decodedResponseData
     ): void {
         $this->requestMapperMock->expects(self::once())
-            ->method('create3DEnrollmentCheckRequestData')
+            ->method('create3DFormInitializeRequestData')
             ->with($this->pos->getAccount(), $order)
             ->willReturn($requestData);
 

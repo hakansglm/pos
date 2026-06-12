@@ -150,8 +150,8 @@ class PosNetTest extends TestCase
         $order        = PosNetRequestDataMapperTest::threeDFormDataDataProvider()['success1']['order'];
 
         $this->requestMapperMock->expects(self::once())
-            ->method('create3DEnrollmentCheckRequestData')
-            ->with($this->pos->getAccount(), $order, $txType, $this->card)
+            ->method('create3DFormInitializeRequestData')
+            ->with($this->pos->getAccount(), $order, PosInterface::MODEL_3D_SECURE, $txType, $this->card)
             ->willReturn($requestData);
 
         $this->configureClientResponse(
@@ -193,8 +193,8 @@ class PosNetTest extends TestCase
         $order       = $this->order;
         $this->expectException(Exception::class);
         $this->requestMapperMock->expects(self::once())
-            ->method('create3DEnrollmentCheckRequestData')
-            ->with($this->pos->getAccount(), $order, $txType, $this->card)
+            ->method('create3DFormInitializeRequestData')
+            ->with($this->pos->getAccount(), $order, PosInterface::MODEL_3D_SECURE, $txType, $this->card)
             ->willReturn($requestData);
 
         $responseData = [

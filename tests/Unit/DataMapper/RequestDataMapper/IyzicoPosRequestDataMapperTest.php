@@ -222,16 +222,17 @@ class IyzicoPosRequestDataMapperTest extends TestCase
     /**
      * @dataProvider enrollmentCheckRequestDataProvider
      */
-    public function testCreate3DEnrollmentCheckRequestData(
+    public function testCreate3DFormInitializeRequestData(
         string $paymentModel,
         array $orderExtra,
         array $expectedExtra
     ): void {
         $order  = array_merge($this->order, $orderExtra);
-        $actual = $this->requestDataMapper->create3DEnrollmentCheckRequestData(
+        $actual = $this->requestDataMapper->create3DFormInitializeRequestData(
             $this->account,
             $order,
             $paymentModel,
+            PosInterface::TX_TYPE_PAY_AUTH,
             $this->card
         );
 

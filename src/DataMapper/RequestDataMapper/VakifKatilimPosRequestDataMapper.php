@@ -72,7 +72,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
      * @phpstan-param PosInterface::MODEL_3D_*                                          $paymentModel
      * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
      *
-     * @param KuveytPosAccount                     $kuveytPosAccount
+     * @param KuveytPosAccount                     $posAccount
      * @param array<string, int|string|float|null> $order
      * @param string                               $paymentModel
      * @param string                               $txType
@@ -80,13 +80,13 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
      *
      * @return array<string, string|int|float>
      */
-    public function create3DEnrollmentCheckRequestData(KuveytPosAccount $kuveytPosAccount, array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): array
+    public function create3DFormInitializeRequestData(AbstractPosAccount $posAccount, array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): array
     {
         $order = $this->preparePaymentOrder($order);
 
-        $requestData = $this->getRequestAccountData($kuveytPosAccount) + [
+        $requestData = $this->getRequestAccountData($posAccount) + [
                 'APIVersion'          => self::API_VERSION,
-                'HashPassword'        => $this->crypt->hashString($kuveytPosAccount->getStoreKey() ?? ''),
+                'HashPassword'        => $this->crypt->hashString($posAccount->getStoreKey() ?? ''),
                 'TransactionSecurity' => $this->valueMapper->mapSecureType($paymentModel),
                 'InstallmentCount'    => $this->valueFormatter->formatInstallment($order['installment']),
                 'Amount'              => (int) $this->valueFormatter->formatAmount($order['amount']),
@@ -105,7 +105,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
             $requestData['CardCVV2']            = $creditCard->getCvv();
         }
 
-        $requestData['HashData'] = $this->crypt->createHash($kuveytPosAccount, $requestData);
+        $requestData['HashData'] = $this->crypt->createHash($posAccount, $requestData);
 
         return $requestData;
     }

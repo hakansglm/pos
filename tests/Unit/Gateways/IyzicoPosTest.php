@@ -297,7 +297,7 @@ class IyzicoPosTest extends TestCase
         $initResponse = ['status' => 'failure', 'errorMessage' => '3D init failed', 'errorCode' => '404'];
 
         $this->requestMapperMock->expects(self::once())
-            ->method('create3DEnrollmentCheckRequestData')
+            ->method('create3DFormInitializeRequestData')
             ->willReturn(['request-data']);
 
         $this->configureClientResponse(
@@ -333,7 +333,7 @@ class IyzicoPosTest extends TestCase
         ];
 
         $this->requestMapperMock->expects(self::once())
-            ->method('create3DEnrollmentCheckRequestData')
+            ->method('create3DFormInitializeRequestData')
             ->willReturn(['request-data']);
 
         $this->configureClientResponse(
@@ -369,7 +369,7 @@ class IyzicoPosTest extends TestCase
         ];
 
         $this->requestMapperMock->expects(self::once())
-            ->method('create3DEnrollmentCheckRequestData')
+            ->method('create3DFormInitializeRequestData')
             ->willReturn(['request-data']);
 
         $this->configureClientResponse(
@@ -405,7 +405,7 @@ class IyzicoPosTest extends TestCase
         ];
 
         $this->requestMapperMock->expects(self::once())
-            ->method('create3DEnrollmentCheckRequestData')
+            ->method('create3DFormInitializeRequestData')
             ->willReturn(['request-data']);
 
         $this->configureClientResponse(

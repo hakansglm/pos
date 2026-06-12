@@ -9,6 +9,9 @@ namespace Mews\Pos\DataMapper\RequestDataMapper;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\RequestValueFormatter\RequestValueFormatterInterface;
 use Mews\Pos\DataMapper\RequestValueMapper\RequestValueMapperInterface;
+use Mews\Pos\Entity\Account\AbstractPosAccount;
+use Mews\Pos\Entity\Card\CreditCardInterface;
+use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\PosInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
@@ -73,6 +76,19 @@ abstract class AbstractRequestDataMapper implements RequestDataMapperInterface
     public function setTestMode(bool $testMode): void
     {
         $this->testMode = $testMode;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function create3DFormInitializeRequestData(
+        AbstractPosAccount   $posAccount,
+        array                $order,
+        string               $paymentModel,
+        string               $txType,
+        ?CreditCardInterface $creditCard = null
+    ): array {
+        throw new NotImplementedException('Not supported');
     }
 
     /**

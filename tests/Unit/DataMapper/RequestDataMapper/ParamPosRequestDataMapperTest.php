@@ -97,7 +97,7 @@ class ParamPosRequestDataMapperTest extends TestCase
     /**
      * @dataProvider paymentRegisterRequestDataProvider
      */
-    public function testCreate3DEnrollmentCheckRequestData(array $order, string $paymentModel, string $txType, ?CreditCardInterface $card, string $soapAction, array $expected): void
+    public function testCreate3DFormInitializeRequestData(array $order, string $paymentModel, string $txType, ?CreditCardInterface $card, string $soapAction, array $expected): void
     {
         $requestDataWithoutHash = $expected;
         $soapBody               = $expected['soap:Body'];
@@ -119,12 +119,12 @@ class ParamPosRequestDataMapperTest extends TestCase
             }))
             ->willReturn($soapBody[$soapAction]['Islem_Hash']);
 
-        $actual = $this->requestDataMapper->create3DEnrollmentCheckRequestData(
+        $actual = $this->requestDataMapper->create3DFormInitializeRequestData(
             $this->account,
             $order,
-            $card,
+            $paymentModel,
             $txType,
-            $paymentModel
+            $card
         );
 
         ksort($actual);
@@ -145,12 +145,12 @@ class ParamPosRequestDataMapperTest extends TestCase
         string               $expectedException
     ): void {
         $this->expectException($expectedException);
-        $this->requestDataMapper->create3DEnrollmentCheckRequestData(
+        $this->requestDataMapper->create3DFormInitializeRequestData(
             $this->account,
             $order,
-            $card,
+            $paymentModel,
             $txType,
-            $paymentModel
+            $card
         );
     }
 

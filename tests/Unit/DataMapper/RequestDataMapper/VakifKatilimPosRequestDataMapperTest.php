@@ -198,9 +198,9 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
 
 
     /**
-     * @dataProvider create3DEnrollmentCheckRequestDataDataProvider
+     * @dataProvider create3DFormInitializeRequestDataDataProvider
      */
-    public function testCreate3DEnrollmentCheckRequestData(array $order, string $txType, array $expectedData): void
+    public function testCreate3DFormInitializeRequestData(array $order, string $txType, array $expectedData): void
     {
         $account = $this->account;
         $card    = $this->card;
@@ -218,7 +218,7 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
             ->with($account, $hashCalculationData)
             ->willReturn($expectedData['HashData']);
 
-        $actualData = $this->requestDataMapper->create3DEnrollmentCheckRequestData(
+        $actualData = $this->requestDataMapper->create3DFormInitializeRequestData(
             $account,
             $order,
             PosInterface::MODEL_3D_SECURE,
@@ -683,7 +683,7 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
         ];
     }
 
-    public static function create3DEnrollmentCheckRequestDataDataProvider(): array
+    public static function create3DFormInitializeRequestDataDataProvider(): array
     {
         return [
             [

@@ -210,7 +210,7 @@ class PayForPosRequestDataMapperTest extends TestCase
     /**
      * @dataProvider threeDFormDataProvider
      */
-    public function testCreate3DEnrollmentCheckRequestData(
+    public function testCreate3DFormInitializeRequestData(
         string $account,
         array  $order,
         string $gatewayURL,
@@ -237,7 +237,7 @@ class PayForPosRequestDataMapperTest extends TestCase
                 && $paymentModel === $dispatchedEvent->getPaymentModel()
                 && count($dispatchedEvent->getFormInputs()) > 3));
 
-        $actual = $this->requestDataMapper->create3DEnrollmentCheckRequestData(
+        $actual = $this->requestDataMapper->create3DFormInitializeRequestData(
             $this->accounts[$account],
             $order,
             $paymentModel,

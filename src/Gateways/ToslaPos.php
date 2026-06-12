@@ -196,9 +196,11 @@ class ToslaPos extends AbstractGateway
      */
     private function registerPayment(array $order, string $paymentModel, string $txType): array
     {
-        $requestData = $this->requestDataMapper->create3DEnrollmentCheckRequestData(
+        $requestData = $this->requestDataMapper->create3DFormInitializeRequestData(
             $this->account,
-            $order
+            $order,
+            $paymentModel,
+            $txType
         );
 
         $event = new RequestDataPreparedEvent(

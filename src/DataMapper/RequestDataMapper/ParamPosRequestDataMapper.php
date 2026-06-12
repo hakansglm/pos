@@ -66,7 +66,7 @@ class ParamPosRequestDataMapper extends AbstractRequestDataMapper
      *
      * @return array<string, mixed>
      */
-    public function create3DEnrollmentCheckRequestData(AbstractPosAccount $posAccount, array $order, ?CreditCardInterface $creditCard, string $txType, string $paymentModel): array
+    public function create3DFormInitializeRequestData(AbstractPosAccount $posAccount, array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): array
     {
         if (PosInterface::MODEL_3D_HOST === $paymentModel) {
             throw new \InvalidArgumentException();

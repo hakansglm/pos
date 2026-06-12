@@ -102,7 +102,7 @@ class ToslaPosRequestDataMapperTest extends TestCase
     /**
      * @dataProvider paymentRegisterRequestDataProvider
      */
-    public function testCreate3DEnrollmentCheckRequestData(array $order, string $paymentModel, string $txType, array $expected): void
+    public function testCreate3DFormInitializeRequestData(array $order, string $paymentModel, string $txType, array $expected): void
     {
         $requestDataWithoutHash = $expected;
         unset($requestDataWithoutHash['hash']);
@@ -115,7 +115,7 @@ class ToslaPosRequestDataMapperTest extends TestCase
             ->with($this->account, $requestDataWithoutHash)
             ->willReturn($expected['hash']);
 
-        $actual = $this->requestDataMapper->create3DEnrollmentCheckRequestData($this->account, $order);
+        $actual = $this->requestDataMapper->create3DFormInitializeRequestData($this->account, $order, $paymentModel, $txType);
         $this->assertSame($expected, $actual);
     }
 

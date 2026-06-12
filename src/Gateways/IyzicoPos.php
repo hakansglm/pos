@@ -298,10 +298,11 @@ class IyzicoPos extends AbstractGateway
      */
     private function initialize3DForm(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): array
     {
-        $requestData = $this->requestDataMapper->create3DEnrollmentCheckRequestData(
+        $requestData = $this->requestDataMapper->create3DFormInitializeRequestData(
             $this->account,
             $order,
             $paymentModel,
+            $txType,
             $creditCard
         );
 

@@ -234,7 +234,7 @@ class PayForPos extends AbstractGateway
      */
     private function initialize3DForm(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): string
     {
-        $requestData = $this->requestDataMapper->create3DEnrollmentCheckRequestData(
+        $requestData = $this->requestDataMapper->create3DFormInitializeRequestData(
             $this->account,
             $order,
             $paymentModel,

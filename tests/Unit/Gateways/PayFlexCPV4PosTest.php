@@ -160,12 +160,12 @@ class PayFlexCPV4PosTest extends TestCase
         $order              = $this->order;
 
         $this->requestMapperMock->expects(self::once())
-            ->method('create3DEnrollmentCheckRequestData')
+            ->method('create3DFormInitializeRequestData')
             ->with(
                 $this->pos->getAccount(),
                 $order,
-                $txType,
                 $paymentModel,
+                $txType,
                 $card
             )
             ->willReturn($requestData);
@@ -213,12 +213,12 @@ class PayFlexCPV4PosTest extends TestCase
         $requestData  = ['request-data'];
 
         $this->requestMapperMock->expects(self::once())
-            ->method('create3DEnrollmentCheckRequestData')
+            ->method('create3DFormInitializeRequestData')
             ->with(
                 $this->pos->getAccount(),
                 $order,
-                $txType,
                 $paymentModel,
+                $txType,
                 $card
             )
             ->willReturn($requestData);

@@ -232,12 +232,12 @@ class ParamPos extends AbstractGateway
      */
     private function registerPayment(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard): array
     {
-        $requestData = $this->requestDataMapper->create3DEnrollmentCheckRequestData(
+        $requestData = $this->requestDataMapper->create3DFormInitializeRequestData(
             $this->account,
             $order,
-            $creditCard,
+            $paymentModel,
             $txType,
-            $paymentModel
+            $creditCard
         );
 
         $event = new RequestDataPreparedEvent(
