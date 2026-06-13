@@ -62,7 +62,7 @@ class EstV3PosCrypt extends AbstractCrypt
     {
         $actualHash = $this->create3DHash($posAccount, $data);
 
-        if ($data['HASH'] === $actualHash) {
+        if (\hash_equals($data['HASH'], $actualHash)) {
             $this->logger->debug('hash check is successful');
 
             return true;

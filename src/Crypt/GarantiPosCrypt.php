@@ -61,7 +61,7 @@ class GarantiPosCrypt extends AbstractCrypt
 
         $actualHash = $this->hashFromParams($posAccount->getStoreKey(), $data, 'hashparams', ':');
 
-        if ($data['hash'] === $actualHash) {
+        if (\hash_equals($data['hash'], $actualHash)) {
             $this->logger->debug('hash check is successful');
 
             return true;

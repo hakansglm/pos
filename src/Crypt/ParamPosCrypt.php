@@ -54,7 +54,7 @@ class ParamPosCrypt extends AbstractCrypt
 
         $actualHash = $this->hashString($hashStr);
 
-        if ($data['islemHash'] === $actualHash) {
+        if (\hash_equals($data['islemHash'], $actualHash)) {
             $this->logger->debug('hash check is successful');
 
             return true;
@@ -148,7 +148,7 @@ class ParamPosCrypt extends AbstractCrypt
 
         $actualHash = $this->hashString($hashStr);
 
-        if ($data['TURKPOS_RETVAL_Hash'] === $actualHash) {
+        if (\hash_equals($data['TURKPOS_RETVAL_Hash'], $actualHash)) {
             $this->logger->debug('hash check is successful');
 
             return true;

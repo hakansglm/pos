@@ -61,7 +61,7 @@ class PayForPosCrypt extends AbstractCrypt
 
         $hash = $this->hashString($hashStr);
 
-        if ($hash === $data['ResponseHash']) {
+        if (\hash_equals($hash, $data['ResponseHash'])) {
             $this->logger->debug('hash check is successful');
 
             return true;

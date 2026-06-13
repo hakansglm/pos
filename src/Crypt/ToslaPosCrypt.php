@@ -45,7 +45,7 @@ class ToslaPosCrypt extends AbstractCrypt
 
         $actualHash = $this->hashFromParams($posAccount->getStoreKey(), $data, 'HashParameters', ',');
 
-        if ($data['Hash'] === $actualHash) {
+        if (\hash_equals($data['Hash'], $actualHash)) {
             $this->logger->debug('hash check is successful');
 
             return true;

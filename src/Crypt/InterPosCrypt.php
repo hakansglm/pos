@@ -53,7 +53,7 @@ class InterPosCrypt extends AbstractCrypt
 
         $actualHash = $this->hashFromParams($posAccount->getStoreKey(), $data, 'HASHPARAMS', ':');
 
-        if ($data['HASH'] === $actualHash) {
+        if (\hash_equals($data['HASH'], $actualHash)) {
             $this->logger->debug('hash check is successful');
 
             return true;
