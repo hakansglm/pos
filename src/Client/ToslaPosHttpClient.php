@@ -28,6 +28,9 @@ class ToslaPosHttpClient extends AbstractHttpClient
      */
     public function supportsTx(string $txType, string $paymentModel, ?string $orderTxType = null): bool
     {
+        if (PosInterface::TX_TYPE_CUSTOM_QUERY === $txType) {
+            return true;
+        }
         try {
             $this->getRequestURIByTransactionType($txType, $paymentModel);
         } catch (UnsupportedTransactionTypeException $e) {

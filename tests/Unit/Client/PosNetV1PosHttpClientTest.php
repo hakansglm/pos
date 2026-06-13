@@ -109,24 +109,66 @@ class PosNetV1PosHttpClientTest extends TestCase
         $this->assertFalse($this->client::supports(PosNet::class, HttpClientInterface::API_NAME_PAYMENT_API));
     }
 
-    public function testSupportsTx(): void
+    /**
+     * @dataProvider supportsTxDataProvider
+     */
+    public function testSupportsTx(string $txType, string $paymentModel): void
     {
         $this->requestValueMapper->expects($this->once())
             ->method('mapTxType')
-            ->with(PosInterface::TX_TYPE_PAY_AUTH)
+            ->with($txType)
             ->willReturn('Sale');
 
-        $this->assertTrue($this->client->supportsTx(PosInterface::TX_TYPE_PAY_AUTH, PosInterface::MODEL_3D_SECURE));
+        $this->assertTrue($this->client->supportsTx($txType, $paymentModel));
     }
 
-    public function testSupportsTxWithUnsupportedTx(): void
+    public function testSupportsCustomQuery(): void
+    {
+        $this->requestValueMapper->expects($this->never())
+            ->method('mapTxType');
+
+        $this->assertTrue($this->client->supportsTx(PosInterface::TX_TYPE_CUSTOM_QUERY, PosInterface::MODEL_NON_SECURE));
+    }
+
+    /**
+     * @dataProvider supportsTxWithUnsupportedTxDataProvider
+     */
+    public function testSupportsTxWithUnsupportedTx(string $txType, string $paymentModel): void
     {
         $this->requestValueMapper->expects($this->once())
             ->method('mapTxType')
-            ->with('unsupported')
+            ->with($txType)
             ->willThrowException(new UnsupportedTransactionTypeException());
 
-        $this->assertFalse($this->client->supportsTx('unsupported', PosInterface::MODEL_3D_SECURE));
+        $this->assertFalse($this->client->supportsTx($txType, $paymentModel));
+    }
+
+    public static function supportsTxDataProvider(): array
+    {
+        return [
+            'supported_tx_type'  => [
+                'txType'             => PosInterface::TX_TYPE_PAY_AUTH,
+                'paymentModel'       => PosInterface::MODEL_3D_SECURE,
+            ],
+            'unsupported_tx_type' => [
+                'txType'             => 'unsupported',
+                'paymentModel'       => PosInterface::MODEL_3D_SECURE,
+            ],
+        ];
+    }
+
+    public static function supportsTxWithUnsupportedTxDataProvider(): array
+    {
+        return [
+            'supported_tx_type'  => [
+                'txType'             => PosInterface::TX_TYPE_PAY_AUTH,
+                'paymentModel'       => PosInterface::MODEL_3D_SECURE,
+            ],
+            'unsupported_tx_type' => [
+                'txType'             => 'unsupported',
+                'paymentModel'       => PosInterface::MODEL_3D_SECURE,
+            ],
+        ];
     }
 
     /**
