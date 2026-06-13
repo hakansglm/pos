@@ -70,11 +70,13 @@
                 </select>
             </div>
             <div class="mb-3 col-md-4">
+                <?php if ([] !== $pos->getLanguages()): ?>
                 <select name="lang" id="lang" class="form-select input-lg">
                     <?php foreach ($pos->getLanguages() as $lang) : ?>
                         <option value="<?= $lang; ?>" <?= $lang === \Mews\Pos\PosInterface::LANG_TR ? 'selected': null ?>><?= strtoupper($lang); ?></option>
                     <?php endforeach; ?>
                 </select>
+                <?php endif; ?>
             </div>
             <div class="mb-3 col-md-4">
                 <div class="form-group">

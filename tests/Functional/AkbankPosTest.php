@@ -57,9 +57,9 @@ class AkbankPosTest extends TestCase
         $this->card = CreditCardFactory::createForGateway(
             $this->pos,
             '4355093000315232',
-            '40',
-            '11',
-            '471',
+            '28',
+            '01',
+            '264',
         );
     }
 
@@ -83,7 +83,7 @@ class AkbankPosTest extends TestCase
             $this->card
         );
 
-        $this->assertTrue($this->pos->isSuccess());
+        $this->assertTrue($this->pos->isSuccess(), $response['error_message'] ?? '');
 
         $this->assertIsArray($response);
         $this->assertNotEmpty($response);
@@ -111,7 +111,7 @@ class AkbankPosTest extends TestCase
 
         $response = $this->pos->cancel($statusOrder);
 
-        $this->assertTrue($this->pos->isSuccess());
+        $this->assertTrue($this->pos->isSuccess(), $response['error_message'] ?? '');
         $this->assertIsArray($response);
         $this->assertNotEmpty($response);
         $this->assertTrue($eventIsThrown);
@@ -138,7 +138,7 @@ class AkbankPosTest extends TestCase
 
         $response = $this->pos->orderHistory($historyOrder);
 
-        $this->assertTrue($this->pos->isSuccess());
+        $this->assertTrue($this->pos->isSuccess(), $response['error_message'] ?? '');
         $this->assertIsArray($response);
         $this->assertNotEmpty($response);
         $this->assertTrue($eventIsThrown);
@@ -192,7 +192,7 @@ class AkbankPosTest extends TestCase
         );
 
 
-        $this->assertTrue($this->pos->isSuccess());
+        $this->assertTrue($this->pos->isSuccess(), $response['error_message'] ?? '');
 
         $this->assertIsArray($response);
         $this->assertNotEmpty($response);
@@ -223,7 +223,7 @@ class AkbankPosTest extends TestCase
             PosInterface::TX_TYPE_PAY_POST_AUTH
         );
 
-        $this->assertTrue($this->pos->isSuccess());
+        $this->assertTrue($this->pos->isSuccess(), $response['error_message'] ?? '');
         $this->assertIsArray($response);
         $this->assertNotEmpty($response);
         $this->assertTrue($eventIsThrown);
@@ -345,7 +345,7 @@ class AkbankPosTest extends TestCase
 
         $response = $this->recurringPos->cancel($statusOrder);
 
-        $this->assertTrue($this->recurringPos->isSuccess());
+        $this->assertTrue($this->recurringPos->isSuccess(), $response['error_message'] ?? '');
         $this->assertIsArray($response);
         $this->assertNotEmpty($response);
         $this->assertTrue($eventIsThrown);
@@ -376,7 +376,7 @@ class AkbankPosTest extends TestCase
 
         $response = $this->recurringPos->cancel($statusOrder);
 
-        $this->assertTrue($this->recurringPos->isSuccess());
+        $this->assertTrue($this->recurringPos->isSuccess(), $response['error_message'] ?? '');
         $this->assertIsArray($response);
         $this->assertNotEmpty($response);
         $this->assertTrue($eventIsThrown);
@@ -403,7 +403,7 @@ class AkbankPosTest extends TestCase
 
         $response = $this->recurringPos->orderHistory($historyOrder);
 
-        $this->assertTrue($this->recurringPos->isSuccess());
+        $this->assertTrue($this->recurringPos->isSuccess(), $response['error_message'] ?? '');
         $this->assertIsArray($response);
         $this->assertNotEmpty($response);
         $this->assertTrue($eventIsThrown);
@@ -428,7 +428,7 @@ class AkbankPosTest extends TestCase
 
         $response = $this->recurringPos->history($historyOrder);
 
-        $this->assertTrue($this->recurringPos->isSuccess());
+        $this->assertTrue($this->recurringPos->isSuccess(), $response['error_message'] ?? '');
         $this->assertIsArray($response);
         $this->assertTrue($eventIsThrown);
         $this->assertNotEmpty($response['transactions']);
