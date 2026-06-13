@@ -51,7 +51,7 @@ abstract class AbstractCrypt implements CryptInterface
     {
         $hashParams = $this->recursiveFind($data, $hashParamsKey);
         if ('' === $hashParams) {
-            return '';
+            throw new \InvalidArgumentException(\sprintf('"%s" key not found in data', $hashParamsKey));
         }
 
         /**

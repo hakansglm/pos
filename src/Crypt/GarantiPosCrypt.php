@@ -129,7 +129,7 @@ class GarantiPosCrypt extends AbstractCrypt
     /**
      * @param string $str
      *
-     * @return string
+     * @return non-empty-string
      */
     private function hashStringUpperCase(string $str, string $algorithm): string
     {

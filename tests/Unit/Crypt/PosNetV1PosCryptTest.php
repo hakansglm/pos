@@ -63,12 +63,14 @@ class PosNetV1PosCryptTest extends TestCase
     public function testHashFromParamsWhenNotFound(): void
     {
         $data = self::hashFromParamsDataProvider()[0];
-        $this->assertSame('', $this->crypt->hashFromParams(
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('"NonExistingField" key not found in data');
+        $this->crypt->hashFromParams(
             $data['storeKey'],
             $data,
             'NonExistingField',
             ':'
-        ));
+        );
     }
 
     /**

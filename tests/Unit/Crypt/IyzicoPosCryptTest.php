@@ -111,6 +111,13 @@ class IyzicoPosCryptTest extends TestCase
         $this->assertSame($expected, $this->crypt->hashFromParams($storeKey, $data, $hashParamsKey));
     }
 
+    public function testHashFromParamsWhenNotFound(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('"hashParams" key not found in data');
+        $this->crypt->hashFromParams('key', ['a' => '1'], 'hashParams');
+    }
+
     public static function createHashDataProvider(): array
     {
         return [
@@ -148,12 +155,7 @@ class IyzicoPosCryptTest extends TestCase
                 // HMAC-SHA256('order-1100sandbox-secretKey', 'sandbox-secretKey') → hex
                 'expected'      => 'd45f9cd95075babe50ef5e10e3891f3dfdb9fca24dc1154dbf0bcb3833244b55',
             ],
-            'missing_hash_params_key' => [
-                'storeKey'      => 'key',
-                'data'          => ['a' => '1'],
-                'hashParamsKey' => 'hashParams',
-                'expected'      => '',
-            ],
+
         ];
     }
 

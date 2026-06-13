@@ -22,7 +22,7 @@ interface CryptInterface
      * @param string      $str
      * @param string|null $encryptionKey
      *
-     * @return string
+     * @return non-empty-string
      */
     public function hashString(string $str, ?string $encryptionKey = null): string;
 
@@ -63,7 +63,9 @@ interface CryptInterface
      *                                             $paramSeparator
      * @param non-empty-string     $paramSeparator [:;]
      *
-     * @return string hashed string from values of $hashParams
+     * @return non-empty-string hashed string from values of $hashParams
+     *
+     * @throws \InvalidArgumentException when $hashParamsKey is not found in $data
      */
     public function hashFromParams(string $storeKey, array $data, string $hashParamsKey, string $paramSeparator): string;
 
