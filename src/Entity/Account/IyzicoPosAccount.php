@@ -8,8 +8,6 @@ namespace Mews\Pos\Entity\Account;
 
 class IyzicoPosAccount extends AbstractPosAccount
 {
-    private ?string $subMerchantId;
-
     /**
      * @param string      $bank
      * @param string      $apiKey
@@ -22,15 +20,6 @@ class IyzicoPosAccount extends AbstractPosAccount
         string  $secretKey,
         ?string $subMerchantKey = null
     ) {
-        parent::__construct($bank, $apiKey, '', '', $secretKey);
-        $this->subMerchantId = $subMerchantKey;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getSubMerchantId(): ?string
-    {
-        return $this->subMerchantId;
+        parent::__construct($bank, $apiKey, '', '', $secretKey, $subMerchantKey);
     }
 }

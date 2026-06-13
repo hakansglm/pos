@@ -8,8 +8,6 @@ namespace Mews\Pos\Entity\Account;
 
 class AkbankPosAccount extends AbstractPosAccount
 {
-    private ?string $subMerchantId;
-
     /**
      * @param string      $bank
      * @param string      $merchantSafeId Üye İş Yeri numarası
@@ -24,8 +22,7 @@ class AkbankPosAccount extends AbstractPosAccount
         string $secretKey,
         ?string $subMerchantId = null
     ) {
-        parent::__construct($bank, $merchantSafeId, $terminalSafeId, '', $secretKey);
-        $this->subMerchantId = $subMerchantId;
+        parent::__construct($bank, $merchantSafeId, $terminalSafeId, '', $secretKey, $subMerchantId);
     }
 
     /**
@@ -34,13 +31,5 @@ class AkbankPosAccount extends AbstractPosAccount
     public function getTerminalId(): string
     {
         return $this->username;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getSubMerchantId(): ?string
-    {
-        return $this->subMerchantId;
     }
 }

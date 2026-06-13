@@ -7,7 +7,6 @@
 namespace Mews\Pos\DataMapper\RequestDataMapper;
 
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\IyzicoPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Gateways\IyzicoPos;
@@ -290,7 +289,7 @@ class IyzicoPosRequestDataMapper extends AbstractRequestDataMapper
             $request['enabledInstallments'] = $order['enabled_installments'] ?? [];
         }
 
-        if ($posAccount instanceof IyzicoPosAccount && null !== $posAccount->getSubMerchantId()) {
+        if (null !== $posAccount->getSubMerchantId()) {
             $request['subMerchantKey'] = $posAccount->getSubMerchantId();
         }
 

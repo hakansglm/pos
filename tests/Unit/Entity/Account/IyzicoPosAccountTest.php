@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Mews\Pos\Entity\Account\IyzicoPosAccount
+ * @covers \Mews\Pos\Entity\Account\AbstractPosAccount
  */
 class IyzicoPosAccountTest extends TestCase
 {

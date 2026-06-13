@@ -34,17 +34,6 @@ class PayFlexAccount extends AbstractPosAccount
     private int $merchantType;
 
     /**
-     * Ör:00000000000471
-     * Alfanumeric. Banka tarafından AltBayiler için üye işyerine iletilecektir.
-     * Üye işyeri için bu değer sabittir.
-     * MerchantType: 2 ise zorunlu,
-     * MerchantType: 0 ise, gönderilmemeli
-     * MerchantType: 1 ise, Ana bayi kendi adına işlem geçiyor ise gönderilmemeli,
-     * Altbayisi adına işlem geçiyor ise zorunludur.
-     */
-    private ?string $subMerchantId;
-
-    /**
      * @param string                $bank
      * @param string                $merchantId    Isyeri No
      * @param string                $password      Isyeri Sifre
@@ -60,10 +49,9 @@ class PayFlexAccount extends AbstractPosAccount
         int    $merchantType = self::MERCHANT_TYPE_STANDARD,
         ?string $subMerchantId = null
     ) {
-        parent::__construct($bank, $merchantId, '', $password, 'tr');
-        $this->terminalId    = $terminalId;
-        $this->merchantType  = $merchantType;
-        $this->subMerchantId = $subMerchantId;
+        parent::__construct($bank, $merchantId, '', $password, 'tr', $subMerchantId);
+        $this->terminalId   = $terminalId;
+        $this->merchantType = $merchantType;
     }
 
     /**
@@ -80,14 +68,6 @@ class PayFlexAccount extends AbstractPosAccount
     public function getMerchantType(): int
     {
         return $this->merchantType;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getSubMerchantId(): ?string
-    {
-        return $this->subMerchantId;
     }
 
     /**

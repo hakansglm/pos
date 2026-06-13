@@ -24,6 +24,8 @@ abstract class AbstractPosAccount
      */
     protected string $bank;
 
+    protected ?string $subMerchantId = null;
+
     /**
      * AbstractPosAccount constructor.
      *
@@ -32,14 +34,16 @@ abstract class AbstractPosAccount
      * @param string      $username
      * @param string      $password
      * @param string|null $storeKey
+     * @param string|null $subMerchantId
      */
-    public function __construct(string $bank, string $clientId, string $username, string $password, ?string $storeKey = null)
+    public function __construct(string $bank, string $clientId, string $username, string $password, ?string $storeKey = null, ?string $subMerchantId = null)
     {
-        $this->clientId = $clientId;
-        $this->username = $username;
-        $this->password = $password;
-        $this->storeKey = $storeKey;
-        $this->bank     = $bank;
+        $this->clientId      = $clientId;
+        $this->username      = $username;
+        $this->password      = $password;
+        $this->storeKey      = $storeKey;
+        $this->bank          = $bank;
+        $this->subMerchantId = $subMerchantId;
     }
 
     /**
@@ -80,5 +84,13 @@ abstract class AbstractPosAccount
     public function getBank(): string
     {
         return $this->bank;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSubMerchantId(): ?string
+    {
+        return $this->subMerchantId;
     }
 }

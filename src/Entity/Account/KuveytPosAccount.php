@@ -12,12 +12,6 @@ namespace Mews\Pos\Entity\Account;
 class KuveytPosAccount extends AbstractPosAccount
 {
     /**
-     * POS dokumanda response'da SubMerchantId yer aliyor
-     * ancak kullanimi hakkinda hic bir bilgi yok.
-     */
-    protected ?string $subMerchantId;
-
-    /**
      * @param string      $bank
      * @param string      $merchantId    Mağaza Numarası
      * @param string      $username      POS panelinizden kullanıcı işlemleri sayfasında APİ rolünde kullanıcı oluşturulmalıdır
@@ -33,8 +27,7 @@ class KuveytPosAccount extends AbstractPosAccount
         string $storeKey,
         ?string $subMerchantId = null
     ) {
-        parent::__construct($bank, $merchantId, $username, $customerId, $storeKey);
-        $this->subMerchantId = $subMerchantId;
+        parent::__construct($bank, $merchantId, $username, $customerId, $storeKey, $subMerchantId);
     }
 
     /**
@@ -43,13 +36,5 @@ class KuveytPosAccount extends AbstractPosAccount
     public function getCustomerId(): string
     {
         return $this->password;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getSubMerchantId(): ?string
-    {
-        return $this->subMerchantId;
     }
 }
