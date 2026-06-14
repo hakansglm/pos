@@ -40,7 +40,8 @@ class PayFlexV4PosHttpClient extends AbstractHttpClient
         array               $requestData,
         array               $order,
         ?string             $url = null,
-        ?AbstractPosAccount $account = null
+        ?AbstractPosAccount $account = null,
+        ?string             $orderTxType = null
     ): array {
         $content = $this->serializer->encode($requestData, $txType);
         $content = new EncodedData(
@@ -54,7 +55,9 @@ class PayFlexV4PosHttpClient extends AbstractHttpClient
             $content,
             $order,
             $url,
-            $account
+            $account,
+            true,
+            $orderTxType
         );
     }
 

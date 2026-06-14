@@ -84,14 +84,26 @@ class KuveytPosHttpClientTest extends TestCase
     {
         $this->assertFalse($this->client::supports(AkbankPos::class, HttpClientInterface::API_NAME_PAYMENT_API));
         $this->assertFalse($this->client::supports(KuveytPos::class, HttpClientInterface::API_NAME_QUERY_API));
-        $this->assertFalse($this->client::supports(KuveytPos::class, HttpClientInterface::API_NAME_GATEWAY_3D_API));
+        $this->assertTrue($this->client::supports(KuveytPos::class, HttpClientInterface::API_NAME_GATEWAY_3D_API));
         $this->assertTrue($this->client::supports(KuveytPos::class, HttpClientInterface::API_NAME_PAYMENT_API));
     }
 
-    public function testSupportsTx(): void
+    /**
+     * @dataProvider supportsTxDataProvider
+     */
+    public function testSupportsTx(string $txType, string $paymentModel, bool $expected): void
     {
-        $this->assertTrue($this->client->supportsTx(PosInterface::TX_TYPE_PAY_AUTH, PosInterface::MODEL_3D_SECURE));
-        $this->assertFalse($this->client->supportsTx(PosInterface::TX_TYPE_PAY_PRE_AUTH, PosInterface::MODEL_3D_SECURE));
+        $this->assertSame($expected, $this->client->supportsTx($txType, $paymentModel));
+    }
+
+    public static function supportsTxDataProvider(): array
+    {
+        return [
+            'pay_auth_3d_secure'       => [PosInterface::TX_TYPE_PAY_AUTH, PosInterface::MODEL_3D_SECURE, true],
+            '3d_form_build_3d_secure'  => [PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, PosInterface::MODEL_3D_SECURE, true],
+            'pay_pre_auth_3d_secure'   => [PosInterface::TX_TYPE_PAY_PRE_AUTH, PosInterface::MODEL_3D_SECURE, false],
+            'pay_auth_non_secure'      => [PosInterface::TX_TYPE_PAY_AUTH, PosInterface::MODEL_NON_SECURE, true],
+        ];
     }
 
     /**
@@ -111,6 +123,51 @@ class KuveytPosHttpClientTest extends TestCase
     {
         $this->expectException($expectedException);
         $this->client->getApiURL($txType, $paymentModel);
+    }
+
+    public function testRequestFor3DFormBuild(): void
+    {
+        $txType       = PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD;
+        $paymentModel = PosInterface::MODEL_3D_SECURE;
+        $requestData  = ['request-data'];
+        $order        = ['id' => 123];
+        $apiUrl       = 'https://boatest.kuveytturk.com.tr/boa.virtualpos.services/Home/ThreeDModelPayGate';
+
+        $encodedData = new EncodedData(
+            '<?xml version="1.0" encoding="" ?><request>data</request>',
+            SerializerInterface::FORMAT_XML,
+        );
+        $request     = $this->prepareHttpRequest($encodedData->getData(), [
+            [
+                'name'  => 'Content-Type',
+                'value' => 'text/xml; charset=UTF-8',
+            ],
+        ]);
+
+        $responseContent = '<html>3d-form</html>';
+        $response        = $this->prepareHttpResponse($responseContent, 200);
+
+        $this->serializer->expects($this->once())
+            ->method('encode')
+            ->with($requestData, $txType)
+            ->willReturn($encodedData);
+
+        $this->requestFactory->expects($this->once())
+            ->method('createRequest')
+            ->with('POST', $apiUrl)
+            ->willReturn($request);
+
+        $this->psrClient->expects($this->once())
+            ->method('sendRequest')
+            ->with($request)
+            ->willReturn($response);
+
+        $this->serializer->expects($this->never())
+            ->method('decode');
+
+        $actual = $this->client->request($txType, $paymentModel, $requestData, $order, $apiUrl);
+
+        $this->assertSame($responseContent, $actual);
     }
 
     /**
@@ -299,6 +356,11 @@ class KuveytPosHttpClientTest extends TestCase
                 'txType'       => PosInterface::TX_TYPE_PAY_AUTH,
                 'paymentModel' => PosInterface::MODEL_NON_SECURE,
                 'expected'     => 'https://boatest.kuveytturk.com.tr/boa.virtualpos.services/Home/Non3DPayGate',
+            ],
+            [
+                'txType'       => PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
+                'paymentModel' => PosInterface::MODEL_3D_SECURE,
+                'expected'     => 'https://boatest.kuveytturk.com.tr/boa.virtualpos.services/Home/ThreeDModelPayGate',
             ],
         ];
     }

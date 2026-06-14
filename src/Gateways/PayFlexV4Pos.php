@@ -209,32 +209,33 @@ class PayFlexV4Pos extends AbstractGateway
      * Müşteriden kredi kartı bilgilerini aldıktan sonra GET 7/24 MPI’a kart “Kredi Kartı Kayıt Durumu”nun
      * (Enrollment Status) sorulması, yani kart 3-D Secure programına dâhil mi yoksa değil mi sorgusu
      *
-     * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
+     * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $orderTxType
      * @phpstan-param PosInterface::MODEL_3D_*                                          $paymentModel
      *
      * @param array<string, int|string|float|null> $order
      * @param CreditCardInterface                  $creditCard
-     * @param string                               $txType
+     * @param string                               $orderTxType
      * @param string                               $paymentModel
      *
      * @return array<string, mixed>
      *
      * @throws Exception
      */
-    private function sendEnrollmentRequest(array $order, CreditCardInterface $creditCard, string $txType, string $paymentModel): array
+    private function sendEnrollmentRequest(array $order, CreditCardInterface $creditCard, string $orderTxType, string $paymentModel): array
     {
         $requestData = $this->requestDataMapper->create3DFormInitializeRequestData(
             $this->account,
             $order,
             $paymentModel,
-            $txType,
+            $orderTxType,
             $creditCard
         );
 
+        $requestTxType = PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD;
         $event = new RequestDataPreparedEvent(
             $requestData,
             $this->account->getBank(),
-            $txType,
+            $requestTxType,
             \get_class($this),
             $order,
             $paymentModel
@@ -253,10 +254,10 @@ class PayFlexV4Pos extends AbstractGateway
 
         /** @var array<string, mixed> $result */
         $result = $this->clientStrategy->getClient(
-            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
+            $requestTxType,
             $paymentModel,
         )->request(
-            $txType,
+            $requestTxType,
             $paymentModel,
             $requestData,
             $order

@@ -103,17 +103,20 @@ class IyzicoPosHttpClientTest extends TestCase
     /**
      * @dataProvider getApiUrlDataProvider
      */
-    public function testGetApiUrl(string $txType, ?string $paymentModel, string $expected): void
+    public function testGetApiUrl(string $txType, ?string $paymentModel, ?string $orderTxType, string $expected): void
     {
-        $actual = $this->client->getApiURL($txType, $paymentModel);
+        $actual = $this->client->getApiURL($txType, $paymentModel, $orderTxType);
 
         $this->assertSame($expected, $actual);
     }
 
-    public function testGetApiUrlWithoutTxTypeThrows(): void
+    /**
+     * @dataProvider getApiUrlThrowsDataProvider
+     */
+    public function testGetApiUrlThrows(?string $txType, ?string $paymentModel, ?string $orderTxType): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->client->getApiURL(null, null);
+        $this->client->getApiURL($txType, $paymentModel, $orderTxType);
     }
 
     public function testConstructorRejectsNonIyzicoCrypt(): void
@@ -351,7 +354,8 @@ class IyzicoPosHttpClientTest extends TestCase
             [PosInterface::TX_TYPE_CANCEL, true],
             [PosInterface::TX_TYPE_REFUND, true],
             [PosInterface::TX_TYPE_STATUS, true],
-            [PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, false],
+            [PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, true],
+            [PosInterface::TX_TYPE_INTERNAL_3D_PAYMENT_STATUS, true],
             [PosInterface::TX_TYPE_ORDER_HISTORY, false],
             [PosInterface::TX_TYPE_HISTORY, false],
         ];
@@ -360,14 +364,28 @@ class IyzicoPosHttpClientTest extends TestCase
     public static function getApiUrlDataProvider(): array
     {
         return [
-            [PosInterface::TX_TYPE_PAY_AUTH, PosInterface::MODEL_NON_SECURE, self::BASE_URL.'/payment/auth'],
-            [PosInterface::TX_TYPE_PAY_PRE_AUTH, PosInterface::MODEL_NON_SECURE, self::BASE_URL.'/payment/preauth'],
-            [PosInterface::TX_TYPE_PAY_POST_AUTH, PosInterface::MODEL_NON_SECURE, self::BASE_URL.'/payment/postauth'],
-            [PosInterface::TX_TYPE_CANCEL, PosInterface::MODEL_NON_SECURE, self::BASE_URL.'/payment/cancel'],
-            [PosInterface::TX_TYPE_STATUS, PosInterface::MODEL_NON_SECURE, self::BASE_URL.'/payment/detail'],
-            [PosInterface::TX_TYPE_REFUND, PosInterface::MODEL_NON_SECURE, self::BASE_URL.'/v2/payment/refund'],
-            [PosInterface::TX_TYPE_REFUND_PARTIAL, PosInterface::MODEL_NON_SECURE, self::BASE_URL.'/v2/payment/refund'],
-            [PosInterface::TX_TYPE_PAY_AUTH, PosInterface::MODEL_3D_SECURE, self::BASE_URL.'/payment/v2/3dsecure/auth'],
+            [PosInterface::TX_TYPE_PAY_AUTH, PosInterface::MODEL_NON_SECURE, null, self::BASE_URL.'/payment/auth'],
+            [PosInterface::TX_TYPE_PAY_PRE_AUTH, PosInterface::MODEL_NON_SECURE, null, self::BASE_URL.'/payment/preauth'],
+            [PosInterface::TX_TYPE_PAY_POST_AUTH, PosInterface::MODEL_NON_SECURE, null, self::BASE_URL.'/payment/postauth'],
+            [PosInterface::TX_TYPE_CANCEL, PosInterface::MODEL_NON_SECURE, null, self::BASE_URL.'/payment/cancel'],
+            [PosInterface::TX_TYPE_STATUS, PosInterface::MODEL_NON_SECURE, null, self::BASE_URL.'/payment/detail'],
+            [PosInterface::TX_TYPE_REFUND, PosInterface::MODEL_NON_SECURE, null, self::BASE_URL.'/v2/payment/refund'],
+            [PosInterface::TX_TYPE_REFUND_PARTIAL, PosInterface::MODEL_NON_SECURE, null, self::BASE_URL.'/v2/payment/refund'],
+            [PosInterface::TX_TYPE_PAY_AUTH, PosInterface::MODEL_3D_SECURE, null, self::BASE_URL.'/payment/v2/3dsecure/auth'],
+            [PosInterface::TX_TYPE_PAY_PRE_AUTH, PosInterface::MODEL_3D_SECURE, null, self::BASE_URL.'/payment/v2/3dsecure/auth'],
+            [PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, PosInterface::MODEL_3D_SECURE, PosInterface::TX_TYPE_PAY_AUTH, self::BASE_URL.'/payment/3dsecure/initialize'],
+            [PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, PosInterface::MODEL_3D_SECURE, PosInterface::TX_TYPE_PAY_PRE_AUTH, self::BASE_URL.'/payment/3dsecure/initialize/preauth'],
+            [PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, PosInterface::MODEL_3D_HOST, PosInterface::TX_TYPE_PAY_AUTH, self::BASE_URL.'/payment/iyzipos/checkoutform/initialize/auth/ecom'],
+            [PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, PosInterface::MODEL_3D_HOST, PosInterface::TX_TYPE_PAY_PRE_AUTH, self::BASE_URL.'/payment/iyzipos/checkoutform/initialize/preauth/ecom'],
+            [PosInterface::TX_TYPE_INTERNAL_3D_PAYMENT_STATUS, PosInterface::MODEL_3D_HOST, null, self::BASE_URL.'/payment/iyzipos/checkoutform/auth/ecom/detail'],
+        ];
+    }
+
+    public static function getApiUrlThrowsDataProvider(): array
+    {
+        return [
+            'missing_tx_type'                    => [null, null, null],
+            '3d_host_form_build_missing_order_tx' => [PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, PosInterface::MODEL_3D_HOST, null],
         ];
     }
 }

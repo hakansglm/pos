@@ -71,7 +71,7 @@ class PayFlexCPV4PosHttpClientTest extends TestCase
 
         $this->client = PosHttpClientFactory::create(
             PayFlexCPV4PosHttpClient::class,
-            'https://cptest.vakifbank.com.tr/CommonPayment/api/VposTransaction',
+            'https://cptest.vakifbank.com.tr/CommonPayment/api',
             $this->serializer,
             $this->crypt,
             $this->requestValueMapper,
@@ -85,7 +85,8 @@ class PayFlexCPV4PosHttpClientTest extends TestCase
     public function testSupports(): void
     {
         $this->assertTrue($this->client::supports(PayFlexCPV4Pos::class, HttpClientInterface::API_NAME_PAYMENT_API));
-        $this->assertFalse($this->client::supports(PayFlexCPV4Pos::class, HttpClientInterface::API_NAME_GATEWAY_3D_API));
+        $this->assertTrue($this->client::supports(PayFlexCPV4Pos::class, HttpClientInterface::API_NAME_GATEWAY_3D_API));
+        $this->assertFalse($this->client::supports(PayFlexCPV4Pos::class, HttpClientInterface::API_NAME_QUERY_API));
         $this->assertFalse($this->client::supports(AkbankPos::class, HttpClientInterface::API_NAME_PAYMENT_API));
     }
 
@@ -286,6 +287,11 @@ class PayFlexCPV4PosHttpClientTest extends TestCase
                 'txType'       => PosInterface::TX_TYPE_REFUND,
                 'paymentModel' => PosInterface::MODEL_NON_SECURE,
                 'expected'     => 'https://cptest.vakifbank.com.tr/CommonPayment/api/VposTransaction',
+            ],
+            [
+                'txType'       => PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
+                'paymentModel' => PosInterface::MODEL_3D_PAY,
+                'expected'     => 'https://cptest.vakifbank.com.tr/CommonPayment/api/RegisterTransaction',
             ],
         ];
     }

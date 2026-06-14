@@ -19,7 +19,10 @@ class PayFlexCPV4PosHttpClient extends AbstractHttpClient
      */
     public static function supports(string $gatewayClass, string $apiName): bool
     {
-        return PayFlexCPV4Pos::class === $gatewayClass && HttpClientInterface::API_NAME_PAYMENT_API === $apiName;
+        return PayFlexCPV4Pos::class === $gatewayClass
+            && (HttpClientInterface::API_NAME_PAYMENT_API === $apiName
+                // API_NAME_GATEWAY_3D_API is needed for backward compatibility with v1 configs.
+                || HttpClientInterface::API_NAME_GATEWAY_3D_API === $apiName);
     }
 
     /**
@@ -27,7 +30,19 @@ class PayFlexCPV4PosHttpClient extends AbstractHttpClient
      */
     public function supportsTx(string $txType, string $paymentModel, ?string $orderTxType = null): bool
     {
-        return PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD !== $txType;
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getApiURL(?string $txType = null, ?string $paymentModel = null, ?string $orderTxType = null): string
+    {
+        if (PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD === $txType) {
+            return $this->baseApiUrl.'/RegisterTransaction';
+        }
+
+        return $this->baseApiUrl.'/VposTransaction';
     }
 
     /**

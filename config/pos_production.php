@@ -175,8 +175,7 @@ return [
             'class'             => \Mews\Pos\Gateways\PayFlexCPV4Pos::class,
             'lang'              => \Mews\Pos\PosInterface::LANG_TR,
             'gateway_endpoints' => [
-                'payment_api' => 'https://cpweb.vakifbank.com.tr/CommonPayment/api/VposTransaction',
-                'gateway_3d'  => 'https://cpweb.vakifbank.com.tr/CommonPayment/api/RegisterTransaction',
+                'payment_api' => 'https://cpweb.vakifbank.com.tr/CommonPayment/api',
             ],
         ],
         'denizbank'             => [
@@ -195,7 +194,6 @@ return [
             'lang'              => \Mews\Pos\PosInterface::LANG_TR,
             'gateway_endpoints' => [
                 'payment_api' => 'https://sanalpos.kuveytturk.com.tr/ServiceGateWay/Home',
-                'gateway_3d'  => 'https://sanalpos.kuveytturk.com.tr/ServiceGateWay/Home/ThreeDModelPayGate',
                 'query_api'   => 'https://boa.kuveytturk.com.tr/BOA.Integration.WCFService/BOA.Integration.VirtualPos/VirtualPosService.svc/Basic',
             ],
         ],
@@ -205,7 +203,6 @@ return [
             'lang'              => \Mews\Pos\PosInterface::LANG_TR,
             'gateway_endpoints' => [
                 'payment_api'     => 'https://boa.vakifkatilim.com.tr/VirtualPOS.Gateway/Home',
-                'gateway_3d'      => 'https://boa.vakifkatilim.com.tr/VirtualPOS.Gateway/Home/ThreeDModelPayGate',
                 'gateway_3d_host' => 'https://boa.vakifkatilim.com.tr/VirtualPOS.Gateway/CommonPaymentPage/CommonPaymentPage',
             ],
         ],
@@ -232,7 +229,6 @@ return [
             'lang'              => \Mews\Pos\PosInterface::LANG_TR,
             'gateway_endpoints' => [
                 'payment_api' => 'https://api.iyzipay.com',
-                'gateway_3d'  => 'https://api.iyzipay.com',
                 'query_api'   => 'https://api.iyzipay.com/v2/reporting/payment',
             ],
         ],

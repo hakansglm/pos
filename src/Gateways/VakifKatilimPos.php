@@ -189,26 +189,38 @@ class VakifKatilimPos extends AbstractGateway
 
     /**
      * @phpstan-param PosInterface::MODEL_3D_*                                          $paymentModel
-     * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
+     * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $orderTxType
      *
      * @param KuveytPosAccount                     $kuveytPosAccount
      * @param array<string, int|string|float|null> $order
      * @param string                               $paymentModel
-     * @param string                               $txType
+     * @param string                               $orderTxType
      * @param CreditCardInterface|null             $creditCard
      *
      * @return non-empty-string HTML string containing form inputs to be submitted to the bank
      *
      * @throws UnsupportedTransactionTypeException
      */
-    private function sendEnrollmentRequest(KuveytPosAccount $kuveytPosAccount, array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): string
-    {
-        $requestData = $this->requestDataMapper->create3DFormInitializeRequestData($kuveytPosAccount, $order, $paymentModel, $txType, $creditCard);
+    private function sendEnrollmentRequest(
+        KuveytPosAccount $kuveytPosAccount,
+        array $order,
+        string $paymentModel,
+        string $orderTxType,
+        ?CreditCardInterface $creditCard = null
+    ): string {
+        $requestData = $this->requestDataMapper->create3DFormInitializeRequestData(
+            $kuveytPosAccount,
+            $order,
+            $paymentModel,
+            $orderTxType,
+            $creditCard
+        );
 
+        $apiRequestTxType = PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD;
         $event = new RequestDataPreparedEvent(
             $requestData,
             $this->account->getBank(),
-            $txType,
+            $apiRequestTxType,
             \get_class($this),
             $order,
             $paymentModel
@@ -227,10 +239,10 @@ class VakifKatilimPos extends AbstractGateway
 
         /** @var non-empty-string $result */
         $result = $this->clientStrategy->getClient(
-            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
+            $apiRequestTxType,
             $paymentModel,
         )->request(
-            $txType,
+            $apiRequestTxType,
             $paymentModel,
             $requestData,
             $order

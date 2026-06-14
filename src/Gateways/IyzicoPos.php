@@ -240,7 +240,7 @@ class IyzicoPos extends AbstractGateway
      */
     private function get3DHostPaymentStatus(array $gatewayResponseData, array $order): array
     {
-        $txType       = PosInterface::TX_TYPE_STATUS;
+        $apiRequestTxType = PosInterface::TX_TYPE_INTERNAL_3D_PAYMENT_STATUS;
         $paymentModel = PosInterface::MODEL_3D_HOST;
 
         /** @var array{token: string} $queryParams */
@@ -252,7 +252,7 @@ class IyzicoPos extends AbstractGateway
         $event = new RequestDataPreparedEvent(
             $requestData,
             $this->account->getBank(),
-            $txType,
+            $apiRequestTxType,
             \get_class($this),
             $order,
             $paymentModel
@@ -271,10 +271,10 @@ class IyzicoPos extends AbstractGateway
 
         /** @var array<string, mixed> $result */
         $result = $this->clientStrategy->getClient(
-            self::TX_TYPE_INTERNAL_3D_FORM_BUILD,
+            $apiRequestTxType,
             $paymentModel,
         )->request(
-            $txType,
+            $apiRequestTxType,
             $paymentModel,
             $requestData,
             $order,
@@ -288,7 +288,7 @@ class IyzicoPos extends AbstractGateway
     /**
      * @param array<string, mixed>                                              $order
      * @param PosInterface::MODEL_3D_*                                          $paymentModel
-     * @param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
+     * @param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $orderTxType
      * @param CreditCardInterface|null                                          $creditCard
      *
      * @return array<string, mixed>
@@ -296,20 +296,22 @@ class IyzicoPos extends AbstractGateway
      * @throws ClientExceptionInterface
      * @throws UnsupportedTransactionTypeException
      */
-    private function initialize3DForm(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): array
+    private function initialize3DForm(array $order, string $paymentModel, string $orderTxType, ?CreditCardInterface $creditCard = null): array
     {
         $requestData = $this->requestDataMapper->create3DFormInitializeRequestData(
             $this->account,
             $order,
             $paymentModel,
-            $txType,
+            $orderTxType,
             $creditCard
         );
+
+        $apiRequestTxType = PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD;
 
         $event = new RequestDataPreparedEvent(
             $requestData,
             $this->account->getBank(),
-            $txType,
+            $apiRequestTxType,
             \get_class($this),
             $order,
             $paymentModel
@@ -328,15 +330,16 @@ class IyzicoPos extends AbstractGateway
 
         /** @var array<string, mixed> $initResponse */
         $initResponse = $this->clientStrategy->getClient(
-            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
+            $apiRequestTxType,
             $paymentModel
         )->request(
-            $txType,
+            $apiRequestTxType,
             $paymentModel,
             $requestData,
             $order,
             null,
-            $this->account
+            $this->account,
+            $orderTxType
         );
 
         return $initResponse;

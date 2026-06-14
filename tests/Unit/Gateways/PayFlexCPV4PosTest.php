@@ -171,14 +171,11 @@ class PayFlexCPV4PosTest extends TestCase
             ->willReturn($requestData);
 
         $this->configureClientResponse(
-            $txType,
+            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
             $requestData,
             $enrollmentResponse,
             $order,
             $paymentModel,
-            null,
-            null,
-            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
         );
 
         $this->requestMapperMock->expects(self::once())
@@ -230,14 +227,11 @@ class PayFlexCPV4PosTest extends TestCase
             'ResponseMessage'  => 'Güvenlik Numarası Hatalı',
         ];
         $this->configureClientResponse(
-            $txType,
+            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
             $requestData,
             $enrollmentResponse,
             $order,
             $paymentModel,
-            null,
-            null,
-            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
         );
 
         $this->requestMapperMock->expects(self::never())
@@ -308,7 +302,7 @@ class PayFlexCPV4PosTest extends TestCase
                 ->willReturn($create3DPaymentStatusRequestData);
 
             $this->configureClientResponse(
-                $txType,
+                PosInterface::TX_TYPE_INTERNAL_3D_PAYMENT_STATUS,
                 $create3DPaymentStatusRequestData,
                 $paymentResponse,
                 $order,
@@ -369,7 +363,7 @@ class PayFlexCPV4PosTest extends TestCase
                 ->willReturn($create3DPaymentStatusRequestData);
 
             $this->configureClientResponse(
-                $txType,
+                PosInterface::TX_TYPE_INTERNAL_3D_PAYMENT_STATUS,
                 $create3DPaymentStatusRequestData,
                 $paymentResponse,
                 $order,

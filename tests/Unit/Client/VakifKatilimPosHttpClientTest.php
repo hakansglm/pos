@@ -82,18 +82,25 @@ class VakifKatilimPosHttpClientTest extends TestCase
     public function testSupports(): void
     {
         $this->assertTrue($this->client::supports(VakifKatilimPos::class, HttpClientInterface::API_NAME_PAYMENT_API));
+        $this->assertTrue($this->client::supports(VakifKatilimPos::class, HttpClientInterface::API_NAME_GATEWAY_3D_API));
         $this->assertFalse($this->client::supports(AkbankPos::class, HttpClientInterface::API_NAME_PAYMENT_API));
     }
 
-    public function testSupportsTx(): void
+    /**
+     * @dataProvider supportsTxDataProvider
+     */
+    public function testSupportsTx(string $txType, string $paymentModel, bool $expected): void
     {
-        $this->assertTrue($this->client->supportsTx(PosInterface::TX_TYPE_PAY_AUTH, PosInterface::MODEL_3D_SECURE));
-        $this->assertFalse($this->client->supportsTx(PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, PosInterface::MODEL_3D_SECURE));
+        $this->assertSame($expected, $this->client->supportsTx($txType, $paymentModel));
     }
 
-    public function testSupportsTxWithUnsupportedTx(): void
+    public static function supportsTxDataProvider(): array
     {
-        $this->assertFalse($this->client->supportsTx('unsupported', PosInterface::MODEL_3D_SECURE));
+        return [
+            'pay_auth_3d_secure'      => [PosInterface::TX_TYPE_PAY_AUTH, PosInterface::MODEL_3D_SECURE, true],
+            '3d_form_build_3d_secure' => [PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, PosInterface::MODEL_3D_SECURE, true],
+            'unsupported'             => ['unsupported', PosInterface::MODEL_3D_SECURE, false],
+        ];
     }
 
     /**
@@ -117,6 +124,51 @@ class VakifKatilimPosHttpClientTest extends TestCase
     ): void {
         $this->expectException($expectedException);
         $this->client->getApiURL($txType, $paymentModel, $orderTxType);
+    }
+
+    public function testRequestFor3DFormBuild(): void
+    {
+        $txType       = PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD;
+        $paymentModel = PosInterface::MODEL_3D_SECURE;
+        $requestData  = ['request-data'];
+        $order        = ['id' => 123];
+        $apiUrl       = 'https://boa.vakifkatilim.com.tr/VirtualPOS.Gateway/Home/ThreeDModelPayGate';
+
+        $encodedData = new EncodedData(
+            '<?xml version="1.0" encoding="" ?><request>data</request>',
+            SerializerInterface::FORMAT_XML,
+        );
+        $request     = $this->prepareHttpRequest($encodedData->getData(), [
+            [
+                'name'  => 'Content-Type',
+                'value' => 'text/xml; charset=UTF-8',
+            ],
+        ]);
+
+        $responseContent = '<html>3d-form</html>';
+        $response        = $this->prepareHttpResponse($responseContent, 200);
+
+        $this->serializer->expects($this->once())
+            ->method('encode')
+            ->with($requestData, $txType)
+            ->willReturn($encodedData);
+
+        $this->requestFactory->expects($this->once())
+            ->method('createRequest')
+            ->with('POST', $apiUrl)
+            ->willReturn($request);
+
+        $this->psrClient->expects($this->once())
+            ->method('sendRequest')
+            ->with($request)
+            ->willReturn($response);
+
+        $this->serializer->expects($this->never())
+            ->method('decode');
+
+        $actual = $this->client->request($txType, $paymentModel, $requestData, $order, $apiUrl);
+
+        $this->assertSame($responseContent, $actual);
     }
 
     /**
@@ -298,6 +350,12 @@ class VakifKatilimPosHttpClientTest extends TestCase
     public static function getApiUrlDataProvider(): array
     {
         return [
+            [
+                'txType'       => PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
+                'orderTxType'  => PosInterface::TX_TYPE_PAY_AUTH,
+                'paymentModel' => PosInterface::MODEL_3D_SECURE,
+                'expected'     => 'https://boa.vakifkatilim.com.tr/VirtualPOS.Gateway/Home/ThreeDModelPayGate',
+            ],
             [
                 'txType'       => PosInterface::TX_TYPE_PAY_AUTH,
                 'orderTxType'  => null,

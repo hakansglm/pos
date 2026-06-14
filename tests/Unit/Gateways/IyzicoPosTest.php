@@ -151,7 +151,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             $txType,
-            $txType,
             $requestData,
             [],
             $this->order,
@@ -222,7 +221,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             $txType,
-            $txType,
             $requestData,
             $bankResponse,
             $this->order,
@@ -255,7 +253,6 @@ class IyzicoPosTest extends TestCase
             ->willReturn($prepared);
 
         $this->configureClientResponse(
-            $txType,
             $txType,
             $prepared,
             $bankResponse,
@@ -302,7 +299,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
-            $txType,
             ['request-data'],
             $initResponse,
             $this->order,
@@ -338,7 +334,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
-            $txType,
             ['request-data'],
             $initResponse,
             $this->order,
@@ -374,7 +369,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
-            $txType,
             ['request-data'],
             $initResponse,
             $this->order,
@@ -410,7 +404,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
-            $txType,
             ['request-data'],
             $initResponse,
             $this->order,
@@ -517,7 +510,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             $txType,
-            $txType,
             $provisionRequest,
             $provisionResponse,
             $this->order,
@@ -565,7 +557,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             $txType,
-            $txType,
             $provisionRequest,
             $provisionResponse,
             $this->order,
@@ -598,8 +589,7 @@ class IyzicoPosTest extends TestCase
             ->willReturn($statusRequest);
 
         $this->configureClientResponse(
-            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
-            $txType,
+            PosInterface::TX_TYPE_INTERNAL_3D_PAYMENT_STATUS,
             $statusRequest,
             $statusResponse,
             $this->order,
@@ -634,7 +624,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             $txType,
-            $txType,
             $requestData,
             $decodedResponse,
             $order,
@@ -664,7 +653,6 @@ class IyzicoPosTest extends TestCase
             ->willReturn($requestData);
 
         $this->configureClientResponse(
-            $txType,
             $txType,
             $requestData,
             $bankResponse,
@@ -698,7 +686,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             $txType,
-            $txType,
             $requestData,
             $bankResponse,
             $this->order,
@@ -730,7 +717,6 @@ class IyzicoPosTest extends TestCase
             ->willReturn($requestData);
 
         $this->configureClientResponse(
-            $txType,
             $txType,
             $requestData,
             $bankResponse,
@@ -764,7 +750,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             $txType,
-            $txType,
             $requestData,
             $bankResponse,
             $this->order,
@@ -796,7 +781,6 @@ class IyzicoPosTest extends TestCase
             ->willReturn($requestData);
 
         $this->configureClientResponse(
-            $txType,
             $txType,
             $requestData,
             $bankResponse,
@@ -878,7 +862,6 @@ class IyzicoPosTest extends TestCase
 
     private function configureClientResponse(
         string              $apiRequestTxType,
-        string              $orderTxType,
         array               $requestData,
         array               $decodedResponse,
         array               $order,
@@ -896,7 +879,7 @@ class IyzicoPosTest extends TestCase
         $this->httpClientMock->expects(self::once())
             ->method('request')
             ->with(
-                $orderTxType,
+                $apiRequestTxType,
                 $paymentModel,
                 $this->callback(fn (array $data) => ($data['test-event-marker'] ?? false) === true),
                 $order,

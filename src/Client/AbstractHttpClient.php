@@ -90,7 +90,8 @@ abstract class AbstractHttpClient implements HttpClientInterface
         array               $requestData,
         array               $order,
         ?string             $url = null,
-        ?AbstractPosAccount $account = null
+        ?AbstractPosAccount $account = null,
+        ?string             $orderTxType = null
     ) {
         $content = $this->serializer->encode($requestData, $txType);
 
@@ -100,17 +101,20 @@ abstract class AbstractHttpClient implements HttpClientInterface
             $content,
             $order,
             $url,
-            $account
+            $account,
+            true,
+            $orderTxType
         );
     }
 
     /**
-     * @param PosInterface::TX_TYPE_* $txType
-     * @param PosInterface::MODEL_*   $paymentModel
-     * @param EncodedData             $content
-     * @param array<string, mixed>    $order
-     * @param non-empty-string|null   $url
-     * @param AbstractPosAccount|null $account
+     * @param PosInterface::TX_TYPE_*          $txType
+     * @param PosInterface::MODEL_*            $paymentModel
+     * @param EncodedData                      $content
+     * @param array<string, mixed>             $order
+     * @param non-empty-string|null            $url
+     * @param AbstractPosAccount|null          $account
+     * @param PosInterface::TX_TYPE_PAY_*|null $orderTxType
      *
      * @return ($decode is true ? array<string, mixed> : string)
      *
@@ -120,24 +124,25 @@ abstract class AbstractHttpClient implements HttpClientInterface
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
-    public function doRequest(
+    protected function doRequest(
         string              $txType,
         string              $paymentModel,
         EncodedData         $content,
         array               $order,
         ?string             $url = null,
         ?AbstractPosAccount $account = null,
-        bool                $decode = true
+        bool                $decode = true,
+        ?string             $orderTxType = null
     ) {
         try {
-            $url ??= $this->getApiURL($txType, $paymentModel, $order['transaction_type'] ?? null);
+            $url ??= $this->getApiURL($txType, $paymentModel, $orderTxType);
         } catch (\Exception $e) {
             $msg = \sprintf('%s işlemi için API URL oluşturulamadı! API URL sağlayıp deneyiniz.', $txType);
             $this->logger->error($msg, [
                 'api_url'       => $url,
                 'txType'       => $txType,
                 'paymentModel' => $paymentModel,
-                'orderTxType'  => $order['transaction_type'] ?? null,
+                'orderTxType'  => $orderTxType,
                 'exception'    => $e,
             ]);
 

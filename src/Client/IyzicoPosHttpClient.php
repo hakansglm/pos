@@ -21,7 +21,6 @@ class IyzicoPosHttpClient extends AbstractIyzicoPosHttpClient
     public function supportsTx(string $txType, string $paymentModel, ?string $orderTxType = null): bool
     {
         return !\in_array($txType, [
-            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
             PosInterface::TX_TYPE_ORDER_HISTORY,
             PosInterface::TX_TYPE_HISTORY,
         ], true);
@@ -40,7 +39,7 @@ class IyzicoPosHttpClient extends AbstractIyzicoPosHttpClient
      */
     public function getApiURL(?string $txType = null, ?string $paymentModel = null, ?string $orderTxType = null): string
     {
-        return $this->baseApiUrl.$this->getPathByTxType($txType, $paymentModel);
+        return $this->baseApiUrl.$this->getPathByTxType($txType, $paymentModel, $orderTxType);
     }
 
     /**
@@ -65,17 +64,43 @@ class IyzicoPosHttpClient extends AbstractIyzicoPosHttpClient
     }
 
     /**
-     * @param PosInterface::TX_TYPE_*|null $txType
-     * @param PosInterface::MODEL_*|null   $paymentModel
+     * @param PosInterface::TX_TYPE_*|null     $txType
+     * @param PosInterface::MODEL_*|null       $paymentModel
+     * @param PosInterface::TX_TYPE_PAY_*|null $orderTxType
      *
      * @return string
      *
      * @throws \InvalidArgumentException
      */
-    private function getPathByTxType(?string $txType, ?string $paymentModel): string
+    private function getPathByTxType(?string $txType, ?string $paymentModel, ?string $orderTxType): string
     {
         if (null === $txType) {
             throw new \InvalidArgumentException('Transaction type is required to generate API URL');
+        }
+
+        if (PosInterface::MODEL_3D_HOST === $paymentModel) {
+            if (PosInterface::TX_TYPE_INTERNAL_3D_PAYMENT_STATUS === $txType) {
+                return '/payment/iyzipos/checkoutform/auth/ecom/detail';
+            }
+
+            if (PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD === $txType) {
+                if (null === $orderTxType) {
+                    throw new \InvalidArgumentException('$orderTxType is required to generate 3D HOST form URL');
+                }
+
+                return sprintf(
+                    '/payment/iyzipos/checkoutform/initialize/%s/ecom',
+                    $this->requestValueMapper->mapTxType($orderTxType)
+                );
+            }
+        }
+
+        if (PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD === $txType) {
+            if (PosInterface::TX_TYPE_PAY_PRE_AUTH === $orderTxType) {
+                return '/payment/3dsecure/initialize/'.$this->requestValueMapper->mapTxType($orderTxType);
+            }
+
+            return '/payment/3dsecure/initialize';
         }
 
         if (PosInterface::TX_TYPE_REFUND === $txType || PosInterface::TX_TYPE_REFUND_PARTIAL === $txType) {

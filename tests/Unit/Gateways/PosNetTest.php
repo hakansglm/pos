@@ -310,6 +310,7 @@ class PosNetTest extends TestCase
                         $order,
                         null,
                         null,
+                        null,
                         $resolveResponse,
                     ],
                     [
@@ -317,6 +318,7 @@ class PosNetTest extends TestCase
                         $paymentModel,
                         $request2UpdatedData,
                         $order,
+                        null,
                         null,
                         null,
                         $paymentResponse,
@@ -488,6 +490,7 @@ class PosNetTest extends TestCase
                         $order,
                         null,
                         null,
+                        null,
                         $resolveResponse,
                     ],
                     [
@@ -495,6 +498,7 @@ class PosNetTest extends TestCase
                         $paymentModel,
                         $request2UpdatedData,
                         $order,
+                        null,
                         null,
                         null,
                         $paymentResponse,

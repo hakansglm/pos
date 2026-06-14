@@ -201,12 +201,12 @@ class KuveytPos extends AbstractGateway
 
     /**
      * @phpstan-param PosInterface::MODEL_3D_*                                          $paymentModel
-     * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
+     * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $orderTxType
      *
      * @param KuveytPosAccount                     $kuveytPosAccount
      * @param array<string, int|string|float|null> $order
      * @param string                               $paymentModel
-     * @param string                               $txType
+     * @param string                               $orderTxType
      * @param CreditCardInterface|null             $creditCard
      *
      * @return string HTML form
@@ -215,20 +215,22 @@ class KuveytPos extends AbstractGateway
      * @throws UnsupportedTransactionTypeException
      * @throws ClientExceptionInterface
      */
-    private function getCommon3DFormData(KuveytPosAccount $kuveytPosAccount, array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): string
+    private function getCommon3DFormData(KuveytPosAccount $kuveytPosAccount, array $order, string $paymentModel, string $orderTxType, ?CreditCardInterface $creditCard = null): string
     {
         $requestData = $this->requestDataMapper->create3DFormInitializeRequestData(
             $kuveytPosAccount,
             $order,
             $paymentModel,
-            $txType,
+            $orderTxType,
             $creditCard
         );
+
+        $apiRequestTxType = PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD;
 
         $event = new RequestDataPreparedEvent(
             $requestData,
             $this->account->getBank(),
-            $txType,
+            $apiRequestTxType,
             \get_class($this),
             $order,
             $paymentModel
@@ -247,10 +249,10 @@ class KuveytPos extends AbstractGateway
 
         /** @var string $result */
         $result = $this->clientStrategy->getClient(
-            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
+            $apiRequestTxType,
             $paymentModel,
         )->request(
-            $txType,
+            $apiRequestTxType,
             $paymentModel,
             $requestData,
             $order,

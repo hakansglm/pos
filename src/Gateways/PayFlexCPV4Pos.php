@@ -210,11 +210,11 @@ class PayFlexCPV4Pos extends AbstractGateway
      *
      * ORTAK ÖDEME SİSTEMİNE İŞLEM KAYDETME
      *
-     * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
+     * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $orderTxType
      * @phpstan-param PosInterface::MODEL_3D_*                                          $paymentModel
      *
      * @param array<string, int|string|float|null> $order
-     * @param string                               $txType
+     * @param string                               $orderTxType
      * @param string                               $paymentModel
      * @param CreditCardInterface|null             $creditCard
      *
@@ -227,20 +227,22 @@ class PayFlexCPV4Pos extends AbstractGateway
      * @throws UnsupportedTransactionTypeException
      * @throws ClientExceptionInterface
      */
-    private function registerPayment(array $order, string $txType, string $paymentModel, ?CreditCardInterface $creditCard = null): array
+    private function registerPayment(array $order, string $orderTxType, string $paymentModel, ?CreditCardInterface $creditCard = null): array
     {
         $requestData = $this->requestDataMapper->create3DFormInitializeRequestData(
             $this->account,
             $order,
             $paymentModel,
-            $txType,
+            $orderTxType,
             $creditCard
         );
+
+        $requestTxType = PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD;
 
         $event = new RequestDataPreparedEvent(
             $requestData,
             $this->account->getBank(),
-            $txType,
+            $requestTxType,
             \get_class($this),
             $order,
             $paymentModel
@@ -259,10 +261,10 @@ class PayFlexCPV4Pos extends AbstractGateway
 
         /** @var array{CommonPaymentUrl: string|null, PaymentToken: string|null, ErrorCode: string|null, ResponseMessage: string|null} $response */
         $response = $this->clientStrategy->getClient(
-            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
+            $requestTxType,
             $paymentModel,
         )->request(
-            $txType,
+            $requestTxType,
             $paymentModel,
             $requestData,
             $order
@@ -292,7 +294,7 @@ class PayFlexCPV4Pos extends AbstractGateway
      */
     private function get3DPaymentStatus(array $gatewayResponseData, array $order): array
     {
-        $txType       = PosInterface::TX_TYPE_STATUS;
+        $apiRequestTxType = PosInterface::TX_TYPE_INTERNAL_3D_PAYMENT_STATUS;
         $paymentModel = PosInterface::MODEL_NON_SECURE;
 
         /** @var array{TransactionId: string, PaymentToken: string} $queryParams */
@@ -304,7 +306,7 @@ class PayFlexCPV4Pos extends AbstractGateway
         $event = new RequestDataPreparedEvent(
             $requestData,
             $this->account->getBank(),
-            $txType,
+            $apiRequestTxType,
             \get_class($this),
             $order,
             $paymentModel
@@ -323,10 +325,10 @@ class PayFlexCPV4Pos extends AbstractGateway
 
         /** @var array<string, mixed> $result */
         $result = $this->clientStrategy->getClient(
-            $txType,
+            $apiRequestTxType,
             $paymentModel,
         )->request(
-            $txType,
+            $apiRequestTxType,
             $paymentModel,
             $requestData,
             $order

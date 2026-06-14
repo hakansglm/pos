@@ -10,13 +10,10 @@ use Mews\Pos\Client\AkbankPosHttpClient;
 use Mews\Pos\Client\EstPosHttpClient;
 use Mews\Pos\Client\GarantiPosHttpClient;
 use Mews\Pos\Client\InterPosHttpClient;
-use Mews\Pos\Client\IyzicoPos3DFormHttpClient;
 use Mews\Pos\Client\IyzicoPosHttpClient;
 use Mews\Pos\Client\IyzicoPosQueryApiHttpClient;
-use Mews\Pos\Client\KuveytPos3DFormHttpClient;
 use Mews\Pos\Client\KuveytPosHttpClient;
 use Mews\Pos\Client\ParamPosHttpClient;
-use Mews\Pos\Client\PayFlexCPV4Pos3DFormHttpClient;
 use Mews\Pos\Client\PayFlexCPV4PosHttpClient;
 use Mews\Pos\Client\PayFlexV4Pos3DFormHttpClient;
 use Mews\Pos\Client\PayFlexV4PosHttpClient;
@@ -25,7 +22,6 @@ use Mews\Pos\Client\PayForPosHttpClient;
 use Mews\Pos\Client\PosNetPosHttpClient;
 use Mews\Pos\Client\PosNetV1PosHttpClient;
 use Mews\Pos\Client\ToslaPosHttpClient;
-use Mews\Pos\Client\VakifKatilimPos3DFormHttpClient;
 use Mews\Pos\Client\VakifKatilimPosHttpClient;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\Crypt\IyzicoPosCrypt;
@@ -67,13 +63,10 @@ class HttpClientFactoryTest extends TestCase
             [EstPosHttpClient::class],
             [GarantiPosHttpClient::class],
             [InterPosHttpClient::class],
-            [IyzicoPos3DFormHttpClient::class,    IyzicoPosCrypt::class],
             [IyzicoPosHttpClient::class,           IyzicoPosCrypt::class],
             [IyzicoPosQueryApiHttpClient::class,   IyzicoPosCrypt::class],
-            [KuveytPos3DFormHttpClient::class],
             [KuveytPosHttpClient::class],
             [ParamPosHttpClient::class],
-            [PayFlexCPV4Pos3DFormHttpClient::class],
             [PayFlexCPV4PosHttpClient::class],
             [PayFlexV4Pos3DFormHttpClient::class],
             [PayFlexV4PosHttpClient::class],
@@ -82,7 +75,6 @@ class HttpClientFactoryTest extends TestCase
             [PosNetPosHttpClient::class],
             [PosNetV1PosHttpClient::class],
             [ToslaPosHttpClient::class],
-            [VakifKatilimPos3DFormHttpClient::class],
             [VakifKatilimPosHttpClient::class],
         ];
     }

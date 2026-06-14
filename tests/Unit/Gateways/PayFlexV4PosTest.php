@@ -169,14 +169,11 @@ class PayFlexV4PosTest extends TestCase
             ->willReturn($requestData);
 
         $this->configureClientResponse(
-            $txType,
+            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
             $requestData,
             $response,
             $order,
             PosInterface::MODEL_3D_SECURE,
-            null,
-            null,
-            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD
         );
 
         $this->requestMapperMock->expects(self::never())
@@ -226,14 +223,11 @@ class PayFlexV4PosTest extends TestCase
             ->willReturn($requestData);
 
         $this->configureClientResponse(
-            $txType,
+            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
             $requestData,
             $enrollmentResponse,
             $order,
             $paymentModel,
-            null,
-            null,
-            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD
         );
 
         $this->requestMapperMock->expects(self::once())
@@ -275,14 +269,11 @@ class PayFlexV4PosTest extends TestCase
             ->willReturn($requestData);
 
         $this->configureClientResponse(
-            $txType,
+            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
             $requestData,
             $enrollmentResponse,
             $order,
             $paymentModel,
-            null,
-            null,
-            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD
         );
 
         $this->requestMapperMock->expects(self::once())

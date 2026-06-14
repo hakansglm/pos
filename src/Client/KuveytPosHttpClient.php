@@ -34,7 +34,10 @@ class KuveytPosHttpClient extends AbstractHttpClient
      */
     public static function supports(string $gatewayClass, string $apiName): bool
     {
-        return KuveytPos::class === $gatewayClass && HttpClientInterface::API_NAME_PAYMENT_API === $apiName;
+        return KuveytPos::class === $gatewayClass
+            && (HttpClientInterface::API_NAME_PAYMENT_API === $apiName
+                // API_NAME_GATEWAY_3D_API is needed for backward compatibility with v1 configs.
+                || HttpClientInterface::API_NAME_GATEWAY_3D_API === $apiName);
     }
 
     /**
@@ -50,6 +53,32 @@ class KuveytPosHttpClient extends AbstractHttpClient
         }
 
         throw new \InvalidArgumentException('Transaction type is required to generate API URL');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function request(
+        string              $txType,
+        string              $paymentModel,
+        array               $requestData,
+        array               $order,
+        ?string             $url = null,
+        ?AbstractPosAccount $account = null,
+        ?string             $orderTxType = null
+    ) {
+        $content = $this->serializer->encode($requestData, $txType);
+
+        return $this->doRequest(
+            $txType,
+            $paymentModel,
+            $content,
+            $order,
+            $url,
+            $account,
+            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD !== $txType,
+            $orderTxType
+        );
     }
 
     /**
@@ -78,6 +107,9 @@ class KuveytPosHttpClient extends AbstractHttpClient
             PosInterface::TX_TYPE_PAY_AUTH => [
                 PosInterface::MODEL_NON_SECURE => 'Non3DPayGate',
                 PosInterface::MODEL_3D_SECURE  => 'ThreeDModelProvisionGate',
+            ],
+            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD => [
+                PosInterface::MODEL_3D_SECURE  => 'ThreeDModelPayGate',
             ],
         ];
 

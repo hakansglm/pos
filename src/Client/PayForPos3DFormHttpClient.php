@@ -39,7 +39,8 @@ class PayForPos3DFormHttpClient extends AbstractHttpClient
         array               $requestData,
         array               $order,
         ?string             $url = null,
-        ?AbstractPosAccount $account = null
+        ?AbstractPosAccount $account = null,
+        ?string             $orderTxType = null
     ): string {
         $content = $this->serializer->encode($requestData, $txType);
 
@@ -51,6 +52,7 @@ class PayForPos3DFormHttpClient extends AbstractHttpClient
             $url,
             $account,
             false,
+            $orderTxType
         );
     }
 

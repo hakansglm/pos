@@ -49,12 +49,19 @@ interface HttpClientInterface
     public static function supports(string $gatewayClass, string $apiName): bool;
 
     /**
-     * @param PosInterface::TX_TYPE_* $txType
-     * @param PosInterface::MODEL_*   $paymentModel
-     * @param array<string, mixed>    $requestData
-     * @param array<string, mixed>    $order
-     * @param non-empty-string|null   $url
-     * @param AbstractPosAccount|null $account
+     * $orderTxType value is never an internal transaction type (TX_TYPE_INTERNAL_*).
+     * On the other hand, $txType can be any Transaction Type (TX_TYPE_*).
+     *
+     * $orderTxType is mostly set when $txType value is an internal Transaction Type.
+     *
+     * @param PosInterface::TX_TYPE_*          $txType       Transaction type to be used to decide to which endpoint the request will be send to.
+     * @param PosInterface::MODEL_*            $paymentModel
+     * @param array<string, mixed>             $requestData
+     * @param array<string, mixed>             $order
+     * @param non-empty-string|null            $url
+     * @param AbstractPosAccount|null          $account
+     * @param PosInterface::TX_TYPE_PAY_*|null $orderTxType  In some cases $txType alone is not enough to determine API endpoint.
+     *                                                       Transaction type of the order is used in this case.
      *
      * @return array<string, mixed>|string
      *
@@ -64,5 +71,13 @@ interface HttpClientInterface
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
-    public function request(string $txType, string $paymentModel, array $requestData, array $order, ?string $url = null, ?AbstractPosAccount $account = null);
+    public function request(
+        string $txType,
+        string $paymentModel,
+        array $requestData,
+        array $order,
+        ?string $url = null,
+        ?AbstractPosAccount $account = null,
+        ?string $orderTxType = null
+    );
 }

@@ -52,8 +52,21 @@ interface PosInterface
     /** @var string */
     public const TX_TYPE_HISTORY = 'history';
 
-    /** @var string */
+    /**
+     * It is used when building 3D/3D Host/3D Pay form data
+     * in case Payment Gateway requires an API call to generate 3D form data.
+     *
+     * @var string
+     */
     public const TX_TYPE_INTERNAL_3D_FORM_BUILD = '3d_form_build';
+
+    /**
+     * It is used for fetching the result of 3D/3D Host/3D Pay results
+     * when does not send it in POST data when redirecting back to the ecommerce website.
+     *
+     * @var string
+     */
+    public const TX_TYPE_INTERNAL_3D_PAYMENT_STATUS = '3d_payment_status';
 
     /** @var string */
     public const TX_TYPE_CUSTOM_QUERY = 'custom_query';

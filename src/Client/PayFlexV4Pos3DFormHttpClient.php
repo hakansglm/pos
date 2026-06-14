@@ -40,7 +40,8 @@ class PayFlexV4Pos3DFormHttpClient extends AbstractHttpClient
         array               $requestData,
         array               $order,
         ?string             $url = null,
-        ?AbstractPosAccount $account = null
+        ?AbstractPosAccount $account = null,
+        ?string             $orderTxType = null
     ): array {
         $content = new EncodedData(
             \http_build_query($requestData),
@@ -53,7 +54,9 @@ class PayFlexV4Pos3DFormHttpClient extends AbstractHttpClient
             $content,
             $order,
             $url,
-            $account
+            $account,
+            true,
+            $orderTxType
         );
     }
 

@@ -39,7 +39,8 @@ class PosNetPosHttpClient extends AbstractHttpClient
         array               $requestData,
         array               $order,
         ?string             $url = null,
-        ?AbstractPosAccount $account = null
+        ?AbstractPosAccount $account = null,
+        ?string             $orderTxType = null
     ): array {
         $content = $this->serializer->encode($requestData, $txType);
         $content = new EncodedData(
@@ -53,7 +54,9 @@ class PosNetPosHttpClient extends AbstractHttpClient
             $content,
             $order,
             $url,
-            $account
+            $account,
+            true,
+            $orderTxType
         );
     }
 

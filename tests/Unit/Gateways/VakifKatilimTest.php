@@ -164,14 +164,11 @@ class VakifKatilimTest extends TestCase
         $order        = $this->order;
 
         $this->configureClientResponse(
-            $txType,
+            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
             $requestData,
             $response,
             $order,
             $paymentModel,
-            null,
-            null,
-            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
         );
 
         $this->requestMapperMock->expects(self::once())

@@ -179,12 +179,11 @@ class KuveytPosTest extends TestCase
         $requestData  = ['form-data'];
         $order        = $this->order;
         $this->configureClientResponse(
-            $txType,
+            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
             $requestData,
             $response,
             $order,
             $paymentModel,
-            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD
         );
 
         $this->requestMapperMock->expects(self::once())

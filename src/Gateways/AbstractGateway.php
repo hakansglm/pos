@@ -384,7 +384,8 @@ abstract class AbstractGateway implements PosInterface
             $requestData,
             $order,
             null,
-            $this->account
+            $this->account,
+            $order['transaction_type'] ?? null
         );
         $this->response = $this->responseDataMapper->mapRefundResponse($bankResponse);
 
@@ -430,7 +431,8 @@ abstract class AbstractGateway implements PosInterface
             $requestData,
             $order,
             null,
-            $this->account
+            $this->account,
+            $order['transaction_type'] ?? null
         );
         $this->response = $this->responseDataMapper->mapCancelResponse($bankResponse);
 
