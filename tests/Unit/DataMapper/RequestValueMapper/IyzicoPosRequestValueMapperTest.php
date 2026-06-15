@@ -7,7 +7,6 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\RequestValueMapper;
 
 use Mews\Pos\DataMapper\RequestValueMapper\IyzicoPosRequestValueMapper;
-use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\IyzicoPos;
 use Mews\Pos\PosInterface;
@@ -34,20 +33,6 @@ class IyzicoPosRequestValueMapperTest extends TestCase
     }
 
     /**
-     * @dataProvider mapTxTypeDataProvider
-     */
-    public function testMapTxType(string $txType, string $expected): void
-    {
-        $this->assertSame($expected, $this->valueMapper->mapTxType($txType));
-    }
-
-    public function testMapTxTypeException(): void
-    {
-        $this->expectException(UnsupportedTransactionTypeException::class);
-        $this->valueMapper->mapTxType('invalid_type');
-    }
-
-    /**
      * @dataProvider mapCurrencyDataProvider
      */
     public function testMapCurrency(string $currency, string $expected): void
@@ -64,7 +49,7 @@ class IyzicoPosRequestValueMapperTest extends TestCase
 
     public function testGetTxTypeMappings(): void
     {
-        $this->assertCount(9, $this->valueMapper->getTxTypeMappings());
+        $this->assertSame([], $this->valueMapper->getTxTypeMappings());
     }
 
     public function testGetCurrencyMappings(): void
@@ -108,21 +93,6 @@ class IyzicoPosRequestValueMapperTest extends TestCase
     {
         $this->expectException(\LogicException::class);
         $this->valueMapper->mapCardType('VISA');
-    }
-
-    public static function mapTxTypeDataProvider(): array
-    {
-        return [
-            [PosInterface::TX_TYPE_PAY_AUTH,       'auth'],
-            [PosInterface::TX_TYPE_PAY_PRE_AUTH,   'preauth'],
-            [PosInterface::TX_TYPE_PAY_POST_AUTH,  'postauth'],
-            [PosInterface::TX_TYPE_CANCEL,         'cancel'],
-            [PosInterface::TX_TYPE_REFUND,         'refund'],
-            [PosInterface::TX_TYPE_REFUND_PARTIAL, 'refund'],
-            [PosInterface::TX_TYPE_STATUS,         'detail'],
-            [PosInterface::TX_TYPE_ORDER_HISTORY,  'details'],
-            [PosInterface::TX_TYPE_HISTORY,        'transactions'],
-        ];
     }
 
     public static function mapCurrencyDataProvider(): array

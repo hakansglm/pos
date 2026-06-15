@@ -9,7 +9,7 @@ namespace Mews\Pos\Tests\Unit\Client;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\IyzicoPosQueryApiHttpClient;
 use Mews\Pos\Crypt\IyzicoPosCrypt;
-use Mews\Pos\DataMapper\RequestValueMapper\IyzicoPosRequestValueMapper;
+use Mews\Pos\DataMapper\RequestValueMapper\RequestValueMapperInterface;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateways\AkbankPos;
@@ -71,7 +71,7 @@ class IyzicoPosQueryApiHttpClientTest extends TestCase
             self::BASE_URL,
             $this->serializerMock,
             $this->cryptMock,
-            new IyzicoPosRequestValueMapper(),
+            $this->createMock(RequestValueMapperInterface::class),
             $this->loggerMock,
             $this->psrClient,
             $this->requestFactory,

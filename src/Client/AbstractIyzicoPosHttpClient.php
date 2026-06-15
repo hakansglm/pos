@@ -8,7 +8,6 @@ namespace Mews\Pos\Client;
 
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\Crypt\IyzicoPosCrypt;
-use Mews\Pos\DataMapper\RequestValueMapper\RequestValueMapperInterface;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Serializer\SerializerInterface;
 use Psr\Http\Client\ClientInterface;
@@ -20,17 +19,15 @@ use Psr\Log\LoggerInterface;
 abstract class AbstractIyzicoPosHttpClient extends AbstractHttpClient
 {
     protected IyzicoPosCrypt $crypt;
-    protected RequestValueMapperInterface $requestValueMapper;
 
     public function __construct(
-        string                      $baseApiUrl,
-        ClientInterface             $psrClient,
-        RequestFactoryInterface     $requestFactory,
-        StreamFactoryInterface      $streamFactory,
-        SerializerInterface         $serializer,
-        LoggerInterface             $logger,
-        CryptInterface              $crypt,
-        RequestValueMapperInterface $requestValueMapper
+        string                  $baseApiUrl,
+        ClientInterface         $psrClient,
+        RequestFactoryInterface $requestFactory,
+        StreamFactoryInterface  $streamFactory,
+        SerializerInterface     $serializer,
+        LoggerInterface         $logger,
+        CryptInterface          $crypt
     ) {
         if (!$crypt instanceof IyzicoPosCrypt) {
             throw new \LogicException(\sprintf('Expected %s, got %s.', IyzicoPosCrypt::class, \get_class($crypt)));
@@ -38,8 +35,7 @@ abstract class AbstractIyzicoPosHttpClient extends AbstractHttpClient
 
         parent::__construct($baseApiUrl, $psrClient, $requestFactory, $streamFactory, $serializer, $logger);
 
-        $this->crypt              = $crypt;
-        $this->requestValueMapper = $requestValueMapper;
+        $this->crypt = $crypt;
     }
 
     protected function createAuthorizationHeader(string $url, string $requestBody, AbstractPosAccount $account): string

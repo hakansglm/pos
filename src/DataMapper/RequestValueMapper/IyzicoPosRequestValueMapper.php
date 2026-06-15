@@ -12,21 +12,6 @@ use Mews\Pos\PosInterface;
 class IyzicoPosRequestValueMapper extends AbstractRequestValueMapper
 {
     /**
-     * {@inheritDoc}
-     */
-    protected array $txTypeMappings = [
-        PosInterface::TX_TYPE_PAY_AUTH       => 'auth',
-        PosInterface::TX_TYPE_PAY_PRE_AUTH   => 'preauth',
-        PosInterface::TX_TYPE_PAY_POST_AUTH  => 'postauth',
-        PosInterface::TX_TYPE_CANCEL         => 'cancel',
-        PosInterface::TX_TYPE_REFUND         => 'refund',
-        PosInterface::TX_TYPE_REFUND_PARTIAL => 'refund',
-        PosInterface::TX_TYPE_STATUS         => 'detail',
-        PosInterface::TX_TYPE_ORDER_HISTORY  => 'details',
-        PosInterface::TX_TYPE_HISTORY        => 'transactions',
-    ];
-
-    /**
      * iyzico uses ISO 4217 currency codes as strings directly.
      *
      * @var non-empty-array<PosInterface::CURRENCY_*, string>

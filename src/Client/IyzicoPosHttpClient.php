@@ -88,28 +88,43 @@ class IyzicoPosHttpClient extends AbstractIyzicoPosHttpClient
                     throw new \InvalidArgumentException('$orderTxType is required to generate 3D HOST form URL');
                 }
 
-                return sprintf(
-                    '/payment/iyzipos/checkoutform/initialize/%s/ecom',
-                    $this->requestValueMapper->mapTxType($orderTxType)
-                );
+                if (PosInterface::TX_TYPE_PAY_AUTH === $orderTxType) {
+                    return '/payment/iyzipos/checkoutform/initialize/auth/ecom';
+                }
+                if (PosInterface::TX_TYPE_PAY_PRE_AUTH === $orderTxType) {
+                    return '/payment/iyzipos/checkoutform/initialize/preauth/ecom';
+                }
+
+                throw new \InvalidArgumentException(\sprintf('Unsupported orderTxType: %s', $orderTxType));
             }
         }
 
         if (PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD === $txType) {
             if (PosInterface::TX_TYPE_PAY_PRE_AUTH === $orderTxType) {
-                return '/payment/3dsecure/initialize/'.$this->requestValueMapper->mapTxType($orderTxType);
+                return '/payment/3dsecure/initialize/preauth';
             }
 
             return '/payment/3dsecure/initialize';
         }
 
-        if (PosInterface::TX_TYPE_REFUND === $txType || PosInterface::TX_TYPE_REFUND_PARTIAL === $txType) {
-            return '/v2/payment/'.$this->requestValueMapper->mapTxType($txType);
-        }
         if (PosInterface::MODEL_3D_SECURE === $paymentModel) {
             return '/payment/v2/3dsecure/auth';
         }
 
-        return '/payment/'.$this->requestValueMapper->mapTxType($txType);
+        $txTypePaths = [
+            PosInterface::TX_TYPE_PAY_AUTH       => '/payment/auth',
+            PosInterface::TX_TYPE_PAY_PRE_AUTH   => '/payment/preauth',
+            PosInterface::TX_TYPE_PAY_POST_AUTH  => '/payment/postauth',
+            PosInterface::TX_TYPE_CANCEL         => '/payment/cancel',
+            PosInterface::TX_TYPE_STATUS         => '/payment/detail',
+            PosInterface::TX_TYPE_REFUND         => '/v2/payment/refund',
+            PosInterface::TX_TYPE_REFUND_PARTIAL => '/v2/payment/refund',
+        ];
+
+        if (!isset($txTypePaths[$txType])) {
+            throw new \InvalidArgumentException(\sprintf('Unsupported transaction type: %s', $txType));
+        }
+
+        return $txTypePaths[$txType];
     }
 }

@@ -48,7 +48,10 @@ class PosHttpClientFactory
         RequestFactoryInterface     $requestFactory,
         StreamFactoryInterface      $streamFactory
     ): HttpClientInterface {
-        if (AkbankPosHttpClient::class === $clientClass) {
+        if (AkbankPosHttpClient::class === $clientClass
+            || IyzicoPosHttpClient::class === $clientClass
+            || IyzicoPosQueryApiHttpClient::class === $clientClass
+        ) {
             $client = new $clientClass(
                 $baseApiUrl,
                 $psr18client,
@@ -57,18 +60,6 @@ class PosHttpClientFactory
                 $serializer,
                 $logger,
                 $crypt
-            );
-        } elseif (IyzicoPosHttpClient::class === $clientClass
-            || IyzicoPosQueryApiHttpClient::class === $clientClass) {
-            $client = new $clientClass(
-                $baseApiUrl,
-                $psr18client,
-                $requestFactory,
-                $streamFactory,
-                $serializer,
-                $logger,
-                $crypt,
-                $requestValueMapper
             );
         } elseif (PosNetV1PosHttpClient::class === $clientClass || KuveytPosSoapApiHttpClient::class === $clientClass) {
             $client = new $clientClass(

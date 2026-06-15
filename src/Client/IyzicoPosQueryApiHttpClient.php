@@ -40,7 +40,16 @@ class IyzicoPosQueryApiHttpClient extends AbstractIyzicoPosHttpClient
             throw new \InvalidArgumentException('Transaction type is required to generate API URL');
         }
 
-        return $this->baseApiUrl.'/'.$this->requestValueMapper->mapTxType($txType);
+        $txTypePaths = [
+            PosInterface::TX_TYPE_ORDER_HISTORY => 'details',
+            PosInterface::TX_TYPE_HISTORY       => 'transactions',
+        ];
+
+        if (!isset($txTypePaths[$txType])) {
+            throw new \InvalidArgumentException(\sprintf('Unsupported transaction type: %s', $txType));
+        }
+
+        return $this->baseApiUrl.'/'.$txTypePaths[$txType];
     }
 
     /**

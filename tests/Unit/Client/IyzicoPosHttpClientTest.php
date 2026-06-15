@@ -9,7 +9,7 @@ namespace Mews\Pos\Tests\Unit\Client;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\IyzicoPosHttpClient;
 use Mews\Pos\Crypt\IyzicoPosCrypt;
-use Mews\Pos\DataMapper\RequestValueMapper\IyzicoPosRequestValueMapper;
+use Mews\Pos\DataMapper\RequestValueMapper\RequestValueMapperInterface;
 use Mews\Pos\Entity\Account\IyzicoPosAccount;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\PosHttpClientFactory;
@@ -70,14 +70,12 @@ class IyzicoPosHttpClientTest extends TestCase
         $this->requestFactory = $this->createMock(RequestFactoryInterface::class);
         $this->streamFactory  = $this->createMock(StreamFactoryInterface::class);
 
-        $requestValueMapper = new IyzicoPosRequestValueMapper();
-
         $this->client = PosHttpClientFactory::create(
             IyzicoPosHttpClient::class,
             self::BASE_URL,
             $this->serializerMock,
             $this->cryptMock,
-            $requestValueMapper,
+            $this->createMock(RequestValueMapperInterface::class),
             $this->loggerMock,
             $this->psrClient,
             $this->requestFactory,
@@ -130,7 +128,7 @@ class IyzicoPosHttpClientTest extends TestCase
             self::BASE_URL,
             $this->serializerMock,
             $wrongCrypt,
-            new IyzicoPosRequestValueMapper(),
+            $this->createMock(RequestValueMapperInterface::class),
             $this->loggerMock,
             $this->psrClient,
             $this->requestFactory,
