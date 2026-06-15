@@ -59,7 +59,7 @@ class AkbankPosSerializer implements SerializerInterface
 
         if (PosInterface::TX_TYPE_HISTORY === $txType && isset($decodedData['data'])) {
             $decompressedData    = $this->decompress($decodedData['data']);
-            $decodedData['data'] = \json_decode($decompressedData, true);
+            $decodedData['data'] = $this->serializer->decode($decompressedData, JsonEncoder::FORMAT);
         }
 
         return $decodedData;

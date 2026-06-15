@@ -25,7 +25,6 @@ class PayFlexV4PosSearchApiSerializer implements SerializerInterface
         $encoder = new XmlEncoder([
             XmlEncoder::ROOT_NODE_NAME             => 'SearchRequest',
             XmlEncoder::ENCODING                   => 'UTF-8',
-            XmlEncoder::ENCODER_IGNORED_NODE_TYPES => [],
         ]);
 
         $this->serializer = new Serializer([], [$encoder]);

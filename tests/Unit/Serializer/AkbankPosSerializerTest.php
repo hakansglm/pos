@@ -12,6 +12,7 @@ use Mews\Pos\PosInterface;
 use Mews\Pos\Serializer\AkbankPosSerializer;
 use Mews\Pos\Serializer\SerializerInterface;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
 /**
  * @covers \Mews\Pos\Serializer\AkbankPosSerializer
@@ -43,6 +44,7 @@ class AkbankPosSerializerTest extends TestCase
     public function testDecodeWithInvalidBase64HistoryData(): void
     {
         $input = '{"data": "INVALID_BASE64_!!!!"}';
+        $this->expectException(NotEncodableValueException::class);
         $this->assertSame(['data' => null], $this->serializer->decode($input, PosInterface::TX_TYPE_HISTORY));
     }
 

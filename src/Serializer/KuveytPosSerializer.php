@@ -8,7 +8,6 @@ namespace Mews\Pos\Serializer;
 
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Gateways\KuveytPos;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Serializer;
 
@@ -25,7 +24,7 @@ class KuveytPosSerializer implements SerializerInterface
             XmlEncoder::ENCODING       => 'ISO-8859-1',
         ]);
 
-        $this->serializer = new Serializer([], [$encoder, new JsonEncoder()]);
+        $this->serializer = new Serializer([], [$encoder]);
     }
 
     /**
