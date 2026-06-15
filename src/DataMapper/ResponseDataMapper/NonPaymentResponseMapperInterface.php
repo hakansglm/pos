@@ -9,14 +9,14 @@ namespace Mews\Pos\DataMapper\ResponseDataMapper;
 interface NonPaymentResponseMapperInterface
 {
     /**
-     * @param array<string, string> $rawResponseData
+     * @param array<string, mixed> $rawResponseData
      *
      * @return array<string, mixed>
      */
     public function mapRefundResponse(array $rawResponseData): array;
 
     /**
-     * @param array<string, string> $rawResponseData
+     * @param array<string, mixed> $rawResponseData
      *
      * @return array<string, mixed>
      */
@@ -30,14 +30,14 @@ interface NonPaymentResponseMapperInterface
     public function mapStatusResponse(array $rawResponseData): array;
 
     /**
-     * @param array<string, array<string, string>|string> $rawResponseData
+     * @param array<string, mixed> $rawResponseData
      *
      * @return array<string, mixed>
      */
     public function mapHistoryResponse(array $rawResponseData): array;
 
     /**
-     * @param array<string, array<string, string>|string> $rawResponseData
+     * @param array<string, mixed> $rawResponseData
      *
      * @return array<string, mixed>
      */

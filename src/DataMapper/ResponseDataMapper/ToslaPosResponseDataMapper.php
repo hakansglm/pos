@@ -36,8 +36,6 @@ class ToslaPosResponseDataMapper extends AbstractResponseDataMapper
             return $defaultResponse;
         }
 
-        $rawPaymentResponseData = $this->emptyStringsToNull($rawPaymentResponseData);
-
         $procReturnCode = $this->getProcReturnCode($rawPaymentResponseData);
         $errorCode      = $rawPaymentResponseData['Code'];
         $status         = self::TX_DECLINED;
@@ -135,7 +133,6 @@ class ToslaPosResponseDataMapper extends AbstractResponseDataMapper
      */
     public function mapRefundResponse(array $rawResponseData): array
     {
-        $rawResponseData = $this->emptyStringsToNull($rawResponseData);
         $procReturnCode  = $this->getProcReturnCode($rawResponseData);
         $errorCode       = $rawResponseData['Code'];
         $status          = self::TX_DECLINED;
@@ -161,7 +158,6 @@ class ToslaPosResponseDataMapper extends AbstractResponseDataMapper
      */
     public function mapCancelResponse(array $rawResponseData): array
     {
-        $rawResponseData = $this->emptyStringsToNull($rawResponseData);
         $procReturnCode  = $this->getProcReturnCode($rawResponseData);
         $errorCode       = $rawResponseData['Code'];
         $status          = self::TX_DECLINED;
@@ -188,7 +184,6 @@ class ToslaPosResponseDataMapper extends AbstractResponseDataMapper
     public function mapStatusResponse(array $rawResponseData): array
     {
         $txType          = PosInterface::TX_TYPE_STATUS;
-        $rawResponseData = $this->emptyStringsToNull($rawResponseData);
         $procReturnCode  = $this->getProcReturnCode($rawResponseData);
         $errorCode       = $rawResponseData['Code'];
         $status          = self::TX_DECLINED;
@@ -241,7 +236,6 @@ class ToslaPosResponseDataMapper extends AbstractResponseDataMapper
      */
     public function mapOrderHistoryResponse(array $rawResponseData): array
     {
-        $rawResponseData = $this->emptyStringsToNull($rawResponseData);
         $errorCode       = $rawResponseData['Code'];
         $status          = self::TX_DECLINED;
         if (0 === $errorCode) {

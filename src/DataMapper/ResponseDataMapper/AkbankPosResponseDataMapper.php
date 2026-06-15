@@ -45,8 +45,6 @@ class AkbankPosResponseDataMapper extends AbstractResponseDataMapper
             return $defaultResponse;
         }
 
-        $rawPaymentResponseData = $this->emptyStringsToNull($rawPaymentResponseData);
-
         $procReturnCode = $this->getProcReturnCode($rawPaymentResponseData);
         $status         = self::TX_DECLINED;
         if (self::PROCEDURE_SUCCESS_CODE === $procReturnCode) {
@@ -166,7 +164,6 @@ class AkbankPosResponseDataMapper extends AbstractResponseDataMapper
      */
     public function mapRefundResponse(array $rawResponseData): array
     {
-        $rawResponseData = $this->emptyStringsToNull($rawResponseData);
         $procReturnCode  = $this->getProcReturnCode($rawResponseData);
         $status          = self::TX_DECLINED;
         if (self::PROCEDURE_SUCCESS_CODE === $procReturnCode) {
@@ -202,7 +199,6 @@ class AkbankPosResponseDataMapper extends AbstractResponseDataMapper
      */
     public function mapCancelResponse(array $rawResponseData): array
     {
-        $rawResponseData = $this->emptyStringsToNull($rawResponseData);
         $procReturnCode  = $this->getProcReturnCode($rawResponseData);
         $status          = self::TX_DECLINED;
         if (self::PROCEDURE_SUCCESS_CODE === $procReturnCode) {
@@ -245,7 +241,6 @@ class AkbankPosResponseDataMapper extends AbstractResponseDataMapper
      */
     public function mapOrderHistoryResponse(array $rawResponseData): array
     {
-        $rawResponseData = $this->emptyStringsToNull($rawResponseData);
         $procReturnCode  = $this->getProcReturnCode($rawResponseData);
         $status          = self::TX_DECLINED;
         if (self::PROCEDURE_SUCCESS_CODE === $procReturnCode) {
@@ -307,8 +302,6 @@ class AkbankPosResponseDataMapper extends AbstractResponseDataMapper
      */
     public function mapHistoryResponse(array $rawResponseData): array
     {
-        $rawResponseData = $this->emptyStringsToNull($rawResponseData);
-
         $mappedTransactions = [];
         $procReturnCode     = $this->getProcReturnCode($rawResponseData);
         $status             = self::TX_DECLINED;
@@ -377,14 +370,13 @@ class AkbankPosResponseDataMapper extends AbstractResponseDataMapper
     }
 
     /**
-     * @param array<int, string> $rawTx
+     * @param array<string, mixed> $rawTx
      *
-     * @return array<string, string|int|float|null>
+     * @return array<string, mixed>
      */
     private function mapSingleOrderHistoryTransaction(array $rawTx): array
     {
         $txType                          = PosInterface::TX_TYPE_ORDER_HISTORY;
-        $rawTx                           = $this->emptyStringsToNull($rawTx);
         $transaction                     = $this->getDefaultOrderHistoryTxResponse();
         $transaction['proc_return_code'] = $this->getProcReturnCode($rawTx);
         if (self::PROCEDURE_SUCCESS_CODE === $transaction['proc_return_code']) {
@@ -435,14 +427,13 @@ class AkbankPosResponseDataMapper extends AbstractResponseDataMapper
     }
 
     /**
-     * @param array<int, string> $rawTx
+     * @param array<string, mixed> $rawTx
      *
-     * @return array<string, string|int|float|null>
+     * @return array<string, mixed>
      */
     private function mapSingleRecurringOrderHistoryTransaction(array $rawTx): array
     {
         $txType                          = PosInterface::TX_TYPE_ORDER_HISTORY;
-        $rawTx                           = $this->emptyStringsToNull($rawTx);
         $transaction                     = $this->getDefaultOrderHistoryTxResponse();
         $transaction['proc_return_code'] = $this->getProcReturnCode($rawTx);
         $transaction['order_status']     = $this->valueMapper->mapOrderStatus($rawTx['requestStatus'], null, true);
@@ -481,14 +472,13 @@ class AkbankPosResponseDataMapper extends AbstractResponseDataMapper
     }
 
     /**
-     * @param array<string, string|null> $rawTx
+     * @param array<string, mixed> $rawTx
      *
-     * @return array<string, int|string|null|float|bool|\DateTimeImmutable>
+     * @return array<string, mixed>
      */
     private function mapSingleHistoryTransaction(array $rawTx): array
     {
         $txType                          = PosInterface::TX_TYPE_HISTORY;
-        $rawTx                           = $this->emptyStringsToNull($rawTx);
         $transaction                     = $this->getDefaultOrderHistoryTxResponse();
         $transaction['proc_return_code'] = $this->getProcReturnCode($rawTx);
         if (self::PROCEDURE_SUCCESS_CODE === $transaction['proc_return_code']) {
@@ -550,7 +540,6 @@ class AkbankPosResponseDataMapper extends AbstractResponseDataMapper
      */
     private function map3DResponseData(array $raw3DAuthResponseData, string $paymentModel): array
     {
-        $raw3DAuthResponseData = $this->emptyStringsToNull($raw3DAuthResponseData);
         $procReturnCode        = $this->getProcReturnCode($raw3DAuthResponseData);
         $is3DAuthSuccess       = $this->is3dAuthSuccess($procReturnCode);
 

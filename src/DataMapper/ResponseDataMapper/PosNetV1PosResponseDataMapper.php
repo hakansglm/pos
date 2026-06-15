@@ -35,7 +35,6 @@ class PosNetV1PosResponseDataMapper extends AbstractResponseDataMapper
             return $defaultResponse;
         }
 
-        $rawPaymentResponseData = $this->emptyStringsToNull($rawPaymentResponseData);
         $procReturnCode         = $this->getProcReturnCode($rawPaymentResponseData);
         if (self::PROCEDURE_SUCCESS_CODE === $procReturnCode) {
             $status = self::TX_APPROVED;
@@ -128,9 +127,8 @@ class PosNetV1PosResponseDataMapper extends AbstractResponseDataMapper
     /**
      * {@inheritdoc}
      */
-    public function mapCancelResponse($rawResponseData): array
+    public function mapCancelResponse(array $rawResponseData): array
     {
-        $rawResponseData = $this->emptyStringsToNull($rawResponseData);
         $status          = self::TX_DECLINED;
         $procReturnCode  = $this->getProcReturnCode($rawResponseData);
         if (self::PROCEDURE_SUCCESS_CODE === $procReturnCode) {
@@ -157,7 +155,6 @@ class PosNetV1PosResponseDataMapper extends AbstractResponseDataMapper
     public function mapStatusResponse(array $rawResponseData): array
     {
         $txType          = PosInterface::TX_TYPE_STATUS;
-        $rawResponseData = $this->emptyStringsToNull($rawResponseData);
         $status          = self::TX_DECLINED;
         $procReturnCode  = $this->getProcReturnCode($rawResponseData);
 
@@ -308,7 +305,6 @@ class PosNetV1PosResponseDataMapper extends AbstractResponseDataMapper
             return $defaultResponse;
         }
 
-        $rawPaymentResponseData = $this->emptyStringsToNull($rawPaymentResponseData);
         $procReturnCode         = $this->getProcReturnCode($rawPaymentResponseData);
         if (self::PROCEDURE_SUCCESS_CODE === $procReturnCode) {
             $status = self::TX_APPROVED;

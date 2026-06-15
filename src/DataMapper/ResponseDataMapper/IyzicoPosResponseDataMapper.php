@@ -93,20 +93,18 @@ class IyzicoPosResponseDataMapper extends AbstractResponseDataMapper
     {
         $this->logger->debug('mapping 3D payment data', [$raw3DAuthResponseData]);
 
-        $raw3DAuthResponseDataCleaned = $this->emptyStringsToNull($raw3DAuthResponseData);
-
-        $mdStatus = $this->extractMdStatus($raw3DAuthResponseDataCleaned);
+        $mdStatus = $this->extractMdStatus($raw3DAuthResponseData);
 
         if ($this->is3dAuthSuccess($mdStatus)) {
             $mappedResponse = $this->mapPaymentCommonPaymentResponse(
-                $raw3DAuthResponseDataCleaned,
+                $raw3DAuthResponseData,
                 $txType,
                 PosInterface::MODEL_3D_HOST
             );
         } else {
             $mappedResponse                     = $this->getDefaultPaymentResponse($txType, PosInterface::MODEL_3D_HOST);
-            $mappedResponse['order_id']         = $raw3DAuthResponseDataCleaned['conversationId'];
-            $mappedResponse['proc_return_code'] = $raw3DAuthResponseDataCleaned['status'];
+            $mappedResponse['order_id']         = $raw3DAuthResponseData['conversationId'];
+            $mappedResponse['proc_return_code'] = $raw3DAuthResponseData['status'];
             $mappedResponse['all']              = $raw3DAuthResponseData;
         }
 
