@@ -7,7 +7,6 @@
 namespace Mews\Pos\Tests\Unit\Serializer;
 
 use Mews\Pos\Serializer\EncodedData;
-use Mews\Pos\Serializer\SerializerInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -17,9 +16,9 @@ class EncodedDataTest extends TestCase
 {
     public function testGetters(): void
     {
-        $object = new EncodedData('abc', SerializerInterface::FORMAT_FORM);
+        $object = new EncodedData('abc', EncodedData::FORMAT_FORM);
 
         $this->assertSame('abc', $object->getData());
-        $this->assertSame(SerializerInterface::FORMAT_FORM, $object->getFormat());
+        $this->assertSame(EncodedData::FORMAT_FORM, $object->getFormat());
     }
 }

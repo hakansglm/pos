@@ -14,15 +14,12 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\PayFlexCPV4Pos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\EncodedData;
-use Mews\Pos\Serializer\SerializerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
 /**
  * @covers \Mews\Pos\Client\PayFlexCPV4PosHttpClient
@@ -33,9 +30,6 @@ class PayFlexCPV4PosHttpClientTest extends TestCase
     use HttpClientTestTrait;
 
     private PayFlexCPV4PosHttpClient $client;
-
-    /** @var SerializerInterface & MockObject */
-    private SerializerInterface $serializer;
 
     /** @var LoggerInterface & MockObject */
     private LoggerInterface $logger;
@@ -60,7 +54,6 @@ class PayFlexCPV4PosHttpClientTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->serializer         = $this->createMock(SerializerInterface::class);
         $this->logger             = $this->createMock(LoggerInterface::class);
         $this->crypt              = $this->createMock(CryptInterface::class);
         $this->requestValueMapper = $this->createMock(RequestValueMapperInterface::class);
@@ -72,7 +65,6 @@ class PayFlexCPV4PosHttpClientTest extends TestCase
         $this->client = PosHttpClientFactory::create(
             PayFlexCPV4PosHttpClient::class,
             'https://cptest.vakifbank.com.tr/CommonPayment/api',
-            $this->serializer,
             $this->crypt,
             $this->requestValueMapper,
             $this->logger,
@@ -112,14 +104,11 @@ class PayFlexCPV4PosHttpClientTest extends TestCase
         string $txType,
         string $paymentModel,
         array  $requestData,
+        string $encodedRequestData,
         array  $order,
         string $expectedApiUrl
     ): void {
-        $encodedData = new EncodedData(
-            'abc=1&sa=aa',
-            SerializerInterface::FORMAT_FORM,
-        );
-        $request     = $this->prepareHttpRequest($encodedData->getData(), [
+        $request     = $this->prepareHttpRequest($encodedRequestData, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'application/x-www-form-urlencoded',
@@ -129,14 +118,10 @@ class PayFlexCPV4PosHttpClientTest extends TestCase
                 'value' => 'text/xml',
             ],
         ]);
+        $decodedResponse = ['result' => 'success'];
 
-        $responseContent = 'response-content';
+        $responseContent = '<response><result>success</result></response>';
         $response        = $this->prepareHttpResponse($responseContent, 200);
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -147,12 +132,6 @@ class PayFlexCPV4PosHttpClientTest extends TestCase
             ->method('sendRequest')
             ->with($request)
             ->willReturn($response);
-
-        $decodedResponse = ['decoded-response'];
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->with($responseContent, $txType)
-            ->willReturn($decodedResponse);
 
         $actual = $this->client->request(
             $txType,
@@ -172,11 +151,7 @@ class PayFlexCPV4PosHttpClientTest extends TestCase
         $requestData    = ['request-data' => 'abc'];
         $order          = ['id' => 123];
 
-        $encodedData = new EncodedData(
-            'abc=1&sa=aa',
-            SerializerInterface::FORMAT_FORM,
-        );
-        $request     = $this->prepareHttpRequest($encodedData->getData(), [
+        $request     = $this->prepareHttpRequest('request-data=abc', [
             [
                 'name'  => 'Content-Type',
                 'value' => 'application/x-www-form-urlencoded',
@@ -190,10 +165,6 @@ class PayFlexCPV4PosHttpClientTest extends TestCase
         $responseContent = 'response-content';
         $response        = $this->prepareHttpResponse($responseContent, 400);
 
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->willReturn($encodedData);
-
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
             ->willReturn($request);
@@ -202,11 +173,7 @@ class PayFlexCPV4PosHttpClientTest extends TestCase
             ->method('sendRequest')
             ->willReturn($response);
 
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->willThrowException(new NotEncodableValueException());
-
-        $this->expectException(NotEncodableValueException::class);
+        $this->expectException(\RuntimeException::class);
         $this->client->request(
             $txType,
             $paymentModel,
@@ -222,11 +189,7 @@ class PayFlexCPV4PosHttpClientTest extends TestCase
         $requestData    = ['request-data' => 'abc'];
         $order          = ['id' => 123];
 
-        $encodedData = new EncodedData(
-            'abc=1&sa=aa',
-            SerializerInterface::FORMAT_FORM,
-        );
-        $request     = $this->prepareHttpRequest($encodedData->getData(), [
+        $request     = $this->prepareHttpRequest('request-data=abc', [
             [
                 'name'  => 'Content-Type',
                 'value' => 'application/x-www-form-urlencoded',
@@ -239,11 +202,6 @@ class PayFlexCPV4PosHttpClientTest extends TestCase
 
         $responseContent = 'response-content';
         $response        = $this->prepareHttpResponse($responseContent, 500);
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -299,11 +257,12 @@ class PayFlexCPV4PosHttpClientTest extends TestCase
     public static function requestDataProvider(): \Generator
     {
         yield [
-            'txType'         => PosInterface::TX_TYPE_PAY_AUTH,
-            'paymentModel'   => PosInterface::MODEL_3D_SECURE,
-            'requestData'    => ['request-data'],
-            'order'          => ['id' => 123],
-            'expectedApiUrl' => 'https://cptest.vakifbank.com.tr/CommonPayment/api/VposTransaction',
+            'txType'             => PosInterface::TX_TYPE_PAY_AUTH,
+            'paymentModel'       => PosInterface::MODEL_3D_SECURE,
+            'requestData'        => ['request-data' => 'abc'],
+            'encodedRequestData' => 'request-data=abc',
+            'order'              => ['id' => 123],
+            'expectedApiUrl'     => 'https://cptest.vakifbank.com.tr/CommonPayment/api/VposTransaction',
         ];
     }
 }

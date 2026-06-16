@@ -24,10 +24,8 @@ use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateways\ToslaPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\SerializerInterface;
 use Mews\Pos\Tests\Unit\DataMapper\RequestDataMapper\ToslaPosRequestDataMapperTest;
 use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\ToslaPosResponseDataMapperTest;
-use Mews\Pos\Tests\Unit\Serializer\ToslaPosSerializerTest;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -71,9 +69,6 @@ class ToslaPosTest extends TestCase
 
     private ToslaPosRequestValueMapper $requestValueMapper;
 
-    /** @var SerializerInterface & MockObject */
-    private MockObject $serializerMock;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -97,7 +92,6 @@ class ToslaPosTest extends TestCase
         $this->requestValueMapper     = new ToslaPosRequestValueMapper();
         $this->requestMapperMock      = $this->createMock(ToslaPosRequestDataMapper::class);
         $this->responseMapperMock     = $this->createMock(ResponseDataMapperInterface::class);
-        $this->serializerMock         = $this->createMock(SerializerInterface::class);
         $this->cryptMock              = $this->createMock(CryptInterface::class);
         $this->httpClientStrategyMock = $this->createMock(HttpClientStrategyInterface::class);
         $this->httpClientMock         = $this->createMock(HttpClientInterface::class);
@@ -724,8 +718,13 @@ class ToslaPosTest extends TestCase
             'isWithCard'          => true,
             'requestData'         => ToslaPosRequestDataMapperTest::paymentRegisterRequestDataProvider()[0]['expected'],
             'encodedRequestData'  => \json_encode(ToslaPosRequestDataMapperTest::statusRequestDataProvider()[0]['expected'], JSON_THROW_ON_ERROR),
-            'responseData'        => ToslaPosSerializerTest::decodeDataProvider()['payment_register']['input'],
-            'decodedResponseData' => ToslaPosSerializerTest::decodeDataProvider()['payment_register']['decoded'],
+            'responseData'        => '{"ThreeDSessionId":"PA49E341381C94587AB4CB196DAC10DC02E509578520E4471A3EEE2BB4830AE4F","TransactionId":"2000000000032439","Code":0,"Message":"Ba\u015far\u0131l\u0131"}',
+            'decodedResponseData' => [
+                'ThreeDSessionId' => 'PA49E341381C94587AB4CB196DAC10DC02E509578520E4471A3EEE2BB4830AE4F',
+                'TransactionId'   => '2000000000032439',
+                'Code'            => 0,
+                'Message'         => 'Başarılı',
+            ],
             'formData'            => ToslaPosRequestDataMapperTest::threeDFormDataProvider()['3d_pay_form_data']['expected'],
             'gateway_url'         => 'https://ent.akodepos.com/api/Payment/ProcessCardForm',
         ];
@@ -737,8 +736,13 @@ class ToslaPosTest extends TestCase
             'isWithCard'          => false,
             'requestData'         => ToslaPosRequestDataMapperTest::paymentRegisterRequestDataProvider()[0]['expected'],
             'encodedRequestData'  => \json_encode(ToslaPosRequestDataMapperTest::statusRequestDataProvider()[0]['expected'], JSON_THROW_ON_ERROR),
-            'responseData'        => ToslaPosSerializerTest::decodeDataProvider()['payment_register']['input'],
-            'decodedResponseData' => ToslaPosSerializerTest::decodeDataProvider()['payment_register']['decoded'],
+            'responseData'        => '{"ThreeDSessionId":"PA49E341381C94587AB4CB196DAC10DC02E509578520E4471A3EEE2BB4830AE4F","TransactionId":"2000000000032439","Code":0,"Message":"Ba\u015far\u0131l\u0131"}',
+            'decodedResponseData' => [
+                'ThreeDSessionId' => 'PA49E341381C94587AB4CB196DAC10DC02E509578520E4471A3EEE2BB4830AE4F',
+                'TransactionId'   => '2000000000032439',
+                'Code'            => 0,
+                'Message'         => 'Başarılı',
+            ],
             'formData'            => ToslaPosRequestDataMapperTest::threeDFormDataProvider()['3d_pay_form_data']['expected'],
             'gateway_url'         => 'https://ent.akodepos.com/api/Payment/threeDSecure/PA49E341381C94587AB4CB196DAC10DC02E509578520E4471A3EEE2BB4830AE4F',
         ];
@@ -1077,7 +1081,6 @@ class ToslaPosTest extends TestCase
             $this->requestValueMapper,
             $this->requestMapperMock,
             $this->responseMapperMock,
-            $this->serializerMock,
             $this->eventDispatcherMock,
             $this->httpClientStrategyMock,
             $this->loggerMock,

@@ -15,15 +15,12 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\VakifKatilimPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\EncodedData;
-use Mews\Pos\Serializer\SerializerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
 /**
  * @covers \Mews\Pos\Client\VakifKatilimPosHttpClient
@@ -34,9 +31,6 @@ class VakifKatilimPosHttpClientTest extends TestCase
     use HttpClientTestTrait;
 
     private VakifKatilimPosHttpClient $client;
-
-    /** @var SerializerInterface & MockObject */
-    private SerializerInterface $serializer;
 
     /** @var LoggerInterface & MockObject */
     private LoggerInterface $logger;
@@ -58,7 +52,6 @@ class VakifKatilimPosHttpClientTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->serializer         = $this->createMock(SerializerInterface::class);
         $this->logger             = $this->createMock(LoggerInterface::class);
         $crypt                    = $this->createMock(CryptInterface::class);
         $this->requestValueMapper = $this->createMock(RequestValueMapperInterface::class);
@@ -69,7 +62,6 @@ class VakifKatilimPosHttpClientTest extends TestCase
         $this->client = PosHttpClientFactory::create(
             VakifKatilimPosHttpClient::class,
             'https://boa.vakifkatilim.com.tr/VirtualPOS.Gateway/Home',
-            $this->serializer,
             $crypt,
             $this->requestValueMapper,
             $this->logger,
@@ -134,11 +126,10 @@ class VakifKatilimPosHttpClientTest extends TestCase
         $order        = ['id' => 123];
         $apiUrl       = 'https://boa.vakifkatilim.com.tr/VirtualPOS.Gateway/Home/ThreeDModelPayGate';
 
-        $encodedData = new EncodedData(
-            '<?xml version="1.0" encoding="" ?><request>data</request>',
-            SerializerInterface::FORMAT_XML,
-        );
-        $request     = $this->prepareHttpRequest($encodedData->getData(), [
+        $encodedBody = '<?xml version="1.0" encoding="ISO-8859-1"?>
+<VPosMessageContract><item key="0">request-data</item></VPosMessageContract>
+';
+        $request     = $this->prepareHttpRequest($encodedBody, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'text/xml; charset=UTF-8',
@@ -147,11 +138,6 @@ class VakifKatilimPosHttpClientTest extends TestCase
 
         $responseContent = '<html>3d-form</html>';
         $response        = $this->prepareHttpResponse($responseContent, 200);
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -162,9 +148,6 @@ class VakifKatilimPosHttpClientTest extends TestCase
             ->method('sendRequest')
             ->with($request)
             ->willReturn($response);
-
-        $this->serializer->expects($this->never())
-            ->method('decode');
 
         $actual = $this->client->request($txType, $paymentModel, $requestData, $order, $apiUrl);
 
@@ -178,28 +161,19 @@ class VakifKatilimPosHttpClientTest extends TestCase
         string $txType,
         string $paymentModel,
         array  $requestData,
+        string $encodedRequestData,
         array  $order,
         string $expectedApiUrl
     ): void {
-        $encodedData     = new EncodedData(
-            '<?xml version="1.0" encoding="" ?><request>data</request>',
-            SerializerInterface::FORMAT_XML,
-        );
-
-        $request     = $this->prepareHttpRequest($encodedData->getData(), [
+        $request     = $this->prepareHttpRequest($encodedRequestData, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'text/xml; charset=UTF-8',
             ],
         ]);
 
-        $responseContent = 'response-content';
+        $responseContent = '<response><result>success</result></response>';
         $response        = $this->prepareHttpResponse($responseContent, 200);
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -211,11 +185,7 @@ class VakifKatilimPosHttpClientTest extends TestCase
             ->with($request)
             ->willReturn($response);
 
-        $decodedResponse = ['decoded-response'];
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->with($responseContent, $txType)
-            ->willReturn($decodedResponse);
+        $decodedResponse = ['result' => 'success'];
 
         $actual = $this->client->request(
             $txType,
@@ -225,7 +195,7 @@ class VakifKatilimPosHttpClientTest extends TestCase
             $expectedApiUrl
         );
 
-        $this->assertSame($decodedResponse, $actual);
+        $this->assertSame(['result' => 'success'], $actual);
     }
 
     public function testRequestBadRequest(): void
@@ -235,12 +205,10 @@ class VakifKatilimPosHttpClientTest extends TestCase
         $requestData    = ['request-data' => 'abc'];
         $order          = ['id' => 123];
 
-        $encodedData = new EncodedData(
-            '<?xml version="1.0" encoding="" ?><request>data</request>',
-            SerializerInterface::FORMAT_XML,
-        );
-
-        $request = $this->prepareHttpRequest($encodedData->getData(), [
+        $encodedBody = '<?xml version="1.0" encoding="ISO-8859-1"?>
+<VPosMessageContract><request-data>abc</request-data></VPosMessageContract>
+';
+        $request = $this->prepareHttpRequest($encodedBody, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'text/xml; charset=UTF-8',
@@ -251,10 +219,6 @@ class VakifKatilimPosHttpClientTest extends TestCase
         $responseContent = 'response-content';
         $response        = $this->prepareHttpResponse($responseContent, 500);
 
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -283,23 +247,17 @@ class VakifKatilimPosHttpClientTest extends TestCase
         $requestData    = ['request-data' => 'abc'];
         $order          = ['id' => 123];
 
-        $encodedData     = new EncodedData(
-            '<?xml version="1.0" encoding="" ?><request>data</request>',
-            SerializerInterface::FORMAT_XML,
-        );
-
-        $request     = $this->prepareHttpRequest($encodedData->getData(), [
+        $encodedBody = '<?xml version="1.0" encoding="ISO-8859-1"?>
+<VPosMessageContract><request-data>abc</request-data></VPosMessageContract>
+';
+        $request     = $this->prepareHttpRequest($encodedBody, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'text/xml; charset=UTF-8',
             ],
         ]);
-        $responseContent = 'response-content';
+        $responseContent = 'not-valid-xml';
         $response        = $this->prepareHttpResponse($responseContent, 400);
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->willReturn($encodedData);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -309,11 +267,7 @@ class VakifKatilimPosHttpClientTest extends TestCase
             ->method('sendRequest')
             ->willReturn($response);
 
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->willThrowException(new NotEncodableValueException());
-
-        $this->expectException(NotEncodableValueException::class);
+        $this->expectException(\RuntimeException::class);
         $this->client->request(
             $txType,
             $paymentModel,
@@ -339,11 +293,14 @@ class VakifKatilimPosHttpClientTest extends TestCase
     public static function requestDataProvider(): \Generator
     {
         yield [
-            'txType'         => PosInterface::TX_TYPE_PAY_AUTH,
-            'paymentModel'   => PosInterface::MODEL_3D_SECURE,
-            'requestData'    => ['request-data'],
-            'order'          => ['id' => 123],
-            'expectedApiUrl' => 'https://sanalposprovtest.garantibbva.com.tr/VPServlet',
+            'txType'             => PosInterface::TX_TYPE_PAY_AUTH,
+            'paymentModel'       => PosInterface::MODEL_3D_SECURE,
+            'requestData'        => ['request-data'],
+            'encodedRequestData' => '<?xml version="1.0" encoding="ISO-8859-1"?>
+<VPosMessageContract><item key="0">request-data</item></VPosMessageContract>
+',
+            'order'              => ['id' => 123],
+            'expectedApiUrl'     => 'https://boa.vakifkatilim.com.tr/VirtualPOS.Gateway/Home/ThreeDModelProvisionGate',
         ];
     }
 

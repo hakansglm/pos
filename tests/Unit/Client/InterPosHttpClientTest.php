@@ -14,8 +14,6 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\InterPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\EncodedData;
-use Mews\Pos\Serializer\SerializerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -27,15 +25,13 @@ use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 /**
  * @covers \Mews\Pos\Client\InterPosHttpClient
  * @covers \Mews\Pos\Client\AbstractHttpClient
+ * @covers \Mews\Pos\Serializer\Decoder\InterPosDecoder
  */
 class InterPosHttpClientTest extends TestCase
 {
     use HttpClientTestTrait;
 
     private InterPosHttpClient $client;
-
-    /** @var SerializerInterface & MockObject */
-    private SerializerInterface $serializer;
 
     /** @var LoggerInterface & MockObject */
     private LoggerInterface $logger;
@@ -60,7 +56,6 @@ class InterPosHttpClientTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->serializer         = $this->createMock(SerializerInterface::class);
         $this->logger             = $this->createMock(LoggerInterface::class);
         $crypt                    = $this->createMock(CryptInterface::class);
         $this->requestValueMapper = $this->createMock(RequestValueMapperInterface::class);
@@ -72,7 +67,6 @@ class InterPosHttpClientTest extends TestCase
         $this->client = PosHttpClientFactory::create(
             InterPosHttpClient::class,
             'https://test.inter-vpos.com.tr/mpi/Default.aspx',
-            $this->serializer,
             $crypt,
             $this->requestValueMapper,
             $this->logger,
@@ -110,28 +104,20 @@ class InterPosHttpClientTest extends TestCase
         string $txType,
         string $paymentModel,
         array  $requestData,
+        string $encodedRequestData,
+        string $responseContent,
+        array  $expectedDecodedResponse,
         array  $order,
         string $expectedApiUrl
     ): void {
-        $encodedData = new EncodedData(
-            'abc=1&sa=aa',
-            SerializerInterface::FORMAT_FORM,
-        );
-        $request     = $this->prepareHttpRequest($encodedData->getData(), [
+        $request = $this->prepareHttpRequest($encodedRequestData, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'application/x-www-form-urlencoded',
             ],
         ]);
 
-        $responseContent = 'response-content';
-        $response        = $this->prepareHttpResponse($responseContent, 200);
-
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
+        $response = $this->prepareHttpResponse($responseContent, 200);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -143,12 +129,6 @@ class InterPosHttpClientTest extends TestCase
             ->with($request)
             ->willReturn($response);
 
-        $decodedResponse = ['decoded-response'];
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->with($responseContent, $txType)
-            ->willReturn($decodedResponse);
-
         $actual = $this->client->request(
             $txType,
             $paymentModel,
@@ -157,21 +137,18 @@ class InterPosHttpClientTest extends TestCase
             $expectedApiUrl
         );
 
-        $this->assertSame($decodedResponse, $actual);
+        $this->assertSame($expectedDecodedResponse, $actual);
     }
 
     public function testRequestUndecodableResponse(): void
     {
-        $txType         = PosInterface::TX_TYPE_PAY_AUTH;
-        $paymentModel   = PosInterface::MODEL_3D_SECURE;
-        $requestData    = ['request-data' => 'abc'];
-        $order          = ['id' => 123];
+        $txType       = PosInterface::TX_TYPE_PAY_AUTH;
+        $paymentModel = PosInterface::MODEL_3D_SECURE;
+        $requestData  = ['request-data' => 'abc'];
+        $order        = ['id' => 123];
+        $encodedBody  = 'request-data=abc';
 
-        $encodedData = new EncodedData(
-            'abc=1&sa=aa',
-            SerializerInterface::FORMAT_FORM,
-        );
-        $request     = $this->prepareHttpRequest($encodedData->getData(), [
+        $request = $this->prepareHttpRequest($encodedBody, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'application/x-www-form-urlencoded',
@@ -181,9 +158,6 @@ class InterPosHttpClientTest extends TestCase
         $responseContent = 'response-content';
         $response        = $this->prepareHttpResponse($responseContent, 400);
 
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->willReturn($encodedData);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -193,9 +167,6 @@ class InterPosHttpClientTest extends TestCase
             ->method('sendRequest')
             ->willReturn($response);
 
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->willThrowException(new NotEncodableValueException());
 
         $this->expectException(NotEncodableValueException::class);
         $this->client->request(
@@ -208,16 +179,13 @@ class InterPosHttpClientTest extends TestCase
 
     public function testRequestBadRequest(): void
     {
-        $txType         = PosInterface::TX_TYPE_PAY_AUTH;
-        $paymentModel   = PosInterface::MODEL_3D_SECURE;
-        $requestData    = ['request-data' => 'abc'];
-        $order          = ['id' => 123];
+        $txType       = PosInterface::TX_TYPE_PAY_AUTH;
+        $paymentModel = PosInterface::MODEL_3D_SECURE;
+        $requestData  = ['request-data' => 'abc'];
+        $order        = ['id' => 123];
+        $encodedBody  = 'request-data=abc';
 
-        $encodedData = new EncodedData(
-            'abc=1&sa=aa',
-            SerializerInterface::FORMAT_FORM,
-        );
-        $request     = $this->prepareHttpRequest($encodedData->getData(), [
+        $request = $this->prepareHttpRequest($encodedBody, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'application/x-www-form-urlencoded',
@@ -227,10 +195,6 @@ class InterPosHttpClientTest extends TestCase
         $responseContent = 'response-content';
         $response        = $this->prepareHttpResponse($responseContent, 500);
 
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -286,11 +250,53 @@ class InterPosHttpClientTest extends TestCase
     public static function requestDataProvider(): \Generator
     {
         yield [
-            'txType'         => PosInterface::TX_TYPE_PAY_AUTH,
-            'paymentModel'   => PosInterface::MODEL_3D_SECURE,
-            'requestData'    => ['request-data'],
-            'order'          => ['id' => 123],
-            'expectedApiUrl' => 'https://test.inter-vpos.com.tr/mpi/Default.aspx',
+            'txType'                  => PosInterface::TX_TYPE_PAY_AUTH,
+            'paymentModel'            => PosInterface::MODEL_3D_SECURE,
+            'requestData'             => ['abc' => 1, 'sa' => 'aa'],
+            'encodedRequestData'      => 'abc=1&sa=aa',
+            'responseContent'         => 'OrderId=33554969;;ProcReturnCode=00;;HostRefNum=hostid;;AuthCode=gizlendi;;TxnResult=Success;;ErrorMessage=;;CampanyId=;;CampanyInstallCount=0;;CampanyShiftDateCount=0;;CampanyTxnId=;;CampanyType=;;CampanyInstallment=0;;CampanyDate=0;;CampanyAmnt=0;;TRXDATE=09.08.2024 10:40:34;;TransId=gizlendi;;ErrorCode=;;EarnedBonus=0,00;;UsedBonus=0,00;;AvailableBonus=0,00;;BonusToBonus=0;;CampaignBonus=0,00;;FoldedBonus=0;;SurchargeAmount=0;;Amount=1,00;;CardHolderName=gizlendi;;QrReferenceNumber=;;QrCardToken=;;QrData=;;QrPayIsSucess=False;;QrIssuerPaymentMethod=;;QrFastMessageReferenceNo=;;QrFastParticipantReceiverCode=;;QrFastParticipantReceiverName=;;QrFastParticipantSenderCode=;;QrFastSenderIban=;;QrFastParticipantSenderName=;;QrFastPaymentResultDesc=',
+            'expectedDecodedResponse' => [
+                'OrderId'                       => '33554969',
+                'ProcReturnCode'                => '00',
+                'HostRefNum'                    => 'hostid',
+                'AuthCode'                      => 'gizlendi',
+                'TxnResult'                     => 'Success',
+                'ErrorMessage'                  => '',
+                'CampanyId'                     => '',
+                'CampanyInstallCount'           => '0',
+                'CampanyShiftDateCount'         => '0',
+                'CampanyTxnId'                  => '',
+                'CampanyType'                   => '',
+                'CampanyInstallment'            => '0',
+                'CampanyDate'                   => '0',
+                'CampanyAmnt'                   => '0',
+                'TRXDATE'                       => '09.08.2024 10:40:34',
+                'TransId'                       => 'gizlendi',
+                'ErrorCode'                     => '',
+                'EarnedBonus'                   => '0,00',
+                'UsedBonus'                     => '0,00',
+                'AvailableBonus'                => '0,00',
+                'BonusToBonus'                  => '0',
+                'CampaignBonus'                 => '0,00',
+                'FoldedBonus'                   => '0',
+                'SurchargeAmount'               => '0',
+                'Amount'                        => '1,00',
+                'CardHolderName'                => 'gizlendi',
+                'QrReferenceNumber'             => '',
+                'QrCardToken'                   => '',
+                'QrData'                        => '',
+                'QrPayIsSucess'                 => 'False',
+                'QrIssuerPaymentMethod'         => '',
+                'QrFastMessageReferenceNo'      => '',
+                'QrFastParticipantReceiverCode' => '',
+                'QrFastParticipantReceiverName' => '',
+                'QrFastParticipantSenderCode'   => '',
+                'QrFastSenderIban'              => '',
+                'QrFastParticipantSenderName'   => '',
+                'QrFastPaymentResultDesc'       => '',
+            ],
+            'order'                   => ['id' => 123],
+            'expectedApiUrl'          => 'https://test.inter-vpos.com.tr/mpi/Default.aspx',
         ];
     }
 }

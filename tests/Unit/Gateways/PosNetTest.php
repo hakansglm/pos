@@ -27,7 +27,6 @@ use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateways\PosNet;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\SerializerInterface;
 use Mews\Pos\Tests\Unit\DataMapper\RequestDataMapper\PosNetRequestDataMapperTest;
 use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\PosNetResponseDataMapperTest;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -75,9 +74,6 @@ class PosNetTest extends TestCase
 
     private EstPosRequestValueMapper $requestValueMapper;
 
-    /** @var SerializerInterface & MockObject */
-    private MockObject $serializerMock;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -112,7 +108,6 @@ class PosNetTest extends TestCase
         $this->requestValueMapper     = new EstPosRequestValueMapper();
         $this->requestMapperMock      = $this->createMock(PosNetRequestDataMapper::class);
         $this->responseMapperMock     = $this->createMock(PosNetResponseDataMapper::class);
-        $this->serializerMock         = $this->createMock(SerializerInterface::class);
         $this->cryptMock              = $this->createMock(CryptInterface::class);
         $this->httpClientStrategyMock = $this->createMock(HttpClientStrategyInterface::class);
         $this->httpClientMock         = $this->createMock(HttpClientInterface::class);
@@ -1055,7 +1050,6 @@ class PosNetTest extends TestCase
             $this->requestValueMapper,
             $this->requestMapperMock,
             $this->responseMapperMock,
-            $this->serializerMock,
             $this->eventDispatcherMock,
             $this->httpClientStrategyMock,
             $this->loggerMock,

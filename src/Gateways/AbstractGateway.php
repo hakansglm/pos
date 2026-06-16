@@ -16,7 +16,6 @@ use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exceptions\UnsupportedPaymentModelException;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\SerializerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 
@@ -59,8 +58,6 @@ abstract class AbstractGateway implements PosInterface
     protected RequestDataMapperInterface $requestDataMapper;
 
     protected ResponseDataMapperInterface $responseDataMapper;
-
-    protected SerializerInterface $serializer;
 
     protected EventDispatcherInterface $eventDispatcher;
 
@@ -110,7 +107,6 @@ abstract class AbstractGateway implements PosInterface
         RequestValueMapperInterface $valueMapper,
         RequestDataMapperInterface  $requestDataMapper,
         ResponseDataMapperInterface $responseDataMapper,
-        SerializerInterface         $serializer,
         EventDispatcherInterface    $eventDispatcher,
         HttpClientStrategyInterface $httpClientStrategy,
         LoggerInterface             $logger
@@ -118,7 +114,6 @@ abstract class AbstractGateway implements PosInterface
         $this->valueMapper        = $valueMapper;
         $this->requestDataMapper  = $requestDataMapper;
         $this->responseDataMapper = $responseDataMapper;
-        $this->serializer         = $serializer;
         $this->eventDispatcher    = $eventDispatcher;
 
         $this->config         = $config;

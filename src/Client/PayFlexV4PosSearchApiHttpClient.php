@@ -8,9 +8,33 @@ namespace Mews\Pos\Client;
 
 use Mews\Pos\Gateways\PayFlexV4Pos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\Serializer\Decoder\XmlDecoder;
+use Mews\Pos\Serializer\Encoder\XmlEncoder;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Log\LoggerInterface;
 
 class PayFlexV4PosSearchApiHttpClient extends PayFlexV4PosHttpClient
 {
+    public function __construct(
+        string                  $baseApiUrl,
+        ClientInterface         $psrClient,
+        RequestFactoryInterface $requestFactory,
+        StreamFactoryInterface  $streamFactory,
+        LoggerInterface         $logger
+    ) {
+        AbstractHttpClient::__construct(
+            $baseApiUrl,
+            $psrClient,
+            $requestFactory,
+            $streamFactory,
+            new XmlEncoder('SearchRequest', 'UTF-8'),
+            new XmlDecoder(),
+            $logger
+        );
+    }
+
     /**
      * @inheritDoc
      */

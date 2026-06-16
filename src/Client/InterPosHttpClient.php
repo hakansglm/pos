@@ -8,11 +8,35 @@ namespace Mews\Pos\Client;
 
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Gateways\InterPos;
+use Mews\Pos\Serializer\Decoder\InterPosDecoder;
 use Mews\Pos\Serializer\EncodedData;
+use Mews\Pos\Serializer\Encoder\FormEncoder;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Log\LoggerInterface;
 
 class InterPosHttpClient extends AbstractHttpClient
 {
+    public function __construct(
+        string                  $baseApiUrl,
+        ClientInterface         $psrClient,
+        RequestFactoryInterface $requestFactory,
+        StreamFactoryInterface  $streamFactory,
+        LoggerInterface         $logger
+    ) {
+        parent::__construct(
+            $baseApiUrl,
+            $psrClient,
+            $requestFactory,
+            $streamFactory,
+            new FormEncoder(),
+            new InterPosDecoder(),
+            $logger
+        );
+    }
+
     /**
      * @inheritDoc
      */

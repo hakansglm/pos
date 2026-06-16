@@ -10,11 +10,35 @@ use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Gateways\ToslaPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\Serializer\Decoder\JsonDecoder;
 use Mews\Pos\Serializer\EncodedData;
+use Mews\Pos\Serializer\Encoder\JsonEncoder;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Log\LoggerInterface;
 
 class ToslaPosHttpClient extends AbstractHttpClient
 {
+    public function __construct(
+        string                  $baseApiUrl,
+        ClientInterface         $psrClient,
+        RequestFactoryInterface $requestFactory,
+        StreamFactoryInterface  $streamFactory,
+        LoggerInterface         $logger
+    ) {
+        parent::__construct(
+            $baseApiUrl,
+            $psrClient,
+            $requestFactory,
+            $streamFactory,
+            new JsonEncoder(),
+            new JsonDecoder(),
+            $logger
+        );
+    }
+
     /**
      * @inheritDoc
      */

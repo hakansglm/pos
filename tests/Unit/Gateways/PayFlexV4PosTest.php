@@ -26,7 +26,6 @@ use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateways\PayFlexV4Pos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\SerializerInterface;
 use Mews\Pos\Tests\Unit\DataMapper\RequestDataMapper\PayFlexV4PosRequestDataMapperTest;
 use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\PayFlexV4PosResponseDataMapperTest;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -109,7 +108,6 @@ class PayFlexV4PosTest extends TestCase
         $this->requestValueMapper     = new PayFlexV4PosRequestValueMapper();
         $this->requestMapperMock      = $this->createMock(PayFlexV4PosRequestDataMapper::class);
         $this->responseMapperMock     = $this->createMock(ResponseDataMapperInterface::class);
-        $serializerMock               = $this->createMock(SerializerInterface::class);
         $this->cryptMock              = $this->createMock(CryptInterface::class);
         $this->httpClientStrategyMock = $this->createMock(HttpClientStrategyInterface::class);
         $this->httpClientMock         = $this->createMock(HttpClientInterface::class);
@@ -126,7 +124,6 @@ class PayFlexV4PosTest extends TestCase
             $this->requestValueMapper,
             $this->requestMapperMock,
             $this->responseMapperMock,
-            $serializerMock,
             $this->eventDispatcherMock,
             $this->httpClientStrategyMock,
             $this->loggerMock,

@@ -23,7 +23,6 @@ use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateways\GarantiPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\SerializerInterface;
 use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\GarantiPosResponseDataMapperTest;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -58,9 +57,6 @@ class GarantiPosTest extends TestCase
 
     /** @var EventDispatcherInterface & MockObject */
     private MockObject $eventDispatcherMock;
-
-    /** @var SerializerInterface & MockObject */
-    private MockObject $serializerMock;
 
     private array $config;
 
@@ -98,7 +94,6 @@ class GarantiPosTest extends TestCase
         $this->requestValueMapper     = new GarantiPosRequestValueMapper();
         $this->requestMapperMock      = $this->createMock(RequestDataMapperInterface::class);
         $this->responseMapperMock     = $this->createMock(ResponseDataMapperInterface::class);
-        $this->serializerMock         = $this->createMock(SerializerInterface::class);
         $this->cryptMock              = $this->createMock(CryptInterface::class);
         $this->httpClientStrategyMock = $this->createMock(HttpClientStrategyInterface::class);
         $this->httpClientMock         = $this->createMock(HttpClientInterface::class);
@@ -314,10 +309,6 @@ class GarantiPosTest extends TestCase
                 ->willReturn($expectedResponse);
             $this->requestMapperMock->expects(self::never())
                 ->method('create3DPaymentRequestData');
-            $this->serializerMock->expects(self::never())
-                ->method('encode');
-            $this->serializerMock->expects(self::never())
-                ->method('decode');
             $this->eventDispatcherMock->expects(self::never())
                 ->method('dispatch');
         }
@@ -864,7 +855,6 @@ class GarantiPosTest extends TestCase
             $this->requestValueMapper,
             $this->requestMapperMock,
             $this->responseMapperMock,
-            $this->serializerMock,
             $this->eventDispatcherMock,
             $this->httpClientStrategyMock,
             $this->loggerMock,

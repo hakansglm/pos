@@ -14,15 +14,12 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\PayFlexV4Pos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\EncodedData;
-use Mews\Pos\Serializer\SerializerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
 /**
  * @covers \Mews\Pos\Client\PayFlexV4PosSearchApiHttpClient
@@ -33,9 +30,6 @@ class PayFlexV4PosSearchApiHttpClientTest extends TestCase
     use HttpClientTestTrait;
 
     private PayFlexV4PosSearchApiHttpClient $client;
-
-    /** @var SerializerInterface & MockObject */
-    private SerializerInterface $serializer;
 
     /** @var LoggerInterface & MockObject */
     private LoggerInterface $logger;
@@ -62,7 +56,6 @@ class PayFlexV4PosSearchApiHttpClientTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->serializer         = $this->createMock(SerializerInterface::class);
         $this->logger             = $this->createMock(LoggerInterface::class);
         $this->crypt              = $this->createMock(CryptInterface::class);
         $this->requestValueMapper = $this->createMock(RequestValueMapperInterface::class);
@@ -74,7 +67,6 @@ class PayFlexV4PosSearchApiHttpClientTest extends TestCase
         $this->client = PosHttpClientFactory::create(
             PayFlexV4PosSearchApiHttpClient::class,
             'https://sanalpos.vakifbank.com.tr/v4/UIWebService/Search.aspx',
-            $this->serializer,
             $this->crypt,
             $this->requestValueMapper,
             $this->logger,
@@ -114,29 +106,19 @@ class PayFlexV4PosSearchApiHttpClientTest extends TestCase
         string $txType,
         string $paymentModel,
         array  $requestData,
+        string $encodedRequestData,
         array  $order,
         string $expectedApiUrl
     ): void {
-        $encodedData = new EncodedData(
-            '<?xml version="1.0" encoding="" ?>',
-            SerializerInterface::FORMAT_FORM,
-        );
-
-        $queryData   = 'prmstr=%3C%3Fxml+version%3D%221.0%22+encoding%3D%22%22+%3F%3E';
-        $request     = $this->prepareHttpRequest($queryData, [
+        $request = $this->prepareHttpRequest($encodedRequestData, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'application/x-www-form-urlencoded',
             ],
         ]);
-
-        $responseContent = 'response-content';
+        $decodedResponse = ['result' => 'success'];
+        $responseContent = '<response><result>success</result></response>';
         $response        = $this->prepareHttpResponse($responseContent, 200);
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -147,12 +129,6 @@ class PayFlexV4PosSearchApiHttpClientTest extends TestCase
             ->method('sendRequest')
             ->with($request)
             ->willReturn($response);
-
-        $decodedResponse = ['decoded-response'];
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->with($responseContent, $txType)
-            ->willReturn($decodedResponse);
 
         $actual = $this->client->request(
             $txType,
@@ -167,30 +143,19 @@ class PayFlexV4PosSearchApiHttpClientTest extends TestCase
 
     public function testRequestUndecodableResponse(): void
     {
-        $txType         = PosInterface::TX_TYPE_PAY_AUTH;
-        $paymentModel   = PosInterface::MODEL_3D_SECURE;
-        $requestData    = ['request-data' => 'abc'];
-        $order          = ['id' => 123];
+        $txType      = PosInterface::TX_TYPE_STATUS;
+        $paymentModel = PosInterface::MODEL_3D_SECURE;
+        $requestData = ['request-data' => 'abc'];
+        $order       = ['id' => 123];
 
-        $encodedData = new EncodedData(
-            '<?xml version="1.0" encoding="" ?>',
-            SerializerInterface::FORMAT_FORM,
-        );
-        $queryData   = 'prmstr=%3C%3Fxml+version%3D%221.0%22+encoding%3D%22%22+%3F%3E';
-        $request     = $this->prepareHttpRequest($queryData, [
+        $request = $this->prepareHttpRequest('prmstr=%3C%3Fxml+version%3D%221.0%22+encoding%3D%22UTF-8%22%3F%3E%0A%3CSearchRequest%3E%3Crequest-data%3Eabc%3C%2Frequest-data%3E%3C%2FSearchRequest%3E%0A', [
             [
                 'name'  => 'Content-Type',
                 'value' => 'application/x-www-form-urlencoded',
             ],
         ]);
 
-        $responseContent = 'response-content';
-        $response        = $this->prepareHttpResponse($responseContent, 400);
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
+        $response = $this->prepareHttpResponse('not-valid-xml', 400);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -200,11 +165,7 @@ class PayFlexV4PosSearchApiHttpClientTest extends TestCase
             ->method('sendRequest')
             ->willReturn($response);
 
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->willThrowException(new NotEncodableValueException());
-
-        $this->expectException(NotEncodableValueException::class);
+        $this->expectException(\RuntimeException::class);
         $this->client->request(
             $txType,
             $paymentModel,
@@ -215,30 +176,19 @@ class PayFlexV4PosSearchApiHttpClientTest extends TestCase
 
     public function testRequestBadRequest(): void
     {
-        $txType         = PosInterface::TX_TYPE_PAY_AUTH;
-        $paymentModel   = PosInterface::MODEL_3D_SECURE;
-        $requestData    = ['request-data' => 'abc'];
-        $order          = ['id' => 123];
+        $txType      = PosInterface::TX_TYPE_STATUS;
+        $paymentModel = PosInterface::MODEL_3D_SECURE;
+        $requestData = ['request-data' => 'abc'];
+        $order       = ['id' => 123];
 
-        $encodedData = new EncodedData(
-            '<?xml version="1.0" encoding="" ?>',
-            SerializerInterface::FORMAT_FORM,
-        );
-        $queryData   = 'prmstr=%3C%3Fxml+version%3D%221.0%22+encoding%3D%22%22+%3F%3E';
-        $request     = $this->prepareHttpRequest($queryData, [
+        $request = $this->prepareHttpRequest('prmstr=%3C%3Fxml+version%3D%221.0%22+encoding%3D%22UTF-8%22%3F%3E%0A%3CSearchRequest%3E%3Crequest-data%3Eabc%3C%2Frequest-data%3E%3C%2FSearchRequest%3E%0A', [
             [
                 'name'  => 'Content-Type',
                 'value' => 'application/x-www-form-urlencoded',
             ],
         ]);
 
-        $responseContent = 'response-content';
-        $response        = $this->prepareHttpResponse($responseContent, 500);
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
+        $response = $this->prepareHttpResponse('response-content', 500);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -274,11 +224,12 @@ class PayFlexV4PosSearchApiHttpClientTest extends TestCase
     public static function requestDataProvider(): \Generator
     {
         yield [
-            'txType'         => PosInterface::TX_TYPE_PAY_AUTH,
-            'paymentModel'   => PosInterface::MODEL_3D_SECURE,
-            'requestData'    => ['request-data'],
-            'order'          => ['id' => 123],
-            'expectedApiUrl' => 'https://sanalpos.vakifbank.com.tr/v4/UIWebService/Search.aspx',
+            'txType'             => PosInterface::TX_TYPE_STATUS,
+            'paymentModel'       => PosInterface::MODEL_3D_SECURE,
+            'requestData'        => ['request-data' => 'abc'],
+            'encodedRequestData' => 'prmstr=%3C%3Fxml+version%3D%221.0%22+encoding%3D%22UTF-8%22%3F%3E%0A%3CSearchRequest%3E%3Crequest-data%3Eabc%3C%2Frequest-data%3E%3C%2FSearchRequest%3E%0A',
+            'order'              => ['id' => 123],
+            'expectedApiUrl'     => 'https://sanalpos.vakifbank.com.tr/v4/UIWebService/Search.aspx',
         ];
     }
 }

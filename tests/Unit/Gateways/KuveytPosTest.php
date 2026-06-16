@@ -22,7 +22,6 @@ use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateways\KuveytPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\SerializerInterface;
 use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\KuveytPosResponseDataMapperTest;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -67,9 +66,6 @@ class KuveytPosTest extends TestCase
     /** @var EventDispatcherInterface & MockObject */
     private MockObject $eventDispatcherMock;
 
-    /** @var SerializerInterface & MockObject */
-    private MockObject $serializerMock;
-
     private KuveytPosRequestValueMapper $requestValueMapper;
 
     /**
@@ -111,7 +107,6 @@ class KuveytPosTest extends TestCase
         $this->requestValueMapper     = new KuveytPosRequestValueMapper();
         $this->requestMapperMock      = $this->createMock(KuveytPosRequestDataMapper::class);
         $this->responseMapperMock     = $this->createMock(ResponseDataMapperInterface::class);
-        $this->serializerMock         = $this->createMock(SerializerInterface::class);
         $this->cryptMock              = $this->createMock(CryptInterface::class);
         $this->httpClientStrategyMock = $this->createMock(HttpClientStrategyInterface::class);
         $this->httpClientMock         = $this->createMock(HttpClientInterface::class);
@@ -128,7 +123,6 @@ class KuveytPosTest extends TestCase
             $this->requestValueMapper,
             $this->requestMapperMock,
             $this->responseMapperMock,
-            $this->serializerMock,
             $this->eventDispatcherMock,
             $this->httpClientStrategyMock,
             $this->loggerMock,
@@ -242,13 +236,6 @@ class KuveytPosTest extends TestCase
         $this->cryptMock->expects(self::never())
             ->method('check3DHash');
 
-        $this->serializerMock->expects(self::once())
-            ->method('decode')
-            ->with(
-                \urldecode($gatewayResponseData['AuthenticationResponse']),
-                $txType
-            )->willReturn($decodedRequest);
-
         $this->responseMapperMock->expects(self::once())
             ->method('extractMdStatus')
             ->with($decodedRequest)
@@ -285,10 +272,9 @@ class KuveytPosTest extends TestCase
                 ->method('map3DPaymentData')
                 ->with($decodedRequest, null, $txType, $order)
                 ->willReturn($expectedResponse);
+
             $this->requestMapperMock->expects(self::never())
-                ->method('create3DPaymentRequestData')
-                ->with(urldecode($gatewayResponseData['AuthenticationResponse']), $txType)
-                ->willReturn($decodedRequest);
+                ->method('create3DPaymentRequestData');
         }
 
         $result = $this->pos->payment(PosInterface::MODEL_3D_SECURE, $order, $txType, null, $gatewayResponseData);
@@ -316,8 +302,6 @@ class KuveytPosTest extends TestCase
 
         $this->requestMapperMock->expects(self::never())
             ->method('create3DPaymentRequestData');
-        $this->serializerMock->expects(self::never())
-            ->method('decode');
 
         $this->expectException(\LogicException::class);
         $this->pos->payment(PosInterface::MODEL_3D_SECURE, [], $txType, null, ['abc']);
@@ -507,7 +491,7 @@ class KuveytPosTest extends TestCase
             'auth_fail'                    => [
                 'order'           => KuveytPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['order'],
                 'txType'          => KuveytPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['txType'],
-                'request'         => ['AuthenticationResponse' => 'base64-encoded-xml'],
+                'request'         => ['AuthenticationResponse' => '%3C%3Fxml+version%3D%221.0%22%3F%3E%0A%3CVPosTransaction+xmlns%3Axsi%3D%22http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema-instance%22+xmlns%3Axsd%3D%22http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%22%3E%3CIsEnrolled%3Etrue%3C%2FIsEnrolled%3E%3CIsVirtual%3Efalse%3C%2FIsVirtual%3E%3CResponseCode%3EHashDataError%3C%2FResponseCode%3E%3CResponseMessage%3E%26%23x15E%3Bifrelenen+veriler+%28Hashdata%29+uyu%26%23x15F%3Bmamaktad%26%23x131%3Br.%3C%2FResponseMessage%3E%3COrderId%3E0%3C%2FOrderId%3E%3CTransactionTime%3E0001-01-01T00%3A00%3A00%3C%2FTransactionTime%3E%3CMerchantOrderId%3E2020110828BC%3C%2FMerchantOrderId%3E%3CReferenceId%3E9b8e2326a9df44c2b2aac0b98b11f0a4%3C%2FReferenceId%3E%3CBusinessKey%3E0%3C%2FBusinessKey%3E%3C%2FVPosTransaction%3E%0A'],
                 'decodedRequest'  => KuveytPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['threeDResponseData'],
                 'paymentResponse' => KuveytPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['paymentData'],
                 'expected'        => KuveytPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['expectedData'],
@@ -517,7 +501,7 @@ class KuveytPosTest extends TestCase
             '3d_auth_success_payment_fail' => [
                 'order'           => KuveytPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail_1']['order'],
                 'txType'          => KuveytPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail_1']['txType'],
-                'request'         => ['AuthenticationResponse' => 'base64-encoded-xml'],
+                'request'         => ['AuthenticationResponse' => '%3C%3Fxml+version%3D%221.0%22%3F%3E%0A%3CVPosTransaction+xmlns%3Axsi%3D%22http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema-instance%22+xmlns%3Axsd%3D%22http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%22%3E%3CVPosMessage%3E%3COrderId%3E86483278%3C%2FOrderId%3E%3COkUrl%3Ehttps%3A%2F%2Fwww.example.com%2Ftestodeme%3C%2FOkUrl%3E%3CFailUrl%3Ehttps%3A%2F%2Fwww.example.com%2Ftestodeme%3C%2FFailUrl%3E%3CMerchantId%3E48544%3C%2FMerchantId%3E%3CSubMerchantId%3E0%3C%2FSubMerchantId%3E%3CCustomerId%3E123456%3C%2FCustomerId%3E%3CUserName%3Efapapi%3C%2FUserName%3E%3CHashPassword%3EHiorgg24rNeRdHUvMCg%2F%2FmOJn4U%3D%3C%2FHashPassword%3E%3CCardNumber%3E5124%2A%2A%2A%2A%2A%2A%2A%2A1609%3C%2FCardNumber%3E%3CBatchID%3E1576%3C%2FBatchID%3E%3CInstallmentCount%3E0%3C%2FInstallmentCount%3E%3CAmount%3E10%3C%2FAmount%3E%3CCancelAmount%3E0%3C%2FCancelAmount%3E%3CMerchantOrderId%3EMP-15%3C%2FMerchantOrderId%3E%3CFECAmount%3E0%3C%2FFECAmount%3E%3CCurrencyCode%3E949%3C%2FCurrencyCode%3E%3CQeryId%3E0%3C%2FQeryId%3E%3CDebtId%3E0%3C%2FDebtId%3E%3CSurchargeAmount%3E0%3C%2FSurchargeAmount%3E%3CSGKDebtAmount%3E0%3C%2FSGKDebtAmount%3E%3CTransactionSecurity%3E3%3C%2FTransactionSecurity%3E%3CDeferringCount+xsi%3Anil%3D%22true%22%3E%3C%2FDeferringCount%3E%3CInstallmentMaturityCommisionFlag%3E0%3C%2FInstallmentMaturityCommisionFlag%3E%3CPaymentId+xsi%3Anil%3D%22true%22%3E%3C%2FPaymentId%3E%3COrderPOSTransactionId+xsi%3Anil%3D%22true%22%3E%3C%2FOrderPOSTransactionId%3E%3CTranDate+xsi%3Anil%3D%22true%22%3E%3C%2FTranDate%3E%3CTransactionUserId+xsi%3Anil%3D%22true%22%3E%3C%2FTransactionUserId%3E%3C%2FVPosMessage%3E%3CIsEnrolled%3Etrue%3C%2FIsEnrolled%3E%3CIsVirtual%3Efalse%3C%2FIsVirtual%3E%3CResponseCode%3E00%3C%2FResponseCode%3E%3CResponseMessage%3EKart+do%26%23x11F%3Bruland%26%23x131%3B.%3C%2FResponseMessage%3E%3COrderId%3E86483278%3C%2FOrderId%3E%3CTransactionTime%3E0001-01-01T00%3A00%3A00%3C%2FTransactionTime%3E%3CMerchantOrderId%3EMP-15%3C%2FMerchantOrderId%3E%3CHashData%3EmOw0JGvy1JVWqDDmFyaDTvKz9Fk%3D%3C%2FHashData%3E%3CMD%3EktSVkYJHcHSYM1ibA%2FnM6nObr8WpWdcw34ziyRQRLv06g7UR2r5LrpLeNvwfBwPz%3C%2FMD%3E%3CBusinessKey%3E202208456498416947%3C%2FBusinessKey%3E%3C%2FVPosTransaction%3E%0A'],
                 'decodedRequest'  => KuveytPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail_1']['threeDResponseData'],
                 'paymentResponse' => KuveytPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail_1']['paymentData'],
                 'expected'        => KuveytPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail_1']['expectedData'],
@@ -527,7 +511,7 @@ class KuveytPosTest extends TestCase
             'success'                      => [
                 'order'           => KuveytPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['order'],
                 'txType'          => KuveytPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['txType'],
-                'request'         => ['AuthenticationResponse' => 'base64-encoded-xml'],
+                'request'         => ['AuthenticationResponse' => '%3C%3Fxml+version%3D%221.0%22%3F%3E%0A%3CVPosTransaction%3E%3CVPosMessage%3E%3CAPIVersion%3E1.0.0%3C%2FAPIVersion%3E%3COkUrl%3Ehttp%3A%2F%2Flocalhost%3A44785%2FHome%2FSuccess%3C%2FOkUrl%3E%3CFailUrl%3Ehttp%3A%2F%2Flocalhost%3A44785%2FHome%2FFail%3C%2FFailUrl%3E%3CHashData%3ElYJYMi%2FgVO9MWr32Pshaa%2FzAbSHY%3D%3C%2FHashData%3E%3CMerchantId%3E80%3C%2FMerchantId%3E%3CSubMerchantId%3E0%3C%2FSubMerchantId%3E%3CCustomerId%3E400235%3C%2FCustomerId%3E%3CUserName%3Eapiuser%3C%2FUserName%3E%3CCardNumber%3E5124%2A%2A%2A%2A%2A%2A%2A%2A1609%3C%2FCardNumber%3E%3CCardHolderName%3Eafafa%3C%2FCardHolderName%3E%3CCardType%3EMasterCard%3C%2FCardType%3E%3CBatchID%3E0%3C%2FBatchID%3E%3CTransactionType%3ESale%3C%2FTransactionType%3E%3CInstallmentCount%3E0%3C%2FInstallmentCount%3E%3CAmount%3E100%3C%2FAmount%3E%3CDisplayAmount%3E100%3C%2FDisplayAmount%3E%3CMerchantOrderId%3EOrder+123%3C%2FMerchantOrderId%3E%3CFECAmount%3E0%3C%2FFECAmount%3E%3CCurrencyCode%3E0949%3C%2FCurrencyCode%3E%3CQeryId%3E0%3C%2FQeryId%3E%3CDebtId%3E0%3C%2FDebtId%3E%3CSurchargeAmount%3E0%3C%2FSurchargeAmount%3E%3CSGKDebtAmount%3E0%3C%2FSGKDebtAmount%3E%3CTransactionSecurity%3E3%3C%2FTransactionSecurity%3E%3CTransactionSide%3EAuto%3C%2FTransactionSide%3E%3CEntryGateMethod%3EVPOS_ThreeDModelPayGate%3C%2FEntryGateMethod%3E%3C%2FVPosMessage%3E%3CIsEnrolled%3Etrue%3C%2FIsEnrolled%3E%3CIsVirtual%3Efalse%3C%2FIsVirtual%3E%3COrderId%3E0%3C%2FOrderId%3E%3CTransactionTime%3E0001-01-01T00%3A00%3A00%3C%2FTransactionTime%3E%3CResponseCode%3E00%3C%2FResponseCode%3E%3CResponseMessage%3EHATATA%3C%2FResponseMessage%3E%3CMD%3E67YtBfBRTZ0XBKnAHi8c%2FA%3D%3D%3C%2FMD%3E%3CAuthenticationPacket%3EWYGDgSIrSHDtYwF%2FWEN%2BnfwX63sppA%3D%3C%2FAuthenticationPacket%3E%3CACSURL%3Ehttps%3A%2F%2Facs.bkm.com.tr%2Fmdpayacs%2Fpareq%3C%2FACSURL%3E%3C%2FVPosTransaction%3E%0A'],
                 'decodedRequest'  => KuveytPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'],
                 'paymentResponse' => KuveytPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['paymentData'],
                 'expected'        => KuveytPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['expectedData'],

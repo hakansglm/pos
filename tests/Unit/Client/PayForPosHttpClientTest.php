@@ -14,15 +14,12 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\PayForPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\EncodedData;
-use Mews\Pos\Serializer\SerializerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
 /**
  * @covers \Mews\Pos\Client\PayForPosHttpClient
@@ -33,9 +30,6 @@ class PayForPosHttpClientTest extends TestCase
     use HttpClientTestTrait;
 
     private PayForPosHttpClient $client;
-
-    /** @var SerializerInterface & MockObject */
-    private SerializerInterface $serializer;
 
     /** @var LoggerInterface & MockObject */
     private LoggerInterface $logger;
@@ -61,7 +55,6 @@ class PayForPosHttpClientTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->serializer         = $this->createMock(SerializerInterface::class);
         $this->logger             = $this->createMock(LoggerInterface::class);
         $crypt                    = $this->createMock(CryptInterface::class);
         $this->requestValueMapper = $this->createMock(RequestValueMapperInterface::class);
@@ -72,7 +65,6 @@ class PayForPosHttpClientTest extends TestCase
         $this->client = PosHttpClientFactory::create(
             PayForPosHttpClient::class,
             'https://vpostest.qnbfinansbank.com/Gateway/XMLGate.aspx',
-            $this->serializer,
             $crypt,
             $this->requestValueMapper,
             $this->logger,
@@ -110,27 +102,20 @@ class PayForPosHttpClientTest extends TestCase
         string $txType,
         string $paymentModel,
         array  $requestData,
+        string $encodedRequestData,
         array  $order,
         string $expectedApiUrl
     ): void {
-        $encodedData = new EncodedData(
-            '<?xml version="1.0" encoding="" ?><request>data</request>',
-            SerializerInterface::FORMAT_XML,
-        );
-        $request     = $this->prepareHttpRequest($encodedData->getData(), [
+        $request     = $this->prepareHttpRequest($encodedRequestData, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'text/xml; charset=UTF-8',
             ],
         ]);
-
-        $responseContent = 'response-content';
+        $decodedResponse = ['result' => 'success'];
+        $responseContent = '<response><result>success</result></response>';
         $response        = $this->prepareHttpResponse($responseContent, 200);
 
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -141,12 +126,6 @@ class PayForPosHttpClientTest extends TestCase
             ->method('sendRequest')
             ->with($request)
             ->willReturn($response);
-
-        $decodedResponse = ['decoded-response'];
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->with($responseContent, $txType)
-            ->willReturn($decodedResponse);
 
         $actual = $this->client->request(
             $txType,
@@ -166,23 +145,18 @@ class PayForPosHttpClientTest extends TestCase
         $requestData    = ['request-data' => 'abc'];
         $order          = ['id' => 123];
 
-        $encodedData = new EncodedData(
-            '<?xml version="1.0" encoding="" ?><request>data</request>',
-            SerializerInterface::FORMAT_XML,
-        );
-        $request     = $this->prepareHttpRequest($encodedData->getData(), [
+        $encodedBody = '<?xml version="1.0" encoding="UTF-8"?>
+<PayforRequest><request-data>abc</request-data></PayforRequest>
+';
+        $request     = $this->prepareHttpRequest($encodedBody, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'text/xml; charset=UTF-8',
             ],
         ]);
 
-        $responseContent = 'response-content';
+        $responseContent = 'not-valid-xml';
         $response        = $this->prepareHttpResponse($responseContent, 400);
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->willReturn($encodedData);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -192,11 +166,7 @@ class PayForPosHttpClientTest extends TestCase
             ->method('sendRequest')
             ->willReturn($response);
 
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->willThrowException(new NotEncodableValueException());
-
-        $this->expectException(NotEncodableValueException::class);
+        $this->expectException(\RuntimeException::class);
         $this->client->request(
             $txType,
             $paymentModel,
@@ -212,11 +182,10 @@ class PayForPosHttpClientTest extends TestCase
         $requestData    = ['request-data' => 'abc'];
         $order          = ['id' => 123];
 
-        $encodedData = new EncodedData(
-            '<?xml version="1.0" encoding="" ?><request>data</request>',
-            SerializerInterface::FORMAT_XML,
-        );
-        $request     = $this->prepareHttpRequest($encodedData->getData(), [
+        $encodedBody = '<?xml version="1.0" encoding="UTF-8"?>
+<PayforRequest><request-data>abc</request-data></PayforRequest>
+';
+        $request     = $this->prepareHttpRequest($encodedBody, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'text/xml; charset=UTF-8',
@@ -225,11 +194,6 @@ class PayForPosHttpClientTest extends TestCase
 
         $responseContent = 'response-content';
         $response        = $this->prepareHttpResponse($responseContent, 500);
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -280,11 +244,14 @@ class PayForPosHttpClientTest extends TestCase
     public static function requestDataProvider(): \Generator
     {
         yield [
-            'txType'         => PosInterface::TX_TYPE_PAY_AUTH,
-            'paymentModel'   => PosInterface::MODEL_3D_SECURE,
-            'requestData'    => ['request-data'],
-            'order'          => ['id' => 123],
-            'expectedApiUrl' => 'https://entegrasyon.asseco-see.com.tr/fim/api',
+            'txType'             => PosInterface::TX_TYPE_PAY_AUTH,
+            'paymentModel'       => PosInterface::MODEL_3D_SECURE,
+            'requestData'        => ['request-data'],
+            'encodedRequestData' => '<?xml version="1.0" encoding="UTF-8"?>
+<PayforRequest><item key="0">request-data</item></PayforRequest>
+',
+            'order'              => ['id' => 123],
+            'expectedApiUrl'     => 'https://vpostest.qnbfinansbank.com/Gateway/XMLGate.aspx',
         ];
     }
 }

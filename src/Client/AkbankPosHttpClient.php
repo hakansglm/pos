@@ -10,8 +10,9 @@ use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\Serializer\Decoder\AkbankPosJsonDecoder;
 use Mews\Pos\Serializer\EncodedData;
-use Mews\Pos\Serializer\SerializerInterface;
+use Mews\Pos\Serializer\Encoder\JsonEncoder;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
@@ -28,7 +29,6 @@ class AkbankPosHttpClient extends AbstractHttpClient
         ClientInterface         $client,
         RequestFactoryInterface $requestFactory,
         StreamFactoryInterface  $streamFactory,
-        SerializerInterface     $serializer,
         LoggerInterface         $logger,
         CryptInterface          $crypt
     ) {
@@ -37,7 +37,8 @@ class AkbankPosHttpClient extends AbstractHttpClient
             $client,
             $requestFactory,
             $streamFactory,
-            $serializer,
+            new JsonEncoder(),
+            new AkbankPosJsonDecoder(),
             $logger
         );
         $this->crypt = $crypt;

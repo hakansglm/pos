@@ -15,15 +15,12 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\KuveytPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\EncodedData;
-use Mews\Pos\Serializer\SerializerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
 /**
  * @covers \Mews\Pos\Client\KuveytPosHttpClient
@@ -34,9 +31,6 @@ class KuveytPosHttpClientTest extends TestCase
     use HttpClientTestTrait;
 
     private KuveytPosHttpClient $client;
-
-    /** @var SerializerInterface & MockObject */
-    private SerializerInterface $serializer;
 
     /** @var LoggerInterface & MockObject */
     private LoggerInterface $logger;
@@ -58,7 +52,6 @@ class KuveytPosHttpClientTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->serializer         = $this->createMock(SerializerInterface::class);
         $this->logger             = $this->createMock(LoggerInterface::class);
         $crypt                    = $this->createMock(CryptInterface::class);
         $this->requestValueMapper = $this->createMock(RequestValueMapperInterface::class);
@@ -70,7 +63,6 @@ class KuveytPosHttpClientTest extends TestCase
         $this->client = PosHttpClientFactory::create(
             KuveytPosHttpClient::class,
             'https://boatest.kuveytturk.com.tr/boa.virtualpos.services/Home',
-            $this->serializer,
             $crypt,
             $this->requestValueMapper,
             $this->logger,
@@ -133,11 +125,10 @@ class KuveytPosHttpClientTest extends TestCase
         $order        = ['id' => 123];
         $apiUrl       = 'https://boatest.kuveytturk.com.tr/boa.virtualpos.services/Home/ThreeDModelPayGate';
 
-        $encodedData = new EncodedData(
-            '<?xml version="1.0" encoding="" ?><request>data</request>',
-            SerializerInterface::FORMAT_XML,
-        );
-        $request     = $this->prepareHttpRequest($encodedData->getData(), [
+        $encodedBody = '<?xml version="1.0" encoding="ISO-8859-1"?>
+<KuveytTurkVPosMessage><item key="0">request-data</item></KuveytTurkVPosMessage>
+';
+        $request     = $this->prepareHttpRequest($encodedBody, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'text/xml; charset=UTF-8',
@@ -146,11 +137,6 @@ class KuveytPosHttpClientTest extends TestCase
 
         $responseContent = '<html>3d-form</html>';
         $response        = $this->prepareHttpResponse($responseContent, 200);
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -161,9 +147,6 @@ class KuveytPosHttpClientTest extends TestCase
             ->method('sendRequest')
             ->with($request)
             ->willReturn($response);
-
-        $this->serializer->expects($this->never())
-            ->method('decode');
 
         $actual = $this->client->request($txType, $paymentModel, $requestData, $order, $apiUrl);
 
@@ -177,28 +160,20 @@ class KuveytPosHttpClientTest extends TestCase
         string $txType,
         string $paymentModel,
         array  $requestData,
+        string $encodedRequestData,
         array  $order,
         string $expectedApiUrl
     ): void {
-        $encodedData = new EncodedData(
-            '<?xml version="1.0" encoding="" ?><request>data</request>',
-            SerializerInterface::FORMAT_XML,
-        );
-        $request     = $this->prepareHttpRequest($encodedData->getData(), [
+        $request     = $this->prepareHttpRequest($encodedRequestData, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'text/xml; charset=UTF-8',
             ],
         ]);
 
-        $responseContent = 'response-content';
+        $responseContent = '<response><result>success</result></response>';
+        $decodedResponse = ['result' => 'success'];
         $response        = $this->prepareHttpResponse($responseContent, 200);
-
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -209,12 +184,6 @@ class KuveytPosHttpClientTest extends TestCase
             ->method('sendRequest')
             ->with($request)
             ->willReturn($response);
-
-        $decodedResponse = ['decoded-response'];
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->with($responseContent, $txType)
-            ->willReturn($decodedResponse);
 
         $actual = $this->client->request(
             $txType,
@@ -234,23 +203,18 @@ class KuveytPosHttpClientTest extends TestCase
         $requestData    = ['request-data' => 'abc'];
         $order          = ['id' => 123];
 
-        $encodedData = new EncodedData(
-            '<?xml version="1.0" encoding="" ?><request>data</request>',
-            SerializerInterface::FORMAT_XML,
-        );
-        $request     = $this->prepareHttpRequest($encodedData->getData(), [
+        $encodedBody = '<?xml version="1.0" encoding="ISO-8859-1"?>
+<KuveytTurkVPosMessage><request-data>abc</request-data></KuveytTurkVPosMessage>
+';
+        $request     = $this->prepareHttpRequest($encodedBody, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'text/xml; charset=UTF-8',
             ],
         ]);
 
-        $responseContent = 'response-content';
+        $responseContent = 'not-valid-xml';
         $response        = $this->prepareHttpResponse($responseContent, 400);
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->willReturn($encodedData);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -260,11 +224,7 @@ class KuveytPosHttpClientTest extends TestCase
             ->method('sendRequest')
             ->willReturn($response);
 
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->willThrowException(new NotEncodableValueException());
-
-        $this->expectException(NotEncodableValueException::class);
+        $this->expectException(\RuntimeException::class);
         $this->client->request(
             $txType,
             $paymentModel,
@@ -280,11 +240,10 @@ class KuveytPosHttpClientTest extends TestCase
         $requestData    = ['request-data' => 'abc'];
         $order          = ['id' => 123];
 
-        $encodedData = new EncodedData(
-            '<?xml version="1.0" encoding="" ?><request>data</request>',
-            SerializerInterface::FORMAT_XML,
-        );
-        $request     = $this->prepareHttpRequest($encodedData->getData(), [
+        $encodedBody = '<?xml version="1.0" encoding="ISO-8859-1"?>
+<KuveytTurkVPosMessage><request-data>abc</request-data></KuveytTurkVPosMessage>
+';
+        $request     = $this->prepareHttpRequest($encodedBody, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'text/xml; charset=UTF-8',
@@ -293,11 +252,6 @@ class KuveytPosHttpClientTest extends TestCase
 
         $responseContent = 'response-content';
         $response        = $this->prepareHttpResponse($responseContent, 500);
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -336,11 +290,14 @@ class KuveytPosHttpClientTest extends TestCase
     public static function requestDataProvider(): \Generator
     {
         yield [
-            'txType'         => PosInterface::TX_TYPE_PAY_AUTH,
-            'paymentModel'   => PosInterface::MODEL_3D_SECURE,
-            'requestData'    => ['request-data'],
-            'order'          => ['id' => 123],
-            'expectedApiUrl' => 'https://sanalposprovtest.garantibbva.com.tr/VPServlet',
+            'txType'             => PosInterface::TX_TYPE_PAY_AUTH,
+            'paymentModel'       => PosInterface::MODEL_3D_SECURE,
+            'requestData'        => ['request-data'],
+            'encodedRequestData' => '<?xml version="1.0" encoding="ISO-8859-1"?>
+<KuveytTurkVPosMessage><item key="0">request-data</item></KuveytTurkVPosMessage>
+',
+            'order'              => ['id' => 123],
+            'expectedApiUrl'     => 'https://boatest.kuveytturk.com.tr/boa.virtualpos.services/Home/ThreeDModelProvisionGate',
         ];
     }
 

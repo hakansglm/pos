@@ -16,8 +16,6 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\IyzicoPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\EncodedData;
-use Mews\Pos\Serializer\SerializerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -40,9 +38,6 @@ class IyzicoPosHttpClientTest extends TestCase
 
     private IyzicoPosAccount $account;
 
-    /** @var SerializerInterface & MockObject */
-    private SerializerInterface $serializerMock;
-
     /** @var LoggerInterface & MockObject */
     private LoggerInterface $loggerMock;
 
@@ -63,7 +58,6 @@ class IyzicoPosHttpClientTest extends TestCase
         parent::setUp();
 
         $this->account        = AccountFactory::createIyzicoPosAccount('iyzico', 'api-key', 'secret-key');
-        $this->serializerMock = $this->createMock(SerializerInterface::class);
         $this->loggerMock     = $this->createMock(LoggerInterface::class);
         $this->cryptMock      = $this->createMock(IyzicoPosCrypt::class);
         $this->psrClient      = $this->createMock(ClientInterface::class);
@@ -73,7 +67,6 @@ class IyzicoPosHttpClientTest extends TestCase
         $this->client = PosHttpClientFactory::create(
             IyzicoPosHttpClient::class,
             self::BASE_URL,
-            $this->serializerMock,
             $this->cryptMock,
             $this->createMock(RequestValueMapperInterface::class),
             $this->loggerMock,
@@ -126,7 +119,6 @@ class IyzicoPosHttpClientTest extends TestCase
         PosHttpClientFactory::create(
             IyzicoPosHttpClient::class,
             self::BASE_URL,
-            $this->serializerMock,
             $wrongCrypt,
             $this->createMock(RequestValueMapperInterface::class),
             $this->loggerMock,
@@ -144,13 +136,8 @@ class IyzicoPosHttpClientTest extends TestCase
         $order        = ['id' => 'order-1'];
         $apiUrl       = self::BASE_URL.'/payment/auth';
 
-        $jsonBody    = '{"locale":"tr","price":100}';
-        $encodedData = new EncodedData($jsonBody, SerializerInterface::FORMAT_JSON);
+        $jsonBody    = '{"locale":"tr","price":100.0}';
 
-        $this->serializerMock->expects(self::once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
 
         $this->cryptMock->expects(self::once())
             ->method('generateRandomString')
@@ -178,11 +165,6 @@ class IyzicoPosHttpClientTest extends TestCase
             ->with($requestMock)
             ->willReturn($response);
 
-        $this->serializerMock->expects(self::once())
-            ->method('decode')
-            ->with('{"status":"success"}', $txType)
-            ->willReturn(['status' => 'success']);
-
         $actual = $this->client->request($txType, $paymentModel, $requestData, $order, $apiUrl, $this->account);
 
         $this->assertSame(['status' => 'success'], $actual);
@@ -192,12 +174,6 @@ class IyzicoPosHttpClientTest extends TestCase
     {
         $txType       = PosInterface::TX_TYPE_PAY_AUTH;
         $paymentModel = PosInterface::MODEL_NON_SECURE;
-        $jsonBody     = '{"data":"x"}';
-        $encodedData  = new EncodedData($jsonBody, SerializerInterface::FORMAT_JSON);
-
-        $this->serializerMock->expects(self::once())
-            ->method('encode')
-            ->willReturn($encodedData);
 
         $this->requestFactory->expects(self::never())
             ->method('createRequest');
@@ -215,11 +191,6 @@ class IyzicoPosHttpClientTest extends TestCase
         $requestData  = ['key' => 'val'];
         $apiUrl       = self::BASE_URL.'/payment/auth';
         $jsonBody     = '{"key":"val"}';
-        $encodedData  = new EncodedData($jsonBody, SerializerInterface::FORMAT_JSON);
-
-        $this->serializerMock->expects(self::once())
-            ->method('encode')
-            ->willReturn($encodedData);
 
         $this->cryptMock->expects(self::once())
             ->method('generateRandomString')
@@ -244,9 +215,6 @@ class IyzicoPosHttpClientTest extends TestCase
             ->method('sendRequest')
             ->willReturn($this->prepareHttpResponse('', 204));
 
-        $this->serializerMock->expects(self::never())
-            ->method('decode');
-
         $actual = $this->client->request($txType, $paymentModel, $requestData, [], $apiUrl, $this->account);
 
         $this->assertSame([], $actual);
@@ -259,11 +227,6 @@ class IyzicoPosHttpClientTest extends TestCase
         $requestData  = ['key' => 'val'];
         $apiUrl       = self::BASE_URL.'/payment/auth';
         $jsonBody     = '{"key":"val"}';
-        $encodedData  = new EncodedData($jsonBody, SerializerInterface::FORMAT_JSON);
-
-        $this->serializerMock->expects(self::once())
-            ->method('encode')
-            ->willReturn($encodedData);
 
         $this->cryptMock->expects(self::once())
             ->method('generateRandomString')
@@ -288,9 +251,6 @@ class IyzicoPosHttpClientTest extends TestCase
             ->method('sendRequest')
             ->willReturn($this->prepareHttpResponse('Internal Server Error', 500));
 
-        $this->serializerMock->expects(self::never())
-            ->method('decode');
-
         $this->expectException(\RuntimeException::class);
         $this->client->request($txType, $paymentModel, $requestData, [], $apiUrl, $this->account);
     }
@@ -302,11 +262,6 @@ class IyzicoPosHttpClientTest extends TestCase
         $requestData  = ['locale' => 'tr'];
         $apiUrl       = self::BASE_URL.'/payment/auth';
         $jsonBody     = '{"locale":"tr"}';
-        $encodedData  = new EncodedData($jsonBody, SerializerInterface::FORMAT_JSON);
-
-        $this->serializerMock->expects(self::once())
-            ->method('encode')
-            ->willReturn($encodedData);
 
         $this->cryptMock->expects(self::once())
             ->method('generateRandomString')
@@ -332,10 +287,6 @@ class IyzicoPosHttpClientTest extends TestCase
         $this->psrClient->expects(self::once())
             ->method('sendRequest')
             ->willReturn($response);
-
-        $this->serializerMock->expects(self::once())
-            ->method('decode')
-            ->willReturn(['errorMessage' => 'Invalid card', 'status' => 'failure']);
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Invalid card');

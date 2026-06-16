@@ -15,8 +15,6 @@ use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\Param3DHostPos;
 use Mews\Pos\Gateways\ParamPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\EncodedData;
-use Mews\Pos\Serializer\SerializerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -34,9 +32,6 @@ class ParamPosHttpClientTest extends TestCase
     use HttpClientTestTrait;
 
     private ParamPosHttpClient $client;
-
-    /** @var SerializerInterface & MockObject */
-    private SerializerInterface $serializer;
 
     /** @var LoggerInterface & MockObject */
     private LoggerInterface $logger;
@@ -61,7 +56,6 @@ class ParamPosHttpClientTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->serializer         = $this->createMock(SerializerInterface::class);
         $this->logger             = $this->createMock(LoggerInterface::class);
         $this->crypt              = $this->createMock(CryptInterface::class);
         $this->requestValueMapper = $this->createMock(RequestValueMapperInterface::class);
@@ -73,7 +67,6 @@ class ParamPosHttpClientTest extends TestCase
         $this->client = PosHttpClientFactory::create(
             ParamPosHttpClient::class,
             'https://test-dmz.param.com.tr/turkpos.ws/service_turkpos_test.asmx',
-            $this->serializer,
             $this->crypt,
             $this->requestValueMapper,
             $this->logger,
@@ -112,27 +105,19 @@ class ParamPosHttpClientTest extends TestCase
         string $txType,
         string $paymentModel,
         array  $requestData,
+        string $encodedRequestData,
         array  $order,
         string $expectedApiUrl
     ): void {
-        $encodedData = new EncodedData(
-            '<?xml version="1.0" encoding="" ?><request>data</request>',
-            SerializerInterface::FORMAT_XML,
-        );
-        $request     = $this->prepareHttpRequest($encodedData->getData(), [
+        $request     = $this->prepareHttpRequest($encodedRequestData, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'text/xml',
             ],
         ]);
 
-        $responseContent = 'response-content';
-        $response        = $this->prepareHttpResponse($responseContent, 200);
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
+        $responseXml = '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><result>ok</result></soap:Body></soap:Envelope>';
+        $response    = $this->prepareHttpResponse($responseXml, 200);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -144,47 +129,29 @@ class ParamPosHttpClientTest extends TestCase
             ->with($request)
             ->willReturn($response);
 
-        $decodedResponse = ['decoded-response'];
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->with($responseContent, $txType)
-            ->willReturn($decodedResponse);
+        $actual = $this->client->request($txType, $paymentModel, $requestData, $order, $expectedApiUrl);
 
-        $actual = $this->client->request(
-            $txType,
-            $paymentModel,
-            $requestData,
-            $order,
-            $expectedApiUrl
-        );
-
-        $this->assertSame($decodedResponse, $actual);
+        $this->assertSame(['result' => 'ok'], $actual);
     }
 
     public function testRequestUndecodableResponse(): void
     {
-        $txType         = PosInterface::TX_TYPE_PAY_AUTH;
-        $paymentModel   = PosInterface::MODEL_3D_SECURE;
-        $requestData    = ['request-data' => 'abc'];
-        $order          = ['id' => 123];
+        $txType      = PosInterface::TX_TYPE_PAY_AUTH;
+        $paymentModel = PosInterface::MODEL_3D_SECURE;
+        $requestData = ['request-data' => 'abc'];
+        $order       = ['id' => 123];
 
-        $encodedData = new EncodedData(
-            '<?xml version="1.0" encoding="" ?><request>data</request>',
-            SerializerInterface::FORMAT_XML,
-        );
-        $request     = $this->prepareHttpRequest($encodedData->getData(), [
+        $encodedBody = '<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><request-data>abc</request-data></soap:Envelope>
+';
+        $request     = $this->prepareHttpRequest($encodedBody, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'text/xml',
             ],
         ]);
 
-        $responseContent = 'response-content';
-        $response        = $this->prepareHttpResponse($responseContent, 400);
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->willReturn($encodedData);
+        $response = $this->prepareHttpResponse('not-valid-xml', 400);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -194,48 +161,32 @@ class ParamPosHttpClientTest extends TestCase
             ->method('sendRequest')
             ->willReturn($response);
 
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->willThrowException(new NotEncodableValueException());
-
         $this->expectException(NotEncodableValueException::class);
-        $this->client->request(
-            $txType,
-            $paymentModel,
-            $requestData,
-            $order
-        );
+        $this->client->request($txType, $paymentModel, $requestData, $order);
     }
 
     /**
      * @dataProvider failResponseDataProvider
      */
-    public function testRequestBadRequest(array $decodedResponse, string $expectedExpMsg): void
+    public function testRequestBadRequest(string $responseXml, string $expectedExpMsg): void
     {
-        $txType         = PosInterface::TX_TYPE_PAY_AUTH;
-        $paymentModel   = PosInterface::MODEL_3D_SECURE;
-        $requestData    = ['request-data'];
-        $order          = ['id' => 123];
-        $expectedApiUrl = 'https://apipre.akbank.com/api/v1/payment/virtualpos/transaction/process';
+        $txType      = PosInterface::TX_TYPE_PAY_AUTH;
+        $paymentModel = PosInterface::MODEL_3D_SECURE;
+        $requestData = ['request-data' => 'abc'];
+        $order       = ['id' => 123];
+        $expectedApiUrl = 'https://test-dmz.param.com.tr/turkpos.ws/service_turkpos_test.asmx';
 
-        $encodedData     = new EncodedData(
-            '{"a": "b"}',
-            SerializerInterface::FORMAT_JSON,
-        );
-        $request     = $this->prepareHttpRequest($encodedData->getData(), [
+        $encodedBody = '<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><request-data>abc</request-data></soap:Envelope>
+';
+        $request     = $this->prepareHttpRequest($encodedBody, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'text/xml',
             ],
         ]);
 
-        $responseContent = 'response-content';
-        $response        = $this->prepareHttpResponse($responseContent, 200);
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
+        $response = $this->prepareHttpResponse($responseXml, 200);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -247,21 +198,10 @@ class ParamPosHttpClientTest extends TestCase
             ->with($request)
             ->willReturn($response);
 
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->with($responseContent, $txType)
-            ->willReturn($decodedResponse);
-
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage($expectedExpMsg);
 
-        $this->client->request(
-            $txType,
-            $paymentModel,
-            $requestData,
-            $order,
-            $expectedApiUrl,
-        );
+        $this->client->request($txType, $paymentModel, $requestData, $order, $expectedApiUrl);
     }
 
     public static function getApiUrlDataProvider(): array
@@ -303,11 +243,14 @@ class ParamPosHttpClientTest extends TestCase
     public static function requestDataProvider(): \Generator
     {
         yield [
-            'txType'         => PosInterface::TX_TYPE_PAY_AUTH,
-            'paymentModel'   => PosInterface::MODEL_3D_SECURE,
-            'requestData'    => ['request-data'],
-            'order'          => ['id' => 123],
-            'expectedApiUrl' => 'https://test-dmz.param.com.tr/turkpos.ws/service_turkpos_test.asmx',
+            'txType'             => PosInterface::TX_TYPE_PAY_AUTH,
+            'paymentModel'       => PosInterface::MODEL_3D_SECURE,
+            'requestData'        => ['request-data' => 'abc'],
+            'encodedRequestData' => '<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><request-data>abc</request-data></soap:Envelope>
+',
+            'order'              => ['id' => 123],
+            'expectedApiUrl'     => 'https://test-dmz.param.com.tr/turkpos.ws/service_turkpos_test.asmx',
         ];
     }
 
@@ -315,20 +258,12 @@ class ParamPosHttpClientTest extends TestCase
     {
         return [
             [
-                'decodedResponse' => [
-                    'soap:Fault' => [
-                        'faultstring' => 'Error message',
-                    ],
-                ],
-                'expectedExpMsg'  => 'Error message',
+                'responseXml'    => '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><soap:Fault><faultstring>Error message</faultstring></soap:Fault></soap:Body></soap:Envelope>',
+                'expectedExpMsg' => 'Error message',
             ],
             [
-                'decodedResponse' => [
-                    'soap:Fault' => [
-                        'some_other_key' => 'bla',
-                    ],
-                ],
-                'expectedExpMsg'  => 'Bankaya istek başarısız!',
+                'responseXml'    => '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><soap:Fault><other_key>bla</other_key></soap:Fault></soap:Body></soap:Envelope>',
+                'expectedExpMsg' => 'Bankaya istek başarısız!',
             ],
         ];
     }

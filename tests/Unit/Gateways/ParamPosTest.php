@@ -25,10 +25,8 @@ use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateways\ParamPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\SerializerInterface;
 use Mews\Pos\Tests\Unit\DataMapper\RequestDataMapper\ParamPosRequestDataMapperTest;
 use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\ParamPosResponseDataMapperTest;
-use Mews\Pos\Tests\Unit\Serializer\ParamPosSerializerTest;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -68,9 +66,6 @@ class ParamPosTest extends TestCase
     /** @var EventDispatcherInterface & MockObject */
     private MockObject $eventDispatcherMock;
 
-    /** @var SerializerInterface & MockObject */
-    private MockObject $serializerMock;
-
     /** @var ParamPosRequestValueMapper & MockObject */
     private ParamPosRequestValueMapper $requestValueMapperMock;
 
@@ -97,7 +92,6 @@ class ParamPosTest extends TestCase
         $this->requestValueMapperMock = $this->createMock(ParamPosRequestValueMapper::class);
         $this->requestMapperMock      = $this->createMock(ParamPosRequestDataMapper::class);
         $this->responseMapperMock     = $this->createMock(ResponseDataMapperInterface::class);
-        $this->serializerMock         = $this->createMock(SerializerInterface::class);
         $this->cryptMock              = $this->createMock(CryptInterface::class);
         $this->httpClientStrategyMock = $this->createMock(HttpClientStrategyInterface::class);
         $this->httpClientMock         = $this->createMock(HttpClientInterface::class);
@@ -379,10 +373,6 @@ class ParamPosTest extends TestCase
                 ->willReturn($expectedResponse);
             $this->requestMapperMock->expects(self::never())
                 ->method('create3DPaymentRequestData');
-            $this->serializerMock->expects(self::never())
-                ->method('encode');
-            $this->serializerMock->expects(self::never())
-                ->method('decode');
             $this->eventDispatcherMock->expects(self::never())
                 ->method('dispatch');
         }
@@ -972,14 +962,13 @@ class ParamPosTest extends TestCase
 
     public static function threeDFormDataFailResponseProvider(): iterable
     {
-        $responseTestData = \iterator_to_array(ParamPosSerializerTest::decodeDataProvider());
         yield 'bad_request' => [
             'order'               => ParamPosRequestDataMapperTest::paymentRegisterRequestDataProvider()[0]['order'],
             'paymentModel'        => PosInterface::MODEL_3D_SECURE,
             'txType'              => PosInterface::TX_TYPE_PAY_AUTH,
             'requestData'         => ParamPosRequestDataMapperTest::paymentRegisterRequestDataProvider()[0]['expected'],
             'encodedRequestData'  => 'encoded-request-data',
-            'responseData'        => $responseTestData['3d_form_success']['input'],
+            'responseData'        => \file_get_contents(__DIR__.'/../test_data/parampos/3d_form_response_success.xml'),
             'decodedResponseData' => [
                 "soap:Fault" => [
                     "faultcode"   => "soap:Client",
@@ -995,7 +984,7 @@ class ParamPosTest extends TestCase
             'txType'              => PosInterface::TX_TYPE_PAY_AUTH,
             'requestData'         => ParamPosRequestDataMapperTest::paymentRegisterRequestDataProvider()[0]['expected'],
             'encodedRequestData'  => 'encoded-request-data',
-            'responseData'        => $responseTestData['3d_form_success']['input'],
+            'responseData'        => \file_get_contents(__DIR__.'/../test_data/parampos/3d_form_response_success.xml'),
             'decodedResponseData' => [
                 "TP_WMD_UCDResponse" => [
                     "TP_WMD_UCDResult" => [
@@ -1030,7 +1019,6 @@ class ParamPosTest extends TestCase
 
     public static function threeDFormDataProvider(): iterable
     {
-        $responseTestData = \iterator_to_array(ParamPosSerializerTest::decodeDataProvider());
         yield '3d_secure' => [
             'order'               => ParamPosRequestDataMapperTest::paymentRegisterRequestDataProvider()[0]['order'],
             'paymentModel'        => PosInterface::MODEL_3D_SECURE,
@@ -1039,10 +1027,22 @@ class ParamPosTest extends TestCase
             'requestData'         => ParamPosRequestDataMapperTest::paymentRegisterRequestDataProvider()[0]['expected'],
             'gateway_url'         => null,
             'encodedRequestData'  => 'encoded-request-data',
-            'responseData'        => $responseTestData['3d_form_success']['input'],
-            'decodedResponseData' => $responseTestData['3d_form_success']['expected'],
-            'formData'            => $responseTestData['3d_form_success']['expected']['TP_WMD_UCDResponse']['TP_WMD_UCDResult']['UCD_HTML'],
-
+            'responseData'        => \file_get_contents(__DIR__.'/../test_data/parampos/3d_form_response_success.xml'),
+            'decodedResponseData' => [
+                'TP_WMD_UCDResponse' => [
+                    'TP_WMD_UCDResult' => [
+                        'Islem_ID'        => '6021840768',
+                        'Islem_GUID'      => 'd68ac15c-17ca-4b7d-a046-10700291b249',
+                        'UCD_HTML'        => 'html-document',
+                        'UCD_MD'          => 'MosNOirpqxod2A0BdoPpFNf7E/hJX2pKvt8hunrQF2RSrggeWpNj9p+XDEgRdWfGdtGMHF5A7X/uVbJTb3cCN5LGcG2JsGd69bXc7yYBGGw/VMFTcHDObj+cVR6fP2k1s531ozcBEFN1hv+fwBH80YGHP2a6xbRujYzME2iPuPgCdr7wkoSWcZvwB5M73bFow3Jx3vqkwceaPUO6dat7m5Uv1dKmbp+py3yOR0nVaFGnKTmIB4JIAIuP24hCU2MJi+hvKDf7+IJIEl5cjotiUx/J0AINoeuIGrklDAZ8JRA7pxYXpZLwc3ZX60VpWvfS7sSOdayadMBOvltQSdRrPPhJztVNmkztgUe7s3rbpdVr4Fc/KzGtPa5PZLnpkXszhOO4g+pw0A3KuFsqTdFuuu25CqBTX/aG4yZ4VO7UKfG27cTgRaObKsU+YiwOhH/VgGODvd5qrR02gOY8f9Xqtw==',
+                        'Sonuc'           => '1',
+                        'Sonuc_Str'       => 'İşlem Başarılı',
+                        'Banka_Sonuc_Kod' => '0',
+                        'Siparis_ID'      => '20241229D2FF',
+                    ],
+                ],
+            ],
+            'formData'            => 'html-document',
         ];
 
         yield '3d_pay' => [
@@ -1087,7 +1087,6 @@ class ParamPosTest extends TestCase
             $this->requestValueMapperMock,
             $this->requestMapperMock,
             $this->responseMapperMock,
-            $this->serializerMock,
             $this->eventDispatcherMock,
             $this->httpClientStrategyMock,
             $this->loggerMock

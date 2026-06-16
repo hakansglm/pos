@@ -9,11 +9,35 @@ namespace Mews\Pos\Client;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Gateways\PayForPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\Serializer\Decoder\PayForPosXmlDecoder;
 use Mews\Pos\Serializer\EncodedData;
+use Mews\Pos\Serializer\Encoder\XmlEncoder;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Log\LoggerInterface;
 
 class PayForPosHttpClient extends AbstractHttpClient
 {
+    public function __construct(
+        string                  $baseApiUrl,
+        ClientInterface         $psrClient,
+        RequestFactoryInterface $requestFactory,
+        StreamFactoryInterface  $streamFactory,
+        LoggerInterface         $logger
+    ) {
+        parent::__construct(
+            $baseApiUrl,
+            $psrClient,
+            $requestFactory,
+            $streamFactory,
+            new XmlEncoder('PayforRequest', 'UTF-8'),
+            new PayForPosXmlDecoder(),
+            $logger
+        );
+    }
+
     /**
      * @inheritDoc
      */

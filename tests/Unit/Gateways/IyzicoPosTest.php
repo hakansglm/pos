@@ -24,7 +24,6 @@ use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateways\IyzicoPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\SerializerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -65,9 +64,6 @@ class IyzicoPosTest extends TestCase
     /** @var EventDispatcherInterface & MockObject */
     private MockObject $eventDispatcherMock;
 
-    /** @var SerializerInterface & MockObject */
-    private MockObject $serializerMock;
-
     private IyzicoPosRequestValueMapper $requestValueMapper;
 
     private CreditCardInterface $card;
@@ -105,7 +101,6 @@ class IyzicoPosTest extends TestCase
         $this->requestValueMapper     = new IyzicoPosRequestValueMapper();
         $this->requestMapperMock      = $this->createMock(IyzicoPosRequestDataMapper::class);
         $this->responseMapperMock     = $this->createMock(IyzicoPosResponseDataMapper::class);
-        $this->serializerMock         = $this->createMock(SerializerInterface::class);
         $this->cryptMock              = $this->createMock(CryptInterface::class);
         $this->httpClientStrategyMock = $this->createMock(HttpClientStrategyInterface::class);
         $this->httpClientMock         = $this->createMock(HttpClientInterface::class);
@@ -853,7 +848,6 @@ class IyzicoPosTest extends TestCase
             $this->requestValueMapper,
             $this->requestMapperMock,
             $this->responseMapperMock,
-            $this->serializerMock,
             $this->eventDispatcherMock,
             $this->httpClientStrategyMock,
             $this->loggerMock

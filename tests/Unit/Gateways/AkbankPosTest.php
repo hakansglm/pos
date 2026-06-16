@@ -23,7 +23,6 @@ use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\SerializerInterface;
 use Mews\Pos\Tests\Unit\DataMapper\RequestDataMapper\AkbankPosRequestDataMapperTest;
 use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\AkbankPosResponseDataMapperTest;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -68,9 +67,6 @@ class AkbankPosTest extends TestCase
     /** @var EventDispatcherInterface & MockObject */
     private MockObject $eventDispatcherMock;
 
-    /** @var SerializerInterface & MockObject */
-    private MockObject $serializerMock;
-
     private AkbankPosRequestValueMapper $requestValueMapper;
 
     protected function setUp(): void
@@ -94,7 +90,6 @@ class AkbankPosTest extends TestCase
             PosInterface::LANG_TR
         );
 
-        $this->serializerMock         = $this->createMock(SerializerInterface::class);
         $this->requestValueMapper     = new AkbankPosRequestValueMapper();
         $this->requestMapperMock      = $this->createMock(RequestDataMapperInterface::class);
         $this->responseMapperMock     = $this->createMock(ResponseDataMapperInterface::class);
@@ -434,10 +429,6 @@ class AkbankPosTest extends TestCase
                 ->willReturn($expectedResponse);
             $this->requestMapperMock->expects(self::never())
                 ->method('create3DPaymentRequestData');
-            $this->serializerMock->expects(self::never())
-                ->method('encode');
-            $this->serializerMock->expects(self::never())
-                ->method('decode');
             $this->eventDispatcherMock->expects(self::never())
                 ->method('dispatch');
         }
@@ -1066,7 +1057,6 @@ class AkbankPosTest extends TestCase
             $this->requestValueMapper,
             $this->requestMapperMock,
             $this->responseMapperMock,
-            $this->serializerMock,
             $this->eventDispatcherMock,
             $this->httpClientStrategyMock,
             $this->loggerMock,

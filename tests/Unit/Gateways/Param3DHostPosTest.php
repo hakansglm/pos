@@ -24,7 +24,6 @@ use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateways\Param3DHostPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\SerializerInterface;
 use Mews\Pos\Tests\Unit\DataMapper\RequestDataMapper\Param3DHostPosRequestDataMapperTest;
 use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\ParamPosResponseDataMapperTest;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -69,9 +68,6 @@ class Param3DHostPosTest extends TestCase
     /** @var ParamPosRequestValueMapper & MockObject */
     private ParamPosRequestValueMapper $requestValueMapperMock;
 
-    /** @var SerializerInterface & MockObject */
-    private SerializerInterface $serializerMock;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -95,7 +91,6 @@ class Param3DHostPosTest extends TestCase
         $this->requestValueMapperMock = $this->createMock(ParamPosRequestValueMapper::class);
         $this->requestMapperMock      = $this->createMock(Param3DHostPosRequestDataMapper::class);
         $this->responseMapperMock     = $this->createMock(ResponseDataMapperInterface::class);
-        $this->serializerMock         = $this->createMock(SerializerInterface::class);
         $this->cryptMock              = $this->createMock(CryptInterface::class);
         $this->httpClientStrategyMock = $this->createMock(HttpClientStrategyInterface::class);
         $this->httpClientMock         = $this->createMock(HttpClientInterface::class);
@@ -382,7 +377,6 @@ class Param3DHostPosTest extends TestCase
             $this->requestValueMapperMock,
             $this->requestMapperMock,
             $this->responseMapperMock,
-            $this->serializerMock,
             $this->eventDispatcherMock,
             $this->httpClientStrategyMock,
             $this->loggerMock

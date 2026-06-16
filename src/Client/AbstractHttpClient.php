@@ -9,8 +9,9 @@ namespace Mews\Pos\Client;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\PosInterface;
+use Mews\Pos\Serializer\Decoder\DecoderInterface;
+use Mews\Pos\Serializer\Encoder\EncoderInterface;
 use Mews\Pos\Serializer\EncodedData;
-use Mews\Pos\Serializer\SerializerInterface;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -36,7 +37,9 @@ abstract class AbstractHttpClient implements HttpClientInterface
 
     protected StreamFactoryInterface $streamFactory;
 
-    protected SerializerInterface $serializer;
+    protected EncoderInterface $encoder;
+
+    protected DecoderInterface $decoder;
 
     protected LoggerInterface $logger;
 
@@ -45,7 +48,8 @@ abstract class AbstractHttpClient implements HttpClientInterface
      * @param ClientInterface         $psrClient
      * @param RequestFactoryInterface $requestFactory
      * @param StreamFactoryInterface  $streamFactory
-     * @param SerializerInterface     $serializer
+     * @param EncoderInterface        $encoder
+     * @param DecoderInterface        $decoder
      * @param LoggerInterface         $logger
      */
     public function __construct(
@@ -53,14 +57,16 @@ abstract class AbstractHttpClient implements HttpClientInterface
         ClientInterface         $psrClient,
         RequestFactoryInterface $requestFactory,
         StreamFactoryInterface  $streamFactory,
-        SerializerInterface     $serializer,
+        EncoderInterface        $encoder,
+        DecoderInterface        $decoder,
         LoggerInterface         $logger
     ) {
         $this->baseApiUrl     = $baseApiUrl;
         $this->psrClient      = $psrClient;
         $this->requestFactory = $requestFactory;
         $this->streamFactory  = $streamFactory;
-        $this->serializer     = $serializer;
+        $this->encoder        = $encoder;
+        $this->decoder        = $decoder;
         $this->logger         = $logger;
     }
 
@@ -93,7 +99,7 @@ abstract class AbstractHttpClient implements HttpClientInterface
         ?AbstractPosAccount $account = null,
         ?string             $orderTxType = null
     ) {
-        $content = $this->serializer->encode($requestData, $txType);
+        $content = $this->encoder->encode($requestData);
 
         return $this->doRequest(
             $txType,
@@ -172,7 +178,7 @@ abstract class AbstractHttpClient implements HttpClientInterface
 
         if ($decode) {
             try {
-                $decodedData = $this->serializer->decode($response->getBody()->getContents(), $txType);
+                $decodedData = $this->decoder->decode($response->getBody()->getContents());
             } catch (NotEncodableValueException $notEncodableValueException) {
                 $response->getBody()->rewind();
                 $this->logger->error('parsing bank response failed', [

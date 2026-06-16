@@ -14,8 +14,6 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\PayForPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\EncodedData;
-use Mews\Pos\Serializer\SerializerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -32,9 +30,6 @@ class PayForPos3DFormHttpClientTest extends TestCase
     use HttpClientTestTrait;
 
     private PayForPos3DFormHttpClient $client;
-
-    /** @var SerializerInterface & MockObject */
-    private SerializerInterface $serializer;
 
     /** @var LoggerInterface & MockObject */
     private LoggerInterface $logger;
@@ -53,7 +48,6 @@ class PayForPos3DFormHttpClientTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->serializer         = $this->createMock(SerializerInterface::class);
         $this->logger             = $this->createMock(LoggerInterface::class);
         $crypt                    = $this->createMock(CryptInterface::class);
         $this->requestValueMapper = $this->createMock(RequestValueMapperInterface::class);
@@ -64,7 +58,6 @@ class PayForPos3DFormHttpClientTest extends TestCase
         $this->client = PosHttpClientFactory::create(
             PayForPos3DFormHttpClient::class,
             'https://vpostest.qnbfinansbank.com/Gateway/Default.aspx',
-            $this->serializer,
             $crypt,
             $this->requestValueMapper,
             $this->logger,
@@ -95,16 +88,7 @@ class PayForPos3DFormHttpClientTest extends TestCase
         $order        = ['id' => '123'];
         $url          = 'https://vpostest.qnbfinansbank.com/Gateway/Default.aspx';
 
-        $encodedData = new EncodedData('foo=bar&baz=qux', SerializerInterface::FORMAT_FORM);
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
-
-        $this->serializer->expects($this->never())
-            ->method('decode');
-
-        $request = $this->prepareHttpRequest($encodedData->getData(), [
+        $request = $this->prepareHttpRequest('foo=bar&baz=qux', [
             [
                 'name'  => 'Content-Type',
                 'value' => 'application/x-www-form-urlencoded',

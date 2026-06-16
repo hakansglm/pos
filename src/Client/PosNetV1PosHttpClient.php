@@ -11,8 +11,9 @@ use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Gateways\PosNetV1Pos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\Serializer\Decoder\JsonDecoder;
 use Mews\Pos\Serializer\EncodedData;
-use Mews\Pos\Serializer\SerializerInterface;
+use Mews\Pos\Serializer\Encoder\JsonEncoder;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
@@ -34,7 +35,6 @@ class PosNetV1PosHttpClient extends AbstractHttpClient
         ClientInterface             $psrClient,
         RequestFactoryInterface     $requestFactory,
         StreamFactoryInterface      $streamFactory,
-        SerializerInterface         $serializer,
         LoggerInterface             $logger,
         RequestValueMapperInterface $requestValueMapper
     ) {
@@ -43,7 +43,8 @@ class PosNetV1PosHttpClient extends AbstractHttpClient
             $psrClient,
             $requestFactory,
             $streamFactory,
-            $serializer,
+            new JsonEncoder(),
+            new JsonDecoder(),
             $logger,
         );
         $this->requestValueMapper = $requestValueMapper;

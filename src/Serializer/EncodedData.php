@@ -6,10 +6,19 @@
 
 namespace Mews\Pos\Serializer;
 
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+
 class EncodedData
 {
+    public const FORMAT_XML = XmlEncoder::FORMAT;
+
+    public const FORMAT_JSON = JsonEncoder::FORMAT;
+
+    public const FORMAT_FORM = 'form';
+
     /**
-     * @var SerializerInterface::FORMAT_*
+     * @var self::FORMAT_*
      */
     private string $format;
 
@@ -19,8 +28,8 @@ class EncodedData
     private string $data;
 
     /**
-     * @param string                        $data
-     * @param SerializerInterface::FORMAT_* $format
+     * @param string         $data
+     * @param self::FORMAT_* $format
      */
     public function __construct(string $data, string $format)
     {
@@ -29,7 +38,7 @@ class EncodedData
     }
 
     /**
-     * @return SerializerInterface::FORMAT_*
+     * @return self::FORMAT_*
      */
     public function getFormat(): string
     {

@@ -23,7 +23,6 @@ use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateways\InterPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\SerializerInterface;
 use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\InterPosResponseDataMapperTest;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -68,9 +67,6 @@ class InterPosTest extends TestCase
 
     private InterPosRequestValueMapper $requestValueMapper;
 
-    /** @var SerializerInterface & MockObject */
-    private MockObject $serializerMock;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -98,7 +94,6 @@ class InterPosTest extends TestCase
             $merchantPass
         );
 
-        $this->serializerMock         = $this->createMock(SerializerInterface::class);
         $this->requestValueMapper     = new InterPosRequestValueMapper();
         $this->requestMapperMock      = $this->createMock(RequestDataMapperInterface::class);
         $this->responseMapperMock     = $this->createMock(ResponseDataMapperInterface::class);
@@ -313,10 +308,6 @@ class InterPosTest extends TestCase
                 ->willReturn($expectedResponse);
             $this->requestMapperMock->expects(self::never())
                 ->method('create3DPaymentRequestData');
-            $this->serializerMock->expects(self::never())
-                ->method('encode');
-            $this->serializerMock->expects(self::never())
-                ->method('decode');
             $this->eventDispatcherMock->expects(self::never())
                 ->method('dispatch');
         }
@@ -776,7 +767,6 @@ class InterPosTest extends TestCase
             $this->requestValueMapper,
             $this->requestMapperMock,
             $this->responseMapperMock,
-            $this->serializerMock,
             $this->eventDispatcherMock,
             $this->httpClientStrategyMock,
             $this->loggerMock,

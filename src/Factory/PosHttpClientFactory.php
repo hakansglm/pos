@@ -14,7 +14,6 @@ use Mews\Pos\Client\KuveytPosSoapApiHttpClient;
 use Mews\Pos\Client\PosNetV1PosHttpClient;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\RequestValueMapper\RequestValueMapperInterface;
-use Mews\Pos\Serializer\SerializerInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -27,7 +26,6 @@ class PosHttpClientFactory
      *
      * @param class-string<T>             $clientClass
      * @param non-empty-string            $baseApiUrl
-     * @param SerializerInterface         $serializer
      * @param CryptInterface              $crypt
      * @param RequestValueMapperInterface $requestValueMapper
      * @param LoggerInterface             $logger
@@ -40,7 +38,6 @@ class PosHttpClientFactory
     public static function create(
         string                      $clientClass,
         string                      $baseApiUrl,
-        SerializerInterface         $serializer,
         CryptInterface              $crypt,
         RequestValueMapperInterface $requestValueMapper,
         LoggerInterface             $logger,
@@ -57,7 +54,6 @@ class PosHttpClientFactory
                 $psr18client,
                 $requestFactory,
                 $streamFactory,
-                $serializer,
                 $logger,
                 $crypt
             );
@@ -67,7 +63,6 @@ class PosHttpClientFactory
                 $psr18client,
                 $requestFactory,
                 $streamFactory,
-                $serializer,
                 $logger,
                 $requestValueMapper
             );
@@ -77,7 +72,6 @@ class PosHttpClientFactory
                 $psr18client,
                 $requestFactory,
                 $streamFactory,
-                $serializer,
                 $logger
             );
         }

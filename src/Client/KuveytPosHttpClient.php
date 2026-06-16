@@ -10,11 +10,35 @@ use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Gateways\KuveytPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\Serializer\Decoder\XmlDecoder;
 use Mews\Pos\Serializer\EncodedData;
+use Mews\Pos\Serializer\Encoder\XmlEncoder;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Log\LoggerInterface;
 
 class KuveytPosHttpClient extends AbstractHttpClient
 {
+    public function __construct(
+        string                  $baseApiUrl,
+        ClientInterface         $psrClient,
+        RequestFactoryInterface $requestFactory,
+        StreamFactoryInterface  $streamFactory,
+        LoggerInterface         $logger
+    ) {
+        parent::__construct(
+            $baseApiUrl,
+            $psrClient,
+            $requestFactory,
+            $streamFactory,
+            new XmlEncoder('KuveytTurkVPosMessage', 'ISO-8859-1'),
+            new XmlDecoder(),
+            $logger
+        );
+    }
+
     /**
      * @inheritDoc
      */
@@ -67,7 +91,7 @@ class KuveytPosHttpClient extends AbstractHttpClient
         ?AbstractPosAccount $account = null,
         ?string             $orderTxType = null
     ) {
-        $content = $this->serializer->encode($requestData, $txType);
+        $content = $this->encoder->encode($requestData);
 
         return $this->doRequest(
             $txType,

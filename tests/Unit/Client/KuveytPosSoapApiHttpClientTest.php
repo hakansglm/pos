@@ -13,7 +13,6 @@ use Mews\Pos\DataMapper\RequestValueMapper\RequestValueMapperInterface;
 use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\SerializerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -37,13 +36,10 @@ class KuveytPosSoapApiHttpClientTest extends TestCase
     /** @var StreamFactoryInterface&MockObject */
     private StreamFactoryInterface $streamFactory;
 
-    /** @var SerializerInterface&MockObject */
-    private SerializerInterface $serializer;
-
     /** @var LoggerInterface&MockObject */
     private LoggerInterface $logger;
 
-    /** @var ClientInterface&MockObject */
+    /** @var KuveytPosSoapApiHttpClient&MockObject */
     private ClientInterface $psrClient;
 
     /** @var RequestFactoryInterface&MockObject */
@@ -51,7 +47,6 @@ class KuveytPosSoapApiHttpClientTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->serializer         = $this->createMock(SerializerInterface::class);
         $this->logger             = $this->createMock(LoggerInterface::class);
         $crypt                    = $this->createMock(CryptInterface::class);
         $this->requestValueMapper = $this->createMock(RequestValueMapperInterface::class);
@@ -63,7 +58,6 @@ class KuveytPosSoapApiHttpClientTest extends TestCase
         $this->client = PosHttpClientFactory::create(
             KuveytPosSoapApiHttpClient::class,
             'https://boatest.kuveytturk.com.tr/BOA.Integration.WCFService/BOA.Integration.VirtualPos/VirtualPosService.svc/Basic',
-            $this->serializer,
             $crypt,
             $this->requestValueMapper,
             $this->logger,
@@ -104,12 +98,11 @@ class KuveytPosSoapApiHttpClientTest extends TestCase
         array  $order,
         string $expectedApiUrl
     ): void {
-        $requestData     = ['foo' => 'bar'];
-        $order           = ['id' => 123];
-        $responseContent = 'response-content';
-        $encodedData     = new \Mews\Pos\Serializer\EncodedData('encoded-content', SerializerInterface::FORMAT_XML);
+        $requestData    = ['foo' => 'bar'];
+        $order          = ['id' => 123];
+        $encodedBody    = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://boa.net/BOA.Integration.VirtualPos/Service"><soapenv:Body><ser:foo>bar</ser:foo></soapenv:Body></soapenv:Envelope>';
 
-        $request  = $this->prepareHttpRequest($encodedData->getData(), [
+        $request  = $this->prepareHttpRequest($encodedBody, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'text/xml; charset=UTF-8',
@@ -119,17 +112,14 @@ class KuveytPosSoapApiHttpClientTest extends TestCase
                 'value' => 'http://boa.net/BOA.Integration.VirtualPos/Service/IVirtualPosService/CancelV4',
             ],
         ]);
-        $response = $this->prepareHttpResponse($responseContent, 200);
+
+        $responseXml = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><result>ok</result></s:Body></s:Envelope>';
+        $response    = $this->prepareHttpResponse($responseXml, 200);
 
         $this->requestValueMapper->expects($this->once())
             ->method('mapTxType')
             ->with($txType)
             ->willReturn('CancelV4');
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -141,89 +131,25 @@ class KuveytPosSoapApiHttpClientTest extends TestCase
             ->with($request)
             ->willReturn($response);
 
-        $decodedResponse = ['decoded-response'];
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->with($responseContent, $txType)
-            ->willReturn($decodedResponse);
+        $actual = $this->client->request($txType, $paymentModel, $requestData, $order, $expectedApiUrl);
 
-        $actual = $this->client->request(
-            $txType,
-            $paymentModel,
-            $requestData,
-            $order,
-            $expectedApiUrl
-        );
-
-        $this->assertSame($decodedResponse, $actual);
-    }
-
-    public function testCheckFailResponseThrowsExceptionOnEmptyBody(): void
-    {
-        $paymentModel    = PosInterface::MODEL_NON_SECURE;
-        $txType          = PosInterface::TX_TYPE_CANCEL;
-        $requestData     = ['foo' => 'bar'];
-        $order           = ['id' => 123];
-        $responseContent = '';
-        $expectedApiUrl  = 'https://boatest.kuveytturk.com.tr/BOA.Integration.WCFService/BOA.Integration.VirtualPos/VirtualPosService.svc/Basic';
-        $encodedData     = new \Mews\Pos\Serializer\EncodedData('encoded-content', SerializerInterface::FORMAT_XML);
-
-        $request  = $this->prepareHttpRequest($encodedData->getData(), [
-            [
-                'name'  => 'Content-Type',
-                'value' => 'text/xml; charset=UTF-8',
-            ],
-            [
-                'name'  => 'SOAPAction',
-                'value' => 'http://boa.net/BOA.Integration.VirtualPos/Service/IVirtualPosService/CancelV4',
-            ],
-        ]);
-        $response = $this->prepareHttpResponse($responseContent, 200);
-
-        $this->requestValueMapper->expects($this->once())
-            ->method('mapTxType')
-            ->willReturn('CancelV4');
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->willReturn($encodedData);
-
-        $this->requestFactory->expects($this->once())
-            ->method('createRequest')
-            ->willReturn($request);
-
-        $this->psrClient->expects($this->once())
-            ->method('sendRequest')
-            ->willReturn($response);
-
-        $this->serializer->expects($this->never())
-            ->method('decode');
-
-
-        $this->expectException(\RuntimeException::class);
-        $this->client->request(
-            $txType,
-            $paymentModel,
-            $requestData,
-            $order,
-            $expectedApiUrl,
-        );
+        $this->assertSame(['result' => 'ok'], $actual);
     }
 
     /**
      * @dataProvider failResponseDataProvider
      */
-    public function testCheckFailResponseThrowsExceptionOnSoapFault(array $decodedResponse, string $expectedExpMsg): void
+    public function testCheckFailResponseThrowsExceptionOnSoapFault(string $responseXml, int $httpStatusCode, string $expectedExpMsg): void
     {
-        $paymentModel    = PosInterface::MODEL_NON_SECURE;
-        $txType          = PosInterface::TX_TYPE_CANCEL;
-        $requestData     = ['foo' => 'bar'];
-        $order           = ['id' => 123];
-        $responseContent = 'response-content';
-        $expectedApiUrl  = 'https://boatest.kuveytturk.com.tr/BOA.Integration.WCFService/BOA.Integration.VirtualPos/VirtualPosService.svc/Basic';
-        $encodedData     = new \Mews\Pos\Serializer\EncodedData('encoded-content', SerializerInterface::FORMAT_XML);
+        $paymentModel   = PosInterface::MODEL_NON_SECURE;
+        $txType         = PosInterface::TX_TYPE_CANCEL;
+        $requestData    = ['foo' => 'bar'];
+        $order          = ['id' => 123];
+        $expectedApiUrl = 'https://boatest.kuveytturk.com.tr/BOA.Integration.WCFService/BOA.Integration.VirtualPos/VirtualPosService.svc/Basic';
 
-        $request  = $this->prepareHttpRequest($encodedData->getData(), [
+        $encodedBody = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://boa.net/BOA.Integration.VirtualPos/Service"><soapenv:Body><ser:foo>bar</ser:foo></soapenv:Body></soapenv:Envelope>';
+
+        $request  = $this->prepareHttpRequest($encodedBody, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'text/xml; charset=UTF-8',
@@ -233,15 +159,11 @@ class KuveytPosSoapApiHttpClientTest extends TestCase
                 'value' => 'http://boa.net/BOA.Integration.VirtualPos/Service/IVirtualPosService/CancelV4',
             ],
         ]);
-        $response = $this->prepareHttpResponse($responseContent, 400);
+        $response = $this->prepareHttpResponse($responseXml, $httpStatusCode);
 
         $this->requestValueMapper->expects($this->once())
             ->method('mapTxType')
             ->willReturn('CancelV4');
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->willReturn($encodedData);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -251,20 +173,10 @@ class KuveytPosSoapApiHttpClientTest extends TestCase
             ->method('sendRequest')
             ->willReturn($response);
 
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->willReturn($decodedResponse);
-
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage($expectedExpMsg);
-        $this->expectExceptionCode(400);
-        $this->client->request(
-            $txType,
-            $paymentModel,
-            $requestData,
-            $order,
-            $expectedApiUrl,
-        );
+        $this->expectExceptionCode($httpStatusCode);
+        $this->client->request($txType, $paymentModel, $requestData, $order, $expectedApiUrl);
     }
 
 
@@ -310,7 +222,7 @@ class KuveytPosSoapApiHttpClientTest extends TestCase
         yield [
             'txType'         => PosInterface::TX_TYPE_PAY_AUTH,
             'paymentModel'   => PosInterface::MODEL_3D_SECURE,
-            'requestData'    => ['request-data'],
+            'requestData'    => ['foo' => 'bar'],
             'order'          => ['id' => 123],
             'expectedApiUrl' => 'https://boatest.kuveytturk.com.tr/BOA.Integration.WCFService/BOA.Integration.VirtualPos/VirtualPosService.svc/Basic',
         ];
@@ -320,22 +232,19 @@ class KuveytPosSoapApiHttpClientTest extends TestCase
     {
         return [
             [
-                'decodedResponse' => [
-                    's:Fault' => [
-                        'faultstring' => [
-                            '#' => 'Some SOAP Fault',
-                        ],
-                    ],
-                ],
-                'expectedExpMsg'  => 'Some SOAP Fault',
+                'responseXml'    => '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><s:Fault><faultstring xml:lang="tr">Some SOAP Fault</faultstring></s:Fault></s:Body></s:Envelope>',
+                'statusCode' => 400,
+                'expectedExpMsg' => 'Some SOAP Fault',
             ],
             [
-                'decodedResponse' => [
-                    's:Fault' => [
-                        'some_other_key' => 'bla',
-                    ],
-                ],
-                'expectedExpMsg'  => 'Bankaya istek başarısız!',
+                'responseXml'    => '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><s:Fault><other>bla</other></s:Fault></s:Body></s:Envelope>',
+                'statusCode' => 400,
+                'expectedExpMsg' => 'Bankaya istek başarısız!',
+            ],
+            [
+                'responseXml'    => '',
+                'statusCode' => 200,
+                'expectedExpMsg' => 'Bankaya istek başarısız!',
             ],
         ];
     }

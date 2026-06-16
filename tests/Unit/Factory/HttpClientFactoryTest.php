@@ -27,7 +27,6 @@ use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\Crypt\IyzicoPosCrypt;
 use Mews\Pos\DataMapper\RequestValueMapper\RequestValueMapperInterface;
 use Mews\Pos\Factory\PosHttpClientFactory;
-use Mews\Pos\Serializer\SerializerInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -44,7 +43,6 @@ class HttpClientFactoryTest extends TestCase
         $client = PosHttpClientFactory::create(
             $clientClass,
             '',
-            $this->createMock(SerializerInterface::class),
             $this->createMock($cryptClass),
             $this->createMock(RequestValueMapperInterface::class),
             $this->createMock(LoggerInterface::class),

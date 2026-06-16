@@ -10,8 +10,9 @@ use Mews\Pos\DataMapper\RequestValueMapper\RequestValueMapperInterface;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Gateways\KuveytPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\Serializer\Decoder\KuveytPosSoapApiXmlDecoder;
 use Mews\Pos\Serializer\EncodedData;
-use Mews\Pos\Serializer\SerializerInterface;
+use Mews\Pos\Serializer\Encoder\KuveytPosSoapApiXmlEncoder;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
@@ -34,7 +35,6 @@ class KuveytPosSoapApiHttpClient extends AbstractHttpClient
         ClientInterface             $psrClient,
         RequestFactoryInterface     $requestFactory,
         StreamFactoryInterface      $streamFactory,
-        SerializerInterface         $serializer,
         LoggerInterface             $logger,
         RequestValueMapperInterface $requestValueMapper
     ) {
@@ -43,7 +43,8 @@ class KuveytPosSoapApiHttpClient extends AbstractHttpClient
             $psrClient,
             $requestFactory,
             $streamFactory,
-            $serializer,
+            new KuveytPosSoapApiXmlEncoder(),
+            new KuveytPosSoapApiXmlDecoder(),
             $logger
         );
         $this->requestValueMapper = $requestValueMapper;

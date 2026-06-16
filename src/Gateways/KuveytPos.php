@@ -16,6 +16,7 @@ use Mews\Pos\Entity\Account\KuveytPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exceptions\UnsupportedFormFormatException;
+use Mews\Pos\Serializer\Decoder\XmlDecoder;
 use Mews\Pos\Exceptions\UnsupportedPaymentModelException;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\PosInterface;
@@ -142,7 +143,7 @@ class KuveytPos extends AbstractGateway
         }
 
         $gatewayResponse = \urldecode($gatewayResponse);
-        $gatewayResponse = $this->serializer->decode($gatewayResponse, $txType);
+        $gatewayResponse = (new XmlDecoder())->decode($gatewayResponse);
 
         if (!$this->is3DAuthSuccess($gatewayResponse)) {
             $this->response = $this->responseDataMapper->map3DPaymentData($gatewayResponse, null, $txType, $order);

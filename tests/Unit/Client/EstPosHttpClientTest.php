@@ -15,15 +15,12 @@ use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\EstPos;
 use Mews\Pos\Gateways\EstV3Pos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\EncodedData;
-use Mews\Pos\Serializer\SerializerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
 /**
  * @covers \Mews\Pos\Client\EstPosHttpClient
@@ -34,9 +31,6 @@ class EstPosHttpClientTest extends TestCase
     use HttpClientTestTrait;
 
     private EstPosHttpClient $client;
-
-    /** @var SerializerInterface & MockObject */
-    private SerializerInterface $serializer;
 
     /** @var LoggerInterface & MockObject */
     private LoggerInterface $logger;
@@ -61,7 +55,6 @@ class EstPosHttpClientTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->serializer         = $this->createMock(SerializerInterface::class);
         $this->logger             = $this->createMock(LoggerInterface::class);
         $crypt                    = $this->createMock(CryptInterface::class);
         $this->requestValueMapper = $this->createMock(RequestValueMapperInterface::class);
@@ -72,7 +65,6 @@ class EstPosHttpClientTest extends TestCase
         $this->client = PosHttpClientFactory::create(
             EstPosHttpClient::class,
             'https://entegrasyon.asseco-see.com.tr/fim/api',
-            $this->serializer,
             $crypt,
             $this->requestValueMapper,
             $this->logger,
@@ -111,22 +103,14 @@ class EstPosHttpClientTest extends TestCase
         string $txType,
         string $paymentModel,
         array  $requestData,
+        string $encodedRequestData,
+        string $responseContent,
+        array $expectedDecodedResponse,
         array  $order,
         string $expectedApiUrl
     ): void {
-        $encodedData = new EncodedData(
-            '<?xml version="1.0" encoding="" ?><request>data</request>',
-            SerializerInterface::FORMAT_XML,
-        );
-
-        $responseContent = 'response-content';
-        $request         = $this->prepareHttpRequest($encodedData->getData(), []);
+        $request         = $this->prepareHttpRequest($encodedRequestData, []);
         $response        = $this->prepareHttpResponse($responseContent, 200);
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -138,12 +122,6 @@ class EstPosHttpClientTest extends TestCase
             ->with($request)
             ->willReturn($response);
 
-        $decodedResponse = ['decoded-response'];
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->with($responseContent, $txType)
-            ->willReturn($decodedResponse);
-
         $actual = $this->client->request(
             $txType,
             $paymentModel,
@@ -152,7 +130,7 @@ class EstPosHttpClientTest extends TestCase
             $expectedApiUrl
         );
 
-        $this->assertSame($decodedResponse, $actual);
+        $this->assertSame($expectedDecodedResponse, $actual);
     }
 
     public function testRequestUndecodableResponse(): void
@@ -162,19 +140,15 @@ class EstPosHttpClientTest extends TestCase
         $requestData    = ['request-data' => 'abc'];
         $order          = ['id' => 123];
 
-        $encodedData = new EncodedData(
-            '<?xml version="1.0" encoding="" ?><request>data</request>',
-            SerializerInterface::FORMAT_XML,
-        );
+        $encodedBody = '<?xml version="1.0" encoding="ISO-8859-9"?>
+<CC5Request><request-data>abc</request-data></CC5Request>
+';
 
-        $request         = $this->prepareHttpRequest($encodedData->getData(), []);
+        $request         = $this->prepareHttpRequest($encodedBody, []);
 
-        $responseContent = 'response-content';
+        $responseContent = 'not-valid-xml';
         $response        = $this->prepareHttpResponse($responseContent, 400);
 
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->willReturn($encodedData);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -184,11 +158,8 @@ class EstPosHttpClientTest extends TestCase
             ->method('sendRequest')
             ->willReturn($response);
 
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->willThrowException(new NotEncodableValueException());
 
-        $this->expectException(NotEncodableValueException::class);
+        $this->expectException(\RuntimeException::class);
         $this->client->request(
             $txType,
             $paymentModel,
@@ -204,20 +175,14 @@ class EstPosHttpClientTest extends TestCase
         $requestData    = ['request-data' => 'abc'];
         $order          = ['id' => 123];
 
-        $encodedData = new EncodedData(
-            '<?xml version="1.0" encoding="" ?><request>data</request>',
-            SerializerInterface::FORMAT_XML,
-        );
-        $request     = $this->prepareHttpRequest($encodedData->getData(), []);
+        $encodedBody = '<?xml version="1.0" encoding="ISO-8859-9"?>
+<CC5Request><request-data>abc</request-data></CC5Request>
+';
+        $request     = $this->prepareHttpRequest($encodedBody, []);
 
 
         $responseContent = 'response-content';
         $response        = $this->prepareHttpResponse($responseContent, 500);
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -275,7 +240,61 @@ class EstPosHttpClientTest extends TestCase
         yield [
             'txType'         => PosInterface::TX_TYPE_PAY_AUTH,
             'paymentModel'   => PosInterface::MODEL_3D_SECURE,
-            'requestData'    => ['request-data'],
+            'requestData'    => [
+                'Name' => 'ISBANKAPI',
+                'Password' => 'ISBANK07',
+                'ClientId' => '700655000200',
+            ],
+            'encodedRequestData'    => '<?xml version="1.0" encoding="ISO-8859-9"?>
+<CC5Request><Name>ISBANKAPI</Name><Password>ISBANK07</Password><ClientId>700655000200</ClientId></CC5Request>
+',
+            'responseContent' => '<?xml version="1.0" encoding="ISO-8859-9"?>
+<CC5Response>
+  <OrderId>20230910AF6A</OrderId>
+  <GroupId>20230910AF6A</GroupId>
+  <Response>Approved</Response>
+  <AuthCode>P18552</AuthCode>
+  <HostRefNum>325300733333</HostRefNum>
+  <ProcReturnCode>00</ProcReturnCode>
+  <TransId>23253WkfD10806</TransId>
+  <ErrMsg></ErrMsg>
+  <Extra>
+    <SETTLEID>2589</SETTLEID>
+    <TRXDATE>20230910 22:36:30</TRXDATE>
+    <ERRORCODE></ERRORCODE>
+    <TERMINALID>00655020</TERMINALID>
+    <MERCHANTID>655000200</MERCHANTID>
+    <CARDBRAND>VISA</CARDBRAND>
+    <CARDISSUER>Z&#x130;RAAT BANKASI</CARDISSUER>
+    <AVSAPPROVE>Y</AVSAPPROVE>
+    <HOSTDATE>0910-223632</HOSTDATE>
+    <AVSERRORCODEDETAIL>avshatali-avshatali-avshatali-avshatali-</AVSERRORCODEDETAIL>
+    <NUMCODE>00</NUMCODE>
+  </Extra>
+</CC5Response>',
+            'expectedDecodedResponse' => [
+                'OrderId'        => '20230910AF6A',
+                'GroupId'        => '20230910AF6A',
+                'Response'       => 'Approved',
+                'AuthCode'       => 'P18552',
+                'HostRefNum'     => '325300733333',
+                'ProcReturnCode' => '00',
+                'TransId'        => '23253WkfD10806',
+                'ErrMsg'         => '',
+                'Extra'          => [
+                    'SETTLEID'           => '2589',
+                    'TRXDATE'            => '20230910 22:36:30',
+                    'ERRORCODE'          => '',
+                    'TERMINALID'         => '00655020',
+                    'MERCHANTID'         => '655000200',
+                    'CARDBRAND'          => 'VISA',
+                    'CARDISSUER'         => 'ZİRAAT BANKASI',
+                    'AVSAPPROVE'         => 'Y',
+                    'HOSTDATE'           => '0910-223632',
+                    'AVSERRORCODEDETAIL' => 'avshatali-avshatali-avshatali-avshatali-',
+                    'NUMCODE'            => '00',
+                ],
+            ],
             'order'          => ['id' => 123],
             'expectedApiUrl' => 'https://entegrasyon.asseco-see.com.tr/fim/api',
         ];

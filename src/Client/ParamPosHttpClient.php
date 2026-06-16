@@ -9,12 +9,36 @@ namespace Mews\Pos\Client;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Gateways\Param3DHostPos;
 use Mews\Pos\Gateways\ParamPos;
+use Mews\Pos\Serializer\Decoder\ParamPosXmlDecoder;
 use Mews\Pos\Serializer\EncodedData;
+use Mews\Pos\Serializer\Encoder\ParamPosXmlEncoder;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Log\LoggerInterface;
 
 class ParamPosHttpClient extends AbstractHttpClient
 {
+    public function __construct(
+        string                  $baseApiUrl,
+        ClientInterface         $psrClient,
+        RequestFactoryInterface $requestFactory,
+        StreamFactoryInterface  $streamFactory,
+        LoggerInterface         $logger
+    ) {
+        parent::__construct(
+            $baseApiUrl,
+            $psrClient,
+            $requestFactory,
+            $streamFactory,
+            new ParamPosXmlEncoder(),
+            new ParamPosXmlDecoder(),
+            $logger
+        );
+    }
+
     /**
      * @inheritDoc
      */

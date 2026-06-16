@@ -127,7 +127,6 @@ class PosFactory
         $responseValueFormatter = ResponseValueFormatterFactory::createForGateway($gatewayClass);
         $responseValueMapper    = ResponseValueMapperFactory::createForGateway($gatewayClass);
         $responseDataMapper     = ResponseDataMapperFactory::createGatewayResponseMapper($gatewayClass, $responseValueFormatter, $responseValueMapper, $logger);
-        $serializer             = SerializerFactory::createGatewaySerializer($gatewayClass);
 
         if (!$httpClientStrategy instanceof HttpClientStrategyInterface) {
             $httpClientStrategy = PosHttpClientStrategyFactory::createForGateway(
@@ -146,7 +145,6 @@ class PosFactory
             $requestValueMapper,
             $requestDataMapper,
             $responseDataMapper,
-            $serializer,
             $eventDispatcher,
             $httpClientStrategy,
             $logger

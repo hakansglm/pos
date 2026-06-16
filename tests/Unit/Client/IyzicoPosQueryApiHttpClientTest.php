@@ -15,8 +15,6 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\IyzicoPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\EncodedData;
-use Mews\Pos\Serializer\SerializerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -37,9 +35,6 @@ class IyzicoPosQueryApiHttpClientTest extends TestCase
 
     private IyzicoPosQueryApiHttpClient $client;
 
-    /** @var SerializerInterface & MockObject */
-    private SerializerInterface $serializerMock;
-
     /** @var LoggerInterface & MockObject */
     private LoggerInterface $loggerMock;
 
@@ -59,7 +54,6 @@ class IyzicoPosQueryApiHttpClientTest extends TestCase
     {
         parent::setUp();
 
-        $this->serializerMock = $this->createMock(SerializerInterface::class);
         $this->loggerMock     = $this->createMock(LoggerInterface::class);
         $this->cryptMock      = $this->createMock(IyzicoPosCrypt::class);
         $this->psrClient      = $this->createMock(ClientInterface::class);
@@ -69,7 +63,6 @@ class IyzicoPosQueryApiHttpClientTest extends TestCase
         $this->client = PosHttpClientFactory::create(
             IyzicoPosQueryApiHttpClient::class,
             self::BASE_URL,
-            $this->serializerMock,
             $this->cryptMock,
             $this->createMock(RequestValueMapperInterface::class),
             $this->loggerMock,
@@ -119,13 +112,7 @@ class IyzicoPosQueryApiHttpClientTest extends TestCase
         $account      = AccountFactory::createIyzicoPosAccount('iyzico', 'key', 'secret');
 
         $formBody    = 'transactionDate=2024-01-01&page=1';
-        $encodedData = new EncodedData($formBody, SerializerInterface::FORMAT_FORM);
         $apiUrl      = self::BASE_URL . '/transactions';
-
-        $this->serializerMock->expects(self::once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
 
         $this->cryptMock->expects(self::once())
             ->method('generateRandomString')
@@ -155,10 +142,6 @@ class IyzicoPosQueryApiHttpClientTest extends TestCase
             ->willReturn($response);
 
         $decoded = ['status' => 'success', 'transactions' => []];
-        $this->serializerMock->expects(self::once())
-            ->method('decode')
-            ->with($responseBody, $txType)
-            ->willReturn($decoded);
 
         $actual = $this->client->request($txType, $paymentModel, $requestData, $order, $apiUrl, $account);
 
@@ -172,12 +155,7 @@ class IyzicoPosQueryApiHttpClientTest extends TestCase
         $requestData  = ['transactionDate' => '2024-01-01'];
         $apiUrl       = self::BASE_URL . '/transactions';
         $formBody     = 'transactionDate=2024-01-01';
-        $encodedData  = new EncodedData($formBody, SerializerInterface::FORMAT_FORM);
         $account      = AccountFactory::createIyzicoPosAccount('iyzico', 'key', 'secret');
-
-        $this->serializerMock->expects(self::once())
-            ->method('encode')
-            ->willReturn($encodedData);
 
         $this->cryptMock->expects(self::once())
             ->method('generateRandomString')
@@ -202,9 +180,6 @@ class IyzicoPosQueryApiHttpClientTest extends TestCase
             ->method('sendRequest')
             ->willReturn($this->prepareHttpResponse('', 204));
 
-        $this->serializerMock->expects(self::never())
-            ->method('decode');
-
         $actual = $this->client->request($txType, $paymentModel, $requestData, [], $apiUrl, $account);
 
         $this->assertSame([], $actual);
@@ -217,12 +192,7 @@ class IyzicoPosQueryApiHttpClientTest extends TestCase
         $requestData  = ['transactionDate' => '2024-01-01'];
         $apiUrl       = self::BASE_URL . '/transactions';
         $formBody     = 'transactionDate=2024-01-01';
-        $encodedData  = new EncodedData($formBody, SerializerInterface::FORMAT_FORM);
         $account      = AccountFactory::createIyzicoPosAccount('iyzico', 'key', 'secret');
-
-        $this->serializerMock->expects(self::once())
-            ->method('encode')
-            ->willReturn($encodedData);
 
         $this->cryptMock->expects(self::once())
             ->method('generateRandomString')
@@ -247,9 +217,6 @@ class IyzicoPosQueryApiHttpClientTest extends TestCase
             ->method('sendRequest')
             ->willReturn($this->prepareHttpResponse('Internal Server Error', 500));
 
-        $this->serializerMock->expects(self::never())
-            ->method('decode');
-
         $this->expectException(\RuntimeException::class);
         $this->client->request($txType, $paymentModel, $requestData, [], $apiUrl, $account);
     }
@@ -258,12 +225,6 @@ class IyzicoPosQueryApiHttpClientTest extends TestCase
     {
         $txType      = PosInterface::TX_TYPE_HISTORY;
         $paymentModel = PosInterface::MODEL_NON_SECURE;
-        $formBody    = 'transactionDate=2024-01-01';
-        $encodedData = new EncodedData($formBody, SerializerInterface::FORMAT_FORM);
-
-        $this->serializerMock->expects(self::once())
-            ->method('encode')
-            ->willReturn($encodedData);
 
         $wrongAccount = $this->createMock(\Mews\Pos\Entity\Account\AbstractPosAccount::class);
 

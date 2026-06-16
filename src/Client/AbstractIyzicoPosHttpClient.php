@@ -9,7 +9,8 @@ namespace Mews\Pos\Client;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\Crypt\IyzicoPosCrypt;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Serializer\SerializerInterface;
+use Mews\Pos\Serializer\Decoder\DecoderInterface;
+use Mews\Pos\Serializer\Encoder\EncoderInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -25,15 +26,24 @@ abstract class AbstractIyzicoPosHttpClient extends AbstractHttpClient
         ClientInterface         $psrClient,
         RequestFactoryInterface $requestFactory,
         StreamFactoryInterface  $streamFactory,
-        SerializerInterface     $serializer,
         LoggerInterface         $logger,
-        CryptInterface          $crypt
+        CryptInterface          $crypt,
+        EncoderInterface        $encoder,
+        DecoderInterface        $decoder
     ) {
         if (!$crypt instanceof IyzicoPosCrypt) {
             throw new \LogicException(\sprintf('Expected %s, got %s.', IyzicoPosCrypt::class, \get_class($crypt)));
         }
 
-        parent::__construct($baseApiUrl, $psrClient, $requestFactory, $streamFactory, $serializer, $logger);
+        parent::__construct(
+            $baseApiUrl,
+            $psrClient,
+            $requestFactory,
+            $streamFactory,
+            $encoder,
+            $decoder,
+            $logger
+        );
 
         $this->crypt = $crypt;
     }

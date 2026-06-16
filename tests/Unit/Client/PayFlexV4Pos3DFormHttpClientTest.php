@@ -14,15 +14,12 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\PayFlexV4Pos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\EncodedData;
-use Mews\Pos\Serializer\SerializerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
 /**
  * @covers \Mews\Pos\Client\PayFlexV4Pos3DFormHttpClient
@@ -33,9 +30,6 @@ class PayFlexV4Pos3DFormHttpClientTest extends TestCase
     use HttpClientTestTrait;
 
     private PayFlexV4Pos3DFormHttpClient $client;
-
-    /** @var SerializerInterface & MockObject */
-    private SerializerInterface $serializer;
 
     /** @var LoggerInterface & MockObject */
     private LoggerInterface $logger;
@@ -62,7 +56,6 @@ class PayFlexV4Pos3DFormHttpClientTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->serializer         = $this->createMock(SerializerInterface::class);
         $this->logger             = $this->createMock(LoggerInterface::class);
         $this->crypt              = $this->createMock(CryptInterface::class);
         $this->requestValueMapper = $this->createMock(RequestValueMapperInterface::class);
@@ -74,7 +67,6 @@ class PayFlexV4Pos3DFormHttpClientTest extends TestCase
         $this->client = PosHttpClientFactory::create(
             PayFlexV4Pos3DFormHttpClient::class,
             'https://3dsecuretest.vakifbank.com.tr:4443/MPIAPI/MPI_Enrollment.aspx',
-            $this->serializer,
             $this->crypt,
             $this->requestValueMapper,
             $this->logger,
@@ -118,22 +110,16 @@ class PayFlexV4Pos3DFormHttpClientTest extends TestCase
         array  $order,
         string $expectedApiUrl
     ): void {
-        $encodedData = new EncodedData(
-            $encodedRequestData,
-            SerializerInterface::FORMAT_FORM,
-        );
-        $request     = $this->prepareHttpRequest($encodedData->getData(), [
+        $request     = $this->prepareHttpRequest($encodedRequestData, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'application/x-www-form-urlencoded',
             ],
         ]);
 
-        $responseContent = 'response-content';
+        $decodedResponse = ['result' => 'success'];
+        $responseContent = '<response><result>success</result></response>';
         $response        = $this->prepareHttpResponse($responseContent, 200);
-
-        $this->serializer->expects($this->never())
-            ->method('encode');
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -144,12 +130,6 @@ class PayFlexV4Pos3DFormHttpClientTest extends TestCase
             ->method('sendRequest')
             ->with($request)
             ->willReturn($response);
-
-        $decodedResponse = ['decoded-response'];
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->with($responseContent, $txType)
-            ->willReturn($decodedResponse);
 
         $actual = $this->client->request(
             $txType,
@@ -169,11 +149,7 @@ class PayFlexV4Pos3DFormHttpClientTest extends TestCase
         $requestData    = ['key1' => 'val1'];
         $order          = ['id' => 123];
 
-        $encodedData = new EncodedData(
-            'key1=val1',
-            SerializerInterface::FORMAT_FORM,
-        );
-        $request     = $this->prepareHttpRequest($encodedData->getData(), [
+        $request     = $this->prepareHttpRequest('key1=val1', [
             [
                 'name'  => 'Content-Type',
                 'value' => 'application/x-www-form-urlencoded',
@@ -183,9 +159,6 @@ class PayFlexV4Pos3DFormHttpClientTest extends TestCase
         $responseContent = 'response-content';
         $response        = $this->prepareHttpResponse($responseContent, 400);
 
-        $this->serializer->expects($this->never())
-            ->method('encode');
-
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
             ->willReturn($request);
@@ -194,11 +167,8 @@ class PayFlexV4Pos3DFormHttpClientTest extends TestCase
             ->method('sendRequest')
             ->willReturn($response);
 
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->willThrowException(new NotEncodableValueException());
 
-        $this->expectException(NotEncodableValueException::class);
+        $this->expectException(\RuntimeException::class);
         $this->client->request(
             $txType,
             $paymentModel,
@@ -214,11 +184,7 @@ class PayFlexV4Pos3DFormHttpClientTest extends TestCase
         $requestData    = ['key1' => 'val1'];
         $order          = ['id' => 123];
 
-        $encodedData = new EncodedData(
-            'key1=val1',
-            SerializerInterface::FORMAT_FORM,
-        );
-        $request     = $this->prepareHttpRequest($encodedData->getData(), [
+        $request     = $this->prepareHttpRequest('key1=val1', [
             [
                 'name'  => 'Content-Type',
                 'value' => 'application/x-www-form-urlencoded',
@@ -227,9 +193,6 @@ class PayFlexV4Pos3DFormHttpClientTest extends TestCase
 
         $responseContent = 'response-content';
         $response        = $this->prepareHttpResponse($responseContent, 500);
-
-        $this->serializer->expects($this->never())
-            ->method('encode');
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')

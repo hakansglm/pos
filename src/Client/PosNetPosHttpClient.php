@@ -8,12 +8,35 @@ namespace Mews\Pos\Client;
 
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Gateways\PosNet;
+use Mews\Pos\Serializer\Decoder\XmlDecoder;
 use Mews\Pos\Serializer\EncodedData;
-use Mews\Pos\Serializer\SerializerInterface;
+use Mews\Pos\Serializer\Encoder\XmlEncoder;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Log\LoggerInterface;
 
 class PosNetPosHttpClient extends AbstractHttpClient
 {
+    public function __construct(
+        string                  $baseApiUrl,
+        ClientInterface         $psrClient,
+        RequestFactoryInterface $requestFactory,
+        StreamFactoryInterface  $streamFactory,
+        LoggerInterface         $logger
+    ) {
+        parent::__construct(
+            $baseApiUrl,
+            $psrClient,
+            $requestFactory,
+            $streamFactory,
+            new XmlEncoder('posnetRequest', 'ISO-8859-9'),
+            new XmlDecoder(),
+            $logger
+        );
+    }
+
     /**
      * @inheritDoc
      */
@@ -42,10 +65,10 @@ class PosNetPosHttpClient extends AbstractHttpClient
         ?AbstractPosAccount $account = null,
         ?string             $orderTxType = null
     ): array {
-        $content = $this->serializer->encode($requestData, $txType);
+        $content = $this->encoder->encode($requestData);
         $content = new EncodedData(
             \sprintf('xmldata=%s', $content->getData()),
-            SerializerInterface::FORMAT_FORM
+            EncodedData::FORMAT_FORM
         );
 
         return $this->doRequest(

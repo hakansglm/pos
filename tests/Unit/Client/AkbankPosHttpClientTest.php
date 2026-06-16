@@ -16,8 +16,6 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\EstV3Pos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\EncodedData;
-use Mews\Pos\Serializer\SerializerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -35,9 +33,6 @@ class AkbankPosHttpClientTest extends TestCase
     use HttpClientTestTrait;
 
     private AkbankPosHttpClient $client;
-
-    /** @var SerializerInterface & MockObject */
-    private SerializerInterface $serializer;
 
     /** @var LoggerInterface & MockObject */
     private LoggerInterface $logger;
@@ -66,7 +61,6 @@ class AkbankPosHttpClientTest extends TestCase
     protected function setUp(): void
     {
         $this->account            = $this->createMock(AbstractPosAccount::class);
-        $this->serializer         = $this->createMock(SerializerInterface::class);
         $this->logger             = $this->createMock(LoggerInterface::class);
         $this->crypt              = $this->createMock(CryptInterface::class);
         $this->requestValueMapper = $this->createMock(RequestValueMapperInterface::class);
@@ -77,7 +71,6 @@ class AkbankPosHttpClientTest extends TestCase
         $this->client = PosHttpClientFactory::create(
             AkbankPosHttpClient::class,
             'https://apipre.akbank.com/api/v1/payment/virtualpos',
-            $this->serializer,
             $this->crypt,
             $this->requestValueMapper,
             $this->logger,
@@ -126,31 +119,23 @@ class AkbankPosHttpClientTest extends TestCase
         string $txType,
         string $paymentModel,
         array  $requestData,
+        string $encodedRequestData,
         array  $order,
         string $expectedApiUrl
     ): void {
-        $encodedData     = new EncodedData(
-            '{"a": "b"}',
-            SerializerInterface::FORMAT_JSON,
-        );
-        $responseContent = 'response-content';
-        $request = $this->prepareHttpRequest($encodedData->getData(), [
+        $responseContent = '{"decoded":"response"}';
+        $request         = $this->prepareHttpRequest($encodedRequestData, [
             [
-                'name' => 'Content-Type',
+                'name'  => 'Content-Type',
                 'value' => 'application/json',
             ],
             [
-                'name' => 'auth-hash',
+                'name'  => 'auth-hash',
                 'value' => 'hash123',
             ],
         ]);
 
-        $response        = $this->prepareHttpResponse($responseContent, 200);
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
+        $response = $this->prepareHttpResponse($responseContent, 200);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -163,20 +148,13 @@ class AkbankPosHttpClientTest extends TestCase
 
         $this->crypt->expects($this->once())
             ->method('hashString')
-            ->with($encodedData->getData(), 'store-key123')
+            ->with($encodedRequestData, 'store-key123')
             ->willReturn('hash123');
-
 
         $this->psrClient->expects($this->once())
             ->method('sendRequest')
             ->with($request)
             ->willReturn($response);
-
-        $decodedResponse = ['decoded-response'];
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->with($responseContent, $txType)
-            ->willReturn($decodedResponse);
 
         $actual = $this->client->request(
             $txType,
@@ -187,39 +165,31 @@ class AkbankPosHttpClientTest extends TestCase
             $this->account,
         );
 
-        $this->assertSame($decodedResponse, $actual);
+        $this->assertSame(['decoded' => 'response'], $actual);
     }
 
     public function testRequestBadRequest(): void
     {
         $txType         = PosInterface::TX_TYPE_PAY_AUTH;
         $paymentModel   = PosInterface::MODEL_3D_SECURE;
-        $requestData    = ['request-data'];
+        $requestData    = ['a' => 'b'];
         $order          = ['id' => 123];
         $expectedApiUrl = 'https://apipre.akbank.com/api/v1/payment/virtualpos/transaction/process';
 
-        $encodedData     = new EncodedData(
-            '{"a": "b"}',
-            SerializerInterface::FORMAT_JSON,
-        );
-        $responseContent = 'response-content';
-        $request = $this->prepareHttpRequest($encodedData->getData(), [
+        $encodedBody     = '{"a":"b"}';
+        $responseContent = '{"message":"Error message","code":222}';
+        $request         = $this->prepareHttpRequest($encodedBody, [
             [
-                'name' => 'Content-Type',
+                'name'  => 'Content-Type',
                 'value' => 'application/json',
             ],
             [
-                'name' => 'auth-hash',
+                'name'  => 'auth-hash',
                 'value' => 'hash123',
             ],
         ]);
 
-        $response        = $this->prepareHttpResponse($responseContent, 400);
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
+        $response = $this->prepareHttpResponse($responseContent, 400);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -232,23 +202,13 @@ class AkbankPosHttpClientTest extends TestCase
 
         $this->crypt->expects($this->once())
             ->method('hashString')
-            ->with($encodedData->getData(), 'store-key123')
+            ->with($encodedBody, 'store-key123')
             ->willReturn('hash123');
-
 
         $this->psrClient->expects($this->once())
             ->method('sendRequest')
             ->with($request)
             ->willReturn($response);
-
-        $decodedResponse = [
-            'message' => 'Error message',
-            'code'    => 222,
-        ];
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->with($responseContent, $txType)
-            ->willReturn($decodedResponse);
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Error message');
@@ -265,32 +225,25 @@ class AkbankPosHttpClientTest extends TestCase
 
     public function testRequestUndecodableResponse(): void
     {
-        $txType         = PosInterface::TX_TYPE_PAY_AUTH;
-        $paymentModel   = PosInterface::MODEL_3D_SECURE;
-        $requestData    = ['request-data' => 'abc'];
-        $order          = ['id' => 123];
+        $txType       = PosInterface::TX_TYPE_PAY_AUTH;
+        $paymentModel = PosInterface::MODEL_3D_SECURE;
+        $requestData  = ['request-data' => 'abc'];
+        $order        = ['id' => 123];
 
-        $encodedData     = new EncodedData(
-            '{"a": "b"}',
-            SerializerInterface::FORMAT_JSON,
-        );
-        $responseContent = 'response-content';
-        $request = $this->prepareHttpRequest($encodedData->getData(), [
+        $encodedBody     = '{"request-data":"abc"}';
+        $responseContent = 'not-valid-json';
+        $request         = $this->prepareHttpRequest($encodedBody, [
             [
-                'name' => 'Content-Type',
+                'name'  => 'Content-Type',
                 'value' => 'application/json',
             ],
             [
-                'name' => 'auth-hash',
+                'name'  => 'auth-hash',
                 'value' => 'hash123',
             ],
         ]);
 
-        $response        = $this->prepareHttpResponse($responseContent, 400);
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->willReturn($encodedData);
+        $response = $this->prepareHttpResponse($responseContent, 400);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -304,14 +257,9 @@ class AkbankPosHttpClientTest extends TestCase
             ->method('hashString')
             ->willReturn('hash123');
 
-
         $this->psrClient->expects($this->once())
             ->method('sendRequest')
             ->willReturn($response);
-
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->willThrowException(new NotEncodableValueException());
 
         $this->expectException(NotEncodableValueException::class);
         $this->client->request(
@@ -332,16 +280,6 @@ class AkbankPosHttpClientTest extends TestCase
         $order          = ['id' => 123];
         $expectedApiUrl = 'https://apipre.akbank.com/api/v1/payment/virtualpos/transaction/process';
 
-        $encodedData = new EncodedData(
-            '{"a": "b"}',
-            SerializerInterface::FORMAT_JSON,
-        );
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
-
         $this->psrClient->expects($this->never())
             ->method('sendRequest');
 
@@ -358,11 +296,12 @@ class AkbankPosHttpClientTest extends TestCase
     public static function requestDataProvider(): \Generator
     {
         yield [
-            'txType'         => PosInterface::TX_TYPE_PAY_AUTH,
-            'paymentModel'   => PosInterface::MODEL_3D_SECURE,
-            'requestData'    => ['request-data'],
-            'order'          => ['id' => 123],
-            'expectedApiUrl' => 'https://apipre.akbank.com/api/v1/payment/virtualpos/transaction/process',
+            'txType'             => PosInterface::TX_TYPE_PAY_AUTH,
+            'paymentModel'       => PosInterface::MODEL_3D_SECURE,
+            'requestData'        => ['a' => 'b'],
+            'encodedRequestData' => '{"a":"b"}',
+            'order'              => ['id' => 123],
+            'expectedApiUrl'     => 'https://apipre.akbank.com/api/v1/payment/virtualpos/transaction/process',
         ];
     }
 

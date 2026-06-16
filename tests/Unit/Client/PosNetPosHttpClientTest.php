@@ -14,15 +14,12 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\PosNet;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Serializer\EncodedData;
-use Mews\Pos\Serializer\SerializerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
 /**
  * @covers \Mews\Pos\Client\PosNetPosHttpClient
@@ -33,9 +30,6 @@ class PosNetPosHttpClientTest extends TestCase
     use HttpClientTestTrait;
 
     private PosNetPosHttpClient $client;
-
-    /** @var SerializerInterface & MockObject */
-    private SerializerInterface $serializer;
 
     /** @var LoggerInterface & MockObject */
     private LoggerInterface $logger;
@@ -61,7 +55,6 @@ class PosNetPosHttpClientTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->serializer         = $this->createMock(SerializerInterface::class);
         $this->logger             = $this->createMock(LoggerInterface::class);
         $crypt                    = $this->createMock(CryptInterface::class);
         $this->requestValueMapper = $this->createMock(RequestValueMapperInterface::class);
@@ -72,7 +65,6 @@ class PosNetPosHttpClientTest extends TestCase
         $this->client = PosHttpClientFactory::create(
             PosNetPosHttpClient::class,
             'https://setmpos.ykb.com/PosnetWebService/XML',
-            $this->serializer,
             $crypt,
             $this->requestValueMapper,
             $this->logger,
@@ -110,27 +102,20 @@ class PosNetPosHttpClientTest extends TestCase
         string $txType,
         string $paymentModel,
         array  $requestData,
+        string $encodedRequestData,
         array  $order,
         string $expectedApiUrl
     ): void {
-        $encodedData     = new EncodedData(
-            'abc',
-            SerializerInterface::FORMAT_FORM,
-        );
-        $request     = $this->prepareHttpRequest('xmldata='.$encodedData->getData(), [
+        $request = $this->prepareHttpRequest($encodedRequestData, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'application/x-www-form-urlencoded',
             ],
         ]);
 
-        $responseContent = 'response-content';
+        $decodedResponse = ['result' => 'success'];
+        $responseContent = '<response><result>success</result></response>';
         $response        = $this->prepareHttpResponse($responseContent, 200);
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -141,12 +126,6 @@ class PosNetPosHttpClientTest extends TestCase
             ->method('sendRequest')
             ->with($request)
             ->willReturn($response);
-
-        $decodedResponse = ['decoded-response'];
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->with($responseContent, $txType)
-            ->willReturn($decodedResponse);
 
         $actual = $this->client->request(
             $txType,
@@ -161,29 +140,22 @@ class PosNetPosHttpClientTest extends TestCase
 
     public function testRequestBadRequest(): void
     {
-        $txType         = PosInterface::TX_TYPE_PAY_AUTH;
-        $paymentModel   = PosInterface::MODEL_3D_SECURE;
-        $requestData    = ['request-data' => 'abc'];
-        $order          = ['id' => 123];
+        $txType      = PosInterface::TX_TYPE_PAY_AUTH;
+        $paymentModel = PosInterface::MODEL_3D_SECURE;
+        $requestData = ['request-data' => 'abc'];
+        $order       = ['id' => 123];
 
-        $encodedData     = new EncodedData(
-            'abc',
-            SerializerInterface::FORMAT_FORM,
-        );
-        $request     = $this->prepareHttpRequest('xmldata='.$encodedData->getData(), [
+        $encodedBody = 'xmldata=<?xml version="1.0" encoding="ISO-8859-9"?>
+<posnetRequest><request-data>abc</request-data></posnetRequest>
+';
+        $request = $this->prepareHttpRequest($encodedBody, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'application/x-www-form-urlencoded',
             ],
         ]);
 
-        $responseContent = 'response-content';
-        $response        = $this->prepareHttpResponse($responseContent, 500);
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->with($requestData, $txType)
-            ->willReturn($encodedData);
+        $response = $this->prepareHttpResponse('response-content', 500);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -207,28 +179,22 @@ class PosNetPosHttpClientTest extends TestCase
 
     public function testRequestUndecodableResponse(): void
     {
-        $txType         = PosInterface::TX_TYPE_PAY_AUTH;
-        $paymentModel   = PosInterface::MODEL_3D_SECURE;
-        $requestData    = ['request-data' => 'abc'];
-        $order          = ['id' => 123];
+        $txType      = PosInterface::TX_TYPE_PAY_AUTH;
+        $paymentModel = PosInterface::MODEL_3D_SECURE;
+        $requestData = ['request-data' => 'abc'];
+        $order       = ['id' => 123];
 
-        $encodedData     = new EncodedData(
-            'abc',
-            SerializerInterface::FORMAT_FORM,
-        );
-        $request     = $this->prepareHttpRequest('xmldata='.$encodedData->getData(), [
+        $encodedBody = 'xmldata=<?xml version="1.0" encoding="ISO-8859-9"?>
+<posnetRequest><request-data>abc</request-data></posnetRequest>
+';
+        $request = $this->prepareHttpRequest($encodedBody, [
             [
                 'name'  => 'Content-Type',
                 'value' => 'application/x-www-form-urlencoded',
             ],
         ]);
 
-        $responseContent = 'response-content';
-        $response        = $this->prepareHttpResponse($responseContent, 400);
-
-        $this->serializer->expects($this->once())
-            ->method('encode')
-            ->willReturn($encodedData);
+        $response = $this->prepareHttpResponse('not-valid-xml', 400);
 
         $this->requestFactory->expects($this->once())
             ->method('createRequest')
@@ -238,17 +204,8 @@ class PosNetPosHttpClientTest extends TestCase
             ->method('sendRequest')
             ->willReturn($response);
 
-        $this->serializer->expects($this->once())
-            ->method('decode')
-            ->willThrowException(new NotEncodableValueException());
-
-        $this->expectException(NotEncodableValueException::class);
-        $this->client->request(
-            $txType,
-            $paymentModel,
-            $requestData,
-            $order
-        );
+        $this->expectException(\RuntimeException::class);
+        $this->client->request($txType, $paymentModel, $requestData, $order);
     }
 
     public static function getApiUrlDataProvider(): array
@@ -280,11 +237,14 @@ class PosNetPosHttpClientTest extends TestCase
     public static function requestDataProvider(): \Generator
     {
         yield [
-            'txType'         => PosInterface::TX_TYPE_PAY_AUTH,
-            'paymentModel'   => PosInterface::MODEL_3D_SECURE,
-            'requestData'    => ['request-data'],
-            'order'          => ['id' => 123],
-            'expectedApiUrl' => 'https://setmpos.ykb.com/PosnetWebService/XML',
+            'txType'             => PosInterface::TX_TYPE_PAY_AUTH,
+            'paymentModel'       => PosInterface::MODEL_3D_SECURE,
+            'requestData'        => ['request-data' => 'abc'],
+            'encodedRequestData' => 'xmldata=<?xml version="1.0" encoding="ISO-8859-9"?>
+<posnetRequest><request-data>abc</request-data></posnetRequest>
+',
+            'order'              => ['id' => 123],
+            'expectedApiUrl'     => 'https://setmpos.ykb.com/PosnetWebService/XML',
         ];
     }
 }

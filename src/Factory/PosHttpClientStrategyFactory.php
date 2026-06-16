@@ -96,12 +96,9 @@ class PosHttpClientStrategyFactory
         foreach ($gatewayEndpoints as $apiName => $endpoint) {
             foreach (self::$clientClasses as $clientClass) {
                 if ($clientClass::supports($gatewayClass, $apiName)) {
-                    $serializer = SerializerFactory::createGatewaySerializer($gatewayClass, $apiName);
-
                     $clients[$apiName] = PosHttpClientFactory::create(
                         $clientClass,
                         $endpoint,
-                        $serializer,
                         $crypt,
                         $requestValueMapper,
                         $logger,
