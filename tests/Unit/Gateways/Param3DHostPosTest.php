@@ -115,17 +115,7 @@ class Param3DHostPosTest extends TestCase
         $this->assertSame($this->config, $this->pos->getConfig());
         $this->assertSame($this->account, $this->pos->getAccount());
         $this->assertSame([PosInterface::CURRENCY_TRY], $this->pos->getCurrencies());
-    }
-
-    /**
-     * @return void
-     */
-    public function testSetTestMode(): void
-    {
-        $this->pos->setTestMode(false);
         $this->assertFalse($this->pos->isTestMode());
-        $this->pos->setTestMode(true);
-        $this->assertTrue($this->pos->isTestMode());
     }
 
     /**

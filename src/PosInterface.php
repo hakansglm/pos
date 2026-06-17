@@ -363,17 +363,6 @@ interface PosInterface
     /**
      * Enable/Disable test mode
      *
-     * @param bool $testMode
-     *
-     * @return PosInterface
-     *
-     * @deprecated set via configuration file instead.
-     */
-    public function setTestMode(bool $testMode): PosInterface;
-
-    /**
-     * Enable/Disable test mode
-     *
      * @return bool
      */
     public function isTestMode(): bool;

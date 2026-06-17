@@ -130,17 +130,6 @@ class ParamPosTest extends TestCase
     }
 
     /**
-     * @return void
-     */
-    public function testSetTestMode(): void
-    {
-        $this->pos->setTestMode(false);
-        $this->assertFalse($this->pos->isTestMode());
-        $this->pos->setTestMode(true);
-        $this->assertTrue($this->pos->isTestMode());
-    }
-
-    /**
      * @dataProvider threeDFormDataProvider
      */
     public function testGet3DFormData(

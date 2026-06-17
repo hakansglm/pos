@@ -129,6 +129,29 @@ class GarantiPosTest extends TestCase
     }
 
     /**
+     * @return void
+     */
+    public function testInitOnTestMode(): void
+    {
+        $config = [
+            'name'              => 'Garanti',
+            'class'             => GarantiPos::class,
+            'gateway_configs'   => [
+                'test_mode' => true,
+            ],
+            'gateway_endpoints' => [
+                'gateway_3d' => 'https://sanalposprovtest.garantibbva.com.tr/servlet/gt3dengine',
+            ],
+        ];
+
+        $this->requestMapperMock->expects(self::once())
+            ->method('setTestMode')
+            ->with(true);
+
+        $this->pos = $this->createGateway($config);
+    }
+
+    /**
      * @testWith [true]
      */
     public function testGet3DFormData(

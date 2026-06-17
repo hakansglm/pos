@@ -153,17 +153,6 @@ class KuveytPosTest extends TestCase
     /**
      * @return void
      */
-    public function testSetTestMode(): void
-    {
-        $this->pos->setTestMode(false);
-        $this->assertFalse($this->pos->isTestMode());
-        $this->pos->setTestMode(true);
-        $this->assertTrue($this->pos->isTestMode());
-    }
-
-    /**
-     * @return void
-     */
     public function testGetCommon3DFormDataSuccessResponse(): void
     {
         $response     = 'bank-api-html-response';

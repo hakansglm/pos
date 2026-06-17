@@ -624,18 +624,6 @@ abstract class AbstractGateway implements PosInterface
     }
 
     /**
-     * @inheritDoc
-     */
-    public function setTestMode(bool $testMode): PosInterface
-    {
-        $this->testMode = $testMode;
-        $this->requestDataMapper->setTestMode($testMode);
-        $this->logger->debug('switching mode', ['is_test_mode' => $this->isTestMode()]);
-
-        return $this;
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function getCardTypeMapping(): array
@@ -733,6 +721,18 @@ abstract class AbstractGateway implements PosInterface
     protected function is3DHashCheckDisabled(): bool
     {
         return $this->config['gateway_configs']['disable_3d_hash_check'] ?? false;
+    }
+
+    /**
+     * Enable/Disable test mode
+     *
+     * @param bool $testMode
+     */
+    private function setTestMode(bool $testMode): void
+    {
+        $this->testMode = $testMode;
+        $this->requestDataMapper->setTestMode($testMode);
+        $this->logger->debug('switching mode', ['is_test_mode' => $this->isTestMode()]);
     }
 
     /**

@@ -130,17 +130,6 @@ class PayForPosTest extends TestCase
     }
 
     /**
-     * @return void
-     */
-    public function testSetTestMode(): void
-    {
-        $this->pos->setTestMode(false);
-        $this->assertFalse($this->pos->isTestMode());
-        $this->pos->setTestMode(true);
-        $this->assertTrue($this->pos->isTestMode());
-    }
-
-    /**
      * @testWith [true, "3d", "https://vpostest.qnbfinansbank.com/Gateway/Default.aspx"]
      * [false, "3d_host", "https://vpostest.qnbfinansbank.com/Gateway/3DHost.aspx"]
      */
