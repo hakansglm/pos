@@ -13,7 +13,7 @@ $account = \Mews\Pos\Factory\AccountFactory::createPayForAccount(
     (string) getenv('FINANSBANK_PASSWORD'),
     PosInterface::MODEL_3D_SECURE,
     (string) getenv('FINANSBANK_STORE_KEY'),
-    \Mews\Pos\Entity\Account\PayForAccount::MBR_ID_FINANSBANK // ya da PayForAccount::MBR_ID_ZIRAAT_KATILIM
+    \Mews\Pos\Entity\Account\PayForPosAccount::MBR_ID_FINANSBANK // ya da PayForAccount::MBR_ID_ZIRAAT_KATILIM
 );
 
 $pos = getGateway($account, $eventDispatcher);

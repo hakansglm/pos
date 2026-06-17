@@ -7,7 +7,7 @@
 namespace Mews\Pos\Tests\Unit\Crypt;
 
 use Mews\Pos\Crypt\PayForPosCrypt;
-use Mews\Pos\Entity\Account\PayForAccount;
+use Mews\Pos\Entity\Account\PayForPosAccount;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateways\EstV3Pos;
@@ -24,7 +24,7 @@ class PayForPosCryptTest extends TestCase
 {
     public PayForPosCrypt $crypt;
 
-    private PayForAccount $account;
+    private PayForPosAccount $account;
 
     protected function setUp(): void
     {
@@ -38,7 +38,7 @@ class PayForPosCryptTest extends TestCase
             PosInterface::MODEL_3D_SECURE,
             '12345678',
             PosInterface::LANG_TR,
-            PayForAccount::MBR_ID_ZIRAAT_KATILIM
+            PayForPosAccount::MBR_ID_ZIRAAT_KATILIM
         );
 
         $logger      = $this->createMock(LoggerInterface::class);

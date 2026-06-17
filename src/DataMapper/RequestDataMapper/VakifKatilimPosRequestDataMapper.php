@@ -9,7 +9,7 @@ namespace Mews\Pos\DataMapper\RequestDataMapper;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\Crypt\KuveytPosCrypt;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\KuveytPosAccount;
+use Mews\Pos\Entity\Account\BoaPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Gateways\VakifKatilimPos;
 use Mews\Pos\PosInterface;
@@ -34,7 +34,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param KuveytPosAccount $posAccount
+     * @param BoaPosAccount $posAccount
      *
      * {@inheritDoc}
      *
@@ -72,7 +72,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
      * @phpstan-param PosInterface::MODEL_3D_*                                          $paymentModel
      * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
      *
-     * @param KuveytPosAccount                     $posAccount
+     * @param BoaPosAccount                        $posAccount
      * @param array<string, int|string|float|null> $order
      * @param string                               $paymentModel
      * @param string                               $txType
@@ -111,7 +111,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @phpstan-param KuveytPosAccount $posAccount
+     * @phpstan-param BoaPosAccount $posAccount
      *
      * {@inheritDoc}
      */
@@ -132,7 +132,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @phpstan-param KuveytPosAccount $posAccount
+     * @phpstan-param BoaPosAccount $posAccount
      *
      * {@inheritDoc}
      */
@@ -162,7 +162,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param KuveytPosAccount $posAccount
+     * @param BoaPosAccount $posAccount
      *
      * {@inheritDoc}
      */
@@ -180,7 +180,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param KuveytPosAccount $posAccount
+     * @param BoaPosAccount $posAccount
      *
      * {@inheritDoc}
      */
@@ -205,7 +205,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param KuveytPosAccount $posAccount
+     * @param BoaPosAccount $posAccount
      *
      * {@inheritDoc}
      */
@@ -225,7 +225,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param KuveytPosAccount $posAccount
+     * @param BoaPosAccount $posAccount
      *
      * @inheritDoc
      */
@@ -277,7 +277,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @phpstan-param KuveytPosAccount $posAccount
+     * @phpstan-param BoaPosAccount $posAccount
      *
      * {@inheritDoc}
      */
@@ -305,7 +305,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @phpstan-param KuveytPosAccount $posAccount
+     * @phpstan-param BoaPosAccount $posAccount
      *
      * {@inheritDoc}
      */
@@ -416,7 +416,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param KuveytPosAccount $posAccount
+     * @param BoaPosAccount $posAccount
      *
      * @return array{MerchantId: string, CustomerId: string, UserName: string, SubMerchantId: string}
      */

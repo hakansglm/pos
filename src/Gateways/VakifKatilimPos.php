@@ -11,7 +11,7 @@ use Mews\Pos\DataMapper\RequestDataMapper\VakifKatilimPosRequestDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\ResponseDataMapperInterface;
 use Mews\Pos\DataMapper\ResponseDataMapper\VakifKatilimPosResponseDataMapper;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\KuveytPosAccount;
+use Mews\Pos\Entity\Account\BoaPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exceptions\UnsupportedFormFormatException;
@@ -28,7 +28,7 @@ class VakifKatilimPos extends AbstractGateway
     /** @var string */
     public const NAME = 'VakifKatilim';
 
-    /** @var KuveytPosAccount */
+    /** @var BoaPosAccount */
     protected AbstractPosAccount $account;
 
     /** @var VakifKatilimPosRequestDataMapper */
@@ -57,7 +57,7 @@ class VakifKatilimPos extends AbstractGateway
         PosInterface::TX_TYPE_CUSTOM_QUERY   => false,
     ];
 
-    /** @return KuveytPosAccount */
+    /** @return BoaPosAccount */
     public function getAccount(): AbstractPosAccount
     {
         return $this->account;
@@ -191,7 +191,7 @@ class VakifKatilimPos extends AbstractGateway
      * @phpstan-param PosInterface::MODEL_3D_*                                          $paymentModel
      * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $orderTxType
      *
-     * @param KuveytPosAccount                     $kuveytPosAccount
+     * @param BoaPosAccount                        $boaPosAccount
      * @param array<string, int|string|float|null> $order
      * @param string                               $paymentModel
      * @param string                               $orderTxType
@@ -202,14 +202,14 @@ class VakifKatilimPos extends AbstractGateway
      * @throws UnsupportedTransactionTypeException
      */
     private function sendEnrollmentRequest(
-        KuveytPosAccount $kuveytPosAccount,
-        array $order,
-        string $paymentModel,
-        string $orderTxType,
+        BoaPosAccount        $boaPosAccount,
+        array                $order,
+        string               $paymentModel,
+        string               $orderTxType,
         ?CreditCardInterface $creditCard = null
     ): string {
         $requestData = $this->requestDataMapper->create3DFormInitializeRequestData(
-            $kuveytPosAccount,
+            $boaPosAccount,
             $order,
             $paymentModel,
             $orderTxType,

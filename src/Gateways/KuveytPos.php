@@ -12,7 +12,7 @@ use Mews\Pos\DataMapper\RequestDataMapper\RequestDataMapperInterface;
 use Mews\Pos\DataMapper\ResponseDataMapper\KuveytPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\ResponseDataMapperInterface;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\KuveytPosAccount;
+use Mews\Pos\Entity\Account\BoaPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exceptions\UnsupportedFormFormatException;
@@ -31,7 +31,7 @@ class KuveytPos extends AbstractGateway
     /** @var string */
     public const NAME = 'KuveytPos';
 
-    /** @var KuveytPosAccount */
+    /** @var BoaPosAccount */
     protected AbstractPosAccount $account;
 
     /** @var KuveytPosRequestDataMapper */
@@ -57,7 +57,7 @@ class KuveytPos extends AbstractGateway
         PosInterface::TX_TYPE_CUSTOM_QUERY   => false,
     ];
 
-    /** @return KuveytPosAccount */
+    /** @return BoaPosAccount */
     public function getAccount(): AbstractPosAccount
     {
         return $this->account;
@@ -204,7 +204,7 @@ class KuveytPos extends AbstractGateway
      * @phpstan-param PosInterface::MODEL_3D_*                                          $paymentModel
      * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $orderTxType
      *
-     * @param KuveytPosAccount                     $kuveytPosAccount
+     * @param BoaPosAccount                        $boaPosAccount
      * @param array<string, int|string|float|null> $order
      * @param string                               $paymentModel
      * @param string                               $orderTxType
@@ -216,10 +216,10 @@ class KuveytPos extends AbstractGateway
      * @throws UnsupportedTransactionTypeException
      * @throws ClientExceptionInterface
      */
-    private function getCommon3DFormData(KuveytPosAccount $kuveytPosAccount, array $order, string $paymentModel, string $orderTxType, ?CreditCardInterface $creditCard = null): string
+    private function getCommon3DFormData(BoaPosAccount $boaPosAccount, array $order, string $paymentModel, string $orderTxType, ?CreditCardInterface $creditCard = null): string
     {
         $requestData = $this->requestDataMapper->create3DFormInitializeRequestData(
-            $kuveytPosAccount,
+            $boaPosAccount,
             $order,
             $paymentModel,
             $orderTxType,

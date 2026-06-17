@@ -11,7 +11,7 @@ use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\RequestDataMapper\KuveytPosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestValueFormatter\KuveytPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueMapper\KuveytPosRequestValueMapper;
-use Mews\Pos\Entity\Account\KuveytPosAccount;
+use Mews\Pos\Entity\Account\BoaPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
@@ -31,7 +31,7 @@ class KuveytPosRequestDataMapperTest extends TestCase
 {
     use TestUtilTrait;
 
-    private KuveytPosAccount $account;
+    private BoaPosAccount $account;
 
     private CreditCardInterface $card;
 

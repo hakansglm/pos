@@ -11,7 +11,7 @@ use Mews\Pos\DataMapper\RequestDataMapper\PayFlexV4PosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestValueFormatter\PayFlexV4PosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueMapper\PayFlexV4PosRequestValueMapper;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\PayFlexAccount;
+use Mews\Pos\Entity\Account\PayFlexPosAccount;
 use Mews\Pos\Entity\Card\CreditCard;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Factory\AccountFactory;
@@ -29,7 +29,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
  */
 class PayFlexV4PosRequestDataMapperTest extends TestCase
 {
-    public PayFlexAccount $account;
+    public PayFlexPosAccount $account;
 
     private PayFlexV4PosRequestDataMapper $requestDataMapper;
 

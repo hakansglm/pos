@@ -8,7 +8,7 @@ namespace Mews\Pos\Tests\Unit\Crypt;
 
 use Mews\Pos\Crypt\KuveytPosCrypt;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\KuveytPosAccount;
+use Mews\Pos\Entity\Account\BoaPosAccount;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateways\EstV3Pos;
@@ -24,7 +24,7 @@ class KuveytPosCryptTest extends TestCase
 {
     public KuveytPosCrypt $crypt;
 
-    private KuveytPosAccount $account;
+    private BoaPosAccount $account;
 
     protected function setUp(): void
     {

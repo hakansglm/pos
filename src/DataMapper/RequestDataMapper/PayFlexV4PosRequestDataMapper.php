@@ -8,7 +8,7 @@ namespace Mews\Pos\DataMapper\RequestDataMapper;
 
 use DateTimeInterface;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\PayFlexAccount;
+use Mews\Pos\Entity\Account\PayFlexPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
@@ -29,7 +29,7 @@ class PayFlexV4PosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param PayFlexAccount                                                      $posAccount
+     * @param PayFlexPosAccount                                                   $posAccount
      * @param array{Eci: string, Cavv: string, VerifyEnrollmentRequestId: string} $responseData
      *
      * {@inheritDoc}
@@ -67,7 +67,7 @@ class PayFlexV4PosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param PayFlexAccount                       $posAccount
+     * @param PayFlexPosAccount                    $posAccount
      * @param array<string, int|string|float|null> $order
      * @param CreditCardInterface                  $creditCard
      *
@@ -111,7 +111,7 @@ class PayFlexV4PosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param PayFlexAccount $posAccount
+     * @param PayFlexPosAccount $posAccount
      *
      * {@inheritDoc}
      */
@@ -133,7 +133,7 @@ class PayFlexV4PosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param PayFlexAccount       $posAccount
+     * @param PayFlexPosAccount    $posAccount
      * @param array<string, mixed> $order
      *
      * @return array{TransactionType: string,
@@ -229,7 +229,7 @@ class PayFlexV4PosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param PayFlexAccount $posAccount
+     * @param PayFlexPosAccount $posAccount
      *
      * @inheritDoc
      */
@@ -338,7 +338,7 @@ class PayFlexV4PosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param PayFlexAccount $posAccount
+     * @param PayFlexPosAccount $posAccount
      *
      * @return array{MerchantId: string, Password: string, TerminalNo: string}
      */

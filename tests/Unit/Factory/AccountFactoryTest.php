@@ -6,17 +6,17 @@
 
 namespace Mews\Pos\Tests\Unit\Factory;
 
-use Mews\Pos\Entity\Account\PayForAccount;
+use Mews\Pos\Entity\Account\PayForPosAccount;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Mews\Pos\Factory\AccountFactory
- * @covers \Mews\Pos\Entity\Account\KuveytPosAccount
+ * @covers \Mews\Pos\Entity\Account\BoaPosAccount
  * @covers \Mews\Pos\Entity\Account\AkbankPosAccount
  * @covers \Mews\Pos\Entity\Account\ParamPosAccount
- * @covers \Mews\Pos\Entity\Account\PayForAccount
+ * @covers \Mews\Pos\Entity\Account\PayForPosAccount
  */
 class AccountFactoryTest extends TestCase
 {
@@ -80,13 +80,13 @@ class AccountFactoryTest extends TestCase
             'UcBN0',
             PosInterface::MODEL_3D_SECURE,
             '12345678',
-            \Mews\Pos\Entity\Account\PayForAccount::MBR_ID_ZIRAAT_KATILIM
+            \Mews\Pos\Entity\Account\PayForPosAccount::MBR_ID_ZIRAAT_KATILIM
         );
 
         $this->assertSame('085300000009704', $account->getClientId());
         $this->assertSame('QNB_API_KULLANICI_3DPAY', $account->getUsername());
         $this->assertSame('UcBN0', $account->getPassword());
         $this->assertSame('12345678', $account->getStoreKey());
-        $this->assertSame(PayForAccount::MBR_ID_ZIRAAT_KATILIM, $account->getMbrId());
+        $this->assertSame(PayForPosAccount::MBR_ID_ZIRAAT_KATILIM, $account->getMbrId());
     }
 }

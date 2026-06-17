@@ -11,7 +11,7 @@ use Mews\Pos\DataMapper\RequestDataMapper\RequestDataMapperInterface;
 use Mews\Pos\DataMapper\ResponseDataMapper\PayForPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\ResponseDataMapperInterface;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\PayForAccount;
+use Mews\Pos\Entity\Account\PayForPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exceptions\HashMismatchException;
@@ -28,7 +28,7 @@ class PayForPos extends AbstractGateway
     /** @var string */
     public const NAME = 'PayForPOS';
 
-    /** @var PayForAccount */
+    /** @var PayForPosAccount */
     protected AbstractPosAccount $account;
 
     /** @var PayForPosRequestDataMapper */
@@ -61,7 +61,7 @@ class PayForPos extends AbstractGateway
         PosInterface::TX_TYPE_CUSTOM_QUERY   => true,
     ];
 
-    /** @return PayForAccount */
+    /** @return PayForPosAccount */
     public function getAccount(): AbstractPosAccount
     {
         return $this->account;

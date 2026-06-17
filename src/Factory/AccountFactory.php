@@ -11,10 +11,10 @@ use Mews\Pos\Entity\Account\EstPosAccount;
 use Mews\Pos\Entity\Account\IyzicoPosAccount;
 use Mews\Pos\Entity\Account\GarantiPosAccount;
 use Mews\Pos\Entity\Account\InterPosAccount;
-use Mews\Pos\Entity\Account\KuveytPosAccount;
+use Mews\Pos\Entity\Account\BoaPosAccount;
 use Mews\Pos\Entity\Account\ParamPosAccount;
-use Mews\Pos\Entity\Account\PayFlexAccount;
-use Mews\Pos\Entity\Account\PayForAccount;
+use Mews\Pos\Entity\Account\PayFlexPosAccount;
+use Mews\Pos\Entity\Account\PayForPosAccount;
 use Mews\Pos\Entity\Account\PosNetPosAccount;
 use Mews\Pos\Entity\Account\ToslaPosAccount;
 use Mews\Pos\Exceptions\MissingAccountInfoException;
@@ -87,8 +87,8 @@ class AccountFactory
     }
 
     /**
-     * @phpstan-param PosInterface::MODEL_*   $model
-     * @phpstan-param PayForAccount::MBR_ID_* $mbrId
+     * @phpstan-param PosInterface::MODEL_*      $model
+     * @phpstan-param PayForPosAccount::MBR_ID_* $mbrId
      *
      * @param non-empty-string      $bank
      * @param non-empty-string      $merchantId   Üye işyeri numarası.
@@ -98,7 +98,7 @@ class AccountFactory
      * @param non-empty-string|null $merchantPass 3D Secure şifresidir.
      * @param non-empty-string      $mbrId        Kurum kodudur.
      *
-     * @return PayForAccount
+     * @return PayForPosAccount
      *
      * @throws MissingAccountInfoException
      */
@@ -109,11 +109,11 @@ class AccountFactory
         string  $userPassword,
         string  $model = PosInterface::MODEL_NON_SECURE,
         ?string $merchantPass = null,
-        string  $mbrId = PayForAccount::MBR_ID_FINANSBANK
-    ): PayForAccount {
+        string  $mbrId = PayForPosAccount::MBR_ID_FINANSBANK
+    ): PayForPosAccount {
         self::checkParameters($model, $merchantPass);
 
-        return new PayForAccount(
+        return new PayForPosAccount(
             $bank,
             $merchantId,
             $userCode,
@@ -159,15 +159,15 @@ class AccountFactory
      * @param non-empty-string      $model
      * @param non-empty-string|null $subMerchantId
      *
-     * @return KuveytPosAccount
+     * @return BoaPosAccount
      *
      * @throws MissingAccountInfoException
      */
-    public static function createKuveytPosAccount(string $bank, string $merchantId, string $username, string $customerId, string $storeKey, string $model = PosInterface::MODEL_3D_SECURE, ?string $subMerchantId = null): KuveytPosAccount
+    public static function createKuveytPosAccount(string $bank, string $merchantId, string $username, string $customerId, string $storeKey, string $model = PosInterface::MODEL_3D_SECURE, ?string $subMerchantId = null): BoaPosAccount
     {
         self::checkParameters($model, $storeKey);
 
-        return new KuveytPosAccount($bank, $merchantId, $username, $customerId, $storeKey, $subMerchantId);
+        return new BoaPosAccount($bank, $merchantId, $username, $customerId, $storeKey, $subMerchantId);
     }
 
     /**
@@ -192,8 +192,8 @@ class AccountFactory
     }
 
     /**
-     * @phpstan-param PayFlexAccount::MERCHANT_TYPE_* $merchantType
-     * @phpstan-param PosInterface::MODEL_*           $model
+     * @phpstan-param PayFlexPosAccount::MERCHANT_TYPE_* $merchantType
+     * @phpstan-param PosInterface::MODEL_*              $model
      *
      * @param non-empty-string      $bank
      * @param non-empty-string      $merchantId    Üye işyeri numarası
@@ -203,15 +203,15 @@ class AccountFactory
      * @param int                   $merchantType
      * @param non-empty-string|null $subMerchantId
      *
-     * @return PayFlexAccount
+     * @return PayFlexPosAccount
      *
      * @throws MissingAccountInfoException
      */
-    public static function createPayFlexAccount(string $bank, string $merchantId, string $password, string $terminalNo, string $model = PosInterface::MODEL_NON_SECURE, int $merchantType = PayFlexAccount::MERCHANT_TYPE_STANDARD, ?string $subMerchantId = null): PayFlexAccount
+    public static function createPayFlexAccount(string $bank, string $merchantId, string $password, string $terminalNo, string $model = PosInterface::MODEL_NON_SECURE, int $merchantType = PayFlexPosAccount::MERCHANT_TYPE_STANDARD, ?string $subMerchantId = null): PayFlexPosAccount
     {
         self::checkPayFlexBankMerchantType($merchantType, $subMerchantId);
 
-        return new PayFlexAccount($bank, $merchantId, $password, $terminalNo, $merchantType, $subMerchantId);
+        return new PayFlexPosAccount($bank, $merchantId, $password, $terminalNo, $merchantType, $subMerchantId);
     }
 
     /**
@@ -273,7 +273,7 @@ class AccountFactory
     }
 
     /**
-     * @phpstan-param PayFlexAccount::MERCHANT_TYPE_* $merchantType
+     * @phpstan-param PayFlexPosAccount::MERCHANT_TYPE_* $merchantType
      *
      * @param int                   $merchantType
      * @param non-empty-string|null $subMerchantId
@@ -284,11 +284,11 @@ class AccountFactory
      */
     private static function checkPayFlexBankMerchantType(int $merchantType, ?string $subMerchantId): void
     {
-        if (PayFlexAccount::MERCHANT_TYPE_SUB_DEALER === $merchantType && null === $subMerchantId) {
+        if (PayFlexPosAccount::MERCHANT_TYPE_SUB_DEALER === $merchantType && null === $subMerchantId) {
             throw new MissingAccountInfoException('SubMerchantId is required for sub branches!');
         }
 
-        if (!\in_array($merchantType, PayFlexAccount::getMerchantTypes())) {
+        if (!\in_array($merchantType, PayFlexPosAccount::getMerchantTypes())) {
             throw new MissingAccountInfoException('Invalid MerchantType!');
         }
     }

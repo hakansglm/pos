@@ -13,7 +13,7 @@ use Mews\Pos\DataMapper\RequestDataMapper\PayForPosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestValueMapper\PayForPosRequestValueMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\ResponseDataMapperInterface;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\PayForAccount;
+use Mews\Pos\Entity\Account\PayForPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exceptions\HashMismatchException;
@@ -34,7 +34,7 @@ use Psr\Log\LoggerInterface;
  */
 class PayForPosTest extends TestCase
 {
-    private PayForAccount $account;
+    private PayForPosAccount $account;
 
     private array $config;
 
@@ -87,7 +87,7 @@ class PayForPosTest extends TestCase
             PosInterface::MODEL_3D_SECURE,
             '12345678',
             PosInterface::LANG_TR,
-            PayForAccount::MBR_ID_ZIRAAT_KATILIM
+            PayForPosAccount::MBR_ID_ZIRAAT_KATILIM
         );
 
         $this->requestValueMapper     = new PayForPosRequestValueMapper();

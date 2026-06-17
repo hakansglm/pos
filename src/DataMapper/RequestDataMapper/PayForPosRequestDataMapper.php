@@ -7,7 +7,7 @@
 namespace Mews\Pos\DataMapper\RequestDataMapper;
 
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\PayForAccount;
+use Mews\Pos\Entity\Account\PayForPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\Before3DFormHashCalculatedEvent;
 use Mews\Pos\Gateways\PayForPos;
@@ -56,7 +56,7 @@ class PayForPosRequestDataMapper extends AbstractRequestDataMapper
     /**
      * {@inheritDoc}
      *
-     * @param PayForAccount $posAccount
+     * @param PayForPosAccount $posAccount
      *
      * @return array{MbrId: string, MOTO: string, OrderId: string, SecureType: string, TxnType: string, PurchAmount: string, Currency: string, InstallmentCount: string, Lang: string, CardHolderName: string|null, Pan: string, Expiry: string, Cvv2: string, MerchantId: string, UserCode: string, UserPass: string}
      */
@@ -83,7 +83,7 @@ class PayForPosRequestDataMapper extends AbstractRequestDataMapper
     /**
      * {@inheritDoc}
      *
-     * @param PayForAccount $posAccount
+     * @param PayForPosAccount $posAccount
      *
      * @return array{MbrId: string, OrgOrderId: string, SecureType: string, TxnType: string, PurchAmount: string, Currency: string, Lang: string, MerchantId: string, UserCode: string, UserPass: string}
      */
@@ -104,7 +104,7 @@ class PayForPosRequestDataMapper extends AbstractRequestDataMapper
     /**
      * {@inheritDoc}
      *
-     * @param PayForAccount $posAccount
+     * @param PayForPosAccount $posAccount
      *
      * @return array{MbrId: string, OrgOrderId: string, SecureType: string, Lang: string, TxnType: string, MerchantId: string, UserCode: string, UserPass: string}
      */
@@ -123,7 +123,7 @@ class PayForPosRequestDataMapper extends AbstractRequestDataMapper
     /**
      * {@inheritDoc}
      *
-     * @param PayForAccount $posAccount
+     * @param PayForPosAccount $posAccount
      *
      * @return array{MbrId: string, OrgOrderId: string, SecureType: string, TxnType: string, Currency: string, Lang: string, MerchantId: string, UserCode: string, UserPass: string}
      */
@@ -143,7 +143,7 @@ class PayForPosRequestDataMapper extends AbstractRequestDataMapper
     /**
      * {@inheritDoc}
      *
-     * @param PayForAccount $posAccount
+     * @param PayForPosAccount $posAccount
      *
      * @return array{MbrId: string, SecureType: string, Lang: string, OrgOrderId: string, TxnType: string, PurchAmount: string, Currency: string, MerchantId: string, UserCode: string, UserPass: string}
      */
@@ -164,7 +164,7 @@ class PayForPosRequestDataMapper extends AbstractRequestDataMapper
     /**
      * {@inheritDoc}
      *
-     * @param PayForAccount $posAccount
+     * @param PayForPosAccount $posAccount
      */
     public function createOrderHistoryRequestData(AbstractPosAccount $posAccount, array $order): array
     {
@@ -181,7 +181,7 @@ class PayForPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param PayForAccount                               $posAccount
+     * @param PayForPosAccount                            $posAccount
      * @param array{transaction_date: \DateTimeInterface} $data
      *
      * {@inheritDoc}
@@ -201,7 +201,7 @@ class PayForPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param PayForAccount $posAccount
+     * @param PayForPosAccount $posAccount
      *
      * @inheritDoc
      */
@@ -213,7 +213,7 @@ class PayForPosRequestDataMapper extends AbstractRequestDataMapper
     /**
      * {@inheritDoc}
      *
-     * @param PayForAccount $posAccount
+     * @param PayForPosAccount $posAccount
      *
      * @return array{gateway: string, method: 'POST', inputs: array<string, string>}
      */
@@ -233,7 +233,7 @@ class PayForPosRequestDataMapper extends AbstractRequestDataMapper
     /**
      * Returns the request body for the iyzico 3D initialize endpoint.
      *
-     * @param PayForAccount                                                     $posAccount
+     * @param PayForPosAccount                                                  $posAccount
      * @param array<string, mixed>                                              $order
      * @param PosInterface::MODEL_3D_*                                          $paymentModel
      * @param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
@@ -295,7 +295,7 @@ class PayForPosRequestDataMapper extends AbstractRequestDataMapper
 
     /**
      *
-     * @param PayForAccount                                                     $posAccount
+     * @param PayForPosAccount                                                  $posAccount
      * @param array<string, mixed>                                              $order
      * @param PosInterface::MODEL_3D_*                                          $paymentModel
      * @param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
@@ -350,7 +350,7 @@ class PayForPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param PayForAccount $posAccount
+     * @param PayForPosAccount $posAccount
      *
      * @return array{MerchantId: string, UserCode: string, UserPass: string, MbrId: string}
      */

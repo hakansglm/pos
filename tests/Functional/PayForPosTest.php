@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\Tests\Functional;
 
-use Mews\Pos\Entity\Account\PayForAccount;
+use Mews\Pos\Entity\Account\PayForPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\Before3DFormHashCalculatedEvent;
 use Mews\Pos\Event\RequestDataPreparedEvent;
@@ -42,7 +42,7 @@ class PayForPosTest extends TestCase
             (string) getenv('FINANSBANK_PASSWORD'),
             PosInterface::MODEL_3D_SECURE,
             (string) getenv('FINANSBANK_STORE_KEY'),
-            PayForAccount::MBR_ID_FINANSBANK
+            PayForPosAccount::MBR_ID_FINANSBANK
         );
         $this->eventDispatcher = new EventDispatcher();
 

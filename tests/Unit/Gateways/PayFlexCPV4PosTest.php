@@ -16,7 +16,7 @@ use Mews\Pos\DataMapper\RequestValueMapper\PayFlexCPV4PosRequestValueMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\PayFlexCPV4PosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\ResponseDataMapperInterface;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\PayFlexAccount;
+use Mews\Pos\Entity\Account\PayFlexPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exceptions\UnsupportedFormFormatException;
@@ -39,7 +39,7 @@ use Psr\Log\LoggerInterface;
  */
 class PayFlexCPV4PosTest extends TestCase
 {
-    private PayFlexAccount $account;
+    private PayFlexPosAccount $account;
 
     /** @var PayFlexCPV4Pos */
     private PosInterface $pos;

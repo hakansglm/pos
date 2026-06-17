@@ -7,9 +7,9 @@
 namespace Mews\Pos\Entity\Account;
 
 /**
- * KuveytPosAccount
+ * Used for KuveytPos and VakifKatilimPos gateways
  */
-class KuveytPosAccount extends AbstractPosAccount
+class BoaPosAccount extends AbstractPosAccount
 {
     /**
      * @param string      $bankName

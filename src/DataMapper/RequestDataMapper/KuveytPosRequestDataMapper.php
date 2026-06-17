@@ -9,7 +9,7 @@ namespace Mews\Pos\DataMapper\RequestDataMapper;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\Crypt\KuveytPosCrypt;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\KuveytPosAccount;
+use Mews\Pos\Entity\Account\BoaPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
@@ -36,7 +36,7 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param KuveytPosAccount $posAccount
+     * @param BoaPosAccount $posAccount
      *
      * {@inheritDoc}
      *
@@ -74,7 +74,7 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
      * @phpstan-param PosInterface::MODEL_3D_*                                          $paymentModel
      * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
      *
-     * @param KuveytPosAccount         $posAccount
+     * @param BoaPosAccount            $posAccount
      * @param array<string, mixed>     $order
      * @param string                   $paymentModel
      * @param string                   $txType
@@ -151,7 +151,7 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param KuveytPosAccount $posAccount
+     * @param BoaPosAccount $posAccount
      *
      * {@inheritDoc}
      */
@@ -182,7 +182,7 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param KuveytPosAccount $posAccount
+     * @param BoaPosAccount $posAccount
      *
      * {@inheritDoc}
      */
@@ -244,7 +244,7 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param KuveytPosAccount $posAccount
+     * @param BoaPosAccount $posAccount
      *
      * {@inheritDoc}
      */
@@ -295,7 +295,7 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param KuveytPosAccount $posAccount
+     * @param BoaPosAccount $posAccount
      *
      * {@inheritDoc}
      */
@@ -435,7 +435,7 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param KuveytPosAccount $posAccount
+     * @param BoaPosAccount $posAccount
      *
      * @return array{MerchantId: string, CustomerId: string, UserName: string}
      */

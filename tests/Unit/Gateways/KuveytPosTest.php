@@ -12,7 +12,7 @@ use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\RequestDataMapper\KuveytPosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestValueMapper\KuveytPosRequestValueMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\ResponseDataMapperInterface;
-use Mews\Pos\Entity\Account\KuveytPosAccount;
+use Mews\Pos\Entity\Account\BoaPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exceptions\UnsupportedFormFormatException;
@@ -34,7 +34,7 @@ use Psr\Log\LoggerInterface;
  */
 class KuveytPosTest extends TestCase
 {
-    private KuveytPosAccount $account;
+    private BoaPosAccount $account;
 
     private array $config;
 

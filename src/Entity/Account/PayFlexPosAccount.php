@@ -6,7 +6,10 @@
 
 namespace Mews\Pos\Entity\Account;
 
-class PayFlexAccount extends AbstractPosAccount
+/**
+ * used by PayFlexPos and PayFlexCPV4Pos gateways
+ */
+class PayFlexPosAccount extends AbstractPosAccount
 {
     /** @var int */
     public const MERCHANT_TYPE_STANDARD = 0;

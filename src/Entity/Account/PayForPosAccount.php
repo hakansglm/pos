@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\Entity\Account;
 
-class PayForAccount extends AbstractPosAccount
+class PayForPosAccount extends AbstractPosAccount
 {
     public const MBR_ID_FINANSBANK     = '5';
     public const MBR_ID_ZIRAAT_KATILIM = '12';

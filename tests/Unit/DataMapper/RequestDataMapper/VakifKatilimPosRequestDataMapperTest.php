@@ -11,7 +11,7 @@ use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\RequestDataMapper\VakifKatilimPosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestValueFormatter\VakifKatilimPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueMapper\VakifKatilimPosRequestValueMapper;
-use Mews\Pos\Entity\Account\KuveytPosAccount;
+use Mews\Pos\Entity\Account\BoaPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
@@ -28,7 +28,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
  */
 class VakifKatilimPosRequestDataMapperTest extends TestCase
 {
-    private KuveytPosAccount $account;
+    private BoaPosAccount $account;
 
     private CreditCardInterface $card;
 
@@ -336,17 +336,17 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
     /**
      * @dataProvider create3DPaymentRequestDataDataProvider
      */
-    public function testCreate3DPaymentRequestData(KuveytPosAccount $kuveytPosAccount, array $order, string $txType, array $responseData, array $expectedData): void
+    public function testCreate3DPaymentRequestData(BoaPosAccount $boaPosAccount, array $order, string $txType, array $responseData, array $expectedData): void
     {
         $hashCalculationData             = $expectedData;
         $hashCalculationData['HashData'] = '';
 
         $this->crypt->expects(self::once())
             ->method('createHash')
-            ->with($kuveytPosAccount, $hashCalculationData)
+            ->with($boaPosAccount, $hashCalculationData)
             ->willReturn($expectedData['HashData']);
 
-        $actual = $this->requestDataMapper->create3DPaymentRequestData($kuveytPosAccount, $order, $txType, $responseData);
+        $actual = $this->requestDataMapper->create3DPaymentRequestData($boaPosAccount, $order, $txType, $responseData);
 
         ksort($expectedData);
         ksort($actual);

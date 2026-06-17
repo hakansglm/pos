@@ -10,7 +10,7 @@ use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\RequestDataMapper\PayForPosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestValueFormatter\PayForPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueMapper\PayForPosRequestValueMapper;
-use Mews\Pos\Entity\Account\PayForAccount;
+use Mews\Pos\Entity\Account\PayForPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\Before3DFormHashCalculatedEvent;
 use Mews\Pos\Factory\AccountFactory;
@@ -28,7 +28,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 class PayForPosRequestDataMapperTest extends TestCase
 {
     /**
-     * @var PayForAccount[]
+     * @var PayForPosAccount[]
      */
     private array $accounts;
 
@@ -57,7 +57,7 @@ class PayForPosRequestDataMapperTest extends TestCase
             'UcBN0',
             PosInterface::MODEL_3D_SECURE,
             '12345678',
-            PayForAccount::MBR_ID_FINANSBANK
+            PayForPosAccount::MBR_ID_FINANSBANK
         );
 
         $this->accounts['ziraat_katilim'] = AccountFactory::createPayForAccount(
@@ -67,7 +67,7 @@ class PayForPosRequestDataMapperTest extends TestCase
             'UcBN0',
             PosInterface::MODEL_3D_SECURE,
             '12345678',
-            PayForAccount::MBR_ID_ZIRAAT_KATILIM
+            PayForPosAccount::MBR_ID_ZIRAAT_KATILIM
         );
 
         $this->crypt          = $this->createMock(CryptInterface::class);

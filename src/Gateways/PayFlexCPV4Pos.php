@@ -11,7 +11,7 @@ use Mews\Pos\DataMapper\RequestDataMapper\RequestDataMapperInterface;
 use Mews\Pos\DataMapper\ResponseDataMapper\PayFlexCPV4PosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\ResponseDataMapperInterface;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\PayFlexAccount;
+use Mews\Pos\Entity\Account\PayFlexPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exceptions\UnsupportedFormFormatException;
@@ -29,7 +29,7 @@ class PayFlexCPV4Pos extends AbstractGateway
     /** @var string */
     public const NAME = 'PayFlex-Common-Payment-V4';
 
-    /** @var PayFlexAccount */
+    /** @var PayFlexPosAccount */
     protected AbstractPosAccount $account;
 
     /** @var PayFlexCPV4PosRequestDataMapper */
@@ -54,7 +54,7 @@ class PayFlexCPV4Pos extends AbstractGateway
         PosInterface::TX_TYPE_CUSTOM_QUERY   => true,
     ];
 
-    /** @return PayFlexAccount */
+    /** @return PayFlexPosAccount */
     public function getAccount(): AbstractPosAccount
     {
         return $this->account;
