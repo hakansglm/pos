@@ -16,7 +16,6 @@ use Mews\Pos\DataMapper\ResponseValueFormatter\PosNetPosResponseValueFormatter;
 use Mews\Pos\DataMapper\ResponseValueFormatter\ToslaPosResponseValueFormatter;
 use Mews\Pos\Factory\ResponseValueFormatterFactory;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstPos;
 use Mews\Pos\Gateways\EstV3Pos;
 use Mews\Pos\Gateways\GarantiPos;
 use Mews\Pos\Gateways\InterPos;
@@ -56,7 +55,6 @@ class ResponseValueFormatterFactoryTest extends TestCase
     {
         return [
             [AkbankPos::class, BasicResponseValueFormatter::class],
-            [EstPos::class, EstPosResponseValueFormatter::class],
             [EstV3Pos::class, EstPosResponseValueFormatter::class],
             [GarantiPos::class, GarantiPosResponseValueFormatter::class],
             [InterPos::class, InterPosResponseValueFormatter::class],

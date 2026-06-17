@@ -9,7 +9,6 @@ namespace Mews\Pos\Tests\Unit\DataMapper\RequestValueMapper;
 use Mews\Pos\DataMapper\RequestValueMapper\EstPosRequestValueMapper;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstPos;
 use Mews\Pos\Gateways\EstV3Pos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
@@ -30,9 +29,6 @@ class EstPosRequestValueMapperTest extends TestCase
 
     public function testSupports(): void
     {
-        $result = $this->valueMapper::supports(EstPos::class);
-        $this->assertTrue($result);
-
         $result = $this->valueMapper::supports(EstV3Pos::class);
         $this->assertTrue($result);
 

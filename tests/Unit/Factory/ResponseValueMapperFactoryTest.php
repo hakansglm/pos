@@ -21,7 +21,6 @@ use Mews\Pos\DataMapper\ResponseValueMapper\ToslaPosResponseValueMapper;
 use Mews\Pos\DataMapper\ResponseValueMapper\VakifKatilimPosResponseValueMapper;
 use Mews\Pos\Factory\ResponseValueMapperFactory;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstPos;
 use Mews\Pos\Gateways\EstV3Pos;
 use Mews\Pos\Gateways\GarantiPos;
 use Mews\Pos\Gateways\InterPos;
@@ -65,7 +64,6 @@ class ResponseValueMapperFactoryTest extends TestCase
     {
         return [
             [AkbankPos::class, AkbankPosResponseValueMapper::class],
-            [EstPos::class, EstPosResponseValueMapper::class],
             [EstV3Pos::class, EstPosResponseValueMapper::class],
             [GarantiPos::class, GarantiPosResponseValueMapper::class],
             [InterPos::class, InterPosResponseValueMapper::class],

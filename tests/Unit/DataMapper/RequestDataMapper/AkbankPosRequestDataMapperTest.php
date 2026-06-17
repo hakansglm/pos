@@ -16,7 +16,7 @@ use Mews\Pos\Event\Before3DFormHashCalculatedEvent;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstPos;
+use Mews\Pos\Gateways\EstV3Pos;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\AkbankPosResponseDataMapperTest;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -96,7 +96,7 @@ class AkbankPosRequestDataMapperTest extends TestCase
         $result = $this->requestDataMapper::supports(AkbankPos::class);
         $this->assertTrue($result);
 
-        $result = $this->requestDataMapper::supports(EstPos::class);
+        $result = $this->requestDataMapper::supports(EstV3Pos::class);
         $this->assertFalse($result);
     }
 

@@ -173,7 +173,6 @@ class PosFactoryTest extends TestCase
     {
         $gatewayClasses = [
             \Mews\Pos\Gateways\AkbankPos::class        => false,
-            \Mews\Pos\Gateways\EstPos::class          => false,
             \Mews\Pos\Gateways\EstV3Pos::class        => false,
             \Mews\Pos\Gateways\GarantiPos::class      => false,
             \Mews\Pos\Gateways\InterPos::class        => true,

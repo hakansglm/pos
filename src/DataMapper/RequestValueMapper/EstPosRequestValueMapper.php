@@ -6,7 +6,6 @@
 
 namespace Mews\Pos\DataMapper\RequestValueMapper;
 
-use Mews\Pos\Gateways\EstPos;
 use Mews\Pos\Gateways\EstV3Pos;
 use Mews\Pos\PosInterface;
 
@@ -60,8 +59,7 @@ class EstPosRequestValueMapper extends AbstractRequestValueMapper
      */
     public static function supports(string $gatewayClass): bool
     {
-        return EstV3Pos::class === $gatewayClass
-            || EstPos::class === $gatewayClass;
+        return EstV3Pos::class === $gatewayClass;
     }
 
     /**

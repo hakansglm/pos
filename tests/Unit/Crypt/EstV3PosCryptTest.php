@@ -10,7 +10,7 @@ use Mews\Pos\Crypt\EstV3PosCrypt;
 use Mews\Pos\Entity\Account\EstPosAccount;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
-use Mews\Pos\Gateways\EstPos;
+use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\EstV3Pos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
@@ -48,7 +48,7 @@ class EstV3PosCryptTest extends TestCase
         $supports = $this->crypt::supports(EstV3Pos::class);
         $this->assertTrue($supports);
 
-        $supports = $this->crypt::supports(EstPos::class);
+        $supports = $this->crypt::supports(AkbankPos::class);
         $this->assertFalse($supports);
     }
 

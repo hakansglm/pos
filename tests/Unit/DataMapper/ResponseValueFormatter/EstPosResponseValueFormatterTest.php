@@ -8,7 +8,6 @@ namespace Mews\Pos\Tests\Unit\DataMapper\ResponseValueFormatter;
 
 use Mews\Pos\DataMapper\ResponseValueFormatter\EstPosResponseValueFormatter;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstPos;
 use Mews\Pos\Gateways\EstV3Pos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
@@ -28,8 +27,6 @@ class EstPosResponseValueFormatterTest extends TestCase
 
     public function testSupports(): void
     {
-        $result = $this->formatter::supports(EstPos::class);
-        $this->assertTrue($result);
         $result = $this->formatter::supports(EstV3Pos::class);
         $this->assertTrue($result);
 

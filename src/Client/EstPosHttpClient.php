@@ -7,7 +7,6 @@
 namespace Mews\Pos\Client;
 
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Gateways\EstPos;
 use Mews\Pos\Gateways\EstV3Pos;
 use Mews\Pos\Serializer\Decoder\XmlDecoder;
 use Mews\Pos\Serializer\EncodedData;
@@ -51,7 +50,7 @@ class EstPosHttpClient extends AbstractHttpClient
      */
     public static function supports(string $gatewayClass, string $apiName): bool
     {
-        return (EstPos::class === $gatewayClass || EstV3Pos::class === $gatewayClass)
+        return EstV3Pos::class === $gatewayClass
             && HttpClientInterface::API_NAME_PAYMENT_API === $apiName;
     }
 

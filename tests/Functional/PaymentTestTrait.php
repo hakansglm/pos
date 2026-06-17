@@ -6,7 +6,6 @@
 
 namespace Mews\Pos\Tests\Functional;
 
-use Mews\Pos\Gateways\EstPos;
 use Mews\Pos\Gateways\EstV3Pos;
 use Mews\Pos\Gateways\GarantiPos;
 use Mews\Pos\Gateways\IyzicoPos;
@@ -57,7 +56,7 @@ trait PaymentTestTrait
         }
 
         if ($tekrarlanan) {
-            // Desteleyen Gatewayler: GarantiPos, EstPos, EstV3Pos, PayFlexV4
+            // Desteleyen Gatewayler: GarantiPos, EstV3Pos, PayFlexV4
 
             $order['installment'] = 0; // Tekrarlayan ödemeler taksitli olamaz.
 
@@ -137,14 +136,6 @@ trait PaymentTestTrait
             return $statusOrder;
         }
 
-        if (\Mews\Pos\Gateways\EstPos::class === $gatewayClass) {
-            // tekrarlanan odemenin durumunu sorgulamak icin:
-            return [
-                // tekrarlanan odeme sonucunda banktan donen deger: $response['Extra']['RECURRINGID']
-                'recurringId' => $lastResponse['recurring_id'],
-            ];
-        }
-
         if (\Mews\Pos\Gateways\EstV3Pos::class === $gatewayClass) {
             // tekrarlanan odemenin durumunu sorgulamak icin:
             return [
@@ -204,13 +195,6 @@ trait PaymentTestTrait
             return $cancelOrder;
         }
 
-        if (\Mews\Pos\Gateways\EstPos::class === $gatewayClass) {
-            // tekrarlanan odemeyi iptal etmek icin:
-            return [
-                'recurringOrderInstallmentNumber' => 1, // hangi taksidi iptal etmek istiyoruz?
-            ];
-        }
-
         if (\Mews\Pos\Gateways\EstV3Pos::class === $gatewayClass) {
             // tekrarlanan odemeyi iptal etmek icin:
             return [
@@ -224,7 +208,7 @@ trait PaymentTestTrait
     private function createOrderHistoryOrder(string $gatewayClass, array $lastResponse): array
     {
         $order = [];
-        if (EstPos::class === $gatewayClass || EstV3Pos::class === $gatewayClass || IyzicoPos::class === $gatewayClass) {
+        if (EstV3Pos::class === $gatewayClass || IyzicoPos::class === $gatewayClass) {
             $order = [
                 'id' => $lastResponse['order_id'],
             ];

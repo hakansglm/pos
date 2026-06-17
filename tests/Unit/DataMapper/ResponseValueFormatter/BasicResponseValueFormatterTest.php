@@ -99,7 +99,7 @@ class BasicResponseValueFormatterTest extends TestCase
             // VakifKatilim OrderDate
             ['2024-04-23T16:14:00.264', '2024-04-23 16:14:00'],
 
-            // EstPos AUTH_DTTM, CAPTURE_DTTM, VOID_DTTM
+            // EstV3Pos AUTH_DTTM, CAPTURE_DTTM, VOID_DTTM
             // Garanti ProvDate, PreAuthDate
             // PosNet tranDate
             ['2022-10-30 12:29:53.773', '2022-10-30 12:29:53'],
@@ -111,7 +111,7 @@ class BasicResponseValueFormatterTest extends TestCase
             ['2019-11-0813:58:37.909', '2019-11-08 13:58:37'],
 
             // Garanti ProvDate
-            // EstPos TRXDATE, EXTRA_TRXDATE
+            // EstV3Pos TRXDATE, EXTRA_TRXDATE
             ['20221101 13:14:19', '2022-11-01 13:14:19'],
 
             // PayFlexCPV4 HostDate

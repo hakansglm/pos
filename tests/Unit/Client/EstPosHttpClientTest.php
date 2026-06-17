@@ -12,7 +12,6 @@ use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\RequestValueMapper\RequestValueMapperInterface;
 use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstPos;
 use Mews\Pos\Gateways\EstV3Pos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -87,7 +86,6 @@ class EstPosHttpClientTest extends TestCase
     public function testSupports(): void
     {
         $this->assertFalse($this->client::supports(AkbankPos::class, HttpClientInterface::API_NAME_PAYMENT_API));
-        $this->assertTrue($this->client::supports(EstPos::class, HttpClientInterface::API_NAME_PAYMENT_API));
         $this->assertTrue($this->client::supports(EstV3Pos::class, HttpClientInterface::API_NAME_PAYMENT_API));
     }
 

@@ -44,7 +44,7 @@ require 'config.php';
 function createOrderHistoryOrder(string $gatewayClass, array $lastResponse): array
 {
     $order = [];
-    if (EstPos::class === $gatewayClass || EstV3Pos::class === $gatewayClass) {
+    if (EstV3Pos::class === $gatewayClass) {
         $order = [
             'id' => $lastResponse['order_id'],
         ];

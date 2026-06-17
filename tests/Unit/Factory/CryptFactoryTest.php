@@ -29,7 +29,6 @@ class CryptFactoryTest extends TestCase
     {
         return [
             [\Mews\Pos\Gateways\AkbankPos::class, \Mews\Pos\Crypt\AkbankPosCrypt::class],
-            [\Mews\Pos\Gateways\EstPos::class, \Mews\Pos\Crypt\EstPosCrypt::class],
             [\Mews\Pos\Gateways\EstV3Pos::class, \Mews\Pos\Crypt\EstV3PosCrypt::class],
             [\Mews\Pos\Gateways\GarantiPos::class, \Mews\Pos\Crypt\GarantiPosCrypt::class],
             [\Mews\Pos\Gateways\InterPos::class, \Mews\Pos\Crypt\InterPosCrypt::class],

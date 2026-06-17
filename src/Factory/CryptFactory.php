@@ -8,7 +8,6 @@ namespace Mews\Pos\Factory;
 
 use Mews\Pos\Crypt\AkbankPosCrypt;
 use Mews\Pos\Crypt\CryptInterface;
-use Mews\Pos\Crypt\EstPosCrypt;
 use Mews\Pos\Crypt\EstV3PosCrypt;
 use Mews\Pos\Crypt\GarantiPosCrypt;
 use Mews\Pos\Crypt\InterPosCrypt;
@@ -34,7 +33,6 @@ class CryptFactory
      */
     private static array $crypts = [
         AkbankPosCrypt::class,
-        EstPosCrypt::class,
         EstV3PosCrypt::class,
         GarantiPosCrypt::class,
         InterPosCrypt::class,

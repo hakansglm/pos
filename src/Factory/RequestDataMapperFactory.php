@@ -9,7 +9,6 @@ namespace Mews\Pos\Factory;
 use DomainException;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\RequestDataMapper\AkbankPosRequestDataMapper;
-use Mews\Pos\DataMapper\RequestDataMapper\EstPosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestDataMapper\IyzicoPosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestDataMapper\EstV3PosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestDataMapper\GarantiPosRequestDataMapper;
@@ -40,7 +39,6 @@ class RequestDataMapperFactory
      */
     private static array $requestDataMapperClasses = [
         AkbankPosRequestDataMapper::class,
-        EstPosRequestDataMapper::class,
         EstV3PosRequestDataMapper::class,
         GarantiPosRequestDataMapper::class,
         InterPosRequestDataMapper::class,

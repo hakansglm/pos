@@ -6,7 +6,6 @@
 
 namespace Mews\Pos\DataMapper\ResponseValueFormatter;
 
-use Mews\Pos\Gateways\EstPos;
 use Mews\Pos\Gateways\EstV3Pos;
 use Mews\Pos\PosInterface;
 
@@ -17,8 +16,7 @@ class EstPosResponseValueFormatter extends AbstractResponseValueFormatter
      */
     public static function supports(string $gatewayClass): bool
     {
-        return EstV3Pos::class === $gatewayClass
-            || EstPos::class === $gatewayClass;
+        return EstV3Pos::class === $gatewayClass;
     }
 
     /**

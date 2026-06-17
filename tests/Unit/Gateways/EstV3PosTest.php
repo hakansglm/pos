@@ -21,7 +21,7 @@ use Mews\Pos\Exceptions\UnsupportedFormFormatException;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
-use Mews\Pos\Gateways\EstPos;
+use Mews\Pos\Gateways\EstV3Pos;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\EstPosResponseDataMapperTest;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -30,14 +30,14 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 
 /**
- * @covers \Mews\Pos\Gateways\EstPos
+ * @covers \Mews\Pos\Gateways\EstV3Pos
  * @covers \Mews\Pos\Gateways\AbstractGateway
  */
-class EstPosTest extends TestCase
+class EstV3PosTest extends TestCase
 {
     private EstPosAccount $account;
 
-    /** @var EstPos */
+    /** @var EstV3Pos */
     private PosInterface $pos;
 
     /** @var array<string, mixed> */
@@ -76,7 +76,7 @@ class EstPosTest extends TestCase
 
         $this->config = [
             'name'              => 'AKBANK T.A.S.',
-            'class'             => EstPos::class,
+            'class'             => EstV3Pos::class,
             'gateway_endpoints' => [
                 'gateway_3d' => 'https://entegrasyon.asseco-see.com.tr/fim/est3Dgate',
             ],
@@ -963,7 +963,7 @@ class EstPosTest extends TestCase
 
     private function createGateway(array $config, ?AbstractPosAccount $account = null): PosInterface
     {
-        return new EstPos(
+        return new EstV3Pos(
             $config,
             $account ?? $this->account,
             $this->requestValueMapper,

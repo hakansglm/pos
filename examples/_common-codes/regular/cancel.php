@@ -54,7 +54,7 @@ function createCancelOrder(string $gatewayClass, array $lastResponse, string $ip
 
     if (isset($lastResponse['recurring_id'])) {
         // tekrarlanan odemeyi iptal etmek icin:
-        if (\Mews\Pos\Gateways\EstPos::class === $gatewayClass || \Mews\Pos\Gateways\EstV3Pos::class === $gatewayClass) {
+        if (\Mews\Pos\Gateways\EstV3Pos::class === $gatewayClass) {
             $cancelOrder += [
                 'recurringOrderInstallmentNumber' => 1, // hangi taksidi iptal etmek istiyoruz?
             ];

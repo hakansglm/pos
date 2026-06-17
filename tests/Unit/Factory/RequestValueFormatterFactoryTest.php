@@ -20,7 +20,6 @@ use Mews\Pos\DataMapper\RequestValueFormatter\ToslaPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\VakifKatilimPosRequestValueFormatter;
 use Mews\Pos\Factory\RequestValueFormatterFactory;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstPos;
 use Mews\Pos\Gateways\EstV3Pos;
 use Mews\Pos\Gateways\GarantiPos;
 use Mews\Pos\Gateways\InterPos;
@@ -62,7 +61,6 @@ class RequestValueFormatterFactoryTest extends TestCase
         return [
             [ToslaPos::class, ToslaPosRequestValueFormatter::class],
             [AkbankPos::class, AkbankPosRequestValueFormatter::class],
-            [EstPos::class, EstPosRequestValueFormatter::class],
             [EstV3Pos::class, EstPosRequestValueFormatter::class],
             [GarantiPos::class, GarantiPosRequestValueFormatter::class],
             [InterPos::class, InterPosRequestValueFormatter::class],

@@ -176,7 +176,7 @@ function createPaymentOrder(
     }
 
     if ($tekrarlanan) {
-        // Desteleyen Gatewayler: GarantiPos, EstPos, PayFlexV4, AkbankPos
+        // Desteleyen Gatewayler: GarantiPos, EstV3Pos, PayFlexV4, AkbankPos
 
         $order['installment'] = 0; // Tekrarlayan ödemeler taksitli olamaz.
 
