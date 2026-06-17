@@ -110,12 +110,12 @@ class PosFactory
         LoggerInterface          $logger,
         ?HttpClientStrategyInterface $httpClientStrategy = null
     ): PosInterface {
-        $crypt                 = CryptFactory::createGatewayCrypt($gatewayClass, $logger);
+        $crypt                 = CryptFactory::createForGateway($gatewayClass, $logger);
         $requestValueMapper    = RequestValueMapperFactory::createForGateway($gatewayClass);
         $requestValueFormatter = RequestValueFormatterFactory::createForGateway($gatewayClass);
         $defaultLang           = $apiConfig['lang'] ?? PosInterface::LANG_TR;
 
-        $requestDataMapper     = RequestDataMapperFactory::createGatewayRequestMapper(
+        $requestDataMapper     = RequestDataMapperFactory::createForGateway(
             $gatewayClass,
             $requestValueMapper,
             $requestValueFormatter,
@@ -126,7 +126,7 @@ class PosFactory
 
         $responseValueFormatter = ResponseValueFormatterFactory::createForGateway($gatewayClass);
         $responseValueMapper    = ResponseValueMapperFactory::createForGateway($gatewayClass);
-        $responseDataMapper     = ResponseDataMapperFactory::createGatewayResponseMapper($gatewayClass, $responseValueFormatter, $responseValueMapper, $logger);
+        $responseDataMapper     = ResponseDataMapperFactory::createForGateway($gatewayClass, $responseValueFormatter, $responseValueMapper, $logger);
 
         if (!$httpClientStrategy instanceof HttpClientStrategyInterface) {
             $httpClientStrategy = PosHttpClientStrategyFactory::createForGateway(

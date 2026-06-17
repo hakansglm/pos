@@ -54,7 +54,7 @@ class CryptFactory
      *
      * @return CryptInterface
      */
-    public static function createGatewayCrypt(string $gatewayClass, LoggerInterface $logger): CryptInterface
+    public static function createForGateway(string $gatewayClass, LoggerInterface $logger): CryptInterface
     {
         /** @var class-string<CryptInterface> $crypt */
         foreach (self::$crypts as $crypt) {

@@ -60,7 +60,7 @@ class ResponseDataMapperFactory
      *
      * @return ResponseDataMapperInterface
      */
-    public static function createGatewayResponseMapper(
+    public static function createForGateway(
         string                          $gatewayClass,
         ResponseValueFormatterInterface $valueFormatter,
         ResponseValueMapperInterface    $valueMapper,

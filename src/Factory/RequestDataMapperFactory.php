@@ -67,7 +67,7 @@ class RequestDataMapperFactory
      *
      * @return RequestDataMapperInterface
      */
-    public static function createGatewayRequestMapper(
+    public static function createForGateway(
         string                         $gatewayClass,
         RequestValueMapperInterface    $valueMapper,
         RequestValueFormatterInterface $valueFormatter,

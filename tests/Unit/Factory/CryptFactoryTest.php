@@ -16,16 +16,16 @@ use Psr\Log\LoggerInterface;
 class CryptFactoryTest extends TestCase
 {
     /**
-     * @dataProvider createGatewayCryptDataProvider
+     * @dataProvider createForGatewayDataProvider
      */
-    public function testCreateGatewayCrypt(string $gatewayClass, string $cryptClass): void
+    public function testCreateForGateway(string $gatewayClass, string $cryptClass): void
     {
         $logger = $this->createMock(LoggerInterface::class);
-        $crypt  = CryptFactory::createGatewayCrypt($gatewayClass, $logger);
+        $crypt  = CryptFactory::createForGateway($gatewayClass, $logger);
         $this->assertInstanceOf($cryptClass, $crypt);
     }
 
-    public static function createGatewayCryptDataProvider(): array
+    public static function createForGatewayDataProvider(): array
     {
         return [
             [\Mews\Pos\Gateways\AkbankPos::class, \Mews\Pos\Crypt\AkbankPosCrypt::class],

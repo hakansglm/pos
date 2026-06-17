@@ -18,14 +18,14 @@ use Psr\Log\LoggerInterface;
 class ResponseDataMapperFactoryTest extends TestCase
 {
     /**
-     * @dataProvider createGatewayResponseMapperDataProvider
+     * @dataProvider createForGatewayProvider
      */
-    public function testCreateGatewayResponseMapper(string $gatewayClass, string $mapperClass): void
+    public function testCreateForGateway(string $gatewayClass, string $mapperClass): void
     {
         $responseDataMapper     = $this->createMock(ResponseValueMapperInterface::class);
         $responseValueFormatter = $this->createMock(ResponseValueFormatterInterface::class);
         $logger                 = $this->createMock(LoggerInterface::class);
-        $mapper                 = ResponseDataMapperFactory::createGatewayResponseMapper(
+        $mapper                 = ResponseDataMapperFactory::createForGateway(
             $gatewayClass,
             $responseValueFormatter,
             $responseDataMapper,
@@ -34,13 +34,13 @@ class ResponseDataMapperFactoryTest extends TestCase
         $this->assertInstanceOf($mapperClass, $mapper);
     }
 
-    public function testCreateGatewayResponseMapperUnsupported(): void
+    public function testCreateForGatewayUnsupported(): void
     {
         $responseDataMapper     = $this->createMock(ResponseValueMapperInterface::class);
         $responseValueFormatter = $this->createMock(ResponseValueFormatterInterface::class);
         $logger                 = $this->createMock(LoggerInterface::class);
         $this->expectException(\DomainException::class);
-        ResponseDataMapperFactory::createGatewayResponseMapper(
+        ResponseDataMapperFactory::createForGateway(
             \stdClass::class,
             $responseValueFormatter,
             $responseDataMapper,
@@ -48,7 +48,7 @@ class ResponseDataMapperFactoryTest extends TestCase
         );
     }
 
-    public static function createGatewayResponseMapperDataProvider(): array
+    public static function createForGatewayProvider(): array
     {
         return [
             [\Mews\Pos\Gateways\AkbankPos::class, \Mews\Pos\DataMapper\ResponseDataMapper\AkbankPosResponseDataMapper::class],

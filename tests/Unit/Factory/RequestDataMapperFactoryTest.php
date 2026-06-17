@@ -18,15 +18,15 @@ use PHPUnit\Framework\TestCase;
 class RequestDataMapperFactoryTest extends TestCase
 {
     /**
-     * @dataProvider createGatewayRequestMapperDataProvider
+     * @dataProvider createForGatewayDataProvider
      */
-    public function testCreateGatewayRequestMapper(string $gatewayClass, string $mapperClass): void
+    public function testCreateForGateway(string $gatewayClass, string $mapperClass): void
     {
         $valueMapper     = $this->createMock(RequestValueMapperInterface::class);
         $valueFormatter  = $this->createMock(RequestValueFormatterInterface::class);
         $eventDispatcher = $this->createMock(\Psr\EventDispatcher\EventDispatcherInterface::class);
         $crypt           = $this->createMock(\Mews\Pos\Crypt\CryptInterface::class);
-        $mapper          = RequestDataMapperFactory::createGatewayRequestMapper(
+        $mapper          = RequestDataMapperFactory::createForGateway(
             $gatewayClass,
             $valueMapper,
             $valueFormatter,
@@ -44,7 +44,7 @@ class RequestDataMapperFactoryTest extends TestCase
         $eventDispatcher = $this->createMock(\Psr\EventDispatcher\EventDispatcherInterface::class);
         $crypt           = $this->createMock(\Mews\Pos\Crypt\CryptInterface::class);
         $this->expectException(\DomainException::class);
-        RequestDataMapperFactory::createGatewayRequestMapper(
+        RequestDataMapperFactory::createForGateway(
             \stdClass::class,
             $valueMapper,
             $valueFormatter,
@@ -54,7 +54,7 @@ class RequestDataMapperFactoryTest extends TestCase
         );
     }
 
-    public static function createGatewayRequestMapperDataProvider(): array
+    public static function createForGatewayDataProvider(): array
     {
         return [
             [\Mews\Pos\Gateways\AkbankPos::class, \Mews\Pos\DataMapper\RequestDataMapper\AkbankPosRequestDataMapper::class],
