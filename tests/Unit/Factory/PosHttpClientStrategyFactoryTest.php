@@ -21,7 +21,7 @@ use Mews\Pos\Gateways\ParamPos;
 use Mews\Pos\Gateways\PayFlexCPV4Pos;
 use Mews\Pos\Gateways\PayFlexV4Pos;
 use Mews\Pos\Gateways\PayForPos;
-use Mews\Pos\Gateways\PosNet;
+use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\Gateways\PosNetV1Pos;
 use Mews\Pos\Gateways\ToslaPos;
 use Mews\Pos\Gateways\VakifKatilimPos;
@@ -162,7 +162,7 @@ class PosHttpClientStrategyFactoryTest extends TestCase
                 ],
             ],
             [
-                PosNet::class,
+                PosNetPos::class,
                 [
                     HttpClientInterface::API_NAME_PAYMENT_API,
                 ],

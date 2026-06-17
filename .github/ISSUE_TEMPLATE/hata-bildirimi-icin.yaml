@@ -38,7 +38,7 @@ body:
         - PayFlexCPV4Pos
         - PayFlexV4Pos
         - PayForPos
-        - PosNet
+        - PosNetPos
         - PosNetV1Pos
         - ToslaPos
         - VakifKatilimPos

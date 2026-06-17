@@ -6,30 +6,30 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\RequestValueMapper;
 
-use Mews\Pos\DataMapper\RequestValueMapper\PosNetRequestValueMapper;
+use Mews\Pos\DataMapper\RequestValueMapper\PosNetPosRequestValueMapper;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Gateways\EstV3Pos;
-use Mews\Pos\Gateways\PosNet;
+use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Mews\Pos\DataMapper\RequestValueMapper\PosNetRequestValueMapper
+ * @covers \Mews\Pos\DataMapper\RequestValueMapper\PosNetPosRequestValueMapper
  * @covers \Mews\Pos\DataMapper\RequestValueMapper\AbstractRequestValueMapper
  */
-class PosNetRequestValueMapperTest extends TestCase
+class PosNetPosRequestValueMapperTest extends TestCase
 {
-    private PosNetRequestValueMapper $valueMapper;
+    private PosNetPosRequestValueMapper $valueMapper;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->valueMapper = new PosNetRequestValueMapper();
+        $this->valueMapper = new PosNetPosRequestValueMapper();
     }
 
     public function testSupports(): void
     {
-        $result = $this->valueMapper::supports(PosNet::class);
+        $result = $this->valueMapper::supports(PosNetPos::class);
         $this->assertTrue($result);
 
         $result = $this->valueMapper::supports(EstV3Pos::class);

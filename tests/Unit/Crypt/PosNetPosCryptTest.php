@@ -6,26 +6,26 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
-use Mews\Pos\Crypt\PosNetCrypt;
+use Mews\Pos\Crypt\PosNetPosCrypt;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\PosNetAccount;
+use Mews\Pos\Entity\Account\PosNetPosAccount;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateways\EstV3Pos;
-use Mews\Pos\Gateways\PosNet;
+use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
- * @covers \Mews\Pos\Crypt\PosNetCrypt
+ * @covers \Mews\Pos\Crypt\PosNetPosCrypt
  * @covers \Mews\Pos\Crypt\AbstractCrypt
  */
-class PosNetCryptTest extends TestCase
+class PosNetPosCryptTest extends TestCase
 {
-    public PosNetCrypt $crypt;
+    public PosNetPosCrypt $crypt;
 
-    private PosNetAccount $account;
+    private PosNetPosAccount $account;
 
     protected function setUp(): void
     {
@@ -41,12 +41,12 @@ class PosNetCryptTest extends TestCase
         );
 
         $logger      = $this->createMock(LoggerInterface::class);
-        $this->crypt = new PosNetCrypt($logger);
+        $this->crypt = new PosNetPosCrypt($logger);
     }
 
     public function testSupports(): void
     {
-        $supports = $this->crypt::supports(PosNet::class);
+        $supports = $this->crypt::supports(PosNetPos::class);
         $this->assertTrue($supports);
 
         $supports = $this->crypt::supports(EstV3Pos::class);

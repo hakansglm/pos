@@ -6,12 +6,12 @@
 
 namespace Mews\Pos\Gateways;
 
-use Mews\Pos\DataMapper\RequestDataMapper\PosNetRequestDataMapper;
+use Mews\Pos\DataMapper\RequestDataMapper\PosNetPosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestDataMapper\RequestDataMapperInterface;
-use Mews\Pos\DataMapper\ResponseDataMapper\PosNetResponseDataMapper;
+use Mews\Pos\DataMapper\ResponseDataMapper\PosNetPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\ResponseDataMapperInterface;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\PosNetAccount;
+use Mews\Pos\Entity\Account\PosNetPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exceptions\HashMismatchException;
@@ -22,20 +22,20 @@ use Mews\Pos\PosInterface;
 use Psr\Http\Client\ClientExceptionInterface;
 
 /**
- * Class PosNet
+ * Class PosNetPos
  */
-class PosNet extends AbstractGateway
+class PosNetPos extends AbstractGateway
 {
     /** @var string */
-    public const NAME = 'PosNet';
+    public const NAME = 'PosNetPos';
 
-    /** @var PosNetAccount */
+    /** @var PosNetPosAccount */
     protected AbstractPosAccount $account;
 
-    /** @var PosNetRequestDataMapper */
+    /** @var PosNetPosRequestDataMapper */
     protected RequestDataMapperInterface $requestDataMapper;
 
-    /** @var PosNetResponseDataMapper */
+    /** @var PosNetPosResponseDataMapper */
     protected ResponseDataMapperInterface $responseDataMapper;
 
     /** @inheritdoc */
@@ -214,7 +214,7 @@ class PosNet extends AbstractGateway
         );
     }
 
-    /** @return PosNetAccount */
+    /** @return PosNetPosAccount */
     public function getAccount(): AbstractPosAccount
     {
         return $this->account;

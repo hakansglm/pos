@@ -43,7 +43,7 @@ $eventDispatcher->addListener(RequestDataPreparedEvent::class, function (Request
         // $data['KOICode'] = '1';
         // $event->setRequestData($data);
     }
-    if ($event->getGatewayClass() instanceof \Mews\Pos\Gateways\PosNet) {
+    if ($event->getGatewayClass() instanceof \Mews\Pos\Gateways\PosNetPos) {
         // Yapikredi PosNet KOICode ekleme
         // $data            = $event->getRequestData();
         // $data['sale']['koiCode'] = '1';

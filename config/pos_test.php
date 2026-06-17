@@ -59,7 +59,7 @@ return [
         ],
         'yapikredi'             => [
             'name'              => 'Yapıkredi',
-            'class'             => \Mews\Pos\Gateways\PosNet::class,
+            'class'             => \Mews\Pos\Gateways\PosNetPos::class,
             'lang'              => \Mews\Pos\PosInterface::LANG_TR,
             'gateway_endpoints' => [
                 'payment_api' => 'https://setmpos.ykb.com/PosnetWebService/XML',

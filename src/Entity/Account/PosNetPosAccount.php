@@ -7,9 +7,9 @@
 namespace Mews\Pos\Entity\Account;
 
 /**
- * PosNetAccount
+ * PosNetPosAccount
  */
-class PosNetAccount extends AbstractPosAccount
+class PosNetPosAccount extends AbstractPosAccount
 {
     public function __construct(
         string  $bankName,

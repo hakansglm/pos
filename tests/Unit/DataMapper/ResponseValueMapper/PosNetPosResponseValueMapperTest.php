@@ -6,29 +6,29 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseValueMapper;
 
-use Mews\Pos\DataMapper\ResponseValueMapper\PosNetResponseValueMapper;
+use Mews\Pos\DataMapper\ResponseValueMapper\PosNetPosResponseValueMapper;
 use Mews\Pos\Gateways\EstV3Pos;
-use Mews\Pos\Gateways\PosNet;
+use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Mews\Pos\DataMapper\ResponseValueMapper\PosNetResponseValueMapper
+ * @covers \Mews\Pos\DataMapper\ResponseValueMapper\PosNetPosResponseValueMapper
  * @covers \Mews\Pos\DataMapper\ResponseValueMapper\AbstractResponseValueMapper
  */
-class PosNetResponseValueMapperTest extends TestCase
+class PosNetPosResponseValueMapperTest extends TestCase
 {
-    private PosNetResponseValueMapper $mapper;
+    private PosNetPosResponseValueMapper $mapper;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->mapper = new PosNetResponseValueMapper();
+        $this->mapper = new PosNetPosResponseValueMapper();
     }
 
     public function testSupports(): void
     {
-        $result = $this->mapper::supports(PosNet::class);
+        $result = $this->mapper::supports(PosNetPos::class);
         $this->assertTrue($result);
 
         $result = $this->mapper::supports(EstV3Pos::class);

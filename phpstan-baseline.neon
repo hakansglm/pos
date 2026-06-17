@@ -1,10 +1,10 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Default value of the parameter \#3 \$order \(array\{\}\) of method Mews\\Pos\\Crypt\\PosNetCrypt\:\:createHash\(\) is incompatible with type array\{amount\: int, currency\: string, id\: string\}\.$#'
+			message: '#^Default value of the parameter \#3 \$order \(array\{\}\) of method Mews\\Pos\\Crypt\\PosNetPosCrypt\:\:createHash\(\) is incompatible with type array\{amount\: int, currency\: string, id\: string\}\.$#'
 			identifier: parameter.defaultValue
 			count: 1
-			path: src/Crypt/PosNetCrypt.php
+			path: src/Crypt/PosNetPosCrypt.php
 
 		-
 			message: '#^PHPDoc tag @var with type array\<string, string\> is not subtype of native type array\{mixed, mixed, mixed, mixed, mixed, mixed, string\}\.$#'
@@ -52,31 +52,31 @@ parameters:
 			message: '#^Cannot assign offset ''authCode'' to array\<string, string\>\|string\.$#'
 			identifier: offsetAssign.dimType
 			count: 1
-			path: src/DataMapper/RequestDataMapper/PosNetRequestDataMapper.php
+			path: src/DataMapper/RequestDataMapper/PosNetPosRequestDataMapper.php
 
 		-
 			message: '#^Cannot assign offset ''hostLogKey'' to array\<string, int\|string\>\|string\.$#'
 			identifier: offsetAssign.dimType
 			count: 1
-			path: src/DataMapper/RequestDataMapper/PosNetRequestDataMapper.php
+			path: src/DataMapper/RequestDataMapper/PosNetPosRequestDataMapper.php
 
 		-
 			message: '#^Cannot assign offset ''hostLogKey'' to array\<string, mixed\>\|string\.$#'
 			identifier: offsetAssign.dimType
 			count: 1
-			path: src/DataMapper/RequestDataMapper/PosNetRequestDataMapper.php
+			path: src/DataMapper/RequestDataMapper/PosNetPosRequestDataMapper.php
 
 		-
 			message: '#^Cannot assign offset ''orderID'' to array\<string, int\|string\>\|string\.$#'
 			identifier: offsetAssign.dimType
 			count: 1
-			path: src/DataMapper/RequestDataMapper/PosNetRequestDataMapper.php
+			path: src/DataMapper/RequestDataMapper/PosNetPosRequestDataMapper.php
 
 		-
 			message: '#^Cannot assign offset ''orderID'' to array\<string, mixed\>\|string\.$#'
 			identifier: offsetAssign.dimType
 			count: 1
-			path: src/DataMapper/RequestDataMapper/PosNetRequestDataMapper.php
+			path: src/DataMapper/RequestDataMapper/PosNetPosRequestDataMapper.php
 
 		-
 			message: '#^Method Mews\\Pos\\DataMapper\\RequestDataMapper\\PosNetV1PosRequestDataMapper\:\:create3DFormData\(\) has parameter \$extraData with no type specified\.$#'
@@ -157,19 +157,19 @@ parameters:
 			path: src/Gateways/PayFlexV4Pos.php
 
 		-
-			message: '#^Method Mews\\Pos\\Gateways\\PosNet\:\:getOosTransactionData\(\) should return array\{approved\: string, respCode\: string, respText\: string, oosRequestDataResponse\?\: array\{data1\: string, data2\: string, sign\: string\}\} but returns array\<string, mixed\>\.$#'
+			message: '#^Method Mews\\Pos\\Gateways\\PosNetPos\:\:getOosTransactionData\(\) should return array\{approved\: string, respCode\: string, respText\: string, oosRequestDataResponse\?\: array\{data1\: string, data2\: string, sign\: string\}\} but returns array\<string, mixed\>\.$#'
 			identifier: return.type
 			count: 1
-			path: src/Gateways/PosNet.php
+			path: src/Gateways/PosNetPos.php
 
 		-
 			message: '#^Offset ''oosRequestDataResponse'' might not exist on array\{approved\: string, respCode\: string, respText\: string, oosRequestDataResponse\?\: array\{data1\: string, data2\: string, sign\: string\}\}\.$#'
 			identifier: offsetAccess.notFound
 			count: 1
-			path: src/Gateways/PosNet.php
+			path: src/Gateways/PosNetPos.php
 
 		-
-			message: '#^Parameter \#4 \$creditCard of method Mews\\Pos\\Gateways\\PosNet\:\:getOosTransactionData\(\) expects Mews\\Pos\\Entity\\Card\\CreditCardInterface, Mews\\Pos\\Entity\\Card\\CreditCardInterface\|null given\.$#'
+			message: '#^Parameter \#4 \$creditCard of method Mews\\Pos\\Gateways\\PosNetPos\:\:getOosTransactionData\(\) expects Mews\\Pos\\Entity\\Card\\CreditCardInterface, Mews\\Pos\\Entity\\Card\\CreditCardInterface\|null given\.$#'
 			identifier: argument.type
 			count: 1
-			path: src/Gateways/PosNet.php
+			path: src/Gateways/PosNetPos.php

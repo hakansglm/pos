@@ -11,7 +11,7 @@ use Mews\Pos\DataMapper\RequestDataMapper\RequestDataMapperInterface;
 use Mews\Pos\DataMapper\ResponseDataMapper\PosNetV1PosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\ResponseDataMapperInterface;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\PosNetAccount;
+use Mews\Pos\Entity\Account\PosNetPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exceptions\HashMismatchException;
@@ -25,7 +25,7 @@ class PosNetV1Pos extends AbstractGateway
     /** @var string */
     public const NAME = 'PosNetV1';
 
-    /** @var PosNetAccount */
+    /** @var PosNetPosAccount */
     protected AbstractPosAccount $account;
 
     /** @var PosNetV1PosRequestDataMapper */
@@ -54,7 +54,7 @@ class PosNetV1Pos extends AbstractGateway
         PosInterface::TX_TYPE_CUSTOM_QUERY   => true,
     ];
 
-    /** @return PosNetAccount */
+    /** @return PosNetPosAccount */
     public function getAccount(): AbstractPosAccount
     {
         return $this->account;

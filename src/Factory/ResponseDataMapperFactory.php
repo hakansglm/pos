@@ -17,7 +17,7 @@ use Mews\Pos\DataMapper\ResponseDataMapper\ParamPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\PayFlexCPV4PosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\PayFlexV4PosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\PayForPosResponseDataMapper;
-use Mews\Pos\DataMapper\ResponseDataMapper\PosNetResponseDataMapper;
+use Mews\Pos\DataMapper\ResponseDataMapper\PosNetPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\PosNetV1PosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\ResponseDataMapperInterface;
 use Mews\Pos\DataMapper\ResponseDataMapper\ToslaPosResponseDataMapper;
@@ -46,7 +46,7 @@ class ResponseDataMapperFactory
         PayFlexCPV4PosResponseDataMapper::class,
         PayFlexV4PosResponseDataMapper::class,
         PayForPosResponseDataMapper::class,
-        PosNetResponseDataMapper::class,
+        PosNetPosResponseDataMapper::class,
         PosNetV1PosResponseDataMapper::class,
         ToslaPosResponseDataMapper::class,
         VakifKatilimPosResponseDataMapper::class,

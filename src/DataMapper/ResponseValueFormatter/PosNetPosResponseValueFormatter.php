@@ -6,21 +6,21 @@
 
 namespace Mews\Pos\DataMapper\ResponseValueFormatter;
 
-use Mews\Pos\Gateways\PosNet;
+use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\Gateways\PosNetV1Pos;
 use Mews\Pos\PosInterface;
 
 /**
  * Value formatter for PosNet and PosNetV1Pos
  */
-class PosNetResponseValueFormatter extends AbstractResponseValueFormatter
+class PosNetPosResponseValueFormatter extends AbstractResponseValueFormatter
 {
     /**
      * @inheritDoc
      */
     public static function supports(string $gatewayClass): bool
     {
-        return PosNet::class === $gatewayClass
+        return PosNetPos::class === $gatewayClass
             || PosNetV1Pos::class === $gatewayClass;
     }
 

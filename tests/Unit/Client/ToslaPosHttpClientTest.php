@@ -12,7 +12,7 @@ use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\RequestValueMapper\RequestValueMapperInterface;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Factory\PosHttpClientFactory;
-use Mews\Pos\Gateways\PosNet;
+use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\Gateways\ToslaPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -97,7 +97,7 @@ class ToslaPosHttpClientTest extends TestCase
     public function testSupports(): void
     {
         $this->assertTrue($this->client::supports(ToslaPos::class, HttpClientInterface::API_NAME_PAYMENT_API));
-        $this->assertFalse($this->client::supports(PosNet::class, HttpClientInterface::API_NAME_PAYMENT_API));
+        $this->assertFalse($this->client::supports(PosNetPos::class, HttpClientInterface::API_NAME_PAYMENT_API));
     }
 
     /**

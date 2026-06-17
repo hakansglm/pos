@@ -45,7 +45,7 @@ if (get_class($pos) === \Mews\Pos\Gateways\PayFlexV4Pos::class) {
 // ============================================================================================
 
 $formVerisiniOlusturmakIcinApiIstegiGonderenGatewayler = [
-    \Mews\Pos\Gateways\PosNet::class,
+    \Mews\Pos\Gateways\PosNetPos::class,
     \Mews\Pos\Gateways\KuveytPos::class,
     \Mews\Pos\Gateways\ToslaPos::class,
     \Mews\Pos\Gateways\VakifKatilimPos::class,
@@ -140,7 +140,7 @@ try {
  * Üye İşyeri için tanımlı olan kampanya kodu, İşyeri Yönetici Ekranlarına giriş
  * yapıldıktan sonra, Üye İşyeri bilgileri sayfasından öğrenilebilinir.
  */
-if ($pos instanceof \Mews\Pos\Gateways\PosNet) {
+if ($pos instanceof \Mews\Pos\Gateways\PosNetPos) {
     // YapiKredi
     // $formData['inputs']['vftCode'] = 'xxx';
 }
@@ -162,7 +162,7 @@ if ($pos instanceof \Mews\Pos\Gateways\PosNetV1Pos) {
     // $formData['inputs']['UseJokerVadaa'] = '1';
     // $formData['inputs']['KOICode']       = 'xxx';
 }
-if ($pos instanceof \Mews\Pos\Gateways\PosNet) {
+if ($pos instanceof \Mews\Pos\Gateways\PosNetPos) {
     // YapiKredi
     // $formData['inputs']['useJokerVadaa'] = '1';
 }

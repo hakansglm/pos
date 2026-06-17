@@ -14,7 +14,7 @@ use Mews\Pos\DataMapper\RequestValueFormatter\KuveytPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\ParamPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\PayFlexCPV4PosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\PayForPosRequestValueFormatter;
-use Mews\Pos\DataMapper\RequestValueFormatter\PosNetRequestValueFormatter;
+use Mews\Pos\DataMapper\RequestValueFormatter\PosNetPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\PosNetV1PosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\ToslaPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\VakifKatilimPosRequestValueFormatter;
@@ -29,7 +29,7 @@ use Mews\Pos\Gateways\Param3DHostPos;
 use Mews\Pos\Gateways\ParamPos;
 use Mews\Pos\Gateways\PayFlexCPV4Pos;
 use Mews\Pos\Gateways\PayForPos;
-use Mews\Pos\Gateways\PosNet;
+use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\Gateways\PosNetV1Pos;
 use Mews\Pos\Gateways\ToslaPos;
 use Mews\Pos\Gateways\VakifKatilimPos;
@@ -71,7 +71,7 @@ class RequestValueFormatterFactoryTest extends TestCase
             [ParamPos::class, ParamPosRequestValueFormatter::class],
             [Param3DHostPos::class, ParamPosRequestValueFormatter::class],
             [PayForPos::class, PayForPosRequestValueFormatter::class],
-            [PosNet::class, PosNetRequestValueFormatter::class],
+            [PosNetPos::class, PosNetPosRequestValueFormatter::class],
             [PosNetV1Pos::class, PosNetV1PosRequestValueFormatter::class],
             [PayFlexCPV4Pos::class, PayFlexCPV4PosRequestValueFormatter::class],
         ];

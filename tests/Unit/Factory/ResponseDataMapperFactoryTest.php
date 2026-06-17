@@ -62,7 +62,7 @@ class ResponseDataMapperFactoryTest extends TestCase
             [\Mews\Pos\Gateways\PayFlexCPV4Pos::class, \Mews\Pos\DataMapper\ResponseDataMapper\PayFlexCPV4PosResponseDataMapper::class],
             [\Mews\Pos\Gateways\PayFlexV4Pos::class, \Mews\Pos\DataMapper\ResponseDataMapper\PayFlexV4PosResponseDataMapper::class],
             [\Mews\Pos\Gateways\PayForPos::class, \Mews\Pos\DataMapper\ResponseDataMapper\PayForPosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\PosNet::class, \Mews\Pos\DataMapper\ResponseDataMapper\PosNetResponseDataMapper::class],
+            [\Mews\Pos\Gateways\PosNetPos::class, \Mews\Pos\DataMapper\ResponseDataMapper\PosNetPosResponseDataMapper::class],
             [\Mews\Pos\Gateways\PosNetV1Pos::class, \Mews\Pos\DataMapper\ResponseDataMapper\PosNetV1PosResponseDataMapper::class],
             [\Mews\Pos\Gateways\ToslaPos::class, \Mews\Pos\DataMapper\ResponseDataMapper\ToslaPosResponseDataMapper::class],
             [\Mews\Pos\Gateways\VakifKatilimPos::class, \Mews\Pos\DataMapper\ResponseDataMapper\VakifKatilimPosResponseDataMapper::class],

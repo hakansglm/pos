@@ -7,10 +7,10 @@
 namespace Mews\Pos\DataMapper\ResponseDataMapper;
 
 use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\PosNet;
+use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\PosInterface;
 
-class PosNetResponseDataMapper extends AbstractResponseDataMapper
+class PosNetPosResponseDataMapper extends AbstractResponseDataMapper
 {
     /** @var string */
     public const PROCEDURE_SUCCESS_CODE = '1';
@@ -20,7 +20,7 @@ class PosNetResponseDataMapper extends AbstractResponseDataMapper
      */
     public static function supports(string $gatewayClass): bool
     {
-        return PosNet::class === $gatewayClass;
+        return PosNetPos::class === $gatewayClass;
     }
 
     /**

@@ -22,7 +22,7 @@ $order = createPaymentOrder(
 $_SESSION['order'] = $order;
 
 $formVerisiniOlusturmakIcinApiIstegiGonderenGatewayler = [
-    \Mews\Pos\Gateways\PosNet::class,
+    \Mews\Pos\Gateways\PosNetPos::class,
     \Mews\Pos\Gateways\KuveytPos::class,
     \Mews\Pos\Gateways\ToslaPos::class,
     \Mews\Pos\Gateways\VakifKatilimPos::class,

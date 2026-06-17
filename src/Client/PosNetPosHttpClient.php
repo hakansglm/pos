@@ -7,7 +7,7 @@
 namespace Mews\Pos\Client;
 
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Gateways\PosNet;
+use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\Serializer\Decoder\XmlDecoder;
 use Mews\Pos\Serializer\EncodedData;
 use Mews\Pos\Serializer\Encoder\XmlEncoder;
@@ -42,7 +42,7 @@ class PosNetPosHttpClient extends AbstractHttpClient
      */
     public static function supports(string $gatewayClass, string $apiName): bool
     {
-        return PosNet::class === $gatewayClass && HttpClientInterface::API_NAME_PAYMENT_API === $apiName;
+        return PosNetPos::class === $gatewayClass && HttpClientInterface::API_NAME_PAYMENT_API === $apiName;
     }
 
     /**

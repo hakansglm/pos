@@ -10,7 +10,7 @@ use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\RequestDataMapper\PosNetV1PosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestValueFormatter\PosNetV1PosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueMapper\PosNetV1PosRequestValueMapper;
-use Mews\Pos\Entity\Account\PosNetAccount;
+use Mews\Pos\Entity\Account\PosNetPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\Before3DFormHashCalculatedEvent;
 use Mews\Pos\Factory\AccountFactory;
@@ -32,7 +32,7 @@ class PosNetV1PosRequestDataMapperTest extends TestCase
 
     private PosNetV1PosRequestDataMapper $requestDataMapper;
 
-    private PosNetAccount $account;
+    private PosNetPosAccount $account;
 
     /** @var EventDispatcherInterface & MockObject */
     private EventDispatcherInterface $dispatcher;

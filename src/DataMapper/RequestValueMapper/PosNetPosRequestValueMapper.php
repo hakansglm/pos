@@ -6,10 +6,10 @@
 
 namespace Mews\Pos\DataMapper\RequestValueMapper;
 
-use Mews\Pos\Gateways\PosNet;
+use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\PosInterface;
 
-class PosNetRequestValueMapper extends AbstractRequestValueMapper
+class PosNetPosRequestValueMapper extends AbstractRequestValueMapper
 {
     /**
      * {@inheritDoc}
@@ -49,6 +49,6 @@ class PosNetRequestValueMapper extends AbstractRequestValueMapper
      */
     public static function supports(string $gatewayClass): bool
     {
-        return PosNet::class === $gatewayClass;
+        return PosNetPos::class === $gatewayClass;
     }
 }

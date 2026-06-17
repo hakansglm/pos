@@ -8,33 +8,33 @@ namespace Mews\Pos\Tests\Unit\DataMapper\RequestDataMapper;
 
 use InvalidArgumentException;
 use Mews\Pos\Crypt\CryptInterface;
-use Mews\Pos\DataMapper\RequestDataMapper\PosNetRequestDataMapper;
-use Mews\Pos\DataMapper\RequestValueFormatter\PosNetRequestValueFormatter;
-use Mews\Pos\DataMapper\RequestValueMapper\PosNetRequestValueMapper;
-use Mews\Pos\Entity\Account\PosNetAccount;
+use Mews\Pos\DataMapper\RequestDataMapper\PosNetPosRequestDataMapper;
+use Mews\Pos\DataMapper\RequestValueFormatter\PosNetPosRequestValueFormatter;
+use Mews\Pos\DataMapper\RequestValueMapper\PosNetPosRequestValueMapper;
+use Mews\Pos\Entity\Account\PosNetPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateways\EstV3Pos;
-use Mews\Pos\Gateways\PosNet;
+use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
- * @covers \Mews\Pos\DataMapper\RequestDataMapper\PosNetRequestDataMapper
+ * @covers \Mews\Pos\DataMapper\RequestDataMapper\PosNetPosRequestDataMapper
  * @covers \Mews\Pos\DataMapper\RequestDataMapper\AbstractRequestDataMapper
  */
-class PosNetRequestDataMapperTest extends TestCase
+class PosNetPosRequestDataMapperTest extends TestCase
 {
     private CreditCardInterface $card;
 
-    private PosNetRequestDataMapper $requestDataMapper;
+    private PosNetPosRequestDataMapper $requestDataMapper;
 
     private array $order;
 
-    private PosNetAccount $account;
+    private PosNetPosAccount $account;
 
     /** @var EventDispatcherInterface & MockObject */
     private EventDispatcherInterface $dispatcher;
@@ -42,9 +42,9 @@ class PosNetRequestDataMapperTest extends TestCase
     /** @var CryptInterface & MockObject */
     private CryptInterface $crypt;
 
-    private PosNetRequestValueFormatter $valueFormatter;
+    private PosNetPosRequestValueFormatter $valueFormatter;
 
-    private PosNetRequestValueMapper $valueMapper;
+    private PosNetPosRequestValueMapper $valueMapper;
 
     protected function setUp(): void
     {
@@ -71,10 +71,10 @@ class PosNetRequestDataMapperTest extends TestCase
 
         $this->dispatcher     = $this->createMock(EventDispatcherInterface::class);
         $this->crypt          = $this->createMock(CryptInterface::class);
-        $this->valueFormatter = new PosNetRequestValueFormatter();
-        $this->valueMapper    = new PosNetRequestValueMapper();
+        $this->valueFormatter = new PosNetPosRequestValueFormatter();
+        $this->valueMapper    = new PosNetPosRequestValueMapper();
 
-        $this->requestDataMapper = new PosNetRequestDataMapper(
+        $this->requestDataMapper = new PosNetPosRequestDataMapper(
             $this->valueMapper,
             $this->valueFormatter,
             $this->dispatcher,
@@ -87,7 +87,7 @@ class PosNetRequestDataMapperTest extends TestCase
 
     public function testSupports(): void
     {
-        $result = $this->requestDataMapper::supports(PosNet::class);
+        $result = $this->requestDataMapper::supports(PosNetPos::class);
         $this->assertTrue($result);
 
         $result = $this->requestDataMapper::supports(EstV3Pos::class);

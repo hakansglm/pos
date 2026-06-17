@@ -9,7 +9,7 @@ namespace Mews\Pos\DataMapper\RequestDataMapper;
 use Mews\Pos\DataMapper\RequestValueFormatter\PosNetV1PosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\RequestValueFormatterInterface;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\PosNetAccount;
+use Mews\Pos\Entity\Account\PosNetPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\Before3DFormHashCalculatedEvent;
 use Mews\Pos\Exceptions\NotImplementedException;
@@ -38,7 +38,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param PosNetAccount $posAccount
+     * @param PosNetPosAccount $posAccount
      *
      * {@inheritDoc}
      */
@@ -81,7 +81,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param PosNetAccount $posAccount
+     * @param PosNetPosAccount $posAccount
      *
      * {@inheritDoc}
      */
@@ -135,7 +135,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param PosNetAccount $posAccount
+     * @param PosNetPosAccount $posAccount
      *
      * {@inheritDoc}
      */
@@ -174,7 +174,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param PosNetAccount $posAccount
+     * @param PosNetPosAccount $posAccount
      *
      * {@inheritDoc}
      */
@@ -204,7 +204,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param PosNetAccount $posAccount
+     * @param PosNetPosAccount $posAccount
      *
      * {@inheritDoc}
      */
@@ -243,7 +243,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param PosNetAccount $posAccount
+     * @param PosNetPosAccount $posAccount
      *
      * {@inheritDoc}
      */
@@ -287,7 +287,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param PosNetAccount $posAccount
+     * @param PosNetPosAccount $posAccount
      *
      * @inheritDoc
      */
@@ -329,7 +329,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
 
 
     /**
-     * @param PosNetAccount $posAccount
+     * @param PosNetPosAccount $posAccount
      *
      * @return array{gateway: string, method: 'POST', inputs: array<string, string>}
      *

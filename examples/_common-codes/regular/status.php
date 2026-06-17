@@ -25,7 +25,7 @@ function createStatusOrder(string $gatewayClass, array $lastResponse, string $ip
     if (\Mews\Pos\Gateways\KuveytPos::class === $gatewayClass) {
         $statusOrder['remote_order_id'] = $lastResponse['remote_order_id']; // OrderId
     }
-    if (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNet::class === $gatewayClass) {
+    if (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNetPos::class === $gatewayClass) {
         /**
          * payment_model: siparis olusturulurken kullanilan odeme modeli.
          * orderId'yi dogru sekilde formatlamak icin zorunlu.

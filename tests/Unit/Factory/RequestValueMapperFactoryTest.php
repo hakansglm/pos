@@ -15,7 +15,7 @@ use Mews\Pos\DataMapper\RequestValueMapper\ParamPosRequestValueMapper;
 use Mews\Pos\DataMapper\RequestValueMapper\PayFlexCPV4PosRequestValueMapper;
 use Mews\Pos\DataMapper\RequestValueMapper\PayFlexV4PosRequestValueMapper;
 use Mews\Pos\DataMapper\RequestValueMapper\PayForPosRequestValueMapper;
-use Mews\Pos\DataMapper\RequestValueMapper\PosNetRequestValueMapper;
+use Mews\Pos\DataMapper\RequestValueMapper\PosNetPosRequestValueMapper;
 use Mews\Pos\DataMapper\RequestValueMapper\PosNetV1PosRequestValueMapper;
 use Mews\Pos\DataMapper\RequestValueMapper\ToslaPosRequestValueMapper;
 use Mews\Pos\DataMapper\RequestValueMapper\VakifKatilimPosRequestValueMapper;
@@ -31,7 +31,7 @@ use Mews\Pos\Gateways\ParamPos;
 use Mews\Pos\Gateways\PayFlexCPV4Pos;
 use Mews\Pos\Gateways\PayFlexV4Pos;
 use Mews\Pos\Gateways\PayForPos;
-use Mews\Pos\Gateways\PosNet;
+use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\Gateways\PosNetV1Pos;
 use Mews\Pos\Gateways\ToslaPos;
 use Mews\Pos\Gateways\VakifKatilimPos;
@@ -73,7 +73,7 @@ class RequestValueMapperFactoryTest extends TestCase
             [PayFlexCPV4Pos::class, PayFlexCPV4PosRequestValueMapper::class],
             [PayFlexV4Pos::class, PayFlexV4PosRequestValueMapper::class],
             [PayForPos::class, PayForPosRequestValueMapper::class],
-            [PosNet::class, PosNetRequestValueMapper::class],
+            [PosNetPos::class, PosNetPosRequestValueMapper::class],
             [PosNetV1Pos::class, PosNetV1PosRequestValueMapper::class],
             [ToslaPos::class, ToslaPosRequestValueMapper::class],
             [VakifKatilimPos::class, VakifKatilimPosRequestValueMapper::class],

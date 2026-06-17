@@ -10,13 +10,13 @@ use Exception;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\HttpClientStrategyInterface;
 use Mews\Pos\Crypt\CryptInterface;
-use Mews\Pos\DataMapper\RequestDataMapper\PosNetRequestDataMapper;
+use Mews\Pos\DataMapper\RequestDataMapper\PosNetPosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestDataMapper\RequestDataMapperInterface;
 use Mews\Pos\DataMapper\RequestValueMapper\EstPosRequestValueMapper;
-use Mews\Pos\DataMapper\ResponseDataMapper\PosNetResponseDataMapper;
+use Mews\Pos\DataMapper\ResponseDataMapper\PosNetPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\ResponseDataMapperInterface;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\PosNetAccount;
+use Mews\Pos\Entity\Account\PosNetPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exceptions\HashMismatchException;
@@ -25,22 +25,22 @@ use Mews\Pos\Exceptions\UnsupportedPaymentModelException;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
-use Mews\Pos\Gateways\PosNet;
+use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Tests\Unit\DataMapper\RequestDataMapper\PosNetRequestDataMapperTest;
-use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\PosNetResponseDataMapperTest;
+use Mews\Pos\Tests\Unit\DataMapper\RequestDataMapper\PosNetPosRequestDataMapperTest;
+use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\PosNetPosResponseDataMapperTest;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 
 /**
- * @covers \Mews\Pos\Gateways\PosNet
+ * @covers \Mews\Pos\Gateways\PosNetPos
  * @covers \Mews\Pos\Gateways\AbstractGateway
  */
-class PosNetTest extends TestCase
+class PosNetPosTest extends TestCase
 {
-    private PosNetAccount $account;
+    private PosNetPosAccount $account;
 
     private array $config;
 
@@ -48,7 +48,7 @@ class PosNetTest extends TestCase
 
     private array $order;
 
-    /** @var PosNet */
+    /** @var PosNetPos */
     private PosInterface $pos;
 
     /** @var RequestDataMapperInterface & MockObject */
@@ -80,7 +80,7 @@ class PosNetTest extends TestCase
 
         $this->config = [
             'name'              => 'Yapıkredi',
-            'class'             => PosNet::class,
+            'class'             => PosNetPos::class,
             'gateway_endpoints' => [
                 'gateway_3d' => 'https://setmpos.ykb.com/3DSWebService/YKBPaymentService',
             ],
@@ -106,8 +106,8 @@ class PosNetTest extends TestCase
         ];
 
         $this->requestValueMapper     = new EstPosRequestValueMapper();
-        $this->requestMapperMock      = $this->createMock(PosNetRequestDataMapper::class);
-        $this->responseMapperMock     = $this->createMock(PosNetResponseDataMapper::class);
+        $this->requestMapperMock      = $this->createMock(PosNetPosRequestDataMapper::class);
+        $this->responseMapperMock     = $this->createMock(PosNetPosResponseDataMapper::class);
         $this->cryptMock              = $this->createMock(CryptInterface::class);
         $this->httpClientStrategyMock = $this->createMock(HttpClientStrategyInterface::class);
         $this->httpClientMock         = $this->createMock(HttpClientInterface::class);
@@ -140,9 +140,9 @@ class PosNetTest extends TestCase
         $paymentModel = PosInterface::MODEL_3D_SECURE;
         $requestData  = ['request-data'];
 
-        $responseData = PosNetRequestDataMapperTest::threeDFormDataDataProvider()['success1']['enrollment_check_response'];
-        $formData     = PosNetRequestDataMapperTest::threeDFormDataDataProvider()['success1']['expected'];
-        $order        = PosNetRequestDataMapperTest::threeDFormDataDataProvider()['success1']['order'];
+        $responseData = PosNetPosRequestDataMapperTest::threeDFormDataDataProvider()['success1']['enrollment_check_response'];
+        $formData     = PosNetPosRequestDataMapperTest::threeDFormDataDataProvider()['success1']['expected'];
+        $order        = PosNetPosRequestDataMapperTest::threeDFormDataDataProvider()['success1']['order'];
 
         $this->requestMapperMock->expects(self::once())
             ->method('create3DFormInitializeRequestData')
@@ -590,7 +590,7 @@ class PosNetTest extends TestCase
 
     public function testMake3DPaymentHashMismatchException(): void
     {
-        $gatewayResponseData = PosNetResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'];
+        $gatewayResponseData = PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'];
         $txType              = PosInterface::TX_TYPE_PAY_AUTH;
 
         $this->cryptMock->expects(self::once())
@@ -874,32 +874,32 @@ class PosNetTest extends TestCase
 
         return [
             'auth_fail'      => [
-                'order'           => PosNetResponseDataMapperTest::threeDPaymentDataProvider()['auth_fail1']['order'],
-                'txType'          => PosNetResponseDataMapperTest::threeDPaymentDataProvider()['auth_fail1']['txType'],
+                'order'           => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['auth_fail1']['order'],
+                'txType'          => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['auth_fail1']['txType'],
                 'request'         => $resolveMerchantResponseData,
-                'resolveResponse' => PosNetResponseDataMapperTest::threeDPaymentDataProvider()['auth_fail1']['threeDResponseData'],
-                'paymentResponse' => PosNetResponseDataMapperTest::threeDPaymentDataProvider()['auth_fail1']['paymentData'],
-                'expected'        => PosNetResponseDataMapperTest::threeDPaymentDataProvider()['auth_fail1']['expectedData'],
+                'resolveResponse' => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['auth_fail1']['threeDResponseData'],
+                'paymentResponse' => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['auth_fail1']['paymentData'],
+                'expected'        => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['auth_fail1']['expectedData'],
                 'is3DSuccess'     => false,
                 'isSuccess'       => false,
             ],
             'fail2-md-empty' => [
-                'order'           => PosNetResponseDataMapperTest::threeDPaymentDataProvider()['fail2-md-empty']['order'],
-                'txType'          => PosNetResponseDataMapperTest::threeDPaymentDataProvider()['fail2-md-empty']['txType'],
+                'order'           => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['fail2-md-empty']['order'],
+                'txType'          => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['fail2-md-empty']['txType'],
                 'request'         => $resolveMerchantResponseData,
-                'resolveResponse' => PosNetResponseDataMapperTest::threeDPaymentDataProvider()['fail2-md-empty']['threeDResponseData'],
-                'paymentResponse' => PosNetResponseDataMapperTest::threeDPaymentDataProvider()['fail2-md-empty']['paymentData'],
-                'expected'        => PosNetResponseDataMapperTest::threeDPaymentDataProvider()['fail2-md-empty']['expectedData'],
+                'resolveResponse' => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['fail2-md-empty']['threeDResponseData'],
+                'paymentResponse' => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['fail2-md-empty']['paymentData'],
+                'expected'        => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['fail2-md-empty']['expectedData'],
                 'is3DSuccess'     => false,
                 'isSuccess'       => false,
             ],
             'success'        => [
-                'order'           => PosNetResponseDataMapperTest::threeDPaymentDataProvider()['success1']['order'],
-                'txType'          => PosNetResponseDataMapperTest::threeDPaymentDataProvider()['success1']['txType'],
+                'order'           => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['order'],
+                'txType'          => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['txType'],
                 'request'         => $resolveMerchantResponseData,
-                'resolveResponse' => PosNetResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'],
-                'paymentResponse' => PosNetResponseDataMapperTest::threeDPaymentDataProvider()['success1']['paymentData'],
-                'expected'        => PosNetResponseDataMapperTest::threeDPaymentDataProvider()['success1']['expectedData'],
+                'resolveResponse' => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'],
+                'paymentResponse' => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['paymentData'],
+                'expected'        => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['expectedData'],
                 'is3DSuccess'     => true,
                 'isSuccess'       => true,
             ],
@@ -916,12 +916,12 @@ class PosNetTest extends TestCase
 
         return [
             'success' => [
-                'order'           => PosNetResponseDataMapperTest::threeDPaymentDataProvider()['success1']['order'],
-                'txType'          => PosNetResponseDataMapperTest::threeDPaymentDataProvider()['success1']['txType'],
+                'order'           => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['order'],
+                'txType'          => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['txType'],
                 'request'         => $resolveMerchantResponseData,
-                'resolveResponse' => PosNetResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'],
-                'paymentResponse' => PosNetResponseDataMapperTest::threeDPaymentDataProvider()['success1']['paymentData'],
-                'expected'        => PosNetResponseDataMapperTest::threeDPaymentDataProvider()['success1']['expectedData'],
+                'resolveResponse' => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'],
+                'paymentResponse' => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['paymentData'],
+                'expected'        => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['expectedData'],
                 'is3DSuccess'     => true,
                 'isSuccess'       => true,
             ],
@@ -1009,7 +1009,7 @@ class PosNetTest extends TestCase
                 'isWithCard'             => false,
                 'create_without_card'    => false,
                 'expectedExceptionClass' => \LogicException::class,
-                'expectedExceptionMsg'   => 'Mews\Pos\Gateways\PosNet ödeme altyapıda [pay] işlem tipi [3d, regular] ödeme model(ler) desteklemektedir. Sağlanan ödeme model: [3d_pay].',
+                'expectedExceptionMsg'   => 'Mews\Pos\Gateways\PosNetPos ödeme altyapıda [pay] işlem tipi [3d, regular] ödeme model(ler) desteklemektedir. Sağlanan ödeme model: [3d_pay].',
             ],
             'non_payment_tx_type'       => [
                 'order'                  => ['id' => '2020110828BC'],
@@ -1044,7 +1044,7 @@ class PosNetTest extends TestCase
 
     private function createGateway(array $config, ?AbstractPosAccount $account = null): PosInterface
     {
-        return new PosNet(
+        return new PosNetPos(
             $config,
             $account ?? $this->account,
             $this->requestValueMapper,

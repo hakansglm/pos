@@ -53,7 +53,7 @@
                             <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\PayFlexCPV4Pos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/payflex-cp-v4/index.php">PayFlex Common Payment V4 (VakifBank)</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\PosNet::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/posnet-ykb/index.php">PosNet (YKB)</a>
+                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\PosNetPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/posnet-ykb/index.php">PosNet (YKB)</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\PosNetV1Pos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/posnet-v1/index.php">PosNetV1 (Albaraka)</a>

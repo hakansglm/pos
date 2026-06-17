@@ -91,7 +91,7 @@ trait PaymentTestTrait
             $postAuth['ref_ret_num'] = $lastResponse['ref_ret_num'];
         }
 
-        if (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNet::class === $gatewayClass) {
+        if (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNetPos::class === $gatewayClass) {
             $postAuth['installment'] = $lastResponse['installment_count'];
             $postAuth['ref_ret_num'] = $lastResponse['ref_ret_num'];
         }
@@ -124,7 +124,7 @@ trait PaymentTestTrait
             $statusOrder['remote_order_id'] = $lastResponse['remote_order_id']; // OrderId
         }
 
-        if (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNet::class === $gatewayClass) {
+        if (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNetPos::class === $gatewayClass) {
             /**
              * payment_model:
              * siparis olusturulurken kullanilan odeme modeli
@@ -189,7 +189,7 @@ trait PaymentTestTrait
             $cancelOrder['transaction_id'] = $lastResponse['transaction_id'];
         } elseif (IyzicoPos::class === $gatewayClass) {
             $cancelOrder['transaction_id'] = $lastResponse['transaction_id'];
-        } elseif (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNet::class === $gatewayClass) {
+        } elseif (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNetPos::class === $gatewayClass) {
             /**
              * payment_model:
              * siparis olusturulurken kullanilan odeme modeli
@@ -370,7 +370,7 @@ trait PaymentTestTrait
             $refundOrder['transaction_id'] = $lastResponse['transaction_id'];
         } elseif (IyzicoPos::class === $gatewayClass) {
             $refundOrder['transaction_id'] = $lastResponse['transaction_id'];
-        } elseif (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNet::class === $gatewayClass) {
+        } elseif (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNetPos::class === $gatewayClass) {
             /**
              * payment_model:
              * siparis olusturulurken kullanilan odeme modeli

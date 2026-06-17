@@ -6,24 +6,24 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper;
 
-use Mews\Pos\DataMapper\ResponseDataMapper\PosNetResponseDataMapper;
+use Mews\Pos\DataMapper\ResponseDataMapper\PosNetPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseValueFormatter\ResponseValueFormatterInterface;
 use Mews\Pos\DataMapper\ResponseValueMapper\ResponseValueMapperInterface;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\PosNet;
+use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
- * @covers \Mews\Pos\DataMapper\ResponseDataMapper\PosNetResponseDataMapper
+ * @covers \Mews\Pos\DataMapper\ResponseDataMapper\PosNetPosResponseDataMapper
  * @covers \Mews\Pos\DataMapper\ResponseDataMapper\AbstractResponseDataMapper
  */
-class PosNetResponseDataMapperTest extends TestCase
+class PosNetPosResponseDataMapperTest extends TestCase
 {
-    private PosNetResponseDataMapper $responseDataMapper;
+    private PosNetPosResponseDataMapper $responseDataMapper;
 
     /** @var LoggerInterface&MockObject */
     private LoggerInterface $logger;
@@ -43,7 +43,7 @@ class PosNetResponseDataMapperTest extends TestCase
         $this->responseValueFormatter = $this->createMock(ResponseValueFormatterInterface::class);
         $this->responseValueMapper    = $this->createMock(ResponseValueMapperInterface::class);
 
-        $this->responseDataMapper = new PosNetResponseDataMapper(
+        $this->responseDataMapper = new PosNetPosResponseDataMapper(
             $this->responseValueFormatter,
             $this->responseValueMapper,
             $this->logger
@@ -52,7 +52,7 @@ class PosNetResponseDataMapperTest extends TestCase
 
     public function testSupports(): void
     {
-        $result = $this->responseDataMapper::supports(PosNet::class);
+        $result = $this->responseDataMapper::supports(PosNetPos::class);
         $this->assertTrue($result);
 
         $result = $this->responseDataMapper::supports(AkbankPos::class);

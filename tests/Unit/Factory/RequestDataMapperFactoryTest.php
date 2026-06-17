@@ -67,7 +67,7 @@ class RequestDataMapperFactoryTest extends TestCase
             [\Mews\Pos\Gateways\Param3DHostPos::class, \Mews\Pos\DataMapper\RequestDataMapper\Param3DHostPosRequestDataMapper::class],
             [\Mews\Pos\Gateways\PayFlexCPV4Pos::class, \Mews\Pos\DataMapper\RequestDataMapper\PayFlexCPV4PosRequestDataMapper::class],
             [\Mews\Pos\Gateways\PayForPos::class, \Mews\Pos\DataMapper\RequestDataMapper\PayForPosRequestDataMapper::class],
-            [\Mews\Pos\Gateways\PosNet::class, \Mews\Pos\DataMapper\RequestDataMapper\PosNetRequestDataMapper::class],
+            [\Mews\Pos\Gateways\PosNetPos::class, \Mews\Pos\DataMapper\RequestDataMapper\PosNetPosRequestDataMapper::class],
             [\Mews\Pos\Gateways\PosNetV1Pos::class, \Mews\Pos\DataMapper\RequestDataMapper\PosNetV1PosRequestDataMapper::class],
             [\Mews\Pos\Gateways\ToslaPos::class, \Mews\Pos\DataMapper\RequestDataMapper\ToslaPosRequestDataMapper::class],
             [\Mews\Pos\Gateways\VakifKatilimPos::class, \Mews\Pos\DataMapper\RequestDataMapper\VakifKatilimPosRequestDataMapper::class],

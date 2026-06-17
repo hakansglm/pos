@@ -7,13 +7,13 @@
 namespace Mews\Pos\DataMapper\RequestValueFormatter;
 
 use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\PosNet;
+use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\PosInterface;
 
-class PosNetRequestValueFormatter implements RequestValueFormatterInterface
+class PosNetPosRequestValueFormatter implements RequestValueFormatterInterface
 {
     /**
-     * PosNet requires order id with specific length
+     * PosNet requires order id with the specific length
      *
      * @var int
      */
@@ -38,7 +38,7 @@ class PosNetRequestValueFormatter implements RequestValueFormatterInterface
      */
     public static function supports(string $gatewayClass): bool
     {
-        return PosNet::class === $gatewayClass;
+        return PosNetPos::class === $gatewayClass;
     }
 
 

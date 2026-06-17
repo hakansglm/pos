@@ -6,10 +6,10 @@
 
 namespace Mews\Pos\DataMapper\ResponseValueMapper;
 
-use Mews\Pos\Gateways\PosNet;
+use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\PosInterface;
 
-class PosNetResponseValueMapper extends AbstractResponseValueMapper
+class PosNetPosResponseValueMapper extends AbstractResponseValueMapper
 {
     /** @var array<string, PosInterface::CURRENCY_*> */
     protected array $currencyMappings = [
@@ -37,6 +37,6 @@ class PosNetResponseValueMapper extends AbstractResponseValueMapper
      */
     public static function supports(string $gatewayClass): bool
     {
-        return PosNet::class === $gatewayClass;
+        return PosNetPos::class === $gatewayClass;
     }
 }

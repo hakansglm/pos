@@ -6,29 +6,29 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\RequestValueFormatter;
 
-use Mews\Pos\DataMapper\RequestValueFormatter\PosNetRequestValueFormatter;
+use Mews\Pos\DataMapper\RequestValueFormatter\PosNetPosRequestValueFormatter;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Gateways\EstV3Pos;
-use Mews\Pos\Gateways\PosNet;
+use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Mews\Pos\DataMapper\RequestValueFormatter\PosNetRequestValueFormatter
+ * @covers \Mews\Pos\DataMapper\RequestValueFormatter\PosNetPosRequestValueFormatter
  */
-class PosNetRequestValueFormatterTest extends TestCase
+class PosNetPosRequestValueFormatterTest extends TestCase
 {
-    private PosNetRequestValueFormatter $formatter;
+    private PosNetPosRequestValueFormatter $formatter;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->formatter = new PosNetRequestValueFormatter();
+        $this->formatter = new PosNetPosRequestValueFormatter();
     }
 
     public function testSupports(): void
     {
-        $result = $this->formatter::supports(PosNet::class);
+        $result = $this->formatter::supports(PosNetPos::class);
         $this->assertTrue($result);
 
         $result = $this->formatter::supports(EstV3Pos::class);

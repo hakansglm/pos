@@ -20,7 +20,7 @@ use Mews\Pos\DataMapper\RequestDataMapper\ParamPosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestDataMapper\PayFlexCPV4PosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestDataMapper\PayFlexV4PosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestDataMapper\PayForPosRequestDataMapper;
-use Mews\Pos\DataMapper\RequestDataMapper\PosNetRequestDataMapper;
+use Mews\Pos\DataMapper\RequestDataMapper\PosNetPosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestDataMapper\PosNetV1PosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestDataMapper\RequestDataMapperInterface;
 use Mews\Pos\DataMapper\RequestDataMapper\ToslaPosRequestDataMapper;
@@ -51,7 +51,7 @@ class RequestDataMapperFactory
         PayFlexCPV4PosRequestDataMapper::class,
         PayFlexV4PosRequestDataMapper::class,
         PayForPosRequestDataMapper::class,
-        PosNetRequestDataMapper::class,
+        PosNetPosRequestDataMapper::class,
         PosNetV1PosRequestDataMapper::class,
         ToslaPosRequestDataMapper::class,
         VakifKatilimPosRequestDataMapper::class,

@@ -8,28 +8,28 @@ namespace Mews\Pos\DataMapper\RequestDataMapper;
 
 use InvalidArgumentException;
 use Mews\Pos\Crypt\CryptInterface;
-use Mews\Pos\Crypt\PosNetCrypt;
-use Mews\Pos\DataMapper\RequestValueFormatter\PosNetRequestValueFormatter;
+use Mews\Pos\Crypt\PosNetPosCrypt;
+use Mews\Pos\DataMapper\RequestValueFormatter\PosNetPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\RequestValueFormatterInterface;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\PosNetAccount;
+use Mews\Pos\Entity\Account\PosNetPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
-use Mews\Pos\Gateways\PosNet;
+use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\PosInterface;
 
 /**
  * Creates request data for PosNet Gateway requests
  */
-class PosNetRequestDataMapper extends AbstractRequestDataMapper
+class PosNetPosRequestDataMapper extends AbstractRequestDataMapper
 {
     /**
-     * @var PosNetRequestValueFormatter
+     * @var PosNetPosRequestValueFormatter
      */
     protected RequestValueFormatterInterface $valueFormatter;
 
-    /** @var PosNetCrypt */
+    /** @var PosNetPosCrypt */
     protected CryptInterface $crypt;
 
     /**
@@ -37,11 +37,11 @@ class PosNetRequestDataMapper extends AbstractRequestDataMapper
      */
     public static function supports(string $gatewayClass): bool
     {
-        return PosNet::class === $gatewayClass;
+        return PosNetPos::class === $gatewayClass;
     }
 
     /**
-     * @param PosNetAccount                                                     $posAccount
+     * @param PosNetPosAccount                                                  $posAccount
      * @param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType     kullanilmiyor
      *
      * {@inheritDoc}
@@ -72,7 +72,7 @@ class PosNetRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param PosNetAccount $posAccount
+     * @param PosNetPosAccount $posAccount
      *
      * {@inheritDoc}
      */
@@ -99,7 +99,7 @@ class PosNetRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param PosNetAccount $posAccount
+     * @param PosNetPosAccount $posAccount
      *
      * {@inheritDoc}
      */
@@ -123,7 +123,7 @@ class PosNetRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param PosNetAccount $posAccount
+     * @param PosNetPosAccount $posAccount
      *
      * {@inheritDoc}
      */
@@ -143,7 +143,7 @@ class PosNetRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param PosNetAccount $posAccount
+     * @param PosNetPosAccount $posAccount
      *
      * {@inheritDoc}
      */
@@ -176,7 +176,7 @@ class PosNetRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param PosNetAccount $posAccount
+     * @param PosNetPosAccount $posAccount
      *
      * {@inheritDoc}
      */
@@ -222,7 +222,7 @@ class PosNetRequestDataMapper extends AbstractRequestDataMapper
 
 
     /**
-     * @param PosNetAccount                                     $posAccount
+     * @param PosNetPosAccount                                  $posAccount
      * @param array{data1: string, data2: string, sign: string} $extraData
      *
      * @return array{gateway: string, method: 'POST', inputs: array<string, string>}
@@ -265,7 +265,7 @@ class PosNetRequestDataMapper extends AbstractRequestDataMapper
     /**
      * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
      *
-     * @param PosNetAccount                        $posAccount
+     * @param PosNetPosAccount                     $posAccount
      * @param array<string, int|string|float|null> $order
      * @param string                               $txType
      * @param CreditCardInterface                  $creditCard
@@ -301,7 +301,7 @@ class PosNetRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param PosNetAccount                        $posAccount
+     * @param PosNetPosAccount                     $posAccount
      * @param array<string, int|string|float|null> $order
      * @param array<string, mixed>                 $responseData
      *
@@ -332,7 +332,7 @@ class PosNetRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param PosNetAccount $posAccount
+     * @param PosNetPosAccount $posAccount
      *
      * @inheritDoc
      */

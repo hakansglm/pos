@@ -165,7 +165,7 @@ interface PosInterface
     );
 
     /**
-     * Regular Payment
+     * Regular/NonSecure payment without any 3D Authentication.
      *
      * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
      *

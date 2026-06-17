@@ -38,7 +38,7 @@ class CryptFactoryTest extends TestCase
             [\Mews\Pos\Gateways\PayFlexV4Pos::class, \Mews\Pos\Crypt\NullCrypt::class],
             [\Mews\Pos\Gateways\PayFlexCPV4Pos::class, \Mews\Pos\Crypt\PayFlexCPV4Crypt::class],
             [\Mews\Pos\Gateways\PayForPos::class, \Mews\Pos\Crypt\PayForPosCrypt::class],
-            [\Mews\Pos\Gateways\PosNet::class, \Mews\Pos\Crypt\PosNetCrypt::class],
+            [\Mews\Pos\Gateways\PosNetPos::class, \Mews\Pos\Crypt\PosNetPosCrypt::class],
             [\Mews\Pos\Gateways\PosNetV1Pos::class, \Mews\Pos\Crypt\PosNetV1PosCrypt::class],
             [\Mews\Pos\Gateways\ToslaPos::class, \Mews\Pos\Crypt\ToslaPosCrypt::class],
             [\Mews\Pos\Gateways\VakifKatilimPos::class, \Mews\Pos\Crypt\KuveytPosCrypt::class],

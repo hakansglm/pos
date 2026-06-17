@@ -15,7 +15,7 @@ use Mews\Pos\Entity\Account\KuveytPosAccount;
 use Mews\Pos\Entity\Account\ParamPosAccount;
 use Mews\Pos\Entity\Account\PayFlexAccount;
 use Mews\Pos\Entity\Account\PayForAccount;
-use Mews\Pos\Entity\Account\PosNetAccount;
+use Mews\Pos\Entity\Account\PosNetPosAccount;
 use Mews\Pos\Entity\Account\ToslaPosAccount;
 use Mews\Pos\Exceptions\MissingAccountInfoException;
 use Mews\Pos\PosInterface;
@@ -180,15 +180,15 @@ class AccountFactory
      * @param non-empty-string      $model
      * @param non-empty-string|null $storeKey
      *
-     * @return PosNetAccount
+     * @return PosNetPosAccount
      *
      * @throws MissingAccountInfoException
      */
-    public static function createPosNetAccount(string $bank, string $merchantId, string $terminalId, string $posNetId, string $model = PosInterface::MODEL_NON_SECURE, ?string $storeKey = null): PosNetAccount
+    public static function createPosNetAccount(string $bank, string $merchantId, string $terminalId, string $posNetId, string $model = PosInterface::MODEL_NON_SECURE, ?string $storeKey = null): PosNetPosAccount
     {
         self::checkParameters($model, $storeKey);
 
-        return new PosNetAccount($bank, $merchantId, $posNetId, $terminalId, $storeKey);
+        return new PosNetPosAccount($bank, $merchantId, $posNetId, $terminalId, $storeKey);
     }
 
     /**
