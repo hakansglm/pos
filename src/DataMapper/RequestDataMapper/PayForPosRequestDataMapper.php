@@ -336,7 +336,7 @@ class PayForPosRequestDataMapper extends AbstractRequestDataMapper
 
         $event = new Before3DFormHashCalculatedEvent(
             $formData,
-            $posAccount->getBank(),
+            $posAccount->getBankName(),
             $txType,
             $paymentModel,
             PayForPos::class

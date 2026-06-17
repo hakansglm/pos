@@ -99,7 +99,7 @@ class EstPos extends AbstractGateway
 
         $event = new RequestDataPreparedEvent(
             $requestData,
-            $this->account->getBank(),
+            $this->account->getBankName(),
             $txType,
             \get_class($this),
             $order,
@@ -110,7 +110,7 @@ class EstPos extends AbstractGateway
         if ($requestData !== $event->getRequestData()) {
             $this->logger->debug('Request data is changed via listeners', [
                 'txType'      => $event->getTxType(),
-                'bank'        => $event->getBank(),
+                'bankName'    => $event->getBankName(),
                 'initialData' => $requestData,
                 'updatedData' => $event->getRequestData(),
             ]);

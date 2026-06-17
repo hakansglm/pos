@@ -25,7 +25,7 @@ class PosFactoryTest extends TestCase
     {
         $account = $this->createMock(AbstractPosAccount::class);
         $account->expects(self::atLeastOnce())
-            ->method('getBank')
+            ->method('getBankName')
             ->willReturn($configKey);
 
         $eventDispatcher = $this->createMock(\Psr\EventDispatcher\EventDispatcherInterface::class);
@@ -68,7 +68,7 @@ class PosFactoryTest extends TestCase
         ];
         $account      = $this->createMock(AbstractPosAccount::class);
         $account->expects(self::atLeastOnce())
-            ->method('getBank')
+            ->method('getBankName')
             ->willReturn('akbank');
 
         $eventDispatcher = $this->createMock(\Psr\EventDispatcher\EventDispatcherInterface::class);
@@ -88,7 +88,7 @@ class PosFactoryTest extends TestCase
     {
         $account = $this->createMock(AbstractPosAccount::class);
         $account->expects(self::atLeastOnce())
-            ->method('getBank')
+            ->method('getBankName')
             ->willReturn($configKey);
 
         $eventDispatcher = $this->createMock(\Psr\EventDispatcher\EventDispatcherInterface::class);

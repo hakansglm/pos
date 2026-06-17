@@ -241,7 +241,7 @@ class PayFlexCPV4Pos extends AbstractGateway
 
         $event = new RequestDataPreparedEvent(
             $requestData,
-            $this->account->getBank(),
+            $this->account->getBankName(),
             $requestTxType,
             \get_class($this),
             $order,
@@ -252,7 +252,7 @@ class PayFlexCPV4Pos extends AbstractGateway
         if ($requestData !== $event->getRequestData()) {
             $this->logger->debug('Request data is changed via listeners', [
                 'txType'      => $event->getTxType(),
-                'bank'        => $event->getBank(),
+                'bankName'    => $event->getBankName(),
                 'initialData' => $requestData,
                 'updatedData' => $event->getRequestData(),
             ]);
@@ -305,7 +305,7 @@ class PayFlexCPV4Pos extends AbstractGateway
 
         $event = new RequestDataPreparedEvent(
             $requestData,
-            $this->account->getBank(),
+            $this->account->getBankName(),
             $apiRequestTxType,
             \get_class($this),
             $order,
@@ -316,7 +316,7 @@ class PayFlexCPV4Pos extends AbstractGateway
         if ($requestData !== $event->getRequestData()) {
             $this->logger->debug('Request data is changed via listeners', [
                 'txType'      => $event->getTxType(),
-                'bank'        => $event->getBank(),
+                'bankName'    => $event->getBankName(),
                 'initialData' => $requestData,
                 'updatedData' => $event->getRequestData(),
             ]);

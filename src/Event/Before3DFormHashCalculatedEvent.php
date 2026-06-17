@@ -18,7 +18,7 @@ class Before3DFormHashCalculatedEvent
     /** @var array<string, string> */
     private array $formInputs;
 
-    private string $bank;
+    private string $bankName;
 
     /** @var PosInterface::TX_TYPE_PAY_* */
     private string $txType;
@@ -47,9 +47,9 @@ class Before3DFormHashCalculatedEvent
         string $paymentModel,
         string $gatewayClass
     ) {
-        $this->formInputs   = $formInputs;
-        $this->bank         = $bank;
-        $this->txType       = $txType;
+        $this->formInputs = $formInputs;
+        $this->bankName   = $bank;
+        $this->txType     = $txType;
         $this->paymentModel = $paymentModel;
         $this->gatewayClass = $gatewayClass;
     }
@@ -73,9 +73,9 @@ class Before3DFormHashCalculatedEvent
     /**
      * @return string
      */
-    public function getBank(): string
+    public function getBankName(): string
     {
-        return $this->bank;
+        return $this->bankName;
     }
 
     /**

@@ -249,7 +249,7 @@ abstract class AbstractGateway implements PosInterface
 
         $event = new RequestDataPreparedEvent(
             $requestData,
-            $this->account->getBank(),
+            $this->account->getBankName(),
             $txType,
             \get_class($this),
             $order,
@@ -260,7 +260,7 @@ abstract class AbstractGateway implements PosInterface
         if ($requestData !== $event->getRequestData()) {
             $this->logger->debug('Request data is changed via listeners', [
                 'txType'      => $event->getTxType(),
-                'bank'        => $event->getBank(),
+                'bankName'          => $event->getBankName(),
                 'initialData' => $requestData,
                 'updatedData' => $event->getRequestData(),
             ]);
@@ -300,7 +300,7 @@ abstract class AbstractGateway implements PosInterface
 
         $event = new RequestDataPreparedEvent(
             $requestData,
-            $this->account->getBank(),
+            $this->account->getBankName(),
             $txType,
             \get_class($this),
             $order,
@@ -311,7 +311,7 @@ abstract class AbstractGateway implements PosInterface
         if ($requestData !== $event->getRequestData()) {
             $this->logger->debug('Request data is changed via listeners', [
                 'txType'      => $event->getTxType(),
-                'bank'        => $event->getBank(),
+                'bankName'          => $event->getBankName(),
                 'initialData' => $requestData,
                 'updatedData' => $event->getRequestData(),
             ]);
@@ -351,7 +351,7 @@ abstract class AbstractGateway implements PosInterface
 
         $event = new RequestDataPreparedEvent(
             $requestData,
-            $this->account->getBank(),
+            $this->account->getBankName(),
             $txType,
             \get_class($this),
             $order,
@@ -362,7 +362,7 @@ abstract class AbstractGateway implements PosInterface
         if ($requestData !== $event->getRequestData()) {
             $this->logger->debug('Request data is changed via listeners', [
                 'txType'      => $event->getTxType(),
-                'bank'        => $event->getBank(),
+                'bankName'          => $event->getBankName(),
                 'initialData' => $requestData,
                 'updatedData' => $event->getRequestData(),
             ]);
@@ -398,7 +398,7 @@ abstract class AbstractGateway implements PosInterface
 
         $event = new RequestDataPreparedEvent(
             $requestData,
-            $this->account->getBank(),
+            $this->account->getBankName(),
             $txType,
             \get_class($this),
             $order,
@@ -409,7 +409,7 @@ abstract class AbstractGateway implements PosInterface
         if ($requestData !== $event->getRequestData()) {
             $this->logger->debug('Request data is changed via listeners', [
                 'txType'      => $event->getTxType(),
-                'bank'        => $event->getBank(),
+                'bankName'          => $event->getBankName(),
                 'initialData' => $requestData,
                 'updatedData' => $event->getRequestData(),
             ]);
@@ -445,7 +445,7 @@ abstract class AbstractGateway implements PosInterface
 
         $event = new RequestDataPreparedEvent(
             $requestData,
-            $this->account->getBank(),
+            $this->account->getBankName(),
             $txType,
             \get_class($this),
             $order,
@@ -456,7 +456,7 @@ abstract class AbstractGateway implements PosInterface
         if ($requestData !== $event->getRequestData()) {
             $this->logger->debug('Request data is changed via listeners', [
                 'txType'      => $event->getTxType(),
-                'bank'        => $event->getBank(),
+                'bankName'          => $event->getBankName(),
                 'initialData' => $requestData,
                 'updatedData' => $event->getRequestData(),
             ]);
@@ -492,7 +492,7 @@ abstract class AbstractGateway implements PosInterface
 
         $event = new RequestDataPreparedEvent(
             $requestData,
-            $this->account->getBank(),
+            $this->account->getBankName(),
             $txType,
             \get_class($this),
             $data,
@@ -503,7 +503,7 @@ abstract class AbstractGateway implements PosInterface
         if ($requestData !== $event->getRequestData()) {
             $this->logger->debug('Request data is changed via listeners', [
                 'txType'      => $event->getTxType(),
-                'bank'        => $event->getBank(),
+                'bankName'          => $event->getBankName(),
                 'initialData' => $requestData,
                 'updatedData' => $event->getRequestData(),
             ]);
@@ -539,7 +539,7 @@ abstract class AbstractGateway implements PosInterface
 
         $event = new RequestDataPreparedEvent(
             $requestData,
-            $this->account->getBank(),
+            $this->account->getBankName(),
             $txType,
             \get_class($this),
             $order,
@@ -550,7 +550,7 @@ abstract class AbstractGateway implements PosInterface
         if ($requestData !== $event->getRequestData()) {
             $this->logger->debug('Request data is changed via listeners', [
                 'txType'      => $event->getTxType(),
-                'bank'        => $event->getBank(),
+                'bankName'          => $event->getBankName(),
                 'initialData' => $requestData,
                 'updatedData' => $event->getRequestData(),
             ]);
@@ -586,7 +586,7 @@ abstract class AbstractGateway implements PosInterface
 
         $event = new RequestDataPreparedEvent(
             $updatedRequestData,
-            $this->account->getBank(),
+            $this->account->getBankName(),
             $txType,
             \get_class($this),
             $requestData,
@@ -598,7 +598,7 @@ abstract class AbstractGateway implements PosInterface
         if ($updatedRequestData !== $event->getRequestData()) {
             $this->logger->debug('Request data is changed via listeners', [
                 'txType'      => $event->getTxType(),
-                'bank'        => $event->getBank(),
+                'bankName'    => $event->getBankName(),
                 'initialData' => $requestData,
                 'updatedData' => $event->getRequestData(),
             ]);

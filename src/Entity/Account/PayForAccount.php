@@ -17,7 +17,7 @@ class PayForAccount extends AbstractPosAccount
     /**
      * AbstractPosAccount constructor.
      *
-     * @param string         $bank
+     * @param string         $bankName
      * @param string         $merchantId   Üye işyeri numarası.
      * @param string         $userCode     Otorizasyon sistemi kullanıcı kodu.
      * @param string         $userPassword Otorizasyon sistemi kullanıcı şifresi.
@@ -25,7 +25,7 @@ class PayForAccount extends AbstractPosAccount
      * @param self::MBR_ID_* $mbrId        Kurum kodudur.
      */
     public function __construct(
-        string  $bank,
+        string  $bankName,
         string  $merchantId,
         string  $userCode,
         string  $userPassword,
@@ -35,7 +35,7 @@ class PayForAccount extends AbstractPosAccount
         $this->mbrId = $mbrId;
 
         parent::__construct(
-            $bank,
+            $bankName,
             $merchantId,
             $userCode,
             $userPassword,

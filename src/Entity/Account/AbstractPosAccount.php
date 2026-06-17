@@ -22,27 +22,27 @@ abstract class AbstractPosAccount
     /**
      * bank key name used in configuration file
      */
-    protected string $bank;
+    protected string $bankName;
 
     protected ?string $subMerchantId = null;
 
     /**
      * AbstractPosAccount constructor.
      *
-     * @param string      $bank
+     * @param string      $bankName
      * @param string      $clientId
      * @param string      $username
      * @param string      $password
      * @param string|null $storeKey
      * @param string|null $subMerchantId
      */
-    public function __construct(string $bank, string $clientId, string $username, string $password, ?string $storeKey = null, ?string $subMerchantId = null)
+    public function __construct(string $bankName, string $clientId, string $username, string $password, ?string $storeKey = null, ?string $subMerchantId = null)
     {
         $this->clientId      = $clientId;
         $this->username      = $username;
         $this->password      = $password;
         $this->storeKey      = $storeKey;
-        $this->bank          = $bank;
+        $this->bankName          = $bankName;
         $this->subMerchantId = $subMerchantId;
     }
 
@@ -81,9 +81,9 @@ abstract class AbstractPosAccount
     /**
      * @return string
      */
-    public function getBank(): string
+    public function getBankName(): string
     {
-        return $this->bank;
+        return $this->bankName;
     }
 
     /**

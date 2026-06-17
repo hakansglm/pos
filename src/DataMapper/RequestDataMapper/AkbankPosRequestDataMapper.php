@@ -343,7 +343,7 @@ class AkbankPosRequestDataMapper extends AbstractRequestDataMapper
 
         $event = new Before3DFormHashCalculatedEvent(
             $data['inputs'],
-            $posAccount->getBank(),
+            $posAccount->getBankName(),
             $txType,
             $paymentModel,
             AkbankPos::class

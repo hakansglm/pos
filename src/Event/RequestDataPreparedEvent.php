@@ -20,7 +20,7 @@ class RequestDataPreparedEvent
     /** @var array<string, mixed> */
     private array $order;
 
-    private string $bank;
+    private string $bankName;
 
     /** @var PosInterface::TX_TYPE_* */
     private string $txType;
@@ -37,7 +37,7 @@ class RequestDataPreparedEvent
      * @phpstan-param class-string<PosInterface> $gatewayClass
      *
      * @param array<string, mixed> $requestData
-     * @param string               $bank
+     * @param string               $bankName
      * @param string               $txType
      * @param string               $gatewayClass
      * @param array<string, mixed> $order
@@ -45,15 +45,15 @@ class RequestDataPreparedEvent
      */
     public function __construct(
         array  $requestData,
-        string $bank,
+        string $bankName,
         string $txType,
         string $gatewayClass,
         array  $order,
         string $paymentModel
     ) {
-        $this->requestData  = $requestData;
-        $this->bank         = $bank;
-        $this->txType       = $txType;
+        $this->requestData = $requestData;
+        $this->bankName    = $bankName;
+        $this->txType      = $txType;
         $this->gatewayClass = $gatewayClass;
         $this->order        = $order;
         $this->paymentModel = $paymentModel;
@@ -106,9 +106,9 @@ class RequestDataPreparedEvent
     /**
      * @return string
      */
-    public function getBank(): string
+    public function getBankName(): string
     {
-        return $this->bank;
+        return $this->bankName;
     }
 
     /**

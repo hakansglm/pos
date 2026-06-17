@@ -86,7 +86,7 @@ class PayFlexV4Pos extends AbstractGateway
 
         $event = new RequestDataPreparedEvent(
             $requestData,
-            $this->account->getBank(),
+            $this->account->getBankName(),
             $txType,
             \get_class($this),
             $order,
@@ -97,7 +97,7 @@ class PayFlexV4Pos extends AbstractGateway
         if ($requestData !== $event->getRequestData()) {
             $this->logger->debug('Request data is changed via listeners', [
                 'txType'      => $event->getTxType(),
-                'bank'        => $event->getBank(),
+                'bankName'    => $event->getBankName(),
                 'initialData' => $requestData,
                 'updatedData' => $event->getRequestData(),
             ]);
@@ -234,7 +234,7 @@ class PayFlexV4Pos extends AbstractGateway
         $requestTxType = PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD;
         $event = new RequestDataPreparedEvent(
             $requestData,
-            $this->account->getBank(),
+            $this->account->getBankName(),
             $requestTxType,
             \get_class($this),
             $order,
@@ -245,7 +245,7 @@ class PayFlexV4Pos extends AbstractGateway
         if ($requestData !== $event->getRequestData()) {
             $this->logger->debug('Request data is changed via listeners', [
                 'txType'      => $event->getTxType(),
-                'bank'        => $event->getBank(),
+                'bankName'    => $event->getBankName(),
                 'initialData' => $requestData,
                 'updatedData' => $event->getRequestData(),
             ]);

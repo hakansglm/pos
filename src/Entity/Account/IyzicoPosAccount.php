@@ -9,17 +9,17 @@ namespace Mews\Pos\Entity\Account;
 class IyzicoPosAccount extends AbstractPosAccount
 {
     /**
-     * @param string      $bank
+     * @param string      $bankName
      * @param string      $apiKey
      * @param string      $secretKey
      * @param string|null $subMerchantKey
      */
     public function __construct(
-        string  $bank,
+        string  $bankName,
         string  $apiKey,
         string  $secretKey,
         ?string $subMerchantKey = null
     ) {
-        parent::__construct($bank, $apiKey, '', '', $secretKey, $subMerchantKey);
+        parent::__construct($bankName, $apiKey, '', '', $secretKey, $subMerchantKey);
     }
 }

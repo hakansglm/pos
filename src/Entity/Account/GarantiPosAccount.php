@@ -18,16 +18,16 @@ class GarantiPosAccount extends AbstractPosAccount
     private ?string $refundPassword;
 
     public function __construct(
-        string $bank,
-        string $merchantId,
-        string $username,
-        string $password,
-        string $terminalId,
+        string  $bankName,
+        string  $merchantId,
+        string  $username,
+        string  $password,
+        string  $terminalId,
         ?string $storeKey = null,
         ?string $refundUsername = null,
         ?string $refundPassword = null
     ) {
-        parent::__construct($bank, $merchantId, $username, $password, $storeKey);
+        parent::__construct($bankName, $merchantId, $username, $password, $storeKey);
         $this->terminalId = $terminalId;
         $this->refundUsername = $refundUsername;
         $this->refundPassword = $refundPassword;

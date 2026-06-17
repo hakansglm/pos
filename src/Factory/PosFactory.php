@@ -57,11 +57,11 @@ class PosFactory
         }
 
         // Bank Config Exist
-        if (!\array_key_exists($posAccount->getBank(), $config['banks'])) {
+        if (!\array_key_exists($posAccount->getBankName(), $config['banks'])) {
             throw new BankNotFoundException();
         }
 
-        $gatewayClass = $config['banks'][$posAccount->getBank()]['class'] ?? null;
+        $gatewayClass = $config['banks'][$posAccount->getBankName()]['class'] ?? null;
 
         if (null === $gatewayClass) {
             throw new BankClassNullException();
@@ -73,12 +73,12 @@ class PosFactory
             );
         }
 
-        $logger->debug('creating gateway for bank', ['bank' => $posAccount->getBank()]);
+        $logger->debug('creating gateway for bank', ['bankName'   => $posAccount->getBankName()]);
 
         return self::doCreatePosGateway(
             $gatewayClass,
             $posAccount,
-            $config['banks'][$posAccount->getBank()],
+            $config['banks'][$posAccount->getBankName()],
             $eventDispatcher,
             $logger,
             $httpClientStrategy

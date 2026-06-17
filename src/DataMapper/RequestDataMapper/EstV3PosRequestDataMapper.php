@@ -40,7 +40,7 @@ class EstV3PosRequestDataMapper extends EstPosRequestDataMapper
 
         $event = new Before3DFormHashCalculatedEvent(
             $data['inputs'],
-            $posAccount->getBank(),
+            $posAccount->getBankName(),
             $txType,
             $paymentModel,
             EstV3Pos::class

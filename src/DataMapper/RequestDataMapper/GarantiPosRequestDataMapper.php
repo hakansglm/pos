@@ -378,7 +378,7 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
 
         $event = new Before3DFormHashCalculatedEvent(
             $inputs,
-            $posAccount->getBank(),
+            $posAccount->getBankName(),
             $txType,
             $paymentModel,
             GarantiPos::class

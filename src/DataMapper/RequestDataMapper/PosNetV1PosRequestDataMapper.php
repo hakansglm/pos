@@ -381,7 +381,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
 
         $event = new Before3DFormHashCalculatedEvent(
             $inputs,
-            $posAccount->getBank(),
+            $posAccount->getBankName(),
             $txType,
             $paymentModel,
             PosNetV1Pos::class
