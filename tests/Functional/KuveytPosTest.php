@@ -34,7 +34,7 @@ class KuveytPosTest extends TestCase
 
         $config = require __DIR__.'/../../config/pos_test.php';
 
-        $account = \Mews\Pos\Factory\AccountFactory::createKuveytPosAccount(
+        $account = \Mews\Pos\Factory\AccountFactory::createBoaPosAccount(
             'kuveytpos',
             (string) getenv('KUVEYTPOS_MERCHANT_ID'),
             (string) getenv('KUVEYTPOS_USERNAME'),

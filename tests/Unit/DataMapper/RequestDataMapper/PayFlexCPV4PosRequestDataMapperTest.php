@@ -47,7 +47,7 @@ class PayFlexCPV4PosRequestDataMapperTest extends TestCase
     {
         parent::setUp();
 
-        $this->account = AccountFactory::createPayFlexAccount(
+        $this->account = AccountFactory::createPayFlexPosAccount(
             'vakifbank-cp',
             '000000000111111',
             '3XTgER89as',
@@ -238,7 +238,7 @@ class PayFlexCPV4PosRequestDataMapperTest extends TestCase
 
     public static function registerDataProvider(): iterable
     {
-        $account = AccountFactory::createPayFlexAccount(
+        $account = AccountFactory::createPayFlexPosAccount(
             'vakifbank-cp',
             '000000000111111',
             '3XTgER89as',
@@ -318,7 +318,7 @@ class PayFlexCPV4PosRequestDataMapperTest extends TestCase
 
     public static function create3DPaymentStatusRequestDataProvider(): iterable
     {
-        $account = AccountFactory::createPayFlexAccount(
+        $account = AccountFactory::createPayFlexPosAccount(
             'vakifbank-cp',
             '000000000111111',
             '3XTgER89as',

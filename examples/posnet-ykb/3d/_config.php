@@ -10,7 +10,7 @@ $baseUrl = $bankTestsUrl.'/3d/';
 //      Ortam farketmeksizin Yapikrediyle iletisime gecip, sunucu IP adresinize izin verilmesini sağlamanız gerekiyor.
 
 
-$account = AccountFactory::createPosNetAccount(
+$account = AccountFactory::createPosNetPosAccount(
     'yapikredi',
     (string) getenv('POSNET_YKB_MERCHANT_ID'),
     (string) getenv('POSNET_YKB_TERMINAL_ID'),

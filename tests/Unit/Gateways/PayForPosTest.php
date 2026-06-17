@@ -79,7 +79,7 @@ class PayForPosTest extends TestCase
             ],
         ];
 
-        $this->account = AccountFactory::createPayForAccount(
+        $this->account = AccountFactory::createPayForPosAccount(
             'qnbfinansbank-payfor',
             '085300000009704',
             'QNB_API_KULLANICI_3DPAY',

@@ -32,7 +32,7 @@ class PayFlexV4PosTest extends TestCase
 
         $config = require __DIR__.'/../../config/pos_test.php';
 
-        $account = AccountFactory::createPayFlexAccount(
+        $account = AccountFactory::createPayFlexPosAccount(
             'vakifbank',
             (string) getenv('PAYFLEX_CP_MERCHANT_ID'),
             (string) getenv('PAYFLEX_CP_MERCHANT_PASSWORD'),

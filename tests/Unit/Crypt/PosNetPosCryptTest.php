@@ -31,7 +31,7 @@ class PosNetPosCryptTest extends TestCase
     {
         parent::setUp();
 
-        $this->account = AccountFactory::createPosNetAccount(
+        $this->account = AccountFactory::createPosNetPosAccount(
             'yapikredi',
             '6706598320',
             '67005551',

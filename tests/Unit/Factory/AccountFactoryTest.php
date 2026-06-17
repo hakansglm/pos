@@ -20,9 +20,9 @@ use PHPUnit\Framework\TestCase;
  */
 class AccountFactoryTest extends TestCase
 {
-    public function testCreateKuveytPosAccount(): void
+    public function testCreateBoaPosAccount(): void
     {
-        $account = AccountFactory::createKuveytPosAccount(
+        $account = AccountFactory::createBoaPosAccount(
             'vakif-katilim',
             '1',
             'APIUSER',
@@ -73,7 +73,7 @@ class AccountFactoryTest extends TestCase
 
     public function testCreatePayForPosAccount(): void
     {
-        $account = AccountFactory::createPayForAccount(
+        $account = AccountFactory::createPayForPosAccount(
             'qnbfinansbank-payfor',
             '085300000009704',
             'QNB_API_KULLANICI_3DPAY',

@@ -85,7 +85,7 @@ class PayFlexCPV4PosTest extends TestCase
             ],
         ];
 
-        $this->account = AccountFactory::createPayFlexAccount(
+        $this->account = AccountFactory::createPayFlexPosAccount(
             'vakifbank-cp',
             '000000000111111',
             '3XTgER89as',

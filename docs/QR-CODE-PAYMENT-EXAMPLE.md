@@ -15,6 +15,7 @@ $ cp ./vendor/mews/pos/config/pos_test.php ./pos_test_ayarlar.php
 ```
 
 **config.php (Ayar dosyası)**
+
 ```php
 <?php
 require './vendor/autoload.php';
@@ -34,7 +35,7 @@ $transactionType = \Mews\Pos\PosInterface::TX_TYPE_PAY_AUTH;
 // AccountFactory'de kullanılacak method Gateway'e göre değişir!!!
 // /examples altındaki _config.php dosyalara bakınız
 // (örn: /examples/akbankpos/3d/_config.php)
-$account = \Mews\Pos\Factory\AccountFactory::createPayForAccount(
+$account = \Mews\Pos\Factory\AccountFactory::createPayForPosAccount(
     'qnbfinansbank-payfor', //pos config'deki ayarın index name'i
     'merchantId',
     'userCode',

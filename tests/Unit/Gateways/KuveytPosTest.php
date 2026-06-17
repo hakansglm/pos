@@ -85,7 +85,7 @@ class KuveytPosTest extends TestCase
             ],
         ];
 
-        $this->account = AccountFactory::createKuveytPosAccount(
+        $this->account = AccountFactory::createBoaPosAccount(
             'kuveytpos',
             '496',
             'apiuser1',

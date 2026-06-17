@@ -6,7 +6,7 @@ require '../_payment_config.php';
 
 $baseUrl = $bankTestsUrl.'/regular/';
 
-$account = \Mews\Pos\Factory\AccountFactory::createPosNetAccount(
+$account = \Mews\Pos\Factory\AccountFactory::createPosNetPosAccount(
     'yapikredi',
     (string) getenv('POSNET_YKB_MERCHANT_ID'),
     (string) getenv('POSNET_YKB_TERMINAL_ID'),

@@ -85,7 +85,7 @@ class VakifKatilimTest extends TestCase
             ],
         ];
 
-        $this->account = AccountFactory::createKuveytPosAccount(
+        $this->account = AccountFactory::createBoaPosAccount(
             'vakif-katilim',
             '1',
             'APIUSER',

@@ -6,7 +6,7 @@ require '../_payment_config.php';
 
 $baseUrl = $bankTestsUrl.'/regular/';
 
-$account = \Mews\Pos\Factory\AccountFactory::createPayFlexAccount(
+$account = \Mews\Pos\Factory\AccountFactory::createPayFlexPosAccount(
     'vakifbank-cp',
     (string) getenv('PAYFLEX_CP_MERCHANT_ID'),
     (string) getenv('PAYFLEX_CP_MERCHANT_PASSWORD'),

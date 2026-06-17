@@ -6,7 +6,7 @@ require '../_payment_config.php';
 
 $baseUrl = $bankTestsUrl.'/3d/';
 
-$account = \Mews\Pos\Factory\AccountFactory::createKuveytPosAccount(
+$account = \Mews\Pos\Factory\AccountFactory::createBoaPosAccount(
     'kuveytpos',
     (string) getenv('KUVEYTPOS_MERCHANT_ID'),
     (string) getenv('KUVEYTPOS_USERNAME'),

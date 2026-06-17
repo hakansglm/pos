@@ -35,7 +35,7 @@ class PayForPosTest extends TestCase
 
         $config = require __DIR__.'/../../config/pos_test.php';
 
-        $account = AccountFactory::createPayForAccount(
+        $account = AccountFactory::createPayForPosAccount(
             'qnbfinansbank-payfor',
             (string) getenv('FINANSBANK_MERCHANT_ID'),
             (string) getenv('FINANSBANK_USERNAME'),

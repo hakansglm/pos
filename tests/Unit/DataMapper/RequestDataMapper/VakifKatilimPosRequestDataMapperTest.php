@@ -48,7 +48,7 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
     {
         parent::setUp();
 
-        $this->account = AccountFactory::createKuveytPosAccount(
+        $this->account = AccountFactory::createBoaPosAccount(
             'vakif-katilim',
             '1',
             'APIUSER',
@@ -627,7 +627,7 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
 
     public static function create3DPaymentRequestDataDataProvider(): array
     {
-        $account = AccountFactory::createKuveytPosAccount(
+        $account = AccountFactory::createBoaPosAccount(
             'vakif-katilim',
             '1',
             'APIUSER',

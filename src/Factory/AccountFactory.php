@@ -102,7 +102,7 @@ class AccountFactory
      *
      * @throws MissingAccountInfoException
      */
-    public static function createPayForAccount(
+    public static function createPayForPosAccount(
         string  $bank,
         string  $merchantId,
         string  $userCode,
@@ -163,7 +163,7 @@ class AccountFactory
      *
      * @throws MissingAccountInfoException
      */
-    public static function createKuveytPosAccount(string $bank, string $merchantId, string $username, string $customerId, string $storeKey, string $model = PosInterface::MODEL_3D_SECURE, ?string $subMerchantId = null): BoaPosAccount
+    public static function createBoaPosAccount(string $bank, string $merchantId, string $username, string $customerId, string $storeKey, string $model = PosInterface::MODEL_3D_SECURE, ?string $subMerchantId = null): BoaPosAccount
     {
         self::checkParameters($model, $storeKey);
 
@@ -184,7 +184,7 @@ class AccountFactory
      *
      * @throws MissingAccountInfoException
      */
-    public static function createPosNetAccount(string $bank, string $merchantId, string $terminalId, string $posNetId, string $model = PosInterface::MODEL_NON_SECURE, ?string $storeKey = null): PosNetPosAccount
+    public static function createPosNetPosAccount(string $bank, string $merchantId, string $terminalId, string $posNetId, string $model = PosInterface::MODEL_NON_SECURE, ?string $storeKey = null): PosNetPosAccount
     {
         self::checkParameters($model, $storeKey);
 
@@ -207,7 +207,7 @@ class AccountFactory
      *
      * @throws MissingAccountInfoException
      */
-    public static function createPayFlexAccount(string $bank, string $merchantId, string $password, string $terminalNo, string $model = PosInterface::MODEL_NON_SECURE, int $merchantType = PayFlexPosAccount::MERCHANT_TYPE_STANDARD, ?string $subMerchantId = null): PayFlexPosAccount
+    public static function createPayFlexPosAccount(string $bank, string $merchantId, string $password, string $terminalNo, string $model = PosInterface::MODEL_NON_SECURE, int $merchantType = PayFlexPosAccount::MERCHANT_TYPE_STANDARD, ?string $subMerchantId = null): PayFlexPosAccount
     {
         self::checkPayFlexBankMerchantType($merchantType, $subMerchantId);
 

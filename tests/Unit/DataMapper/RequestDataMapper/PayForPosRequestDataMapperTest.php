@@ -50,7 +50,7 @@ class PayForPosRequestDataMapperTest extends TestCase
     {
         parent::setUp();
 
-        $this->accounts['finansbank'] = AccountFactory::createPayForAccount(
+        $this->accounts['finansbank'] = AccountFactory::createPayForPosAccount(
             'qnbfinansbank-payfor',
             '085300000009704',
             'QNB_API_KULLANICI_3DPAY',
@@ -60,7 +60,7 @@ class PayForPosRequestDataMapperTest extends TestCase
             PayForPosAccount::MBR_ID_FINANSBANK
         );
 
-        $this->accounts['ziraat_katilim'] = AccountFactory::createPayForAccount(
+        $this->accounts['ziraat_katilim'] = AccountFactory::createPayForPosAccount(
             'ziraat-katilim',
             '085300000009704',
             'ZIRAATKATILIM_API_KULLANICI_3DPAY',

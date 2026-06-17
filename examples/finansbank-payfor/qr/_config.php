@@ -6,7 +6,7 @@ require '../_payment_config.php';
 
 $baseUrl = $bankTestsUrl.'/qr/';
 
-$account = \Mews\Pos\Factory\AccountFactory::createPayForAccount(
+$account = \Mews\Pos\Factory\AccountFactory::createPayForPosAccount(
     'qnbfinansbank-payfor',
     (string) getenv('FINANSBANK_QR_MERCHANT_ID'),
     (string) getenv('FINANSBANK_QR_USERNAME'),

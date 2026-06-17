@@ -51,7 +51,7 @@ class KuveytPosRequestDataMapperTest extends TestCase
     {
         parent::setUp();
 
-        $this->account = AccountFactory::createKuveytPosAccount(
+        $this->account = AccountFactory::createBoaPosAccount(
             'kuveytpos',
             '80',
             'apiuser',

@@ -48,7 +48,7 @@ class PosNetV1PosRequestDataMapperTest extends TestCase
     {
         parent::setUp();
 
-        $this->account = AccountFactory::createPosNetAccount(
+        $this->account = AccountFactory::createPosNetPosAccount(
             'albaraka',
             '6700950031',
             '67540050',

@@ -6,7 +6,7 @@ require '../_payment_config.php';
 
 $baseUrl = $bankTestsUrl.'/3d/';
 
-$account = \Mews\Pos\Factory\AccountFactory::createPosNetAccount(
+$account = \Mews\Pos\Factory\AccountFactory::createPosNetPosAccount(
     'albaraka',
     (string) getenv('POSNET_V1_MERCHANT_ID'), // 10 haneli üye işyeri numarası
     (string) getenv('POSNET_V1_TERMINAL_ID'), // 8 haneli üye işyeri terminal numarası

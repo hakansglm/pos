@@ -80,7 +80,7 @@ class PosNetV1PosTest extends TestCase
             ],
         ];
 
-        $this->account = AccountFactory::createPosNetAccount(
+        $this->account = AccountFactory::createPosNetPosAccount(
             'albaraka',
             '6700950031',
             '67540050',
