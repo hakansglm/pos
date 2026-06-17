@@ -6,6 +6,6 @@
 
 namespace Mews\Pos\Entity\Account;
 
-class EstPosAccount extends AbstractPosAccount
+class AssecoPosAccount extends AbstractPosAccount
 {
 }

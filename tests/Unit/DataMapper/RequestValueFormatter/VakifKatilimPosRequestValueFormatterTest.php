@@ -7,7 +7,7 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\RequestValueFormatter;
 
 use Mews\Pos\DataMapper\RequestValueFormatter\VakifKatilimPosRequestValueFormatter;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\VakifKatilimPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
@@ -30,7 +30,7 @@ class VakifKatilimPosRequestValueFormatterTest extends TestCase
         $result = $this->formatter::supports(VakifKatilimPos::class);
         $this->assertTrue($result);
 
-        $result = $this->formatter::supports(EstV3Pos::class);
+        $result = $this->formatter::supports(AssecoPos::class);
         $this->assertFalse($result);
     }
 

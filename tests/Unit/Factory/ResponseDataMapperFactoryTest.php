@@ -52,7 +52,7 @@ class ResponseDataMapperFactoryTest extends TestCase
     {
         return [
             [\Mews\Pos\Gateways\AkbankPos::class, \Mews\Pos\DataMapper\ResponseDataMapper\AkbankPosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\EstV3Pos::class, \Mews\Pos\DataMapper\ResponseDataMapper\EstPosResponseDataMapper::class],
+            [\Mews\Pos\Gateways\AssecoPos::class, \Mews\Pos\DataMapper\ResponseDataMapper\AssecoPosResponseDataMapper::class],
             [\Mews\Pos\Gateways\GarantiPos::class, \Mews\Pos\DataMapper\ResponseDataMapper\GarantiPosResponseDataMapper::class],
             [\Mews\Pos\Gateways\InterPos::class, \Mews\Pos\DataMapper\ResponseDataMapper\InterPosResponseDataMapper::class],
             [\Mews\Pos\Gateways\KuveytPos::class, \Mews\Pos\DataMapper\ResponseDataMapper\KuveytPosResponseDataMapper::class],

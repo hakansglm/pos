@@ -8,7 +8,7 @@ namespace Mews\Pos\Tests\Unit\Factory;
 
 use Mews\Pos\DataMapper\ResponseValueFormatter\BasicResponseValueFormatter;
 use Mews\Pos\DataMapper\ResponseValueFormatter\BoaPosResponseValueFormatter;
-use Mews\Pos\DataMapper\ResponseValueFormatter\EstPosResponseValueFormatter;
+use Mews\Pos\DataMapper\ResponseValueFormatter\AssecoPosResponseValueFormatter;
 use Mews\Pos\DataMapper\ResponseValueFormatter\GarantiPosResponseValueFormatter;
 use Mews\Pos\DataMapper\ResponseValueFormatter\InterPosResponseValueFormatter;
 use Mews\Pos\DataMapper\ResponseValueFormatter\ParamPosResponseValueFormatter;
@@ -16,7 +16,7 @@ use Mews\Pos\DataMapper\ResponseValueFormatter\PosNetPosResponseValueFormatter;
 use Mews\Pos\DataMapper\ResponseValueFormatter\ToslaPosResponseValueFormatter;
 use Mews\Pos\Factory\ResponseValueFormatterFactory;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\GarantiPos;
 use Mews\Pos\Gateways\InterPos;
 use Mews\Pos\Gateways\KuveytPos;
@@ -55,7 +55,7 @@ class ResponseValueFormatterFactoryTest extends TestCase
     {
         return [
             [AkbankPos::class, BasicResponseValueFormatter::class],
-            [EstV3Pos::class, EstPosResponseValueFormatter::class],
+            [AssecoPos::class, AssecoPosResponseValueFormatter::class],
             [GarantiPos::class, GarantiPosResponseValueFormatter::class],
             [InterPos::class, InterPosResponseValueFormatter::class],
             [KuveytPos::class, BoaPosResponseValueFormatter::class],

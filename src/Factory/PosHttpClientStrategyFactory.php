@@ -10,7 +10,7 @@ use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Discovery\Psr18ClientDiscovery;
 use Mews\Pos\Client\AkbankPosHttpClient;
 use Mews\Pos\Client\GenericPosHttpClientStrategy;
-use Mews\Pos\Client\EstPosHttpClient;
+use Mews\Pos\Client\AssecoPosHttpClient;
 use Mews\Pos\Client\IyzicoPosHttpClient;
 use Mews\Pos\Client\GarantiPosHttpClient;
 use Mews\Pos\Client\HttpClientInterface;
@@ -45,7 +45,7 @@ class PosHttpClientStrategyFactory
      */
     private static array $clientClasses = [
         AkbankPosHttpClient::class,
-        EstPosHttpClient::class,
+        AssecoPosHttpClient::class,
         GarantiPosHttpClient::class,
         InterPosHttpClient::class,
         IyzicoPosHttpClient::class,

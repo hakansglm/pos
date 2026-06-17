@@ -10,20 +10,20 @@ use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\Before3DFormHashCalculatedEvent;
 use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\PosInterface;
 
 /**
- * Creates request data for EstPos Gateway requests that supports v3 Hash algorithm
+ * Creates request data for Payten Gateway requests that supports v3 Hash algorithm
  */
-class EstV3PosRequestDataMapper extends AbstractRequestDataMapper
+class AssecoPosRequestDataMapper extends AbstractRequestDataMapper
 {
     /**
      * @inheritDoc
      */
     public static function supports(string $gatewayClass): bool
     {
-        return EstV3Pos::class === $gatewayClass;
+        return AssecoPos::class === $gatewayClass;
     }
 
     /**
@@ -244,7 +244,7 @@ class EstV3PosRequestDataMapper extends AbstractRequestDataMapper
             $posAccount->getBankName(),
             $txType,
             $paymentModel,
-            EstV3Pos::class
+            AssecoPos::class
         );
         $this->eventDispatcher->dispatch($event);
         $inputs = $event->getFormInputs();

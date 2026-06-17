@@ -6,28 +6,28 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseValueFormatter;
 
-use Mews\Pos\DataMapper\ResponseValueFormatter\EstPosResponseValueFormatter;
+use Mews\Pos\DataMapper\ResponseValueFormatter\AssecoPosResponseValueFormatter;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Mews\Pos\DataMapper\ResponseValueFormatter\EstPosResponseValueFormatter
+ * @covers \Mews\Pos\DataMapper\ResponseValueFormatter\AssecoPosResponseValueFormatter
  */
-class EstPosResponseValueFormatterTest extends TestCase
+class AssecoPosResponseValueFormatterTest extends TestCase
 {
-    private EstPosResponseValueFormatter $formatter;
+    private AssecoPosResponseValueFormatter $formatter;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->formatter = new EstPosResponseValueFormatter();
+        $this->formatter = new AssecoPosResponseValueFormatter();
     }
 
     public function testSupports(): void
     {
-        $result = $this->formatter::supports(EstV3Pos::class);
+        $result = $this->formatter::supports(AssecoPos::class);
         $this->assertTrue($result);
 
         $result = $this->formatter::supports(AkbankPos::class);

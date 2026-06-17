@@ -8,7 +8,7 @@ namespace Mews\Pos\Tests\Unit\DataMapper\ResponseValueFormatter;
 
 use Mews\Pos\DataMapper\ResponseValueFormatter\BasicResponseValueFormatter;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\PayFlexCPV4Pos;
 use Mews\Pos\Gateways\PayFlexV4Pos;
 use Mews\Pos\Gateways\PayForPos;
@@ -40,7 +40,7 @@ class BasicResponseValueFormatterTest extends TestCase
         $result = $this->formatter::supports(PayForPos::class);
         $this->assertTrue($result);
 
-        $result = $this->formatter::supports(EstV3Pos::class);
+        $result = $this->formatter::supports(AssecoPos::class);
         $this->assertFalse($result);
     }
 
@@ -99,7 +99,7 @@ class BasicResponseValueFormatterTest extends TestCase
             // VakifKatilim OrderDate
             ['2024-04-23T16:14:00.264', '2024-04-23 16:14:00'],
 
-            // EstV3Pos AUTH_DTTM, CAPTURE_DTTM, VOID_DTTM
+            // AssecoPos AUTH_DTTM, CAPTURE_DTTM, VOID_DTTM
             // Garanti ProvDate, PreAuthDate
             // PosNet tranDate
             ['2022-10-30 12:29:53.773', '2022-10-30 12:29:53'],
@@ -111,7 +111,7 @@ class BasicResponseValueFormatterTest extends TestCase
             ['2019-11-0813:58:37.909', '2019-11-08 13:58:37'],
 
             // Garanti ProvDate
-            // EstV3Pos TRXDATE, EXTRA_TRXDATE
+            // AssecoPos TRXDATE, EXTRA_TRXDATE
             ['20221101 13:14:19', '2022-11-01 13:14:19'],
 
             // PayFlexCPV4 HostDate

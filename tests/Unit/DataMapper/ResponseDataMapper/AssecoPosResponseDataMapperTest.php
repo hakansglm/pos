@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper;
 
-use Mews\Pos\DataMapper\ResponseDataMapper\EstPosResponseDataMapper;
+use Mews\Pos\DataMapper\ResponseDataMapper\AssecoPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\ResponseDataMapperInterface;
 use Mews\Pos\DataMapper\ResponseValueFormatter\ResponseValueFormatterInterface;
 use Mews\Pos\DataMapper\ResponseValueMapper\ResponseValueMapperInterface;
@@ -14,19 +14,19 @@ use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Factory\ResponseValueFormatterFactory;
 use Mews\Pos\Factory\ResponseValueMapperFactory;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
- * @covers \Mews\Pos\DataMapper\ResponseDataMapper\EstPosResponseDataMapper
+ * @covers \Mews\Pos\DataMapper\ResponseDataMapper\AssecoPosResponseDataMapper
  * @covers \Mews\Pos\DataMapper\ResponseDataMapper\AbstractResponseDataMapper
  */
-class EstPosResponseDataMapperTest extends TestCase
+class AssecoPosResponseDataMapperTest extends TestCase
 {
-    private EstPosResponseDataMapper $responseDataMapper;
+    private AssecoPosResponseDataMapper $responseDataMapper;
 
     /** @var LoggerInterface&MockObject */
     private LoggerInterface $logger;
@@ -46,7 +46,7 @@ class EstPosResponseDataMapperTest extends TestCase
         $this->responseValueFormatter = $this->createMock(ResponseValueFormatterInterface::class);
         $this->responseValueMapper    = $this->createMock(ResponseValueMapperInterface::class);
 
-        $this->responseDataMapper = new EstPosResponseDataMapper(
+        $this->responseDataMapper = new AssecoPosResponseDataMapper(
             $this->responseValueFormatter,
             $this->responseValueMapper,
             $this->logger
@@ -55,7 +55,7 @@ class EstPosResponseDataMapperTest extends TestCase
 
     public function testSupports(): void
     {
-        $result = $this->responseDataMapper::supports(EstV3Pos::class);
+        $result = $this->responseDataMapper::supports(AssecoPos::class);
         $this->assertTrue($result);
 
         $result = $this->responseDataMapper::supports(AkbankPos::class);
@@ -360,9 +360,9 @@ class EstPosResponseDataMapperTest extends TestCase
      */
     public function testMapStatusResponseRecurringOrder(array $responseData, array $expectedData): void
     {
-        $responseDataMapper = new EstPosResponseDataMapper(
-            ResponseValueFormatterFactory::createForGateway(EstV3Pos::class),
-            ResponseValueMapperFactory::createForGateway(EstV3Pos::class),
+        $responseDataMapper = new AssecoPosResponseDataMapper(
+            ResponseValueFormatterFactory::createForGateway(AssecoPos::class),
+            ResponseValueMapperFactory::createForGateway(AssecoPos::class),
             $this->logger
         );
 
@@ -427,9 +427,9 @@ class EstPosResponseDataMapperTest extends TestCase
      */
     public function testMapOrderHistoryResponse(array $responseData, array $expectedData): void
     {
-        $responseDataMapper = new EstPosResponseDataMapper(
-            ResponseValueFormatterFactory::createForGateway(EstV3Pos::class),
-            ResponseValueMapperFactory::createForGateway(EstV3Pos::class),
+        $responseDataMapper = new AssecoPosResponseDataMapper(
+            ResponseValueFormatterFactory::createForGateway(AssecoPos::class),
+            ResponseValueMapperFactory::createForGateway(AssecoPos::class),
             $this->logger
         );
 

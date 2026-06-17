@@ -8,7 +8,7 @@ namespace Mews\Pos\Tests\Unit\DataMapper\RequestValueMapper;
 
 use Mews\Pos\DataMapper\RequestValueMapper\ParamPosRequestValueMapper;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\Param3DHostPos;
 use Mews\Pos\Gateways\ParamPos;
 use Mews\Pos\PosInterface;
@@ -35,7 +35,7 @@ class ParamPosRequestValueMapperTest extends TestCase
         $result = $this->valueMapper::supports(Param3DHostPos::class);
         $this->assertTrue($result);
 
-        $result = $this->valueMapper::supports(EstV3Pos::class);
+        $result = $this->valueMapper::supports(AssecoPos::class);
         $this->assertFalse($result);
     }
 

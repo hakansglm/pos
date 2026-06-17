@@ -8,7 +8,7 @@ namespace Mews\Pos\Tests\Unit\DataMapper\RequestValueMapper;
 
 use Mews\Pos\DataMapper\RequestValueMapper\ToslaPosRequestValueMapper;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\ToslaPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
@@ -32,7 +32,7 @@ class ToslaPosRequestValueMapperTest extends TestCase
         $result = $this->valueMapper::supports(ToslaPos::class);
         $this->assertTrue($result);
 
-        $result = $this->valueMapper::supports(EstV3Pos::class);
+        $result = $this->valueMapper::supports(AssecoPos::class);
         $this->assertFalse($result);
     }
 

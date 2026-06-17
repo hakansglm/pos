@@ -7,7 +7,7 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseValueFormatter;
 
 use Mews\Pos\DataMapper\ResponseValueFormatter\GarantiPosResponseValueFormatter;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\GarantiPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
@@ -30,7 +30,7 @@ class GarantiPosResponseValueFormatterTest extends TestCase
         $result = $this->formatter::supports(GarantiPos::class);
         $this->assertTrue($result);
 
-        $result = $this->formatter::supports(EstV3Pos::class);
+        $result = $this->formatter::supports(AssecoPos::class);
         $this->assertFalse($result);
     }
 

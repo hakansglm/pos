@@ -8,7 +8,7 @@ namespace Mews\Pos\Factory;
 
 use DomainException;
 use Mews\Pos\DataMapper\RequestValueMapper\AkbankPosRequestValueMapper;
-use Mews\Pos\DataMapper\RequestValueMapper\EstPosRequestValueMapper;
+use Mews\Pos\DataMapper\RequestValueMapper\AssecoPosRequestValueMapper;
 use Mews\Pos\DataMapper\RequestValueMapper\IyzicoPosRequestValueMapper;
 use Mews\Pos\DataMapper\RequestValueMapper\GarantiPosRequestValueMapper;
 use Mews\Pos\DataMapper\RequestValueMapper\InterPosRequestValueMapper;
@@ -35,8 +35,8 @@ class RequestValueMapperFactory
     private static array $requestValueMapperClasses = [
         ToslaPosRequestValueMapper::class,
         AkbankPosRequestValueMapper::class,
-        EstPosRequestValueMapper::class,
-        EstPosRequestValueMapper::class,
+        AssecoPosRequestValueMapper::class,
+        AssecoPosRequestValueMapper::class,
         GarantiPosRequestValueMapper::class,
         InterPosRequestValueMapper::class,
         IyzicoPosRequestValueMapper::class,

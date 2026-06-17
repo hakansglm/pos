@@ -11,7 +11,7 @@ use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Entity\Account\BoaPosAccount;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\KuveytPos;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -47,7 +47,7 @@ class KuveytPosCryptTest extends TestCase
         $supports = $this->crypt::supports(KuveytPos::class);
         $this->assertTrue($supports);
 
-        $supports = $this->crypt::supports(EstV3Pos::class);
+        $supports = $this->crypt::supports(AssecoPos::class);
         $this->assertFalse($supports);
     }
 

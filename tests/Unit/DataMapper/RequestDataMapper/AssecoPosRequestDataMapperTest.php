@@ -7,33 +7,33 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\RequestDataMapper;
 
 use Mews\Pos\Crypt\CryptInterface;
-use Mews\Pos\DataMapper\RequestDataMapper\EstV3PosRequestDataMapper;
-use Mews\Pos\DataMapper\RequestValueFormatter\EstPosRequestValueFormatter;
-use Mews\Pos\DataMapper\RequestValueMapper\EstPosRequestValueMapper;
+use Mews\Pos\DataMapper\RequestDataMapper\AssecoPosRequestDataMapper;
+use Mews\Pos\DataMapper\RequestValueFormatter\AssecoPosRequestValueFormatter;
+use Mews\Pos\DataMapper\RequestValueMapper\AssecoPosRequestValueMapper;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\EstPosAccount;
+use Mews\Pos\Entity\Account\AssecoPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\Before3DFormHashCalculatedEvent;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
- * @covers \Mews\Pos\DataMapper\RequestDataMapper\EstV3PosRequestDataMapper
+ * @covers \Mews\Pos\DataMapper\RequestDataMapper\AssecoPosRequestDataMapper
  * @covers \Mews\Pos\DataMapper\RequestDataMapper\AbstractRequestDataMapper
  */
-class EstV3PosRequestDataMapperTest extends TestCase
+class AssecoPosRequestDataMapperTest extends TestCase
 {
-    private EstPosAccount $account;
+    private AssecoPosAccount $account;
 
     private CreditCardInterface $card;
 
-    private EstV3PosRequestDataMapper $requestDataMapper;
+    private AssecoPosRequestDataMapper $requestDataMapper;
 
     /** @var CryptInterface & MockObject */
     private CryptInterface $crypt;
@@ -41,15 +41,15 @@ class EstV3PosRequestDataMapperTest extends TestCase
     /** @var EventDispatcherInterface & MockObject */
     private EventDispatcherInterface $dispatcher;
 
-    private EstPosRequestValueFormatter $valueFormatter;
+    private AssecoPosRequestValueFormatter $valueFormatter;
 
-    private EstPosRequestValueMapper $valueMapper;
+    private AssecoPosRequestValueMapper $valueMapper;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->account = AccountFactory::createEstPosAccount(
+        $this->account = AccountFactory::createAssecoPosAccount(
             'payten_v3_hash',
             '190100000',
             'ZIRAATAPI',
@@ -60,10 +60,10 @@ class EstV3PosRequestDataMapperTest extends TestCase
 
         $this->dispatcher     = $this->createMock(EventDispatcherInterface::class);
         $this->crypt          = $this->createMock(CryptInterface::class);
-        $this->valueFormatter = new EstPosRequestValueFormatter();
-        $this->valueMapper    = new EstPosRequestValueMapper();
+        $this->valueFormatter = new AssecoPosRequestValueFormatter();
+        $this->valueMapper    = new AssecoPosRequestValueMapper();
 
-        $this->requestDataMapper = new EstV3PosRequestDataMapper(
+        $this->requestDataMapper = new AssecoPosRequestDataMapper(
             $this->valueMapper,
             $this->valueFormatter,
             $this->dispatcher,
@@ -76,7 +76,7 @@ class EstV3PosRequestDataMapperTest extends TestCase
 
     public function testSupports(): void
     {
-        $result = $this->requestDataMapper::supports(EstV3Pos::class);
+        $result = $this->requestDataMapper::supports(AssecoPos::class);
         $this->assertTrue($result);
 
         $result = $this->requestDataMapper::supports(AkbankPos::class);
@@ -105,7 +105,7 @@ class EstV3PosRequestDataMapperTest extends TestCase
         $this->dispatcher->expects(self::once())
             ->method('dispatch')
             ->with($this->callback(static fn ($dispatchedEvent): bool => $dispatchedEvent instanceof Before3DFormHashCalculatedEvent
-                && EstV3Pos::class === $dispatchedEvent->getGatewayClass()
+                && AssecoPos::class === $dispatchedEvent->getGatewayClass()
                 && $txType === $dispatchedEvent->getTxType()
                 && $paymentModel === $dispatchedEvent->getPaymentModel()
                 && count($dispatchedEvent->getFormInputs()) > 3));
@@ -369,7 +369,7 @@ class EstV3PosRequestDataMapperTest extends TestCase
 
     public static function threeDPaymentRequestDataDataProvider(): \Generator
     {
-        $account = AccountFactory::createEstPosAccount(
+        $account = AccountFactory::createAssecoPosAccount(
             'akbank',
             '190100000',
             'ZIRAATAPI',

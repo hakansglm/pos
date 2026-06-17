@@ -8,7 +8,7 @@ namespace Mews\Pos\Tests\Unit\DataMapper\RequestValueFormatter;
 
 use Mews\Pos\DataMapper\RequestValueFormatter\PosNetPosRequestValueFormatter;
 use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
@@ -31,7 +31,7 @@ class PosNetPosRequestValueFormatterTest extends TestCase
         $result = $this->formatter::supports(PosNetPos::class);
         $this->assertTrue($result);
 
-        $result = $this->formatter::supports(EstV3Pos::class);
+        $result = $this->formatter::supports(AssecoPos::class);
         $this->assertFalse($result);
     }
 

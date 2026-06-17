@@ -14,7 +14,7 @@ function createOrderHistoryOrder(string $gatewayClass, array $lastResponse): arr
 {
     $order = [];
     if (
-        \Mews\Pos\Gateways\EstV3Pos::class === $gatewayClass
+        \Mews\Pos\Gateways\AssecoPos::class === $gatewayClass
         || \Mews\Pos\Gateways\IyzicoPos::class === $gatewayClass
         || \Mews\Pos\Gateways\PayForPos::class === $gatewayClass
     ) {

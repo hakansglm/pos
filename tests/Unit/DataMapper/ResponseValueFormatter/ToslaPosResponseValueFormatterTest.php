@@ -7,7 +7,7 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseValueFormatter;
 
 use Mews\Pos\DataMapper\ResponseValueFormatter\ToslaPosResponseValueFormatter;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\ToslaPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
@@ -30,7 +30,7 @@ class ToslaPosResponseValueFormatterTest extends TestCase
         $result = $this->formatter::supports(ToslaPos::class);
         $this->assertTrue($result);
 
-        $result = $this->formatter::supports(EstV3Pos::class);
+        $result = $this->formatter::supports(AssecoPos::class);
         $this->assertFalse($result);
     }
 

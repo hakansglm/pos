@@ -7,7 +7,7 @@
 namespace Mews\Pos\Tests\Unit\Factory;
 
 use Mews\Pos\DataMapper\RequestValueFormatter\AkbankPosRequestValueFormatter;
-use Mews\Pos\DataMapper\RequestValueFormatter\EstPosRequestValueFormatter;
+use Mews\Pos\DataMapper\RequestValueFormatter\AssecoPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\GarantiPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\InterPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\KuveytPosRequestValueFormatter;
@@ -20,7 +20,7 @@ use Mews\Pos\DataMapper\RequestValueFormatter\ToslaPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\VakifKatilimPosRequestValueFormatter;
 use Mews\Pos\Factory\RequestValueFormatterFactory;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\GarantiPos;
 use Mews\Pos\Gateways\InterPos;
 use Mews\Pos\Gateways\KuveytPos;
@@ -61,7 +61,7 @@ class RequestValueFormatterFactoryTest extends TestCase
         return [
             [ToslaPos::class, ToslaPosRequestValueFormatter::class],
             [AkbankPos::class, AkbankPosRequestValueFormatter::class],
-            [EstV3Pos::class, EstPosRequestValueFormatter::class],
+            [AssecoPos::class, AssecoPosRequestValueFormatter::class],
             [GarantiPos::class, GarantiPosRequestValueFormatter::class],
             [InterPos::class, InterPosRequestValueFormatter::class],
             [KuveytPos::class, KuveytPosRequestValueFormatter::class],

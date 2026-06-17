@@ -17,7 +17,7 @@ return [
         ],
         'akbankv3'              => [
             'name'              => 'AKBANK T.A.S.',
-            'class'             => \Mews\Pos\Gateways\EstV3Pos::class,
+            'class'             => \Mews\Pos\Gateways\AssecoPos::class,
             'lang'              => \Mews\Pos\PosInterface::LANG_TR,
             'gateway_endpoints' => [
                 'payment_api'     => 'https://www.sanalakpos.com/fim/api',
@@ -27,7 +27,7 @@ return [
         ],
         'akbank'                => [
             'name'              => 'AKBANK T.A.S.',
-            'class'             => \Mews\Pos\Gateways\EstV3Pos::class,
+            'class'             => \Mews\Pos\Gateways\AssecoPos::class,
             'lang'              => \Mews\Pos\PosInterface::LANG_TR,
             'gateway_endpoints' => [
                 'payment_api'     => 'https://www.sanalakpos.com/fim/api',
@@ -47,7 +47,7 @@ return [
         ],
         'finansbank'            => [
             'name'              => 'QNB Finansbank',
-            'class'             => \Mews\Pos\Gateways\EstV3Pos::class,
+            'class'             => \Mews\Pos\Gateways\AssecoPos::class,
             'lang'              => \Mews\Pos\PosInterface::LANG_TR,
             'gateway_endpoints' => [
                 'payment_api' => 'https://www.fbwebpos.com/fim/api',
@@ -56,7 +56,7 @@ return [
         ],
         'halkbank'              => [
             'name'              => 'Halkbank',
-            'class'             => \Mews\Pos\Gateways\EstV3Pos::class,
+            'class'             => \Mews\Pos\Gateways\AssecoPos::class,
             'lang'              => \Mews\Pos\PosInterface::LANG_TR,
             'gateway_endpoints' => [
                 'payment_api' => 'https://sanalpos.halkbank.com.tr/fim/api',
@@ -65,7 +65,7 @@ return [
         ],
         'teb'                   => [
             'name'              => 'TEB',
-            'class'             => \Mews\Pos\Gateways\EstV3Pos::class,
+            'class'             => \Mews\Pos\Gateways\AssecoPos::class,
             'lang'              => \Mews\Pos\PosInterface::LANG_TR,
             'gateway_endpoints' => [
                 'payment_api' => 'https://sanalpos.teb.com.tr/fim/api',
@@ -74,7 +74,7 @@ return [
         ],
         'isbank'                => [
             'name'              => 'İşbank T.A.S.',
-            'class'             => \Mews\Pos\Gateways\EstV3Pos::class,
+            'class'             => \Mews\Pos\Gateways\AssecoPos::class,
             'lang'              => \Mews\Pos\PosInterface::LANG_TR,
             'gateway_endpoints' => [
                 'payment_api' => 'https://sanalpos.isbank.com.tr/fim/api',
@@ -83,7 +83,7 @@ return [
         ],
         'sekerbank'             => [
             'name'              => 'Şeker Bank',
-            'class'             => \Mews\Pos\Gateways\EstV3Pos::class,
+            'class'             => \Mews\Pos\Gateways\AssecoPos::class,
             'lang'              => \Mews\Pos\PosInterface::LANG_TR,
             'gateway_endpoints' => [
                 'payment_api' => 'https://sanalpos.sekerbank.com.tr/fim/api',
@@ -163,7 +163,7 @@ return [
         ],
         'ziraat-estpos'         => [
             'name'              => 'Ziraat Bankası Payten',
-            'class'             => \Mews\Pos\Gateways\EstV3Pos::class,
+            'class'             => \Mews\Pos\Gateways\AssecoPos::class,
             'lang'              => \Mews\Pos\PosInterface::LANG_TR,
             'gateway_endpoints' => [
                 'payment_api' => 'https://sanalpos2.ziraatbank.com.tr/fim/api',

@@ -10,10 +10,10 @@ use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\HttpClientStrategyInterface;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\RequestDataMapper\RequestDataMapperInterface;
-use Mews\Pos\DataMapper\RequestValueMapper\EstPosRequestValueMapper;
+use Mews\Pos\DataMapper\RequestValueMapper\AssecoPosRequestValueMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\ResponseDataMapperInterface;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\EstPosAccount;
+use Mews\Pos\Entity\Account\AssecoPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exceptions\HashMismatchException;
@@ -21,23 +21,23 @@ use Mews\Pos\Exceptions\UnsupportedFormFormatException;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\EstPosResponseDataMapperTest;
+use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\AssecoPosResponseDataMapperTest;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 
 /**
- * @covers \Mews\Pos\Gateways\EstV3Pos
+ * @covers \Mews\Pos\Gateways\AssecoPos
  * @covers \Mews\Pos\Gateways\AbstractGateway
  */
-class EstV3PosTest extends TestCase
+class AssecoPosTest extends TestCase
 {
-    private EstPosAccount $account;
+    private AssecoPosAccount $account;
 
-    /** @var EstV3Pos */
+    /** @var AssecoPos */
     private PosInterface $pos;
 
     /** @var array<string, mixed> */
@@ -68,7 +68,7 @@ class EstV3PosTest extends TestCase
 
     private array $order;
 
-    private EstPosRequestValueMapper $requestValueMapper;
+    private AssecoPosRequestValueMapper $requestValueMapper;
 
     protected function setUp(): void
     {
@@ -76,13 +76,13 @@ class EstV3PosTest extends TestCase
 
         $this->config = [
             'name'              => 'AKBANK T.A.S.',
-            'class'             => EstV3Pos::class,
+            'class'             => AssecoPos::class,
             'gateway_endpoints' => [
                 'gateway_3d' => 'https://entegrasyon.asseco-see.com.tr/fim/est3Dgate',
             ],
         ];
 
-        $this->account = AccountFactory::createEstPosAccount(
+        $this->account = AccountFactory::createAssecoPosAccount(
             'akbank',
             '700655000200',
             'ISBANKAPI',
@@ -101,7 +101,7 @@ class EstV3PosTest extends TestCase
             'lang'        => PosInterface::LANG_TR,
         ];
 
-        $this->requestValueMapper     = new EstPosRequestValueMapper();
+        $this->requestValueMapper     = new AssecoPosRequestValueMapper();
         $this->requestMapperMock      = $this->createMock(RequestDataMapperInterface::class);
         $this->responseMapperMock     = $this->createMock(ResponseDataMapperInterface::class);
         $this->cryptMock              = $this->createMock(CryptInterface::class);
@@ -197,7 +197,7 @@ class EstV3PosTest extends TestCase
             ->method('check3DHash')
             ->willReturn(true);
 
-        $testData            = EstPosResponseDataMapperTest::threeDHostPaymentDataProvider()['success1'];
+        $testData            = AssecoPosResponseDataMapperTest::threeDHostPaymentDataProvider()['success1'];
         $gatewayResponseData = $testData['paymentData'];
         $order               = $testData['order'];
         $txType              = $testData['txType'];
@@ -232,7 +232,7 @@ class EstV3PosTest extends TestCase
         $this->cryptMock->expects(self::never())
             ->method('check3DHash');
 
-        $testData            = EstPosResponseDataMapperTest::threeDHostPaymentDataProvider()['success1'];
+        $testData            = AssecoPosResponseDataMapperTest::threeDHostPaymentDataProvider()['success1'];
         $gatewayResponseData = $testData['paymentData'];
         $order               = $testData['order'];
         $txType              = $testData['txType'];
@@ -251,7 +251,7 @@ class EstV3PosTest extends TestCase
     public function testMake3DHostPaymentHashMismatchException(): void
     {
         $txType = PosInterface::TX_TYPE_PAY_PRE_AUTH;
-        $data   = EstPosResponseDataMapperTest::threeDHostPaymentDataProvider()['success1']['paymentData'];
+        $data   = AssecoPosResponseDataMapperTest::threeDHostPaymentDataProvider()['success1']['paymentData'];
 
         $this->cryptMock->expects(self::once())
             ->method('check3DHash')
@@ -274,7 +274,7 @@ class EstV3PosTest extends TestCase
             ->method('check3DHash')
             ->willReturn(true);
 
-        $testData            = EstPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1'];
+        $testData            = AssecoPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1'];
         $gatewayResponseData = $testData['paymentData'];
         $order               = $testData['order'];
         $txType              = $testData['txType'];
@@ -309,7 +309,7 @@ class EstV3PosTest extends TestCase
         $this->cryptMock->expects(self::never())
             ->method('check3DHash');
 
-        $testData            = EstPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1'];
+        $testData            = AssecoPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1'];
         $gatewayResponseData = $testData['paymentData'];
         $order               = $testData['order'];
         $txType              = $testData['txType'];
@@ -327,7 +327,7 @@ class EstV3PosTest extends TestCase
 
     public function testMake3DPayPaymentHashMismatchException(): void
     {
-        $data   = EstPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['paymentData'];
+        $data   = AssecoPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['paymentData'];
         $txType = PosInterface::TX_TYPE_PAY_PRE_AUTH;
 
         $this->cryptMock->expects(self::once())
@@ -633,7 +633,7 @@ class EstV3PosTest extends TestCase
 
     public function testMake3DPaymentHashMismatchException(): void
     {
-        $data = EstPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['threeDResponseData'];
+        $data = AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['threeDResponseData'];
 
         $this->cryptMock->expects(self::once())
             ->method('check3DHash')
@@ -772,29 +772,29 @@ class EstV3PosTest extends TestCase
     {
         return [
             'auth_fail'                    => [
-                'order'               => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['order'],
-                'txType'              => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['txType'],
-                'gatewayResponseData' => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['threeDResponseData'],
-                'paymentResponse'     => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['paymentData'],
-                'expected'            => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['expectedData'],
+                'order'               => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['order'],
+                'txType'              => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['txType'],
+                'gatewayResponseData' => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['threeDResponseData'],
+                'paymentResponse'     => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['paymentData'],
+                'expected'            => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['expectedData'],
                 'is3DSuccess'         => false,
                 'isSuccess'           => false,
             ],
             '3d_auth_success_payment_fail' => [
-                'order'               => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['order'],
-                'txType'              => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['txType'],
-                'gatewayResponseData' => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['threeDResponseData'],
-                'paymentResponse'     => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['paymentData'],
-                'expected'            => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['expectedData'],
+                'order'               => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['order'],
+                'txType'              => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['txType'],
+                'gatewayResponseData' => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['threeDResponseData'],
+                'paymentResponse'     => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['paymentData'],
+                'expected'            => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['expectedData'],
                 'is3DSuccess'         => true,
                 'isSuccess'           => false,
             ],
             'success'                      => [
-                'order'               => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['order'],
-                'txType'              => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['txType'],
-                'gatewayResponseData' => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'],
-                'paymentResponse'     => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['paymentData'],
-                'expected'            => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['expectedData'],
+                'order'               => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['order'],
+                'txType'              => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['txType'],
+                'gatewayResponseData' => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'],
+                'paymentResponse'     => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['paymentData'],
+                'expected'            => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['expectedData'],
                 'is3DSuccess'         => true,
                 'isSuccess'           => true,
             ],
@@ -805,20 +805,20 @@ class EstV3PosTest extends TestCase
     {
         return [
             '3d_auth_success_payment_fail' => [
-                'order'               => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['order'],
-                'txType'              => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['txType'],
-                'gatewayResponseData' => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['threeDResponseData'],
-                'paymentResponse'     => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['paymentData'],
-                'expected'            => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['expectedData'],
+                'order'               => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['order'],
+                'txType'              => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['txType'],
+                'gatewayResponseData' => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['threeDResponseData'],
+                'paymentResponse'     => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['paymentData'],
+                'expected'            => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['expectedData'],
                 'is3DSuccess'         => true,
                 'isSuccess'           => false,
             ],
             'success'                      => [
-                'order'               => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['order'],
-                'txType'              => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['txType'],
-                'gatewayResponseData' => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'],
-                'paymentResponse'     => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['paymentData'],
-                'expected'            => EstPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['expectedData'],
+                'order'               => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['order'],
+                'txType'              => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['txType'],
+                'gatewayResponseData' => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'],
+                'paymentResponse'     => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['paymentData'],
+                'expected'            => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['expectedData'],
                 'is3DSuccess'         => true,
                 'isSuccess'           => true,
             ],
@@ -829,13 +829,13 @@ class EstV3PosTest extends TestCase
     {
         return [
             'fail_1'    => [
-                'bank_response' => EstPosResponseDataMapperTest::cancelTestDataProvider()['fail_order_not_found_1']['responseData'],
-                'expected_data' => EstPosResponseDataMapperTest::cancelTestDataProvider()['fail_order_not_found_1']['expectedData'],
+                'bank_response' => AssecoPosResponseDataMapperTest::cancelTestDataProvider()['fail_order_not_found_1']['responseData'],
+                'expected_data' => AssecoPosResponseDataMapperTest::cancelTestDataProvider()['fail_order_not_found_1']['expectedData'],
                 'isSuccess'     => false,
             ],
             'success_1' => [
-                'bank_response' => EstPosResponseDataMapperTest::cancelTestDataProvider()['success1']['responseData'],
-                'expected_data' => EstPosResponseDataMapperTest::cancelTestDataProvider()['success1']['expectedData'],
+                'bank_response' => AssecoPosResponseDataMapperTest::cancelTestDataProvider()['success1']['responseData'],
+                'expected_data' => AssecoPosResponseDataMapperTest::cancelTestDataProvider()['success1']['expectedData'],
                 'isSuccess'     => true,
             ],
         ];
@@ -845,8 +845,8 @@ class EstV3PosTest extends TestCase
     {
         return [
             'fail_1' => [
-                'bank_response' => EstPosResponseDataMapperTest::refundTestDataProvider()['fail1']['responseData'],
-                'expected_data' => EstPosResponseDataMapperTest::refundTestDataProvider()['fail1']['expectedData'],
+                'bank_response' => AssecoPosResponseDataMapperTest::refundTestDataProvider()['fail1']['responseData'],
+                'expected_data' => AssecoPosResponseDataMapperTest::refundTestDataProvider()['fail1']['expectedData'],
                 'isSuccess'     => false,
             ],
         ];
@@ -855,13 +855,13 @@ class EstV3PosTest extends TestCase
     public static function statusDataProvider(): iterable
     {
         yield [
-            'bank_response' => EstPosResponseDataMapperTest::statusTestDataProvider()['fail1']['responseData'],
-            'expected_data' => EstPosResponseDataMapperTest::statusTestDataProvider()['fail1']['expectedData'],
+            'bank_response' => AssecoPosResponseDataMapperTest::statusTestDataProvider()['fail1']['responseData'],
+            'expected_data' => AssecoPosResponseDataMapperTest::statusTestDataProvider()['fail1']['expectedData'],
             'isSuccess'     => false,
         ];
         yield [
-            'bank_response' => EstPosResponseDataMapperTest::statusTestDataProvider()['success1']['responseData'],
-            'expected_data' => EstPosResponseDataMapperTest::statusTestDataProvider()['success1']['expectedData'],
+            'bank_response' => AssecoPosResponseDataMapperTest::statusTestDataProvider()['success1']['responseData'],
+            'expected_data' => AssecoPosResponseDataMapperTest::statusTestDataProvider()['success1']['expectedData'],
             'isSuccess'     => true,
         ];
     }
@@ -869,13 +869,13 @@ class EstV3PosTest extends TestCase
     public static function orderHistoryDataProvider(): iterable
     {
         yield [
-            'bank_response' => EstPosResponseDataMapperTest::orderHistoryTestDataProvider()['success_cancel_success_refund_fail']['responseData'],
-            'expected_data' => EstPosResponseDataMapperTest::orderHistoryTestDataProvider()['success_cancel_success_refund_fail']['expectedData'],
+            'bank_response' => AssecoPosResponseDataMapperTest::orderHistoryTestDataProvider()['success_cancel_success_refund_fail']['responseData'],
+            'expected_data' => AssecoPosResponseDataMapperTest::orderHistoryTestDataProvider()['success_cancel_success_refund_fail']['expectedData'],
             'isSuccess'     => true,
         ];
         yield [
-            'bank_response' => EstPosResponseDataMapperTest::orderHistoryTestDataProvider()['fail1']['responseData'],
-            'expected_data' => EstPosResponseDataMapperTest::orderHistoryTestDataProvider()['fail1']['expectedData'],
+            'bank_response' => AssecoPosResponseDataMapperTest::orderHistoryTestDataProvider()['fail1']['responseData'],
+            'expected_data' => AssecoPosResponseDataMapperTest::orderHistoryTestDataProvider()['fail1']['expectedData'],
             'isSuccess'     => false,
         ];
     }
@@ -963,7 +963,7 @@ class EstV3PosTest extends TestCase
 
     private function createGateway(array $config, ?AbstractPosAccount $account = null): PosInterface
     {
-        return new EstV3Pos(
+        return new AssecoPos(
             $config,
             $account ?? $this->account,
             $this->requestValueMapper,

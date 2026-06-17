@@ -6,10 +6,10 @@
 
 namespace Mews\Pos\DataMapper\ResponseValueMapper;
 
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\PosInterface;
 
-class EstPosResponseValueMapper extends AbstractResponseValueMapper
+class AssecoPosResponseValueMapper extends AbstractResponseValueMapper
 {
     /** @var array<string|int, PosInterface::CURRENCY_*> */
     protected array $currencyMappings = [
@@ -71,7 +71,7 @@ class EstPosResponseValueMapper extends AbstractResponseValueMapper
      */
     public static function supports(string $gatewayClass): bool
     {
-        return EstV3Pos::class === $gatewayClass;
+        return AssecoPos::class === $gatewayClass;
     }
 
     /**

@@ -6,29 +6,29 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseValueMapper;
 
-use Mews\Pos\DataMapper\ResponseValueMapper\EstPosResponseValueMapper;
+use Mews\Pos\DataMapper\ResponseValueMapper\AssecoPosResponseValueMapper;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Mews\Pos\DataMapper\ResponseValueMapper\EstPosResponseValueMapper
+ * @covers \Mews\Pos\DataMapper\ResponseValueMapper\AssecoPosResponseValueMapper
  * @covers \Mews\Pos\DataMapper\ResponseValueMapper\AbstractResponseValueMapper
  */
-class EstPosResponseValueMapperTest extends TestCase
+class AssecoPosResponseValueMapperTest extends TestCase
 {
-    private EstPosResponseValueMapper $mapper;
+    private AssecoPosResponseValueMapper $mapper;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->mapper = new EstPosResponseValueMapper();
+        $this->mapper = new AssecoPosResponseValueMapper();
     }
 
     public function testSupports(): void
     {
-        $result = $this->mapper::supports(EstV3Pos::class);
+        $result = $this->mapper::supports(AssecoPos::class);
         $this->assertTrue($result);
 
         $result = $this->mapper::supports(AkbankPos::class);

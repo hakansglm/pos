@@ -14,7 +14,7 @@ require './vendor/autoload.php';
 // AccountFactory'de kullanılacak method Gateway'e göre değişir!!!
 // /examples altındaki _config.php dosyalara bakınız
 // (örn: /examples/akbankpos/3d/_config.php)
-$account = \Mews\Pos\Factory\AccountFactory::createEstPosAccount(
+$account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
     'akbank', //pos config'deki ayarın index name'i
     'yourClientID',
     'yourKullaniciAdi',
@@ -78,7 +78,7 @@ function createCancelOrder(string $gatewayClass, array $lastResponse, string $ip
 
     if (isset($lastResponse['recurring_id'])) {
         // tekrarlanan odemeyi iptal etmek icin:
-        if (\Mews\Pos\Gateways\EstV3Pos::class === $gatewayClass) {
+        if (\Mews\Pos\Gateways\AssecoPos::class === $gatewayClass) {
             $cancelOrder += [
                 'recurringOrderInstallmentNumber' => 1, // hangi taksidi iptal etmek istiyoruz?
             ];

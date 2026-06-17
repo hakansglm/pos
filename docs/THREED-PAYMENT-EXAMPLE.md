@@ -37,7 +37,7 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
     // AccountFactory'de kullanılacak method Gateway'e göre değişir!!!
     // /examples klasörde farklı gatewayler için örnek kullanımı ve kodları bulabilirsiniz.
     //  Config ayar örnekleri _config.php dosyasında yer alır (örn: /examples/akbankpos/3d/_config.php).
-    $account = \Mews\Pos\Factory\AccountFactory::createEstPosAccount(
+    $account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
         'akbank', //pos config'deki ayarın index name'i
         'yourClientID',
         'yourKullaniciAdi',
@@ -89,7 +89,7 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
     // ============================================================================================
     // Tekrarlanan/recurring ödemeler için ekstra gereken veriler:
     // ============================================================================================
-    // Tekrarlanan ödemeyi destekleyen gatewayler: GarantiPos, EstV3Pos, PayFlexV4, AkbankPos
+    // Tekrarlanan ödemeyi destekleyen gatewayler: GarantiPos, AssecoPos, PayFlexV4, AkbankPos
     $order['installment'] = 0; // Tekrarlayan ödemeler taksitli olamaz.
 
     $recurringFrequency     = 3;
@@ -168,8 +168,8 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
          * Eğer ekleyeceğiniz veri hash hesaplamada kullanılmıyorsa Form verisi oluştuktan sonra da güncelleyebilirsiniz.
          */
         $eventDispatcher->addListener(Before3DFormHashCalculatedEvent::class, function (Before3DFormHashCalculatedEvent $event): void {
-            if ($event->getGatewayClass() === \Mews\Pos\Gateways\EstV3Pos::class) {
-                //    if ($event->getGatewayClass() !== \Mews\Pos\Gateways\EstV3Pos::class) {
+            if ($event->getGatewayClass() === \Mews\Pos\Gateways\AssecoPos::class) {
+                //    if ($event->getGatewayClass() !== \Mews\Pos\Gateways\AssecoPos::class) {
                 //        return;
                 //    }
                 //    // Örneğin İşbank İmece Kart ile ödeme yaparken aşağıdaki verilerin eklenmesi gerekiyor:
@@ -185,7 +185,7 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
                 //        $event->setFormInputs($formInputs);
                 //    }
             }
-            if ($event->getGatewayClass() === \Mews\Pos\Gateways\EstV3Pos::class) {
+            if ($event->getGatewayClass() === \Mews\Pos\Gateways\AssecoPos::class) {
     //           Örnek 2: callbackUrl eklenmesi
     //           $formInputs                = $event->getFormInputs();
     //           $formInputs['callbackUrl'] = $formInputs['failUrl'];

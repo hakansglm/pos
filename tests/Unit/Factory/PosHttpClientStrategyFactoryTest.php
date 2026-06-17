@@ -12,7 +12,7 @@ use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\RequestValueMapper\RequestValueMapperInterface;
 use Mews\Pos\Factory\PosHttpClientStrategyFactory;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\GarantiPos;
 use Mews\Pos\Gateways\InterPos;
 use Mews\Pos\Gateways\KuveytPos;
@@ -102,7 +102,7 @@ class PosHttpClientStrategyFactoryTest extends TestCase
                 ],
             ],
             [
-                EstV3Pos::class,
+                AssecoPos::class,
                 [
                     HttpClientInterface::API_NAME_PAYMENT_API,
                 ],

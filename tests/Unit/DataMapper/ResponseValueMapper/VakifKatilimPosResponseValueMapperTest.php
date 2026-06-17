@@ -7,7 +7,7 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseValueMapper;
 
 use Mews\Pos\DataMapper\ResponseValueMapper\VakifKatilimPosResponseValueMapper;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\KuveytPos;
 use Mews\Pos\Gateways\VakifKatilimPos;
 use Mews\Pos\PosInterface;
@@ -35,7 +35,7 @@ class VakifKatilimPosResponseValueMapperTest extends TestCase
         $result = $this->mapper::supports(KuveytPos::class);
         $this->assertFalse($result);
 
-        $result = $this->mapper::supports(EstV3Pos::class);
+        $result = $this->mapper::supports(AssecoPos::class);
         $this->assertFalse($result);
     }
 

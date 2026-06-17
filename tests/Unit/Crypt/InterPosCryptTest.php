@@ -11,7 +11,7 @@ use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Entity\Account\InterPosAccount;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\InterPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
@@ -54,7 +54,7 @@ class InterPosCryptTest extends TestCase
         $supports = $this->crypt::supports(InterPos::class);
         $this->assertTrue($supports);
 
-        $supports = $this->crypt::supports(EstV3Pos::class);
+        $supports = $this->crypt::supports(AssecoPos::class);
         $this->assertFalse($supports);
     }
 

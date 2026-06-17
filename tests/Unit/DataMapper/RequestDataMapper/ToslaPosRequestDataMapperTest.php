@@ -14,7 +14,7 @@ use Mews\Pos\Entity\Account\ToslaPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\ToslaPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -75,7 +75,7 @@ class ToslaPosRequestDataMapperTest extends TestCase
         $result = $this->requestDataMapper::supports(ToslaPos::class);
         $this->assertTrue($result);
 
-        $result = $this->requestDataMapper::supports(EstV3Pos::class);
+        $result = $this->requestDataMapper::supports(AssecoPos::class);
         $this->assertFalse($result);
     }
 

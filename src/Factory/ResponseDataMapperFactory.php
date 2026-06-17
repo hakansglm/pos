@@ -8,7 +8,7 @@ namespace Mews\Pos\Factory;
 
 use DomainException;
 use Mews\Pos\DataMapper\ResponseDataMapper\AkbankPosResponseDataMapper;
-use Mews\Pos\DataMapper\ResponseDataMapper\EstPosResponseDataMapper;
+use Mews\Pos\DataMapper\ResponseDataMapper\AssecoPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\IyzicoPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\GarantiPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\InterPosResponseDataMapper;
@@ -37,7 +37,7 @@ class ResponseDataMapperFactory
      */
     private static array $responseDataMapperClasses = [
         AkbankPosResponseDataMapper::class,
-        EstPosResponseDataMapper::class,
+        AssecoPosResponseDataMapper::class,
         GarantiPosResponseDataMapper::class,
         InterPosResponseDataMapper::class,
         IyzicoPosResponseDataMapper::class,

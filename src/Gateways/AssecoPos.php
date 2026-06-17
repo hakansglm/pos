@@ -6,10 +6,10 @@
 
 namespace Mews\Pos\Gateways;
 
-use Mews\Pos\DataMapper\RequestDataMapper\EstV3PosRequestDataMapper;
+use Mews\Pos\DataMapper\RequestDataMapper\AssecoPosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestDataMapper\RequestDataMapperInterface;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\EstPosAccount;
+use Mews\Pos\Entity\Account\AssecoPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exceptions\HashMismatchException;
@@ -18,17 +18,18 @@ use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\PosInterface;
 
 /**
- * Implementation of Payten Payment Gateway
+ * Implementation of Asseco/Payten Payment Gateway
+ * previous class name is EstV3Pos
  */
-class EstV3Pos extends AbstractGateway
+class AssecoPos extends AbstractGateway
 {
     /** @var string */
-    public const NAME = 'EstPos';
+    public const NAME = 'Asseco';
 
-    /** @var EstPosAccount */
+    /** @var AssecoPosAccount */
     protected AbstractPosAccount $account;
 
-    /** @var EstV3PosRequestDataMapper */
+    /** @var AssecoPosRequestDataMapper */
     protected RequestDataMapperInterface $requestDataMapper;
 
     /** @inheritdoc */
@@ -52,7 +53,7 @@ class EstV3Pos extends AbstractGateway
     ];
 
 
-    /** @return EstPosAccount */
+    /** @return AssecoPosAccount */
     public function getAccount(): AbstractPosAccount
     {
         return $this->account;

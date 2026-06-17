@@ -31,7 +31,7 @@ return [
         ],
         'payten_v3_hash'        => [
             'name'              => 'AKBANK T.A.S.',
-            'class'             => \Mews\Pos\Gateways\EstV3Pos::class,
+            'class'             => \Mews\Pos\Gateways\AssecoPos::class,
             'lang'              => \Mews\Pos\PosInterface::LANG_TR,
             'gateway_endpoints' => [
                 'payment_api' => 'https://entegrasyon.asseco-see.com.tr/fim/api',
@@ -40,7 +40,7 @@ return [
         ],
         'akbank'                => [
             'name'              => 'AKBANK T.A.S.',
-            'class'             => \Mews\Pos\Gateways\EstV3Pos::class,
+            'class'             => \Mews\Pos\Gateways\AssecoPos::class,
             'lang'              => \Mews\Pos\PosInterface::LANG_TR,
             'gateway_endpoints' => [
                 'payment_api' => 'https://entegrasyon.asseco-see.com.tr/fim/api',

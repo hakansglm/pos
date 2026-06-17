@@ -14,7 +14,7 @@ require './vendor/autoload.php';
 // AccountFactory'de kullanılacak method Gateway'e göre değişir!!!
 // /examples altındaki _config.php dosyalara bakınız
 // (örn: /examples/akbankpos/3d/_config.php)
-$account = \Mews\Pos\Factory\AccountFactory::createEstPosAccount(
+$account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
     'akbank', //pos config'deki ayarın index name'i
     'yourClientID',
     'yourKullaniciAdi',
@@ -44,7 +44,7 @@ require 'config.php';
 function createOrderHistoryOrder(string $gatewayClass, array $lastResponse): array
 {
     $order = [];
-    if (EstV3Pos::class === $gatewayClass) {
+    if (AssecoPos::class === $gatewayClass) {
         $order = [
             'id' => $lastResponse['order_id'],
         ];

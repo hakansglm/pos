@@ -8,9 +8,9 @@ namespace Mews\Pos\Crypt;
 
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 
-class EstV3PosCrypt extends AbstractCrypt
+class AssecoPosCrypt extends AbstractCrypt
 {
     /** @var string */
     protected const HASH_ALGORITHM = 'sha512';
@@ -23,7 +23,7 @@ class EstV3PosCrypt extends AbstractCrypt
      */
     public static function supports(string $gatewayClass): bool
     {
-        return EstV3Pos::class === $gatewayClass;
+        return AssecoPos::class === $gatewayClass;
     }
 
     /**

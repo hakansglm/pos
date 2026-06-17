@@ -12,7 +12,7 @@ use Mews\Pos\Entity\Account\AkbankPosAccount;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\AkbankPosResponseDataMapperTest;
 use PHPUnit\Framework\TestCase;
@@ -49,7 +49,7 @@ class AkbankPosCryptTest extends TestCase
         $supports = $this->crypt::supports(AkbankPos::class);
         $this->assertTrue($supports);
 
-        $supports = $this->crypt::supports(EstV3Pos::class);
+        $supports = $this->crypt::supports(AssecoPos::class);
         $this->assertFalse($supports);
     }
 

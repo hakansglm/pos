@@ -14,7 +14,7 @@ use Mews\Pos\DataMapper\RequestValueMapper\RequestValueMapperInterface;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -85,7 +85,7 @@ class AkbankPosHttpClientTest extends TestCase
         $this->assertTrue($this->client::supports(AkbankPos::class, HttpClientInterface::API_NAME_PAYMENT_API));
         $this->assertTrue($this->client::supports(AkbankPos::class, HttpClientInterface::API_NAME_PAYMENT_API));
         $this->assertFalse($this->client::supports(AkbankPos::class, HttpClientInterface::API_NAME_QUERY_API));
-        $this->assertFalse($this->client::supports(EstV3Pos::class, HttpClientInterface::API_NAME_PAYMENT_API));
+        $this->assertFalse($this->client::supports(AssecoPos::class, HttpClientInterface::API_NAME_PAYMENT_API));
     }
 
     public function testSupportsTx(): void

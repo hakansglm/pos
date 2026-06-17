@@ -17,7 +17,7 @@ sistemlerinin kullanılabilmesidir.
 | IyzicoPos                                                  | Iyzico                                                                         | NonSecure<br/>3DSecure<br/>3DHost                                                                           | İptal<br/>İade (v2 API)<br/>Durum sorgulama<br/>Sipariş Tarihçesini sorgulama<br/>Geçmiş İşlemleri sorgulama<br/>Özel Sorgu |
 | Param3DHostPos                                             | ?                                                                              | 3DHost<br/><sup>(test edilmesi gerekiyor)</sup>                                                             |                                                                                                                             |
 | AkbankPos <br/><sup>(Akbankın yeni altyapısı)</sup>        | Akbank                                                                         | NonSecure<br/>3DSecur<br/>3DPay<br/>3DHost<br/>Tekrarlanan Ödeme                                            | İptal<br/>İade<br/>Sipariş Tarihçesini sorgulama<br/>Geçmiş İşlemleri sorgulama<br/>Özel Sorgu                              |
-| EstV3Pos<br/><sup>(Asseco/Payten)</sup>                    | Akbank<br/>TEB<br/>İşbank<br/>Şekerbank<br/>Halkbank<br/>Finansbank<br/>Ziraat | NonSecure<br/>3DSecure<br/>3DPay<br/>3DHost<br/>3DPayHost<br/>Tekrarlanan Ödeme                             | İptal<br/>İade<br/>Durum sorgulama<br/>Sipariş Tarihçesini sorgulama<br/>Özel Sorgu                                         |
+| AssecoPos<br/><sup>(Asseco/Payten)</sup><br/>eski EstV3Pos | Akbank<br/>TEB<br/>İşbank<br/>Şekerbank<br/>Halkbank<br/>Finansbank<br/>Ziraat | NonSecure<br/>3DSecure<br/>3DPay<br/>3DHost<br/>3DPayHost<br/>Tekrarlanan Ödeme                             | İptal<br/>İade<br/>Durum sorgulama<br/>Sipariş Tarihçesini sorgulama<br/>Özel Sorgu                                         |
 | PayFlex MPI VPOS V4                                        | Ziraat<br/>Vakıfbank VPOS 7/24<br/>İşbank                                      | NonSecure<br/>3DSecure<br/>Tekrarlanan Ödeme                                                                | İptal<br/>İade<br/>Durum sorgulama<br/>Özel Sorgu                                                                           |
 | PayFlex<br/>Common Payment V4<br/><sup>(Ortak Ödeme)</sup> | Ziraat<br/>Vakıfbank<br/>İşbank                                                | 3DPay<br/>3DHost                                                                                            | Özel Sorgu                                                                                                                  |
 | Garanti Virtual POS                                        | Garanti                                                                        | NonSecure<br/>3DSecure<br/>3DPay<br/>3DHost<br/>Tekrarlanan Ödeme                                           | İptal<br/>İade<br/>Durum sorgulama<br/>Sipariş Tarihçesini sorgulama<br/>Geçmiş İşlemleri sorgulama<br/>Özel Sorgu          |
@@ -170,7 +170,7 @@ return [
     'banks'         => [
         'akbank'    => [
             'name'  => 'AKBANK T.A.S.',
-            'class' => \Mews\Pos\Gateways\EstV3Pos::class,
+            'class' => \Mews\Pos\Gateways\AssecoPos::class,
             'lang'  => \Mews\Pos\PosInterface::LANG_TR, // optional
             'gateway_endpoints'  => [
                 'payment_api'     => 'https://www.sanalakpos.com/fim/api',
@@ -182,7 +182,7 @@ return [
         // Yeni eklenen banka
         'isbank'    => [ // unique bir isim vermeniz gerekir.
             'name'  => 'İŞ BANKASI .A.S.',
-            'class' => \Mews\Pos\Gateways\EstV3Pos::class, // Altyapı sınıfı
+            'class' => \Mews\Pos\Gateways\AssecoPos::class, // Altyapı sınıfı
             'lang'  => \Mews\Pos\PosInterface::LANG_TR, // optional
             'gateway_endpoints'  => [
                 'payment_api'     => 'https://sanalpos.isbank.com.tr/fim/api',

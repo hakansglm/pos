@@ -12,7 +12,7 @@ use Mews\Pos\Client\HttpClientStrategyInterface;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\RequestDataMapper\PosNetPosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestDataMapper\RequestDataMapperInterface;
-use Mews\Pos\DataMapper\RequestValueMapper\EstPosRequestValueMapper;
+use Mews\Pos\DataMapper\RequestValueMapper\AssecoPosRequestValueMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\PosNetPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\ResponseDataMapperInterface;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
@@ -72,7 +72,7 @@ class PosNetPosTest extends TestCase
     /** @var EventDispatcherInterface & MockObject */
     private MockObject $eventDispatcherMock;
 
-    private EstPosRequestValueMapper $requestValueMapper;
+    private AssecoPosRequestValueMapper $requestValueMapper;
 
     protected function setUp(): void
     {
@@ -105,7 +105,7 @@ class PosNetPosTest extends TestCase
             'lang'        => PosInterface::LANG_TR,
         ];
 
-        $this->requestValueMapper     = new EstPosRequestValueMapper();
+        $this->requestValueMapper     = new AssecoPosRequestValueMapper();
         $this->requestMapperMock      = $this->createMock(PosNetPosRequestDataMapper::class);
         $this->responseMapperMock     = $this->createMock(PosNetPosResponseDataMapper::class);
         $this->cryptMock              = $this->createMock(CryptInterface::class);

@@ -8,7 +8,7 @@ namespace Mews\Pos\Tests\Unit\DataMapper\RequestValueMapper;
 
 use Mews\Pos\DataMapper\RequestValueMapper\PayForPosRequestValueMapper;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\PayForPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
@@ -32,7 +32,7 @@ class PayForPosRequestValueMapperTest extends TestCase
         $result = $this->valueMapper::supports(PayForPos::class);
         $this->assertTrue($result);
 
-        $result = $this->valueMapper::supports(EstV3Pos::class);
+        $result = $this->valueMapper::supports(AssecoPos::class);
         $this->assertFalse($result);
     }
 

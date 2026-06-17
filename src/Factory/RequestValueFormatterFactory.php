@@ -8,7 +8,7 @@ namespace Mews\Pos\Factory;
 
 use DomainException;
 use Mews\Pos\DataMapper\RequestValueFormatter\AkbankPosRequestValueFormatter;
-use Mews\Pos\DataMapper\RequestValueFormatter\EstPosRequestValueFormatter;
+use Mews\Pos\DataMapper\RequestValueFormatter\AssecoPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\IyzicoPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\GarantiPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\InterPosRequestValueFormatter;
@@ -35,7 +35,7 @@ class RequestValueFormatterFactory
     private static array $requestValueFormatterClasses = [
         ToslaPosRequestValueFormatter::class,
         AkbankPosRequestValueFormatter::class,
-        EstPosRequestValueFormatter::class,
+        AssecoPosRequestValueFormatter::class,
         GarantiPosRequestValueFormatter::class,
         InterPosRequestValueFormatter::class,
         IyzicoPosRequestValueFormatter::class,

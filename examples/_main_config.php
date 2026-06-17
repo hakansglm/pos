@@ -167,7 +167,7 @@ function createPaymentOrder(
     }
 
     if ($lang) {
-        //lang degeri verilmezse account (EstPosAccount) dili kullanilacak
+        //lang degeri verilmezse account (AssecoPosAccount) dili kullanilacak
         $order['lang'] = $lang;
     }
 
@@ -176,7 +176,7 @@ function createPaymentOrder(
     }
 
     if ($tekrarlanan) {
-        // Desteleyen Gatewayler: GarantiPos, EstV3Pos, PayFlexV4, AkbankPos
+        // Desteleyen Gatewayler: GarantiPos, AssecoPos, PayFlexV4, AkbankPos
 
         $order['installment'] = 0; // Tekrarlayan ödemeler taksitli olamaz.
 

@@ -7,7 +7,7 @@
 namespace Mews\Pos\Tests\Unit\Factory;
 
 use Mews\Pos\Client\AkbankPosHttpClient;
-use Mews\Pos\Client\EstPosHttpClient;
+use Mews\Pos\Client\AssecoPosHttpClient;
 use Mews\Pos\Client\GarantiPosHttpClient;
 use Mews\Pos\Client\InterPosHttpClient;
 use Mews\Pos\Client\IyzicoPosHttpClient;
@@ -58,7 +58,7 @@ class HttpClientFactoryTest extends TestCase
     {
         return [
             [AkbankPosHttpClient::class],
-            [EstPosHttpClient::class],
+            [AssecoPosHttpClient::class],
             [GarantiPosHttpClient::class],
             [InterPosHttpClient::class],
             [IyzicoPosHttpClient::class,           IyzicoPosCrypt::class],

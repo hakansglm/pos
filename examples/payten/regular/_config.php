@@ -6,7 +6,7 @@ require '../_payment_config.php';
 
 $baseUrl = $bankTestsUrl.'/regular/';
 
-$account = \Mews\Pos\Factory\AccountFactory::createEstPosAccount(
+$account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
     'payten_v3_hash',
     (string) getenv('PAYTEN_TERMINAL_ID'),
     (string) getenv('PAYTEN_USERNAME'),

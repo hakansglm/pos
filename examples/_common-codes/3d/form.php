@@ -70,7 +70,7 @@ if (in_array(get_class($pos), $formVerisiniOlusturmakIcinApiIstegiGonderenGatewa
  * Eger ekleyeceginiz veri hash hesaplamada kullanilmiyorsa form verisi olusturduktan sonra da ekleyebilirsiniz.
  */
 $eventDispatcher->addListener(Before3DFormHashCalculatedEvent::class, function (Before3DFormHashCalculatedEvent $event): void {
-    if ($event->getGatewayClass() === \Mews\Pos\Gateways\EstV3Pos::class) {
+    if ($event->getGatewayClass() === \Mews\Pos\Gateways\AssecoPos::class) {
         //Örnek 1: İşbank İmece Kart ile ödeme yaparken aşağıdaki verilerin eklenmesi gerekiyor:
 //                $supportedPaymentModels = [
 //                    \Mews\Pos\PosInterface::MODEL_3D_PAY,
@@ -84,7 +84,7 @@ $eventDispatcher->addListener(Before3DFormHashCalculatedEvent::class, function (
 //                    $event->setFormInputs($formInputs);
 //                }
     }
-    if ($event->getGatewayClass() === \Mews\Pos\Gateways\EstV3Pos::class) {
+    if ($event->getGatewayClass() === \Mews\Pos\Gateways\AssecoPos::class) {
 //                // Örnek 2: callbackUrl eklenmesi
 //                $formInputs                = $event->getFormInputs();
 //                $formInputs['callbackUrl'] = $formInputs['failUrl'];

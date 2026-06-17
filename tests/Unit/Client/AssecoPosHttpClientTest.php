@@ -6,13 +6,13 @@
 
 namespace Mews\Pos\Tests\Unit\Client;
 
-use Mews\Pos\Client\EstPosHttpClient;
+use Mews\Pos\Client\AssecoPosHttpClient;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\RequestValueMapper\RequestValueMapperInterface;
 use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -22,14 +22,14 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 
 /**
- * @covers \Mews\Pos\Client\EstPosHttpClient
+ * @covers \Mews\Pos\Client\AssecoPosHttpClient
  * @covers \Mews\Pos\Client\AbstractHttpClient
  */
-class EstPosHttpClientTest extends TestCase
+class AssecoPosHttpClientTest extends TestCase
 {
     use HttpClientTestTrait;
 
-    private EstPosHttpClient $client;
+    private AssecoPosHttpClient $client;
 
     /** @var LoggerInterface & MockObject */
     private LoggerInterface $logger;
@@ -62,7 +62,7 @@ class EstPosHttpClientTest extends TestCase
         $this->streamFactory      = $this->createMock(StreamFactoryInterface::class);
 
         $this->client = PosHttpClientFactory::create(
-            EstPosHttpClient::class,
+            AssecoPosHttpClient::class,
             'https://entegrasyon.asseco-see.com.tr/fim/api',
             $crypt,
             $this->requestValueMapper,
@@ -86,7 +86,7 @@ class EstPosHttpClientTest extends TestCase
     public function testSupports(): void
     {
         $this->assertFalse($this->client::supports(AkbankPos::class, HttpClientInterface::API_NAME_PAYMENT_API));
-        $this->assertTrue($this->client::supports(EstV3Pos::class, HttpClientInterface::API_NAME_PAYMENT_API));
+        $this->assertTrue($this->client::supports(AssecoPos::class, HttpClientInterface::API_NAME_PAYMENT_API));
     }
 
     public function testSupportsTx(): void

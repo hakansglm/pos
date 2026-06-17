@@ -12,12 +12,12 @@ use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Factory\PosFactory;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\PosInterface;
 use Monolog\Test\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
-class EstV3PosTest extends TestCase
+class AssecoPosTest extends TestCase
 {
     use PaymentTestTrait;
 
@@ -25,7 +25,7 @@ class EstV3PosTest extends TestCase
 
     private EventDispatcher $eventDispatcher;
 
-    /** @var EstV3Pos */
+    /** @var AssecoPos */
     private PosInterface $pos;
 
     protected function setUp(): void
@@ -34,7 +34,7 @@ class EstV3PosTest extends TestCase
 
         $config = require __DIR__.'/../../config/pos_test.php';
 
-        $account = AccountFactory::createEstPosAccount(
+        $account = AccountFactory::createAssecoPosAccount(
             'payten_v3_hash',
             (string) getenv('PAYTEN_TERMINAL_ID'),
             (string) getenv('PAYTEN_USERNAME'),

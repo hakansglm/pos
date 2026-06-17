@@ -10,7 +10,7 @@ use Mews\Pos\Crypt\GarantiPosCrypt;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Entity\Account\GarantiPosAccount;
 use Mews\Pos\Factory\AccountFactory;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\GarantiPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
@@ -51,7 +51,7 @@ class GarantiPosCryptTest extends TestCase
         $supports = $this->crypt::supports(GarantiPos::class);
         $this->assertTrue($supports);
 
-        $supports = $this->crypt::supports(EstV3Pos::class);
+        $supports = $this->crypt::supports(AssecoPos::class);
         $this->assertFalse($supports);
     }
 

@@ -10,7 +10,7 @@ use DomainException;
 use Mews\Pos\DataMapper\ResponseValueMapper\AkbankPosResponseValueMapper;
 use Mews\Pos\DataMapper\ResponseValueMapper\IyzicoPosResponseValueMapper;
 use Mews\Pos\DataMapper\ResponseValueMapper\KuveytPosResponseValueMapper;
-use Mews\Pos\DataMapper\ResponseValueMapper\EstPosResponseValueMapper;
+use Mews\Pos\DataMapper\ResponseValueMapper\AssecoPosResponseValueMapper;
 use Mews\Pos\DataMapper\ResponseValueMapper\GarantiPosResponseValueMapper;
 use Mews\Pos\DataMapper\ResponseValueMapper\InterPosResponseValueMapper;
 use Mews\Pos\DataMapper\ResponseValueMapper\ParamPosResponseValueMapper;
@@ -31,7 +31,7 @@ class ResponseValueMapperFactory
      */
     private static array $responseValueMapperClasses = [
         AkbankPosResponseValueMapper::class,
-        EstPosResponseValueMapper::class,
+        AssecoPosResponseValueMapper::class,
         GarantiPosResponseValueMapper::class,
         InterPosResponseValueMapper::class,
         IyzicoPosResponseValueMapper::class,

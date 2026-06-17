@@ -9,7 +9,7 @@ namespace Mews\Pos\Tests\Unit\DataMapper\RequestValueMapper;
 use Mews\Pos\DataMapper\RequestValueMapper\KuveytPosRequestValueMapper;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\KuveytPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
@@ -33,7 +33,7 @@ class KuveytPosRequestValueMapperTest extends TestCase
         $result = $this->valueMapper::supports(KuveytPos::class);
         $this->assertTrue($result);
 
-        $result = $this->valueMapper::supports(EstV3Pos::class);
+        $result = $this->valueMapper::supports(AssecoPos::class);
         $this->assertFalse($result);
     }
 

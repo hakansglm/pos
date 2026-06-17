@@ -8,7 +8,7 @@ namespace Mews\Pos\Tests\Unit\DataMapper\ResponseValueMapper;
 
 use Mews\Pos\DataMapper\ResponseValueMapper\AkbankPosResponseValueMapper;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -31,7 +31,7 @@ class AkbankPosResponseValueMapperTest extends TestCase
         $result = $this->mapper::supports(AkbankPos::class);
         $this->assertTrue($result);
 
-        $result = $this->mapper::supports(EstV3Pos::class);
+        $result = $this->mapper::supports(AssecoPos::class);
         $this->assertFalse($result);
     }
 

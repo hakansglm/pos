@@ -15,7 +15,7 @@ use Mews\Pos\Entity\Account\BoaPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\KuveytPos;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Tests\TestUtil\TestUtilTrait;
@@ -87,7 +87,7 @@ class KuveytPosRequestDataMapperTest extends TestCase
         $result = $this->requestDataMapper::supports(KuveytPos::class);
         $this->assertTrue($result);
 
-        $result = $this->requestDataMapper::supports(EstV3Pos::class);
+        $result = $this->requestDataMapper::supports(AssecoPos::class);
         $this->assertFalse($result);
     }
 

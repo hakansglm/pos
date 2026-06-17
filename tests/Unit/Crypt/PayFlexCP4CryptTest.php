@@ -10,7 +10,7 @@ use Mews\Pos\Crypt\PayFlexCPV4Crypt;
 use Mews\Pos\Entity\Account\PayFlexPosAccount;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\PayFlexCPV4Pos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
@@ -47,7 +47,7 @@ class PayFlexCP4CryptTest extends TestCase
         $supports = $this->crypt::supports(PayFlexCPV4Pos::class);
         $this->assertTrue($supports);
 
-        $supports = $this->crypt::supports(EstV3Pos::class);
+        $supports = $this->crypt::supports(AssecoPos::class);
         $this->assertFalse($supports);
     }
 

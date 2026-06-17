@@ -10,7 +10,7 @@ use Mews\Pos\Crypt\PayForPosCrypt;
 use Mews\Pos\Entity\Account\PayForPosAccount;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\PayForPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
@@ -50,7 +50,7 @@ class PayForPosCryptTest extends TestCase
         $supports = $this->crypt::supports(PayForPos::class);
         $this->assertTrue($supports);
 
-        $supports = $this->crypt::supports(EstV3Pos::class);
+        $supports = $this->crypt::supports(AssecoPos::class);
         $this->assertFalse($supports);
     }
 

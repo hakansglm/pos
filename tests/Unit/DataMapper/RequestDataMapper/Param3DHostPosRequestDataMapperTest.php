@@ -14,7 +14,7 @@ use Mews\Pos\Entity\Account\ParamPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\Param3DHostPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -72,7 +72,7 @@ class Param3DHostPosRequestDataMapperTest extends TestCase
         $result = $this->requestDataMapper::supports(Param3DHostPos::class);
         $this->assertTrue($result);
 
-        $result = $this->requestDataMapper::supports(EstV3Pos::class);
+        $result = $this->requestDataMapper::supports(AssecoPos::class);
         $this->assertFalse($result);
     }
 

@@ -7,7 +7,7 @@
 namespace Mews\Pos\Client;
 
 use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Serializer\Decoder\XmlDecoder;
 use Mews\Pos\Serializer\EncodedData;
 use Mews\Pos\Serializer\Encoder\XmlEncoder;
@@ -17,7 +17,7 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 
-class EstPosHttpClient extends AbstractHttpClient
+class AssecoPosHttpClient extends AbstractHttpClient
 {
     public function __construct(
         string                  $baseApiUrl,
@@ -50,7 +50,7 @@ class EstPosHttpClient extends AbstractHttpClient
      */
     public static function supports(string $gatewayClass, string $apiName): bool
     {
-        return EstV3Pos::class === $gatewayClass
+        return AssecoPos::class === $gatewayClass
             && HttpClientInterface::API_NAME_PAYMENT_API === $apiName;
     }
 

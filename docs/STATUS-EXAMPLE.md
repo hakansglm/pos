@@ -14,7 +14,7 @@ require './vendor/autoload.php';
 // AccountFactory'de kullanılacak method Gateway'e göre değişir!!!
 // /examples altındaki _config.php dosyalara bakınız
 // (örn: /examples/akbankpos/3d/_config.php)
-$account = \Mews\Pos\Factory\AccountFactory::createEstPosAccount(
+$account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
     'akbank', //pos config'deki ayarın index name'i
     'yourClientID',
     'yourKullaniciAdi',
@@ -59,7 +59,7 @@ function createStatusOrder(string $gatewayClass, array $lastResponse, string $ip
         $statusOrder['payment_model'] = $lastResponse['payment_model'];
     }
     if (isset($lastResponse['recurring_id'])
-        && (\Mews\Pos\Gateways\EstV3Pos::class === $gatewayClass)
+        && (\Mews\Pos\Gateways\AssecoPos::class === $gatewayClass)
     ) {
         // tekrarlanan odemenin durumunu sorgulamak icin:
         $statusOrder = [

@@ -6,31 +6,31 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
-use Mews\Pos\Crypt\EstV3PosCrypt;
-use Mews\Pos\Entity\Account\EstPosAccount;
+use Mews\Pos\Crypt\AssecoPosCrypt;
+use Mews\Pos\Entity\Account\AssecoPosAccount;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
- * @covers \Mews\Pos\Crypt\EstV3PosCrypt
+ * @covers \Mews\Pos\Crypt\AssecoPosCrypt
  * @covers \Mews\Pos\Crypt\AbstractCrypt
  */
-class EstV3PosCryptTest extends TestCase
+class AssecoPosCryptTest extends TestCase
 {
-    private EstPosAccount $account;
+    private AssecoPosAccount $account;
 
-    private EstV3PosCrypt $crypt;
+    private AssecoPosCrypt $crypt;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->account = AccountFactory::createEstPosAccount(
+        $this->account = AccountFactory::createAssecoPosAccount(
             'akbank',
             '190100000',
             'ISBANKAPI',
@@ -40,12 +40,12 @@ class EstV3PosCryptTest extends TestCase
         );
 
         $logger      = $this->createMock(LoggerInterface::class);
-        $this->crypt = new EstV3PosCrypt($logger);
+        $this->crypt = new AssecoPosCrypt($logger);
     }
 
     public function testSupports(): void
     {
-        $supports = $this->crypt::supports(EstV3Pos::class);
+        $supports = $this->crypt::supports(AssecoPos::class);
         $this->assertTrue($supports);
 
         $supports = $this->crypt::supports(AkbankPos::class);

@@ -32,7 +32,7 @@ $transactionType = \Mews\Pos\PosInterface::TX_TYPE_PAY_AUTH;
 // AccountFactory'de kullanılacak method Gateway'e göre değişir!!!
 // /examples altındaki _config.php dosyalara bakınız
 // (örn: /examples/akbankpos/3d/_config.php)
-$account = \Mews\Pos\Factory\AccountFactory::createEstPosAccount(
+$account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
     'akbank', //pos config'deki ayarın index name'i
     'yourClientID',
     'yourKullaniciAdi',

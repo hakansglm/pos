@@ -7,7 +7,7 @@
 namespace Mews\Pos\Tests\Unit\Factory;
 
 use Mews\Pos\DataMapper\RequestValueMapper\AkbankPosRequestValueMapper;
-use Mews\Pos\DataMapper\RequestValueMapper\EstPosRequestValueMapper;
+use Mews\Pos\DataMapper\RequestValueMapper\AssecoPosRequestValueMapper;
 use Mews\Pos\DataMapper\RequestValueMapper\GarantiPosRequestValueMapper;
 use Mews\Pos\DataMapper\RequestValueMapper\InterPosRequestValueMapper;
 use Mews\Pos\DataMapper\RequestValueMapper\KuveytPosRequestValueMapper;
@@ -21,7 +21,7 @@ use Mews\Pos\DataMapper\RequestValueMapper\ToslaPosRequestValueMapper;
 use Mews\Pos\DataMapper\RequestValueMapper\VakifKatilimPosRequestValueMapper;
 use Mews\Pos\Factory\RequestValueMapperFactory;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\GarantiPos;
 use Mews\Pos\Gateways\InterPos;
 use Mews\Pos\Gateways\KuveytPos;
@@ -62,7 +62,7 @@ class RequestValueMapperFactoryTest extends TestCase
     {
         return [
             [AkbankPos::class, AkbankPosRequestValueMapper::class],
-            [EstV3Pos::class, EstPosRequestValueMapper::class],
+            [AssecoPos::class, AssecoPosRequestValueMapper::class],
             [GarantiPos::class, GarantiPosRequestValueMapper::class],
             [InterPos::class, InterPosRequestValueMapper::class],
             [KuveytPos::class, KuveytPosRequestValueMapper::class],

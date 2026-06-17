@@ -6,28 +6,28 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\RequestValueFormatter;
 
-use Mews\Pos\DataMapper\RequestValueFormatter\EstPosRequestValueFormatter;
+use Mews\Pos\DataMapper\RequestValueFormatter\AssecoPosRequestValueFormatter;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Mews\Pos\DataMapper\RequestValueFormatter\EstPosRequestValueFormatter
+ * @covers \Mews\Pos\DataMapper\RequestValueFormatter\AssecoPosRequestValueFormatter
  */
-class EstPosRequestValueFormatterTest extends TestCase
+class AssecoPosRequestValueFormatterTest extends TestCase
 {
-    private EstPosRequestValueFormatter $formatter;
+    private AssecoPosRequestValueFormatter $formatter;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->formatter = new EstPosRequestValueFormatter();
+        $this->formatter = new AssecoPosRequestValueFormatter();
     }
 
     public function testSupports(): void
     {
-        $result = $this->formatter::supports(EstV3Pos::class);
+        $result = $this->formatter::supports(AssecoPos::class);
         $this->assertTrue($result);
 
         $result = $this->formatter::supports(AkbankPos::class);

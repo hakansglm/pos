@@ -7,7 +7,7 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseValueMapper;
 
 use Mews\Pos\DataMapper\ResponseValueMapper\ParamPosResponseValueMapper;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\Param3DHostPos;
 use Mews\Pos\Gateways\ParamPos;
 use Mews\Pos\PosInterface;
@@ -34,7 +34,7 @@ class ParamPosResponseValueMapperTest extends TestCase
         $result = $this->mapper::supports(Param3DHostPos::class);
         $this->assertTrue($result);
 
-        $result = $this->mapper::supports(EstV3Pos::class);
+        $result = $this->mapper::supports(AssecoPos::class);
         $this->assertFalse($result);
     }
 

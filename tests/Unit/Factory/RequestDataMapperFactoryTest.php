@@ -58,7 +58,7 @@ class RequestDataMapperFactoryTest extends TestCase
     {
         return [
             [\Mews\Pos\Gateways\AkbankPos::class, \Mews\Pos\DataMapper\RequestDataMapper\AkbankPosRequestDataMapper::class],
-            [\Mews\Pos\Gateways\EstV3Pos::class, \Mews\Pos\DataMapper\RequestDataMapper\EstV3PosRequestDataMapper::class],
+            [\Mews\Pos\Gateways\AssecoPos::class, \Mews\Pos\DataMapper\RequestDataMapper\AssecoPosRequestDataMapper::class],
             [\Mews\Pos\Gateways\GarantiPos::class, \Mews\Pos\DataMapper\RequestDataMapper\GarantiPosRequestDataMapper::class],
             [\Mews\Pos\Gateways\InterPos::class, \Mews\Pos\DataMapper\RequestDataMapper\InterPosRequestDataMapper::class],
             [\Mews\Pos\Gateways\KuveytPos::class, \Mews\Pos\DataMapper\RequestDataMapper\KuveytPosRequestDataMapper::class],

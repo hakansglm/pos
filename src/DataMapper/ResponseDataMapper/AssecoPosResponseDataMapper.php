@@ -7,20 +7,20 @@
 namespace Mews\Pos\DataMapper\ResponseDataMapper;
 
 use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\PosInterface;
 
 /**
  * @phpstan-type PaymentStatusModel array<string, mixed>
  */
-class EstPosResponseDataMapper extends AbstractResponseDataMapper
+class AssecoPosResponseDataMapper extends AbstractResponseDataMapper
 {
     /**
      * @inheritDoc
      */
     public static function supports(string $gatewayClass): bool
     {
-        return EstV3Pos::class === $gatewayClass;
+        return AssecoPos::class === $gatewayClass;
     }
 
     /**

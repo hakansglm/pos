@@ -10,7 +10,7 @@ use DomainException;
 use Mews\Pos\DataMapper\ResponseValueFormatter\BasicResponseValueFormatter;
 use Mews\Pos\DataMapper\ResponseValueFormatter\BoaPosResponseValueFormatter;
 use Mews\Pos\DataMapper\ResponseValueFormatter\IyzicoPosResponseValueFormatter;
-use Mews\Pos\DataMapper\ResponseValueFormatter\EstPosResponseValueFormatter;
+use Mews\Pos\DataMapper\ResponseValueFormatter\AssecoPosResponseValueFormatter;
 use Mews\Pos\DataMapper\ResponseValueFormatter\GarantiPosResponseValueFormatter;
 use Mews\Pos\DataMapper\ResponseValueFormatter\InterPosResponseValueFormatter;
 use Mews\Pos\DataMapper\ResponseValueFormatter\ParamPosResponseValueFormatter;
@@ -29,7 +29,7 @@ class ResponseValueFormatterFactory
      */
     private static array $valueFormatterClasses = [
         BasicResponseValueFormatter::class,
-        EstPosResponseValueFormatter::class,
+        AssecoPosResponseValueFormatter::class,
         GarantiPosResponseValueFormatter::class,
         InterPosResponseValueFormatter::class,
         IyzicoPosResponseValueFormatter::class,

@@ -12,7 +12,7 @@ use Mews\Pos\DataMapper\ResponseValueMapper\ResponseValueMapperInterface;
 use Mews\Pos\Factory\ResponseValueFormatterFactory;
 use Mews\Pos\Factory\ResponseValueMapperFactory;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -56,7 +56,7 @@ class AkbankPosResponseDataMapperTest extends TestCase
         $result = $this->responseDataMapper::supports(AkbankPos::class);
         $this->assertTrue($result);
 
-        $result = $this->responseDataMapper::supports(EstV3Pos::class);
+        $result = $this->responseDataMapper::supports(AssecoPos::class);
         $this->assertFalse($result);
     }
 

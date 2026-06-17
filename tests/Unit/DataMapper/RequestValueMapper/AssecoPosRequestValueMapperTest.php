@@ -6,30 +6,30 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\RequestValueMapper;
 
-use Mews\Pos\DataMapper\RequestValueMapper\EstPosRequestValueMapper;
+use Mews\Pos\DataMapper\RequestValueMapper\AssecoPosRequestValueMapper;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstV3Pos;
+use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Mews\Pos\DataMapper\RequestValueMapper\EstPosRequestValueMapper
+ * @covers \Mews\Pos\DataMapper\RequestValueMapper\AssecoPosRequestValueMapper
  * @covers \Mews\Pos\DataMapper\RequestValueMapper\AbstractRequestValueMapper
  */
-class EstPosRequestValueMapperTest extends TestCase
+class AssecoPosRequestValueMapperTest extends TestCase
 {
-    private EstPosRequestValueMapper $valueMapper;
+    private AssecoPosRequestValueMapper $valueMapper;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->valueMapper = new EstPosRequestValueMapper();
+        $this->valueMapper = new AssecoPosRequestValueMapper();
     }
 
     public function testSupports(): void
     {
-        $result = $this->valueMapper::supports(EstV3Pos::class);
+        $result = $this->valueMapper::supports(AssecoPos::class);
         $this->assertTrue($result);
 
         $result = $this->valueMapper::supports(AkbankPos::class);

@@ -7,7 +7,7 @@
 namespace Mews\Pos\Factory;
 
 use Mews\Pos\Entity\Account\AkbankPosAccount;
-use Mews\Pos\Entity\Account\EstPosAccount;
+use Mews\Pos\Entity\Account\AssecoPosAccount;
 use Mews\Pos\Entity\Account\IyzicoPosAccount;
 use Mews\Pos\Entity\Account\GarantiPosAccount;
 use Mews\Pos\Entity\Account\InterPosAccount;
@@ -35,15 +35,15 @@ class AccountFactory
      * @param non-empty-string      $model
      * @param non-empty-string|null $storeKey
      *
-     * @return EstPosAccount
+     * @return AssecoPosAccount
      *
      * @throws MissingAccountInfoException
      */
-    public static function createEstPosAccount(string $bank, string $clientId, string $kullaniciAdi, string $password, string $model = PosInterface::MODEL_NON_SECURE, ?string $storeKey = null): EstPosAccount
+    public static function createAssecoPosAccount(string $bank, string $clientId, string $kullaniciAdi, string $password, string $model = PosInterface::MODEL_NON_SECURE, ?string $storeKey = null): AssecoPosAccount
     {
         self::checkParameters($model, $storeKey);
 
-        return new EstPosAccount($bank, $clientId, $kullaniciAdi, $password, $storeKey);
+        return new AssecoPosAccount($bank, $clientId, $kullaniciAdi, $password, $storeKey);
     }
 
     /**

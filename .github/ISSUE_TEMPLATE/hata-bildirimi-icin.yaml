@@ -30,7 +30,7 @@ body:
       label: Gateway PHP sınıfı
       options:
         - AkbankPos
-        - EstV3Pos
+        - AssecoPos
         - GarantiPos
         - InterPos
         - KuveytPos
