@@ -7,6 +7,7 @@
 namespace Mews\Pos\DataMapper\RequestValueFormatter;
 
 use Mews\Pos\Gateways\GarantiPos;
+use Mews\Pos\PosInterface;
 
 class GarantiPosRequestValueFormatter implements RequestValueFormatterInterface
 {
@@ -66,8 +67,12 @@ class GarantiPosRequestValueFormatter implements RequestValueFormatterInterface
     /**
      * @inheritDoc
      */
-    public function formatDateTime(\DateTimeInterface $dateTime, ?string $fieldName = null): string
+    public function formatDateTime(\DateTimeInterface $dateTime, ?string $fieldName = null, ?string $txType = null): string
     {
-        return $dateTime->format('d/m/Y H:i');
+        if (PosInterface::TX_TYPE_HISTORY === $txType) {
+            return $dateTime->format('d/m/Y H:i');
+        }
+
+        return $dateTime->format('Ymd');
     }
 }

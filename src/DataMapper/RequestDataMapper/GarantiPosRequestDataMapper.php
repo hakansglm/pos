@@ -8,6 +8,8 @@ namespace Mews\Pos\DataMapper\RequestDataMapper;
 
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\Crypt\GarantiPosCrypt;
+use Mews\Pos\DataMapper\RequestValueFormatter\GarantiPosRequestValueFormatter;
+use Mews\Pos\DataMapper\RequestValueFormatter\RequestValueFormatterInterface;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Entity\Account\GarantiPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
@@ -34,6 +36,9 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
 
     /** @var GarantiPosCrypt */
     protected CryptInterface $crypt;
+
+    /** @var GarantiPosRequestValueFormatter  */
+    protected RequestValueFormatterInterface $valueFormatter;
 
     /**
      * @inheritDoc
@@ -79,7 +84,7 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
         ];
 
         if (isset($order['recurring'])) {
-            $result['Recurring'] = $this->createRecurringData($order['recurring']);
+            $result['Recurring'] = $this->createRecurringData($order['recurring'], $txType);
         }
 
         $result['Terminal']['HashData'] = $this->crypt->createHash($posAccount, $result);
@@ -118,7 +123,7 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
         ];
 
         if (isset($order['recurring'])) {
-            $result['Recurring'] = $this->createRecurringData($order['recurring']);
+            $result['Recurring'] = $this->createRecurringData($order['recurring'], $txType);
         }
 
         $result['Terminal']['HashData'] = $this->crypt->createHash($posAccount, $result);
@@ -303,6 +308,7 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createHistoryRequestData(AbstractPosAccount $posAccount, array $data = []): array
     {
+        $txType = PosInterface::TX_TYPE_HISTORY;
         $order = $this->prepareHistoryOrder($data);
 
         $result = [
@@ -317,8 +323,8 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
                 'GroupID'     => null,
                 'Description' => null,
                 // Başlangıç ve bitiş tarihleri arasında en fazla 30 gün olabilir
-                'StartDate'   => $this->valueFormatter->formatDateTime($order['start_date'], 'StartDate'),
-                'EndDate'     => $this->valueFormatter->formatDateTime($order['end_date'], 'EndDate'),
+                'StartDate'   => $this->valueFormatter->formatDateTime($order['start_date'], 'StartDate', $txType),
+                'EndDate'     => $this->valueFormatter->formatDateTime($order['end_date'], 'EndDate', $txType),
                 /**
                  * 500 adetten fazla işlem olması durumunda ListPageNum alanında diğer 500 lü grupların görüntülenmesi
                  * için sayfa numarası yazılır.
@@ -326,7 +332,7 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
                 'ListPageNum' => $order['page'],
             ],
             'Transaction' => [
-                'Type'                  => $this->valueMapper->mapTxType(PosInterface::TX_TYPE_HISTORY),
+                'Type'                  => $this->valueMapper->mapTxType($txType),
                 'Amount'                => $this->valueFormatter->formatAmount(1), //sabit olarak amount 100 gonderilecek
                 'CurrencyCode'          => $this->valueMapper->mapCurrency(PosInterface::CURRENCY_TRY),
                 'CardholderPresentCode' => '0',
@@ -575,18 +581,20 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
      * </Recurring>
      *
      * @param array{installment: int, frequencyType: string, frequency: int, startDate?: \DateTimeInterface} $recurringData
+     * @param PosInterface::TX_TYPE_*                                                                        $txType
      *
      * @return array{TotalPaymentNum: string, FrequencyType: string, FrequencyInterval: string, Type: mixed, StartDate: string}
      */
-    private function createRecurringData(array $recurringData): array
+    private function createRecurringData(array $recurringData, string $txType): array
     {
         return [
             'TotalPaymentNum'   => (string) $recurringData['installment'], //kac kere tekrarlanacak
             'FrequencyType'     => $this->valueMapper->mapRecurringFrequency($recurringData['frequencyType']), //Monthly, weekly, daily
             'FrequencyInterval' => (string) $recurringData['frequency'],
             'Type'              => 'R', // R:Sabit Tutarli   G:Degisken Tuta
-            //todo use formatter
-            'StartDate'         => isset($recurringData['startDate']) ? $recurringData['startDate']->format('Ymd') : '',
+            'StartDate'         => isset($recurringData['startDate'])
+                ? $this->valueFormatter->formatDateTime($recurringData['startDate'], 'StartDate', $txType)
+                : '',
         ];
     }
 }

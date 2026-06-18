@@ -9,6 +9,7 @@ namespace Mews\Pos\Tests\Unit\DataMapper\RequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\GarantiPosRequestValueFormatter;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\GarantiPos;
+use Mews\Pos\PosInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -80,29 +81,46 @@ class GarantiPosRequestValueFormatterTest extends TestCase
     /**
      * @dataProvider formatDateTimeDataProvider
      */
-    public function testFormatDateTime(\DateTimeInterface $dateTime, ?string $fieldName, string $expected): void
+    public function testFormatDateTime(\DateTimeInterface $dateTime, ?string $fieldName, ?string $txType, string $expected): void
     {
-        $actual = $this->formatter->formatDateTime($dateTime, $fieldName);
+        $actual = $this->formatter->formatDateTime($dateTime, $fieldName, $txType);
         $this->assertSame($expected, $actual);
     }
 
     public static function formatDateTimeDataProvider(): array
     {
+        $dateTime = new \DateTime('2024-04-14T16:45:30.000');
+
         return [
-            [
-                new \DateTime('2024-04-14T16:45:30.000'),
+            'StartDate_with_history_txType_uses_datetime_format' => [
+                $dateTime,
                 'StartDate',
+                PosInterface::TX_TYPE_HISTORY,
                 '14/04/2024 16:45',
             ],
-            [
-                new \DateTime('2024-04-14T16:45:30.000'),
-                'EndDate',
-                '14/04/2024 16:45',
-            ],
-            [
-                new \DateTime('2024-04-14T16:45:30.000'),
+            'StartDate_without_txType_uses_date_only_format' => [
+                $dateTime,
+                'StartDate',
                 null,
-                '14/04/2024 16:45',
+                '20240414',
+            ],
+            'StartDate_with_non_history_txType_uses_date_only_format' => [
+                $dateTime,
+                'StartDate',
+                PosInterface::TX_TYPE_PAY_AUTH,
+                '20240414',
+            ],
+            'EndDate_uses_datetime_format' => [
+                $dateTime,
+                'EndDate',
+                null,
+                '20240414',
+            ],
+            'null_fieldName_uses_datetime_format' => [
+                $dateTime,
+                null,
+                null,
+                '20240414',
             ],
         ];
     }
