@@ -28,13 +28,13 @@ class VakifKatilimPosResponseDataMapperTest extends TestCase
     private VakifKatilimPosResponseDataMapper $responseDataMapper;
 
     /** @var LoggerInterface&MockObject */
-    private LoggerInterface $logger;
+    private MockObject $logger;
 
     /** @var ResponseValueFormatterInterface & MockObject */
-    private ResponseValueFormatterInterface $responseValueFormatterMock;
+    private MockObject $responseValueFormatterMock;
 
     /** @var ResponseValueMapperInterface & MockObject */
-    private ResponseValueMapperInterface $responseValueMapperMock;
+    private MockObject $responseValueMapperMock;
 
     private ResponseValueMapperInterface $responseValueMapper;
 

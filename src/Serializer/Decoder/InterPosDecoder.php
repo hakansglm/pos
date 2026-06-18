@@ -27,6 +27,7 @@ class InterPosDecoder implements DecoderInterface
             if (2 !== \count($parts)) {
                 throw new NotEncodableValueException();
             }
+
             [$key, $value] = $parts;
             $result[$key]  = $value;
         }

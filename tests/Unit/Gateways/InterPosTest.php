@@ -794,9 +794,7 @@ class InterPosTest extends TestCase
             ->with(
                 $txType,
                 $paymentModel,
-                $this->callback(function (array $requestData) {
-                    return $requestData['test-update-request-data-with-event'] === true;
-                }),
+                $this->callback(fn (array $requestData): bool => $requestData['test-update-request-data-with-event'] === true),
                 $order,
                 $apiUrl,
                 $account

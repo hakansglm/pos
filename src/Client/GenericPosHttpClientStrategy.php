@@ -40,6 +40,6 @@ class GenericPosHttpClientStrategy implements HttpClientStrategyInterface
             }
         }
 
-        throw new \InvalidArgumentException("No HTTP client configured for transaction type: $txType");
+        throw new \InvalidArgumentException('No HTTP client configured for transaction type: ' . $txType);
     }
 }

@@ -86,8 +86,7 @@ class PayForPosTest extends TestCase
             'UcBN0',
             PosInterface::MODEL_3D_SECURE,
             '12345678',
-            PosInterface::LANG_TR,
-            PayForPosAccount::MBR_ID_ZIRAAT_KATILIM
+            PosInterface::LANG_TR
         );
 
         $this->requestValueMapper     = new PayForPosRequestValueMapper();
@@ -1014,9 +1013,7 @@ class PayForPosTest extends TestCase
             ->with(
                 $txType,
                 $paymentModel,
-                $this->callback(function (array $requestData) {
-                    return $requestData['test-update-request-data-with-event'] === true;
-                }),
+                $this->callback(fn (array $requestData): bool => $requestData['test-update-request-data-with-event'] === true),
                 $order,
                 $apiUrl,
                 $account

@@ -36,19 +36,19 @@ class IyzicoPosQueryApiHttpClientTest extends TestCase
     private IyzicoPosQueryApiHttpClient $client;
 
     /** @var LoggerInterface & MockObject */
-    private LoggerInterface $loggerMock;
+    private MockObject $loggerMock;
 
     /** @var ClientInterface & MockObject */
-    private ClientInterface $psrClient;
+    private MockObject $psrClient;
 
     /** @var RequestFactoryInterface & MockObject */
-    private RequestFactoryInterface $requestFactory;
+    private MockObject $requestFactory;
 
     /** @var StreamFactoryInterface & MockObject */
-    private StreamFactoryInterface $streamFactory;
+    private MockObject $streamFactory;
 
     /** @var IyzicoPosCrypt & MockObject */
-    private IyzicoPosCrypt $cryptMock;
+    private MockObject $cryptMock;
 
     protected function setUp(): void
     {
@@ -100,7 +100,7 @@ class IyzicoPosQueryApiHttpClientTest extends TestCase
     public function testGetApiUrlWithoutTxTypeThrows(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->client->getApiURL(null);
+        $this->client->getApiURL();
     }
 
     public function testRequestSendsGetWithQueryParams(): void

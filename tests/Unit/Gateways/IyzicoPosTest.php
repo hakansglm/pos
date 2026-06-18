@@ -146,7 +146,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             $txType,
-            $requestData,
             [],
             $this->order,
             PosInterface::MODEL_NON_SECURE,
@@ -199,7 +198,7 @@ class IyzicoPosTest extends TestCase
     public function testPaymentMissingCardThrows(): void
     {
         $this->expectException(\LogicException::class);
-        $this->pos->payment(PosInterface::MODEL_NON_SECURE, $this->order, PosInterface::TX_TYPE_PAY_AUTH, null);
+        $this->pos->payment(PosInterface::MODEL_NON_SECURE, $this->order, PosInterface::TX_TYPE_PAY_AUTH);
     }
 
     public function testMakeRegularPostPayment(): void
@@ -216,7 +215,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             $txType,
-            $requestData,
             $bankResponse,
             $this->order,
             PosInterface::MODEL_NON_SECURE,
@@ -249,7 +247,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             $txType,
-            $prepared,
             $bankResponse,
             $requestData,
             PosInterface::MODEL_NON_SECURE,
@@ -294,7 +291,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
-            ['request-data'],
             $initResponse,
             $this->order,
             $paymentModel,
@@ -329,7 +325,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
-            ['request-data'],
             $initResponse,
             $this->order,
             $paymentModel,
@@ -364,7 +359,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
-            ['request-data'],
             $initResponse,
             $this->order,
             $paymentModel,
@@ -399,7 +393,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
-            ['request-data'],
             $initResponse,
             $this->order,
             $paymentModel,
@@ -505,7 +498,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             $txType,
-            $provisionRequest,
             $provisionResponse,
             $this->order,
             PosInterface::MODEL_3D_SECURE,
@@ -552,7 +544,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             $txType,
-            $provisionRequest,
             $provisionResponse,
             $this->order,
             PosInterface::MODEL_3D_SECURE,
@@ -585,7 +576,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             PosInterface::TX_TYPE_INTERNAL_3D_PAYMENT_STATUS,
-            $statusRequest,
             $statusResponse,
             $this->order,
             $paymentModel,
@@ -619,7 +609,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             $txType,
-            $requestData,
             $decodedResponse,
             $order,
             PosInterface::MODEL_NON_SECURE,
@@ -649,7 +638,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             $txType,
-            $requestData,
             $bankResponse,
             $this->order,
             PosInterface::MODEL_NON_SECURE,
@@ -681,7 +669,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             $txType,
-            $requestData,
             $bankResponse,
             $this->order,
             PosInterface::MODEL_NON_SECURE,
@@ -713,7 +700,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             $txType,
-            $requestData,
             $bankResponse,
             $this->order,
             PosInterface::MODEL_NON_SECURE,
@@ -745,7 +731,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             $txType,
-            $requestData,
             $bankResponse,
             $this->order,
             PosInterface::MODEL_NON_SECURE,
@@ -777,7 +762,6 @@ class IyzicoPosTest extends TestCase
 
         $this->configureClientResponse(
             $txType,
-            $requestData,
             $bankResponse,
             $this->order,
             PosInterface::MODEL_NON_SECURE,
@@ -856,7 +840,6 @@ class IyzicoPosTest extends TestCase
 
     private function configureClientResponse(
         string              $apiRequestTxType,
-        array               $requestData,
         array               $decodedResponse,
         array               $order,
         string              $paymentModel,
@@ -875,7 +858,7 @@ class IyzicoPosTest extends TestCase
             ->with(
                 $apiRequestTxType,
                 $paymentModel,
-                $this->callback(fn (array $data) => ($data['test-event-marker'] ?? false) === true),
+                $this->callback(fn (array $data): bool => ($data['test-event-marker'] ?? false) === true),
                 $order,
                 $apiUrl,
                 $account
@@ -884,7 +867,7 @@ class IyzicoPosTest extends TestCase
 
         $this->eventDispatcherMock->expects(self::once())
             ->method('dispatch')
-            ->willReturnCallback(function (RequestDataPreparedEvent $event) use ($requestData, $apiRequestTxType, $order, $paymentModel, &$updatedEvent): RequestDataPreparedEvent {
+            ->willReturnCallback(function (RequestDataPreparedEvent $event) use (&$updatedEvent): RequestDataPreparedEvent {
                 $updatedEvent              = $event;
                 $data                      = $event->getRequestData();
                 $data['test-event-marker'] = true;

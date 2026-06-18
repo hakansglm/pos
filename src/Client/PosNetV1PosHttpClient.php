@@ -66,6 +66,7 @@ class PosNetV1PosHttpClient extends AbstractHttpClient
         if (PosInterface::TX_TYPE_CUSTOM_QUERY === $txType) {
             return true;
         }
+
         try {
             $this->getRequestURIByTransactionType($txType);
         } catch (UnsupportedTransactionTypeException $e) {

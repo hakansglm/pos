@@ -160,10 +160,11 @@ class Param3DHostPosRequestDataMapper extends AbstractRequestDataMapper
         ?string              $gatewayURL = null,
         ?CreditCardInterface $creditCard = null,
         array                $extraData = []
-    ) {
+    ): array {
         if (PosInterface::MODEL_3D_HOST !== $paymentModel) {
             throw new \InvalidArgumentException();
         }
+
         if (null === $gatewayURL) {
             throw new \InvalidArgumentException('Please provide $gatewayURL');
         }

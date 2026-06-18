@@ -354,8 +354,6 @@ class KuveytPosTest extends TestCase
             $bankResponse,
             $order,
             PosInterface::MODEL_NON_SECURE,
-            null,
-            $account,
         );
 
         $this->responseMapperMock->expects(self::once())
@@ -368,6 +366,7 @@ class KuveytPosTest extends TestCase
         $this->assertSame($expectedData, $result);
         $this->assertSame($isSuccess, $this->pos->isSuccess());
     }
+
     /**
      * @dataProvider cancelDataProvider
      */
@@ -389,8 +388,6 @@ class KuveytPosTest extends TestCase
             $bankResponse,
             $order,
             PosInterface::MODEL_NON_SECURE,
-            null,
-            $account,
         );
 
         $this->responseMapperMock->expects(self::once())
@@ -425,8 +422,6 @@ class KuveytPosTest extends TestCase
             $bankResponse,
             $order,
             PosInterface::MODEL_NON_SECURE,
-            null,
-            $account,
         );
 
         $this->responseMapperMock->expects(self::once())
@@ -656,9 +651,7 @@ class KuveytPosTest extends TestCase
             ->with(
                 $txType,
                 $paymentModel,
-                $this->callback(function (array $requestData) {
-                    return $requestData['test-update-request-data-with-event'] === true;
-                }),
+                $this->callback(fn (array $requestData): bool => $requestData['test-update-request-data-with-event'] === true),
                 $order
             )->willReturn($decodedResponse);
 

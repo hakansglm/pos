@@ -132,11 +132,8 @@ class GarantiPosResponseValueMapper extends AbstractResponseValueMapper
             if ('WAITINGPOSTAUTH' === $orderStatus) {
                 return PosInterface::PAYMENT_STATUS_PRE_AUTH_COMPLETED;
             }
-            if ('APPROVED' === $orderStatus) {
-                // how can we map this status?
-                return $orderStatus;
-            }
 
+            // 'APPROVED' === $orderStatus how can we map this status?
             return $orderStatus;
         }
 

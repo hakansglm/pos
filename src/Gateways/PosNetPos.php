@@ -145,6 +145,7 @@ class PosNetPos extends AbstractGateway
             ]);
             $requestData = $event->getRequestData();
         }
+
         /** @var array<string, mixed> $bankResponse */
         $bankResponse = $this->clientStrategy->getClient(
             $txType,

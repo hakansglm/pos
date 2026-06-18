@@ -37,8 +37,7 @@ class PayForPosCryptTest extends TestCase
             'UcBN0',
             PosInterface::MODEL_3D_SECURE,
             '12345678',
-            PosInterface::LANG_TR,
-            PayForPosAccount::MBR_ID_ZIRAAT_KATILIM
+            PosInterface::LANG_TR
         );
 
         $logger      = $this->createMock(LoggerInterface::class);

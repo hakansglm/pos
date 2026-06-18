@@ -51,7 +51,7 @@ class ParamPosRequestValueFormatterTest extends TestCase
     /**
      * @dataProvider formatAmountDataProvider
      */
-    public function testFormatAmount(float $amount, string $txType, $expected): void
+    public function testFormatAmount(float $amount, string $txType, string $expected): void
     {
         $actual = $this->formatter->formatAmount($amount, $txType);
         $this->assertSame($expected, $actual);

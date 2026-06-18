@@ -75,7 +75,11 @@ class IyzicoPosHttpClient extends AbstractIyzicoPosHttpClient
     protected function createRequest(string $url, EncodedData $content, string $txType, ?AbstractPosAccount $account = null): RequestInterface
     {
         if (!$account instanceof IyzicoPosAccount) {
-            throw new \InvalidArgumentException(\sprintf('Expected %s, got %s.', IyzicoPosAccount::class, null !== $account ? \get_class($account) : 'null'));
+            throw new \InvalidArgumentException(\sprintf(
+                'Expected %s, got %s.',
+                IyzicoPosAccount::class,
+                $account instanceof \Mews\Pos\Entity\Account\AbstractPosAccount ? \get_class($account) : 'null'
+            ));
         }
 
         $requestBody = $content->getData();
@@ -118,6 +122,7 @@ class IyzicoPosHttpClient extends AbstractIyzicoPosHttpClient
                 if (PosInterface::TX_TYPE_PAY_AUTH === $orderTxType) {
                     return '/payment/iyzipos/checkoutform/initialize/auth/ecom';
                 }
+
                 if (PosInterface::TX_TYPE_PAY_PRE_AUTH === $orderTxType) {
                     return '/payment/iyzipos/checkoutform/initialize/preauth/ecom';
                 }

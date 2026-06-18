@@ -27,7 +27,7 @@ class ParamPosCryptTest extends TestCase
     /**
      * @var AbstractPosAccount&MockObject
      */
-    private AbstractPosAccount $account;
+    private MockObject $account;
 
     private ParamPosCrypt $crypt;
 

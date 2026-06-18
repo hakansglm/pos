@@ -125,7 +125,7 @@ class Param3DHostPos extends AbstractGateway
     /**
      * @inheritDoc
      */
-    public function get3DFormData(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null, bool $createWithoutCard = false, ?string $formFormat = null)
+    public function get3DFormData(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null, bool $createWithoutCard = false, ?string $formFormat = null): array
     {
         $this->check3DFormInputs($paymentModel, $txType, $creditCard);
 

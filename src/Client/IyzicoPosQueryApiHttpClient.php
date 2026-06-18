@@ -89,7 +89,11 @@ class IyzicoPosQueryApiHttpClient extends AbstractIyzicoPosHttpClient
     protected function createRequest(string $url, EncodedData $content, string $txType, ?AbstractPosAccount $account = null): RequestInterface
     {
         if (!$account instanceof IyzicoPosAccount) {
-            throw new \InvalidArgumentException(\sprintf('Expected %s, got %s.', IyzicoPosAccount::class, null !== $account ? \get_class($account) : 'null'));
+            throw new \InvalidArgumentException(\sprintf(
+                'Expected %s, got %s.',
+                IyzicoPosAccount::class,
+                $account instanceof \Mews\Pos\Entity\Account\AbstractPosAccount ? \get_class($account) : 'null'
+            ));
         }
 
         $authStr = $this->createAuthorizationHeader($url, '', $account);

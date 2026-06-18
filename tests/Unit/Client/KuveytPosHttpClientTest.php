@@ -33,22 +33,25 @@ class KuveytPosHttpClientTest extends TestCase
     private KuveytPosHttpClient $client;
 
     /** @var LoggerInterface & MockObject */
-    private LoggerInterface $logger;
+    private MockObject $logger;
 
     /** @var RequestValueMapperInterface & MockObject */
-    private RequestValueMapperInterface $requestValueMapper;
+    private MockObject $requestValueMapper;
+
     /**
      * @var ClientInterface& MockObject
      */
-    private ClientInterface $psrClient;
+    private MockObject $psrClient;
+
     /**
      * @var RequestFactoryInterface& MockObject
      */
-    private RequestFactoryInterface $requestFactory;
+    private MockObject $requestFactory;
+
     /**
      * @var StreamFactoryInterface & MockObject
      */
-    private StreamFactoryInterface $streamFactory;
+    private MockObject $streamFactory;
 
     protected function setUp(): void
     {

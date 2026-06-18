@@ -32,10 +32,10 @@ class ToslaPosRequestDataMapperTest extends TestCase
     private CreditCardInterface $card;
 
     /** @var CryptInterface & MockObject */
-    private CryptInterface $crypt;
+    private MockObject $crypt;
 
     /** @var EventDispatcherInterface & MockObject */
-    private EventDispatcherInterface $dispatcher;
+    private MockObject $dispatcher;
 
     private ToslaPosRequestDataMapper $requestDataMapper;
 

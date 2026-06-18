@@ -31,19 +31,19 @@ class KuveytPosSoapApiHttpClientTest extends TestCase
     private KuveytPosSoapApiHttpClient $client;
 
     /** @var RequestValueMapperInterface&MockObject */
-    private RequestValueMapperInterface $requestValueMapper;
+    private MockObject $requestValueMapper;
 
     /** @var StreamFactoryInterface&MockObject */
-    private StreamFactoryInterface $streamFactory;
+    private MockObject $streamFactory;
 
     /** @var LoggerInterface&MockObject */
-    private LoggerInterface $logger;
+    private MockObject $logger;
 
     /** @var KuveytPosSoapApiHttpClient&MockObject */
-    private ClientInterface $psrClient;
+    private MockObject $psrClient;
 
     /** @var RequestFactoryInterface&MockObject */
-    private RequestFactoryInterface $requestFactory;
+    private MockObject $requestFactory;
 
     protected function setUp(): void
     {

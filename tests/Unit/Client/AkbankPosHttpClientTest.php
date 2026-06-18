@@ -35,28 +35,31 @@ class AkbankPosHttpClientTest extends TestCase
     private AkbankPosHttpClient $client;
 
     /** @var LoggerInterface & MockObject */
-    private LoggerInterface $logger;
+    private MockObject $logger;
 
     /** @var AbstractPosAccount & MockObject */
-    private AbstractPosAccount $account;
+    private MockObject $account;
 
     /** @var CryptInterface & MockObject */
-    private CryptInterface $crypt;
+    private MockObject $crypt;
 
     /** @var RequestValueMapperInterface & MockObject */
-    private RequestValueMapperInterface $requestValueMapper;
+    private MockObject $requestValueMapper;
+
     /**
      * @var ClientInterface& MockObject
      */
-    private ClientInterface $psrClient;
+    private MockObject $psrClient;
+
     /**
      * @var RequestFactoryInterface& MockObject
      */
-    private RequestFactoryInterface $requestFactory;
+    private MockObject $requestFactory;
+
     /**
      * @var StreamFactoryInterface & MockObject
      */
-    private StreamFactoryInterface $streamFactory;
+    private MockObject $streamFactory;
 
     protected function setUp(): void
     {

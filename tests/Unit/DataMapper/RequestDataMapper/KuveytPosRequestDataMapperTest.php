@@ -38,10 +38,10 @@ class KuveytPosRequestDataMapperTest extends TestCase
     private KuveytPosRequestDataMapper $requestDataMapper;
 
     /** @var CryptInterface & MockObject */
-    private CryptInterface $crypt;
+    private MockObject $crypt;
 
     /** @var EventDispatcherInterface & MockObject */
-    private EventDispatcherInterface $dispatcher;
+    private MockObject $dispatcher;
 
     private KuveytPosRequestValueFormatter $valueFormatter;
 

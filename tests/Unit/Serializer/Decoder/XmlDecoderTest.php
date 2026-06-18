@@ -43,7 +43,7 @@ class XmlDecoderTest extends TestCase
         $this->decoder->decode($input);
     }
 
-    public static function decodeBadDataProvider()
+    public static function decodeBadDataProvider(): array
     {
         return [
             'empty_string' => [

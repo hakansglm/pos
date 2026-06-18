@@ -35,10 +35,10 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
     private VakifKatilimPosRequestDataMapper $requestDataMapper;
 
     /** @var EventDispatcherInterface & MockObject */
-    private EventDispatcherInterface $dispatcher;
+    private MockObject $dispatcher;
 
     /** @var CryptInterface & MockObject */
-    private CryptInterface $crypt;
+    private MockObject $crypt;
 
     private VakifKatilimPosRequestValueFormatter $valueFormatter;
 

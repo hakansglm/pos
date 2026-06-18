@@ -26,7 +26,7 @@ class IyzicoPosResponseDataMapperTest extends TestCase
     private IyzicoPosResponseDataMapper $responseDataMapper;
 
     /** @var LoggerInterface&MockObject */
-    private LoggerInterface $loggerMock;
+    private MockObject $loggerMock;
 
     protected function setUp(): void
     {
@@ -111,6 +111,7 @@ class IyzicoPosResponseDataMapperTest extends TestCase
         if (null !== $rawPaymentData) {
             $this->assertSame($rawPaymentData, $actualData['all']);
         }
+
         unset($actualData['all']);
 
         $this->assertTransactionTime($expectedData, $actualData);
@@ -211,12 +212,14 @@ class IyzicoPosResponseDataMapperTest extends TestCase
                 if (!isset($expectedData['transactions'][$i][$timeField])) {
                     continue;
                 }
+
                 if ($expectedData['transactions'][$i][$timeField] instanceof \DateTimeImmutable) {
                     $this->assertInstanceOf(\DateTimeImmutable::class, $actualData['transactions'][$i][$timeField], $timeField);
                     $this->assertEquals($expectedData['transactions'][$i][$timeField], $actualData['transactions'][$i][$timeField]);
                 } else {
                     $this->assertSame($expectedData['transactions'][$i][$timeField], $actualData['transactions'][$i][$timeField]);
                 }
+
                 unset($actualData['transactions'][$i][$timeField], $expectedData['transactions'][$i][$timeField]);
             }
         }
@@ -835,12 +838,15 @@ class IyzicoPosResponseDataMapperTest extends TestCase
         if (isset($data['transaction_time']) && \is_array($data['transaction_time'])) {
             $data['transaction_time'] = self::arrayToDateTime($data['transaction_time']);
         }
+
         if (isset($data['capture_time']) && \is_array($data['capture_time'])) {
             $data['capture_time'] = self::arrayToDateTime($data['capture_time']);
         }
+
         if (isset($data['cancel_time']) && \is_array($data['cancel_time'])) {
             $data['cancel_time'] = self::arrayToDateTime($data['cancel_time']);
         }
+
         if (isset($data['refund_time']) && \is_array($data['refund_time'])) {
             $data['refund_time'] = self::arrayToDateTime($data['refund_time']);
         }

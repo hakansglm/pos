@@ -91,9 +91,11 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
         if (!isset($order['payment_channel'])) {
             throw new \InvalidArgumentException('payment_channel is required in $order');
         }
+
         if (!isset($order['billing_address'])) {
             throw new \InvalidArgumentException('billing_address is required in $order');
         }
+
         if (!isset($order['buyer'])) {
             throw new \InvalidArgumentException('buyer is required in $order');
         }

@@ -113,10 +113,8 @@ trait PaymentTestTrait
             'currency' => $lastResponse['currency'],
             'ip'       => '127.0.0.1',
         ];
-        if (\Mews\Pos\Gateways\IyzicoPos::class === $gatewayClass) {
-            if (isset($lastResponse['transaction_id'])) {
-                $statusOrder['transaction_id'] = $lastResponse['transaction_id'];
-            }
+        if (\Mews\Pos\Gateways\IyzicoPos::class === $gatewayClass && isset($lastResponse['transaction_id'])) {
+            $statusOrder['transaction_id'] = $lastResponse['transaction_id'];
         }
 
         if (\Mews\Pos\Gateways\KuveytPos::class === $gatewayClass) {

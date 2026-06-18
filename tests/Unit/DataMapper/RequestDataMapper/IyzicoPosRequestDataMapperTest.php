@@ -35,10 +35,10 @@ class IyzicoPosRequestDataMapperTest extends TestCase
     private IyzicoPosRequestDataMapper $requestDataMapper;
 
     /** @var CryptInterface & MockObject */
-    private CryptInterface $cryptMock;
+    private MockObject $cryptMock;
 
     /** @var EventDispatcherInterface & MockObject */
-    private EventDispatcherInterface $dispatcherMock;
+    private MockObject $dispatcherMock;
 
     /** @var array<string, mixed> */
     private array $order;

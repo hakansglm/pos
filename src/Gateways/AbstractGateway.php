@@ -220,9 +220,11 @@ abstract class AbstractGateway implements PosInterface
         if (PosInterface::MODEL_3D_SECURE === $paymentModel) {
             return $this->make3DPayment($gatewayResponseData, $order, $txType, $creditCard);
         }
+
         if (PosInterface::MODEL_3D_PAY === $paymentModel || PosInterface::MODEL_3D_PAY_HOSTING === $paymentModel) {
             return $this->make3DPayPayment($gatewayResponseData, $order, $txType);
         }
+
         if (PosInterface::MODEL_3D_HOST === $paymentModel) {
             return $this->make3DHostPayment($gatewayResponseData, $order, $txType);
         }
@@ -782,6 +784,7 @@ abstract class AbstractGateway implements PosInterface
         if (null === $withCard) {
             return $supportedPaymentModels;
         }
+
         if ($withCard) {
             return \array_intersect($supportedPaymentModels, self::$paymentModelsWithCard);
         }

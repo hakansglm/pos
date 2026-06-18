@@ -30,10 +30,10 @@ class Param3DHostPosRequestDataMapperTest extends TestCase
     private ParamPosAccount $account;
 
     /** @var CryptInterface & MockObject */
-    private CryptInterface $crypt;
+    private MockObject $crypt;
 
     /** @var EventDispatcherInterface & MockObject */
-    private EventDispatcherInterface $dispatcher;
+    private MockObject $dispatcher;
 
     private ParamPosRequestValueFormatter $valueFormatter;
 
@@ -139,7 +139,7 @@ class Param3DHostPosRequestDataMapperTest extends TestCase
         string  $txType,
         ?string $gatewayURL,
         array   $extraData,
-        $expected
+        array $expected
     ): void {
         $this->crypt->expects(self::never())
             ->method('create3DHash');

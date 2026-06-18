@@ -37,10 +37,10 @@ class PayForPosRequestDataMapperTest extends TestCase
     private PayForPosRequestDataMapper $requestDataMapper;
 
     /** @var CryptInterface & MockObject */
-    private CryptInterface $crypt;
+    private MockObject $crypt;
 
     /** @var EventDispatcherInterface & MockObject */
-    private EventDispatcherInterface $dispatcher;
+    private MockObject $dispatcher;
 
     private PayForPosRequestValueFormatter $valueFormatter;
 

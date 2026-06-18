@@ -445,6 +445,7 @@ class IyzicoPosResponseDataMapper extends AbstractResponseDataMapper
         } else {
             $txStatus = self::TX_APPROVED;
         }
+
         $transaction['transaction_id'] = $rawTx['transactionId'] ?? null;
         $transaction['auth_code']      = $rawTx['authCode'] ?? null;
         $transaction['ref_ret_num']    = $rawTx['hostReference'] ?? null;
@@ -468,14 +469,12 @@ class IyzicoPosResponseDataMapper extends AbstractResponseDataMapper
 
         if (self::TX_DECLINED === $txStatus) {
             $transaction['order_status'] = PosInterface::PAYMENT_STATUS_ERROR;
-        } else {
-            if ($transaction['transaction_type'] === PosInterface::TX_TYPE_PAY_AUTH) {
-                $transaction['order_status'] = PosInterface::PAYMENT_STATUS_PAYMENT_COMPLETED;
-            } elseif ($transaction['transaction_type'] === PosInterface::TX_TYPE_CANCEL) {
-                $transaction['order_status'] = PosInterface::PAYMENT_STATUS_CANCELED;
-            } elseif ($transaction['transaction_type'] === PosInterface::TX_TYPE_REFUND) {
-                $transaction['order_status'] = PosInterface::PAYMENT_STATUS_FULLY_REFUNDED;
-            }
+        } elseif ($transaction['transaction_type'] === PosInterface::TX_TYPE_PAY_AUTH) {
+            $transaction['order_status'] = PosInterface::PAYMENT_STATUS_PAYMENT_COMPLETED;
+        } elseif ($transaction['transaction_type'] === PosInterface::TX_TYPE_CANCEL) {
+            $transaction['order_status'] = PosInterface::PAYMENT_STATUS_CANCELED;
+        } elseif ($transaction['transaction_type'] === PosInterface::TX_TYPE_REFUND) {
+            $transaction['order_status'] = PosInterface::PAYMENT_STATUS_FULLY_REFUNDED;
         }
 
         return $transaction;

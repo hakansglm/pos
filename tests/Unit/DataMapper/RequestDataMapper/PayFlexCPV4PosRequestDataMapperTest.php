@@ -34,10 +34,10 @@ class PayFlexCPV4PosRequestDataMapperTest extends TestCase
     private PayFlexCPV4PosRequestDataMapper $requestDataMapper;
 
     /** @var EventDispatcherInterface & MockObject */
-    private EventDispatcherInterface $dispatcher;
+    private MockObject $dispatcher;
 
     /** @var CryptInterface & MockObject */
-    private CryptInterface $crypt;
+    private MockObject $crypt;
 
     private PayFlexCPV4PosRequestValueFormatter $valueFormatter;
 

@@ -34,10 +34,10 @@ class ParamPosRequestDataMapperTest extends TestCase
     private static CreditCardInterface $card;
 
     /** @var CryptInterface & MockObject */
-    private CryptInterface $crypt;
+    private MockObject $crypt;
 
     /** @var EventDispatcherInterface & MockObject */
-    private EventDispatcherInterface $dispatcher;
+    private MockObject $dispatcher;
 
     private ParamPosRequestValueFormatter $valueFormatter;
 

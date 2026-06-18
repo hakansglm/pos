@@ -34,25 +34,27 @@ class InterPosHttpClientTest extends TestCase
     private InterPosHttpClient $client;
 
     /** @var LoggerInterface & MockObject */
-    private LoggerInterface $logger;
+    private MockObject $logger;
 
     /**
      * @var ClientInterface&MockObject
      */
-    private ClientInterface $psrClient;
+    private MockObject $psrClient;
+
     /**
      * @var RequestFactoryInterface& MockObject
      */
-    private RequestFactoryInterface $requestFactory;
+    private MockObject $requestFactory;
+
     /**
      * @var StreamFactoryInterface & MockObject
      */
-    private StreamFactoryInterface $streamFactory;
+    private MockObject $streamFactory;
 
     /**
      * @var RequestValueMapperInterface&MockObject
      */
-    private RequestValueMapperInterface $requestValueMapper;
+    private MockObject $requestValueMapper;
 
     protected function setUp(): void
     {

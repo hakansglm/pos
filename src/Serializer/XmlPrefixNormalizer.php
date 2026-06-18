@@ -66,6 +66,7 @@ class XmlPrefixNormalizer implements NormalizerInterface
             if (\is_array($value)) {
                 $value = $this->addPrefix($value, $prefix);
             }
+
             $normalized[$prefix.':'.$key] = $value;
         }
 

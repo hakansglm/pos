@@ -11,11 +11,6 @@ return RectorConfig::configure()
         __DIR__.'/src',
         __DIR__.'/tests',
     ])
-    ->withSkip([
-        \Rector\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector::class => [
-            __DIR__.'/src/Exceptions',
-        ],
-    ])
     ->withSets([
         LevelSetList::UP_TO_PHP_74,
     ])
@@ -32,13 +27,14 @@ return RectorConfig::configure()
 
         \Rector\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarReturnsRector::class,
         \Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictParamRector::class,
+        \Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector::class,
     ])
     ->withPreparedSets(
         true,
         true,
         true,
         true,
-        true,
+        false,
         true,
         true,
         true,

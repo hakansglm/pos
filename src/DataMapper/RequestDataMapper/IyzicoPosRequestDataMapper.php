@@ -117,6 +117,7 @@ class IyzicoPosRequestDataMapper extends AbstractRequestDataMapper
         if (isset($order['transaction_id'])) {
             $data['paymentId'] = (string) $order['transaction_id'];
         }
+
         if (isset($order['id'])) {
             $data['paymentConversationId'] = (string) $order['id'];
             $data['conversationId'] = (string) $order['id'];
@@ -167,6 +168,7 @@ class IyzicoPosRequestDataMapper extends AbstractRequestDataMapper
         if (isset($order['transaction_id'])) {
             $data['paymentId'] = (string) $order['transaction_id'];
         }
+
         if (isset($order['id'])) {
             $data['paymentConversationId'] = (string) $order['id'];
             $data['conversationId'] = (string) $order['id'];

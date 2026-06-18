@@ -36,10 +36,10 @@ class GarantiPosRequestDataMapperTest extends TestCase
     private GarantiPosRequestDataMapper $requestDataMapper;
 
     /** @var EventDispatcherInterface & MockObject */
-    private EventDispatcherInterface $dispatcher;
+    private MockObject $dispatcher;
 
     /** @var CryptInterface & MockObject */
-    private CryptInterface $crypt;
+    private MockObject $crypt;
 
     private GarantiPosRequestValueFormatter $valueFormatter;
 

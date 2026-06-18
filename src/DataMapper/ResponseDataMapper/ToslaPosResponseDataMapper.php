@@ -37,7 +37,6 @@ class ToslaPosResponseDataMapper extends AbstractResponseDataMapper
         }
 
         $procReturnCode = $this->getProcReturnCode($rawPaymentResponseData);
-        $errorCode      = $rawPaymentResponseData['Code'];
         $status         = self::TX_DECLINED;
         if (self::PROCEDURE_SUCCESS_CODE === $procReturnCode) {
             $status = self::TX_APPROVED;

@@ -189,6 +189,7 @@ abstract class AbstractHttpClient implements HttpClientInterface
 
                 throw $notEncodableValueException;
             }
+
             $this->checkFailResponseData($txType, $response, $decodedData, $order);
 
             return $decodedData;

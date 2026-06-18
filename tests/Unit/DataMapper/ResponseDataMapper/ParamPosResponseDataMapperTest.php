@@ -31,7 +31,7 @@ class ParamPosResponseDataMapperTest extends TestCase
     private ParamPosResponseValueMapper $responseValueMapper;
 
     /** @var LoggerInterface&MockObject */
-    private LoggerInterface $logger;
+    private MockObject $logger;
 
     protected function setUp(): void
     {

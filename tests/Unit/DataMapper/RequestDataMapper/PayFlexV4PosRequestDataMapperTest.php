@@ -34,10 +34,10 @@ class PayFlexV4PosRequestDataMapperTest extends TestCase
     private PayFlexV4PosRequestDataMapper $requestDataMapper;
 
     /** @var CryptInterface & MockObject */
-    private CryptInterface $crypt;
+    private MockObject $crypt;
 
     /** @var EventDispatcherInterface & MockObject */
-    private EventDispatcherInterface $dispatcher;
+    private MockObject $dispatcher;
 
     private PayFlexV4PosRequestValueFormatter $valueFormatter;
 
@@ -117,8 +117,7 @@ class PayFlexV4PosRequestDataMapperTest extends TestCase
             $this->account,
             ['amount' => 100, 'currency' => 'TRY'],
             PosInterface::MODEL_3D_SECURE,
-            PosInterface::TX_TYPE_PAY_AUTH,
-            null
+            PosInterface::TX_TYPE_PAY_AUTH
         );
     }
 

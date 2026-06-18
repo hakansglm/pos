@@ -66,7 +66,7 @@ class Param3DHostPosTest extends TestCase
     private MockObject $eventDispatcherMock;
 
     /** @var ParamPosRequestValueMapper & MockObject */
-    private ParamPosRequestValueMapper $requestValueMapperMock;
+    private MockObject $requestValueMapperMock;
 
     protected function setUp(): void
     {
@@ -394,9 +394,7 @@ class Param3DHostPosTest extends TestCase
             ->with(
                 $txType,
                 $paymentModel,
-                $this->callback(function (array $requestData) {
-                    return $requestData['test-update-request-data-with-event'] === true;
-                }),
+                $this->callback(fn (array $requestData): bool => $requestData['test-update-request-data-with-event'] === true),
                 $order,
                 $apiUrl,
                 $account

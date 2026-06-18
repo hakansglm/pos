@@ -35,10 +35,10 @@ class PosNetV1PosRequestDataMapperTest extends TestCase
     private PosNetPosAccount $account;
 
     /** @var EventDispatcherInterface & MockObject */
-    private EventDispatcherInterface $dispatcher;
+    private MockObject $dispatcher;
 
     /** @var CryptInterface & MockObject */
-    private CryptInterface $crypt;
+    private MockObject $crypt;
 
     private PosNetV1PosRequestValueFormatter $valueFormatter;
 

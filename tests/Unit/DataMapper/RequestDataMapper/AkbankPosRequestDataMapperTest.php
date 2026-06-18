@@ -36,13 +36,13 @@ class AkbankPosRequestDataMapperTest extends TestCase
     private CreditCardInterface $card;
 
     /** @var CryptInterface & MockObject */
-    private CryptInterface $crypt;
+    private MockObject $crypt;
 
     private AkbankPosRequestDataMapper $requestDataMapper;
 
     private array $order;
 
-    private EventDispatcherInterface $dispatcher;
+    private MockObject $dispatcher;
 
     private AkbankPosRequestValueFormatter $valueFormatter;
 

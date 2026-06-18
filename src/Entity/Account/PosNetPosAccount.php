@@ -11,16 +11,6 @@ namespace Mews\Pos\Entity\Account;
  */
 class PosNetPosAccount extends AbstractPosAccount
 {
-    public function __construct(
-        string  $bankName,
-        string  $clientId,
-        string  $posNetId,
-        string  $terminalId,
-        ?string $storeKey = null
-    ) {
-        parent::__construct($bankName, $clientId, $posNetId, $terminalId, $storeKey);
-    }
-
     /**
      * @return string
      */

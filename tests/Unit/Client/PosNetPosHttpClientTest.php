@@ -32,26 +32,27 @@ class PosNetPosHttpClientTest extends TestCase
     private PosNetPosHttpClient $client;
 
     /** @var LoggerInterface & MockObject */
-    private LoggerInterface $logger;
+    private MockObject $logger;
 
     /**
      * @var ClientInterface&MockObject
      */
-    private ClientInterface $psrClient;
+    private MockObject $psrClient;
+
     /**
      * @var RequestFactoryInterface& MockObject
      */
-    private RequestFactoryInterface $requestFactory;
+    private MockObject $requestFactory;
 
     /**
      * @var RequestValueMapperInterface & MockObject
      */
-    private RequestValueMapperInterface $requestValueMapper;
+    private MockObject $requestValueMapper;
 
     /**
      * @var StreamFactoryInterface&MockObject
      */
-    private StreamFactoryInterface $streamFactory;
+    private MockObject $streamFactory;
 
     protected function setUp(): void
     {

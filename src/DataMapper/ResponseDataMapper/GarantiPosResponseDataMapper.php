@@ -478,7 +478,7 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
      *
      * @return array<string, mixed>
      */
-    private function mapPaymentResponseCommon(string $txType, string $paymentModel, array $rawPaymentResponseData)
+    private function mapPaymentResponseCommon(string $txType, string $paymentModel, array $rawPaymentResponseData): array
     {
         /** @var PaymentStatusModel $rawPaymentResponseData */
         $rawPaymentResponseData = $this->emptyStringsToNull($rawPaymentResponseData);

@@ -38,7 +38,7 @@ class IyzicoPosResponseValueMapperTest extends TestCase
     /**
      * @dataProvider mapTxTypeDataProvider
      */
-    public function testMapTxType($txType, ?string $expected): void
+    public function testMapTxType(string $txType, ?string $expected): void
     {
         $this->assertSame($expected, $this->mapper->mapTxType($txType));
     }
@@ -46,7 +46,7 @@ class IyzicoPosResponseValueMapperTest extends TestCase
     /**
      * @dataProvider mapOrderStatusDataProvider
      */
-    public function testMapOrderStatus($orderStatus, ?string $requestTxType, $expected): void
+    public function testMapOrderStatus(string $orderStatus, ?string $requestTxType, string $expected): void
     {
         $this->assertSame($expected, $this->mapper->mapOrderStatus($orderStatus, $requestTxType));
     }
@@ -54,7 +54,7 @@ class IyzicoPosResponseValueMapperTest extends TestCase
     /**
      * @dataProvider mapSecureTypeDataProvider
      */
-    public function testMapSecureType($securityType, ?string $expected): void
+    public function testMapSecureType(?int $securityType, ?string $expected): void
     {
         $this->assertSame($expected, $this->mapper->mapSecureType($securityType));
     }

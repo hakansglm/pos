@@ -26,13 +26,13 @@ class PosNetV1PosResponseDataMapperTest extends TestCase
     private PosNetV1PosResponseDataMapper $responseDataMapper;
 
     /** @var LoggerInterface&MockObject */
-    private LoggerInterface $logger;
+    private MockObject $logger;
 
     /** @var ResponseValueFormatterInterface & MockObject */
-    private ResponseValueFormatterInterface $responseValueFormatter;
+    private MockObject $responseValueFormatter;
 
     /** @var ResponseValueMapperInterface & MockObject */
-    private ResponseValueMapperInterface $responseValueMapper;
+    private MockObject $responseValueMapper;
 
     protected function setUp(): void
     {

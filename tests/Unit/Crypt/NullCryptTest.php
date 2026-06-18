@@ -22,7 +22,7 @@ class NullCryptTest extends TestCase
     private NullCrypt $crypt;
 
     /** @var AbstractPosAccount & MockObject */
-    private AbstractPosAccount $account;
+    private MockObject $account;
 
     protected function setUp(): void
     {

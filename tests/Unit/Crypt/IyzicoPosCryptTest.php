@@ -65,7 +65,7 @@ class IyzicoPosCryptTest extends TestCase
     public function testHashStringRequiresKey(): void
     {
         $this->expectException(\LogicException::class);
-        $this->crypt->hashString('data', null);
+        $this->crypt->hashString('data');
     }
 
     /**

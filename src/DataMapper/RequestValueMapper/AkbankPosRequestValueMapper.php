@@ -72,6 +72,7 @@ class AkbankPosRequestValueMapper extends AbstractRequestValueMapper
         PosInterface::LANG_TR => 'TR',
         PosInterface::LANG_EN => 'EN',
     ];
+
     /**
      * @inheritDoc
      */

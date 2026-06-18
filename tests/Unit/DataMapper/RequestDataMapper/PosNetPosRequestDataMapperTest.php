@@ -37,10 +37,10 @@ class PosNetPosRequestDataMapperTest extends TestCase
     private PosNetPosAccount $account;
 
     /** @var EventDispatcherInterface & MockObject */
-    private EventDispatcherInterface $dispatcher;
+    private MockObject $dispatcher;
 
     /** @var CryptInterface & MockObject */
-    private CryptInterface $crypt;
+    private MockObject $crypt;
 
     private PosNetPosRequestValueFormatter $valueFormatter;
 
@@ -169,8 +169,7 @@ class PosNetPosRequestDataMapperTest extends TestCase
             $this->account,
             $this->order,
             PosInterface::MODEL_3D_SECURE,
-            PosInterface::TX_TYPE_PAY_AUTH,
-            null
+            PosInterface::TX_TYPE_PAY_AUTH
         );
     }
 
