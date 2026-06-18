@@ -29,8 +29,13 @@ return RectorConfig::configure()
         \Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchExprVariableRector::class,
 
         \Rector\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarReturnsRector::class,
+        \Rector\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRector::class,
         \Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictParamRector::class,
         \Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector::class,
+
+        \Rector\CodeQuality\Rector\CallLike\AddNameToBooleanArgumentRector::class,
+        \Rector\CodeQuality\Rector\CallLike\AddNameToNullArgumentRector::class,
+        \Rector\DeadCode\Rector\MethodCall\RemoveNullNamedArgOnNullDefaultParamRector::class,
     ])
     ->withPreparedSets(
         true,

@@ -266,7 +266,7 @@ class PosNetV1PosResponseDataMapper extends AbstractResponseDataMapper
         $transactionSecurity = 'MPI fallback';
         if ('1' === $mdStatus) {
             $transactionSecurity = 'Full 3D Secure';
-        } elseif (in_array($mdStatus, ['2', '3', '4'])) {
+        } elseif (in_array($mdStatus, ['2', '3', '4'], true)) {
             $transactionSecurity = 'Half 3D Secure';
         }
 

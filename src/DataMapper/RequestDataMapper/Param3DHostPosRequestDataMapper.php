@@ -164,6 +164,7 @@ class Param3DHostPosRequestDataMapper extends AbstractRequestDataMapper
         if (null === $extraData) {
             throw new \InvalidArgumentException('$extraData can not be null');
         }
+
         if (PosInterface::MODEL_3D_HOST !== $paymentModel) {
             throw new \InvalidArgumentException();
         }

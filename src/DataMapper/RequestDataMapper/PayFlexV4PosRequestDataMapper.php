@@ -274,6 +274,7 @@ class PayFlexV4PosRequestDataMapper extends AbstractRequestDataMapper
         if (null === $extraData) {
             throw new \InvalidArgumentException('$extraData can not be null');
         }
+
         $inputs = [
             'PaReq'   => $extraData['PaReq'],
             'TermUrl' => $extraData['TermUrl'],
