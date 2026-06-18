@@ -263,28 +263,23 @@ class VakifKatilimPosResponseDataMapperTest extends TestCase
     {
         $txType = PosInterface::TX_TYPE_STATUS;
         if ($this->responseDataMapper::TX_APPROVED === $expectedData['status']) {
-            $amountMatcher = $this->atLeastOnce();
+            $amountCallCount = 0;
             $orderContract = $responseData['VPosOrderData']['OrderContract'];
-            $this->responseValueFormatterMock->expects($amountMatcher)
+            $this->responseValueFormatterMock->expects($this->atLeastOnce())
                 ->method('formatAmount')
-                ->with($this->callback(function ($amount) use ($amountMatcher, $orderContract): bool {
-                    if ($amountMatcher->getInvocationCount() === 1) {
-                        return $amount === $orderContract['FirstAmount'];
-                    }
-
-                    if ($amountMatcher->getInvocationCount() === 2) {
-                        return $amount === $orderContract['TranAmount'];
-                    }
-
-                    return false;
-                }), $txType)
                 ->willReturnCallback(
-                    function () use ($amountMatcher, $expectedData) {
-                        if ($amountMatcher->getInvocationCount() === 1) {
+                    function ($amount, $txTypeArg) use (&$amountCallCount, $orderContract, $expectedData, $txType) {
+                        $amountCallCount++;
+                        $this->assertSame($txType, $txTypeArg);
+                        if ($amountCallCount === 1) {
+                            $this->assertSame($orderContract['FirstAmount'], $amount);
+
                             return $expectedData['first_amount'];
                         }
 
-                        if ($amountMatcher->getInvocationCount() === 2) {
+                        if ($amountCallCount === 2) {
+                            $this->assertSame($orderContract['TranAmount'], $amount);
+
                             return $expectedData['capture_amount'];
                         }
 
@@ -292,28 +287,24 @@ class VakifKatilimPosResponseDataMapperTest extends TestCase
                     }
                 );
 
-            $statusMatcher = $this->atLeastOnce();
-            $this->responseValueMapperMock->expects($statusMatcher)
+            $statusCallCount = 0;
+            $this->responseValueMapperMock->expects($this->atLeastOnce())
                 ->method('mapOrderStatus')
-                ->with($this->callback(function ($amount) use ($statusMatcher, $orderContract): bool {
-                    if ($statusMatcher->getInvocationCount() === 1) {
-                        return $amount === ($orderContract['LastOrderStatus']
-                                ?? $orderContract['LastOrderStatusDescription']);
-                    }
-
-                    if ($statusMatcher->getInvocationCount() === 2) {
-                        return $amount === $orderContract['OrderStatus'];
-                    }
-
-                    return false;
-                }))
                 ->willReturnCallback(
-                    function () use ($statusMatcher, $expectedData, $orderContract) {
-                        if ($statusMatcher->getInvocationCount() === 1) {
+                    function ($status) use (&$statusCallCount, $orderContract, $expectedData) {
+                        $statusCallCount++;
+                        if ($statusCallCount === 1) {
+                            $this->assertSame(
+                                $orderContract['LastOrderStatus'] ?? $orderContract['LastOrderStatusDescription'],
+                                $status
+                            );
+
                             return $expectedData['order_status'];
                         }
 
-                        if ($statusMatcher->getInvocationCount() === 2) {
+                        if ($statusCallCount === 2) {
+                            $this->assertSame($orderContract['OrderStatus'], $status);
+
                             return $this->responseValueMapper->mapOrderStatus($orderContract['OrderStatus']);
                         }
 

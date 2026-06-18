@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit
-        bootstrap="tests/bootstrap.php"
-        backupGlobals="false"
-        backupStaticAttributes="false"
-        colors="true"
-        convertErrorsToExceptions="true"
-        convertNoticesToExceptions="true"
-        convertWarningsToExceptions="true"
-        processIsolation="false"
-        cacheResultFile="./var/.phpunit.result.cache"
-        stopOnFailure="false">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         backupGlobals="false"
+         backupStaticProperties="false"
+         colors="true"
+         processIsolation="false"
+         cacheDirectory="./var/.phpunit.cache"
+         stopOnFailure="false">
 
     <testsuites>
         <testsuite name="unit">
@@ -20,9 +18,7 @@
         </testsuite>
     </testsuites>
 
-    <coverage cacheDirectory="var/coverage-cache"
-              includeUncoveredFiles="true"
-              processUncoveredFiles="true"
+    <coverage includeUncoveredFiles="true"
               pathCoverage="false"
               ignoreDeprecatedCodeUnits="true"
               disableCodeCoverageIgnore="true">
@@ -31,8 +27,11 @@
             <xml outputDirectory="var/coverage-report-xml"/>
             <text outputFile="php://stdout" showOnlySummary="true"/>
         </report>
+    </coverage>
+
+    <source>
         <include>
             <directory>src</directory>
         </include>
-    </coverage>
+    </source>
 </phpunit>

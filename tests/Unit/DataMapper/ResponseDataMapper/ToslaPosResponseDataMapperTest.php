@@ -196,27 +196,22 @@ class ToslaPosResponseDataMapperTest extends TestCase
                 ->with($responseData['Currency'], $txType)
                 ->willReturn($expectedData['currency']);
 
-            $amountMatcher = $this->atLeastOnce();
-            $this->responseValueFormatter->expects($amountMatcher)
+            $amountCallCount = 0;
+            $this->responseValueFormatter->expects($this->atLeastOnce())
                 ->method('formatAmount')
-                ->with($this->callback(function ($amount) use ($amountMatcher, $responseData): bool {
-                    if ($amountMatcher->getInvocationCount() === 1) {
-                        return $amount === $responseData['Amount'];
-                    }
-
-                    if ($amountMatcher->getInvocationCount() === 2) {
-                        return $amount === $responseData['RefundedAmount'];
-                    }
-
-                    return false;
-                }), $txType)
                 ->willReturnCallback(
-                    function () use ($amountMatcher, $expectedData) {
-                        if ($amountMatcher->getInvocationCount() === 1) {
+                    function ($amount, $txTypeArg) use (&$amountCallCount, $responseData, $expectedData, $txType) {
+                        $amountCallCount++;
+                        $this->assertSame($txType, $txTypeArg);
+                        if ($amountCallCount === 1) {
+                            $this->assertSame($responseData['Amount'], $amount);
+
                             return $expectedData['first_amount'];
                         }
 
-                        if ($amountMatcher->getInvocationCount() === 2) {
+                        if ($amountCallCount === 2) {
+                            $this->assertSame($responseData['RefundedAmount'], $amount);
+
                             return $expectedData['refund_amount'];
                         }
 

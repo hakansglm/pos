@@ -209,27 +209,22 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 ->with($orderContract['InstallmentCount'], $txType)
                 ->willReturn($expectedData['installment_count']);
 
-            $dateTimeMatcher = $this->atLeastOnce();
-            $this->responseValueFormatter->expects($dateTimeMatcher)
+            $dateTimeCallCount = 0;
+            $this->responseValueFormatter->expects($this->atLeastOnce())
                 ->method('formatDateTime')
-                ->with($this->callback(function ($dateTime) use ($dateTimeMatcher, $orderContract): bool {
-                    if ($dateTimeMatcher->getInvocationCount() === 1) {
-                        return $dateTime === $orderContract['OrderDate'];
-                    }
-
-                    if ($dateTimeMatcher->getInvocationCount() === 2) {
-                        return $dateTime === $orderContract['UpdateSystemDate'];
-                    }
-
-                    return false;
-                }), $txType)
                 ->willReturnCallback(
-                    function () use ($dateTimeMatcher, $expectedData) {
-                        if ($dateTimeMatcher->getInvocationCount() === 1) {
+                    function ($dateTime, $txTypeArg) use (&$dateTimeCallCount, $orderContract, $expectedData, $txType) {
+                        $dateTimeCallCount++;
+                        $this->assertSame($txType, $txTypeArg);
+                        if ($dateTimeCallCount === 1) {
+                            $this->assertSame($orderContract['OrderDate'], $dateTime);
+
                             return $expectedData['transaction_time'];
                         }
 
-                        if ($dateTimeMatcher->getInvocationCount() === 2) {
+                        if ($dateTimeCallCount === 2) {
+                            $this->assertSame($orderContract['UpdateSystemDate'], $dateTime);
+
                             return $expectedData['capture_time'] ?? $expectedData['cancel_time'] ?? $expectedData['refund_time'];
                         }
 
@@ -268,40 +263,38 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 ->with($threeDResponseData['VPosMessage']['TransactionSecurity'], $txType)
                 ->willReturn($expectedData['payment_model']);
 
-            $amountMatcher = $this->atLeastOnce();
-            $this->responseValueFormatter->expects($amountMatcher)
+            $amountCallCount = 0;
+            $this->responseValueFormatter->expects($this->atLeastOnce())
                 ->method('formatAmount')
-                ->with($this->callback(function ($amount) use ($amountMatcher, $threeDResponseData, $paymentResponse): bool {
-                    if ($amountMatcher->getInvocationCount() === 1) {
-                        return $amount === $threeDResponseData['VPosMessage']['Amount'];
-                    }
-
-                    if ($amountMatcher->getInvocationCount() === 2) {
-                        return $amount === $paymentResponse['VPosMessage']['Amount'];
-                    }
-
-                    return false;
-                }), $txType)
                 ->willReturnCallback(
-                    fn () => $expectedData['amount']
+                    function ($amount, $txTypeArg) use (&$amountCallCount, $threeDResponseData, $paymentResponse, $expectedData, $txType) {
+                        $amountCallCount++;
+                        $this->assertSame($txType, $txTypeArg);
+                        if ($amountCallCount === 1) {
+                            $this->assertSame($threeDResponseData['VPosMessage']['Amount'], $amount);
+                        } elseif ($amountCallCount === 2) {
+                            $this->assertSame($paymentResponse['VPosMessage']['Amount'], $amount);
+                        }
+
+                        return $expectedData['amount'];
+                    }
                 );
 
-            $currencyMatcher = $this->atLeastOnce();
-            $this->responseValueMapper->expects($currencyMatcher)
+            $currencyCallCount = 0;
+            $this->responseValueMapper->expects($this->atLeastOnce())
                 ->method('mapCurrency')
-                ->with($this->callback(function ($amount) use ($currencyMatcher, $threeDResponseData, $paymentResponse): bool {
-                    if ($currencyMatcher->getInvocationCount() === 1) {
-                        return $amount === $threeDResponseData['VPosMessage']['CurrencyCode'];
-                    }
-
-                    if ($currencyMatcher->getInvocationCount() === 2) {
-                        return $amount === $paymentResponse['VPosMessage']['CurrencyCode'];
-                    }
-
-                    return false;
-                }), $txType)
                 ->willReturnCallback(
-                    fn () => $expectedData['currency']
+                    function ($currency, $txTypeArg) use (&$currencyCallCount, $threeDResponseData, $paymentResponse, $expectedData, $txType) {
+                        $currencyCallCount++;
+                        $this->assertSame($txType, $txTypeArg);
+                        if ($currencyCallCount === 1) {
+                            $this->assertSame($threeDResponseData['VPosMessage']['CurrencyCode'], $currency);
+                        } elseif ($currencyCallCount === 2) {
+                            $this->assertSame($paymentResponse['VPosMessage']['CurrencyCode'], $currency);
+                        }
+
+                        return $expectedData['currency'];
+                    }
                 );
 
             if ($expectedData['status'] === ResponseDataMapperInterface::TX_APPROVED) {

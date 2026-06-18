@@ -267,28 +267,23 @@ class AssecoPosResponseDataMapperTest extends TestCase
     public function testMapStatusResponse(array $responseData, array $expectedData): void
     {
         if (ResponseDataMapperInterface::TX_APPROVED === $expectedData['status']) {
-            $amountMatcher = $this->exactly($responseData['Extra']['CAPTURE_AMT'] ? 2 : 1);
             $txType = PosInterface::TX_TYPE_STATUS;
-            $this->responseValueFormatter->expects($amountMatcher)
+            $amountCallCount = 0;
+            $this->responseValueFormatter->expects($this->exactly($responseData['Extra']['CAPTURE_AMT'] ? 2 : 1))
                 ->method('formatAmount')
-                ->with($this->callback(function ($amount) use ($amountMatcher, $responseData): bool {
-                    if ($amountMatcher->getInvocationCount() === 1) {
-                        return $amount === $responseData['Extra']['ORIG_TRANS_AMT'];
-                    }
-
-                    if ($amountMatcher->getInvocationCount() === 2) {
-                        return $amount === $responseData['Extra']['CAPTURE_AMT'];
-                    }
-
-                    return false;
-                }), $txType)
                 ->willReturnCallback(
-                    function () use ($amountMatcher, $expectedData) {
-                        if ($amountMatcher->getInvocationCount() === 1) {
+                    function ($amount, $txTypeArg) use (&$amountCallCount, $responseData, $expectedData, $txType) {
+                        $amountCallCount++;
+                        $this->assertSame($txType, $txTypeArg);
+                        if ($amountCallCount === 1) {
+                            $this->assertSame($responseData['Extra']['ORIG_TRANS_AMT'], $amount);
+
                             return $expectedData['first_amount'];
                         }
 
-                        if ($amountMatcher->getInvocationCount() === 2) {
+                        if ($amountCallCount === 2) {
+                            $this->assertSame($responseData['Extra']['CAPTURE_AMT'], $amount);
+
                             return $expectedData['capture_amount'];
                         }
 
@@ -306,9 +301,9 @@ class AssecoPosResponseDataMapperTest extends TestCase
                 ->with($responseData['Extra']['TRANS_STAT'])
                 ->willReturn($expectedData['order_status']);
 
-            $dateTimeMatcher = $this->atLeastOnce();
-            $dates           = ['AUTH_DTTM', 'CAPTURE_DTTM', 'VOID_DTTM'];
-            $this->responseValueFormatter->expects($dateTimeMatcher)
+            $dateCallCount = 0;
+            $dates         = ['AUTH_DTTM', 'CAPTURE_DTTM', 'VOID_DTTM'];
+            $this->responseValueFormatter->expects($this->atLeastOnce())
                 ->method('formatDateTime')
                 ->with($this->callback(function ($dateTime) use (&$dates, $responseData): bool {
                     if (isset($responseData['Extra'][$dates[0]])) {
@@ -321,16 +316,17 @@ class AssecoPosResponseDataMapperTest extends TestCase
                     return false;
                 }), $txType)
                 ->willReturnCallback(
-                    function () use ($dateTimeMatcher, $expectedData) {
-                        if ($dateTimeMatcher->getInvocationCount() === 1) {
+                    function () use (&$dateCallCount, $expectedData) {
+                        $dateCallCount++;
+                        if ($dateCallCount === 1) {
                             return $expectedData['transaction_time'];
                         }
 
-                        if ($dateTimeMatcher->getInvocationCount() === 2) {
+                        if ($dateCallCount === 2) {
                             return $expectedData['capture_time'];
                         }
 
-                        if ($dateTimeMatcher->getInvocationCount() === 3) {
+                        if ($dateCallCount === 3) {
                             return $expectedData['cancel_time'];
                         }
 

@@ -294,27 +294,22 @@ class PayForPosResponseDataMapperTest extends TestCase
                 ->with($responseData['PurchAmount'], $txType)
                 ->willReturn($expectedData['first_amount']);
 
-            $dateTimeMatcher = $this->atLeastOnce();
-            $this->responseValueFormatter->expects($dateTimeMatcher)
+            $dateTimeCallCount = 0;
+            $this->responseValueFormatter->expects($this->atLeastOnce())
                 ->method('formatDateTime')
-                ->with($this->callback(function ($dateTime) use ($dateTimeMatcher, $responseData): bool {
-                    if ($dateTimeMatcher->getInvocationCount() === 1) {
-                        return $dateTime === $responseData['InsertDatetime'];
-                    }
-
-                    if ($responseData['VoidDate'] > 0) {
-                        return $dateTime === $responseData['VoidDate'].'T'.$responseData['VoidTime'];
-                    }
-
-                    return false;
-                }), $txType)
                 ->willReturnCallback(
-                    function () use ($dateTimeMatcher, $expectedData) {
-                        if ($dateTimeMatcher->getInvocationCount() === 1) {
+                    function ($dateTime, $txTypeArg) use (&$dateTimeCallCount, $responseData, $expectedData, $txType) {
+                        $dateTimeCallCount++;
+                        $this->assertSame($txType, $txTypeArg);
+                        if ($dateTimeCallCount === 1) {
+                            $this->assertSame($responseData['InsertDatetime'], $dateTime);
+
                             return $expectedData['transaction_time'];
                         }
 
-                        if ($dateTimeMatcher->getInvocationCount() === 2) {
+                        if ($dateTimeCallCount === 2) {
+                            $this->assertSame($responseData['VoidDate'].'T'.$responseData['VoidTime'], $dateTime);
+
                             return $expectedData['cancel_time'];
                         }
 
@@ -2548,7 +2543,7 @@ class PayForPosResponseDataMapperTest extends TestCase
         ];
     }
 
-    public function cancelTestDataProvider(): array
+    public static function cancelTestDataProvider(): array
     {
         return
             [
@@ -2595,7 +2590,7 @@ class PayForPosResponseDataMapperTest extends TestCase
             ];
     }
 
-    public function refundTestDataProvider(): array
+    public static function refundTestDataProvider(): array
     {
         return
             [

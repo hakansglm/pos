@@ -245,7 +245,7 @@ class PosNetPosResponseDataMapperTest extends TestCase
         $this->responseDataMapper->map3DHostResponseData([], PosInterface::TX_TYPE_PAY_AUTH, []);
     }
 
-    public function paymentTestDataProvider(): array
+    public static function paymentTestDataProvider(): array
     {
         return
             [
@@ -671,7 +671,7 @@ class PosNetPosResponseDataMapperTest extends TestCase
             ];
     }
 
-    public function refundTestDataProvider(): array
+    public static function refundTestDataProvider(): array
     {
         return
             [

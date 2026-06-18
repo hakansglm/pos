@@ -247,32 +247,26 @@ class GarantiPosResponseDataMapperTest extends TestCase
                 ->with($responseData['Order']['OrderInqResult']['Status'])
                 ->willReturn($expectedData['order_status']);
 
-            $amountMatcher = $this->atLeastOnce();
-
-            $this->responseValueFormatter->expects($amountMatcher)
+            $amountCallCount = 0;
+            $this->responseValueFormatter->expects($this->atLeastOnce())
                 ->method('formatAmount')
-                ->with($this->callback(function ($amount) use ($amountMatcher, $responseData): bool {
-                    if ($amountMatcher->getInvocationCount() === 1) {
-                        return $amount === $responseData['Order']['OrderInqResult']['AuthAmount'];
-                    }
-
-                    if ($amountMatcher->getInvocationCount() === 2) {
-                        if ($responseData['Order']['OrderInqResult']['AuthAmount'] > 0) {
-                            return $amount === $responseData['Order']['OrderInqResult']['AuthAmount'];
-                        }
-
-                        return $amount === $responseData['Order']['OrderInqResult']['PreAuthAmount'];
-                    }
-
-                    return false;
-                }), $txType)
                 ->willReturnCallback(
-                    function () use ($amountMatcher, $expectedData) {
-                        if ($amountMatcher->getInvocationCount() === 1) {
+                    function ($amount, $txTypeArg) use (&$amountCallCount, $responseData, $expectedData, $txType) {
+                        $amountCallCount++;
+                        $this->assertSame($txType, $txTypeArg);
+                        if ($amountCallCount === 1) {
+                            $this->assertSame($responseData['Order']['OrderInqResult']['AuthAmount'], $amount);
+
                             return $expectedData['capture_amount'];
                         }
 
-                        if ($amountMatcher->getInvocationCount() === 2) {
+                        if ($amountCallCount === 2) {
+                            if ($responseData['Order']['OrderInqResult']['AuthAmount'] > 0) {
+                                $this->assertSame($responseData['Order']['OrderInqResult']['AuthAmount'], $amount);
+                            } else {
+                                $this->assertSame($responseData['Order']['OrderInqResult']['PreAuthAmount'], $amount);
+                            }
+
                             return $expectedData['first_amount'];
                         }
 
@@ -280,27 +274,25 @@ class GarantiPosResponseDataMapperTest extends TestCase
                     }
                 );
 
-            $dateTimeMatcher = $this->atLeastOnce();
-            $this->responseValueFormatter->expects($dateTimeMatcher)
+            $dateTimeCallCount = 0;
+            $this->responseValueFormatter->expects($this->atLeastOnce())
                 ->method('formatDateTime')
-                ->with($this->callback(function ($dateTime) use ($dateTimeMatcher, $responseData): bool {
-                    if ($dateTimeMatcher->getInvocationCount() === 1) {
-                        return $dateTime === ($responseData['Order']['OrderInqResult']['ProvDate'] ?? $responseData['Order']['OrderInqResult']['PreAuthDate']);
-                    }
-
-                    if ($dateTimeMatcher->getInvocationCount() === 2) {
-                        return $dateTime === $responseData['Order']['OrderInqResult']['AuthDate'];
-                    }
-
-                    return false;
-                }), $txType)
                 ->willReturnCallback(
-                    function () use ($dateTimeMatcher, $expectedData) {
-                        if ($dateTimeMatcher->getInvocationCount() === 1) {
+                    function ($dateTime, $txTypeArg) use (&$dateTimeCallCount, $responseData, $expectedData, $txType) {
+                        $dateTimeCallCount++;
+                        $this->assertSame($txType, $txTypeArg);
+                        if ($dateTimeCallCount === 1) {
+                            $this->assertSame(
+                                $responseData['Order']['OrderInqResult']['ProvDate'] ?? $responseData['Order']['OrderInqResult']['PreAuthDate'],
+                                $dateTime
+                            );
+
                             return $expectedData['transaction_time'];
                         }
 
-                        if ($dateTimeMatcher->getInvocationCount() === 2) {
+                        if ($dateTimeCallCount === 2) {
+                            $this->assertSame($responseData['Order']['OrderInqResult']['AuthDate'], $dateTime);
+
                             return $expectedData['capture_time'];
                         }
 
@@ -1629,7 +1621,7 @@ class GarantiPosResponseDataMapperTest extends TestCase
         ];
     }
 
-    public function cancelTestDataProvider(): array
+    public static function cancelTestDataProvider(): array
     {
         return
             [
@@ -1689,7 +1681,7 @@ class GarantiPosResponseDataMapperTest extends TestCase
             ];
     }
 
-    public function refundTestDataProvider(): array
+    public static function refundTestDataProvider(): array
     {
         return
             [
@@ -1749,7 +1741,7 @@ class GarantiPosResponseDataMapperTest extends TestCase
             ];
     }
 
-    public function orderHistoryTestDataProvider(): array
+    public static function orderHistoryTestDataProvider(): array
     {
         return [
             'success_single_pay_tx' => [
