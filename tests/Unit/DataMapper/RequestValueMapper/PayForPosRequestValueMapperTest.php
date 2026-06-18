@@ -71,9 +71,9 @@ class PayForPosRequestValueMapperTest extends TestCase
 
     public function testMapLang(): void
     {
-        $this->assertSame('tr', $this->valueMapper->mapLang(PosInterface::LANG_TR));
-        $this->assertSame('en', $this->valueMapper->mapLang(PosInterface::LANG_EN));
-        $this->assertSame('tr', $this->valueMapper->mapLang('ru'));
+        $this->assertSame('TR', $this->valueMapper->mapLang(PosInterface::LANG_TR));
+        $this->assertSame('EN', $this->valueMapper->mapLang(PosInterface::LANG_EN));
+        $this->assertSame('TR', $this->valueMapper->mapLang('ru'));
     }
 
     /**

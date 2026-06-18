@@ -15,8 +15,8 @@ class PayForPosRequestValueMapper extends AbstractRequestValueMapper
      * {@inheritDoc}
      */
     protected array $langMappings = [
-        PosInterface::LANG_TR => 'tr',
-        PosInterface::LANG_EN => 'en',
+        PosInterface::LANG_TR => 'TR',
+        PosInterface::LANG_EN => 'EN',
     ];
 
     /**
