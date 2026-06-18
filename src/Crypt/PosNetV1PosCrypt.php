@@ -73,8 +73,6 @@ class PosNetV1PosCrypt extends AbstractCrypt
     }
 
     /**
-     * @param array<string, string|array<string, string>> $requestData
-     *
      * @inheritDoc
      */
     public function createHash(AbstractPosAccount $posAccount, array $requestData): string
@@ -82,10 +80,9 @@ class PosNetV1PosCrypt extends AbstractCrypt
         /** @var array<string, string> $threeDSecureData */
         $threeDSecureData = $requestData['ThreeDSecureData'];
 
-        /** @var array<string, string> $hashData */
         $hashData = [
-            $requestData['MerchantNo'],
-            $requestData['TerminalNo'],
+            (string) $requestData['MerchantNo'],
+            (string) $requestData['TerminalNo'],
             $threeDSecureData['SecureTransactionId'],
             $threeDSecureData['CavvData'],
             $threeDSecureData['Eci'],

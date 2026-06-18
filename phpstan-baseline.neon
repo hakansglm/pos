@@ -7,24 +7,6 @@ parameters:
 			path: src/Crypt/PosNetPosCrypt.php
 
 		-
-			message: '#^PHPDoc tag @var with type array\<string, string\> is not subtype of native type array\{mixed, mixed, mixed, mixed, mixed, mixed, string\}\.$#'
-			identifier: varTag.nativeType
-			count: 1
-			path: src/Crypt/PosNetV1PosCrypt.php
-
-		-
-			message: '#^Parameter \#1 \$installment of method Mews\\Pos\\DataMapper\\RequestValueFormatter\\ParamPosRequestValueFormatter\:\:formatInstallment\(\) expects int\<0, max\>, int given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/DataMapper/RequestDataMapper/Param3DHostPosRequestDataMapper.php
-
-		-
-			message: '#^Parameter \#1 \$installment of method Mews\\Pos\\DataMapper\\RequestValueFormatter\\ParamPosRequestValueFormatter\:\:formatInstallment\(\) expects int\<0, max\>, int given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/DataMapper/RequestDataMapper/ParamPosRequestDataMapper.php
-
-		-
 			message: '#^Default value of the parameter \#7 \$extraData \(array\{\}\) of method Mews\\Pos\\DataMapper\\RequestDataMapper\\PayFlexCPV4PosRequestDataMapper\:\:create3DFormData\(\) is incompatible with type array\{CommonPaymentUrl\: string, PaymentToken\: string\}\.$#'
 			identifier: parameter.defaultValue
 			count: 1
@@ -37,76 +19,10 @@ parameters:
 			path: src/DataMapper/RequestDataMapper/PayFlexV4PosRequestDataMapper.php
 
 		-
-			message: '#^Method Mews\\Pos\\DataMapper\\RequestDataMapper\\PayFlexV4PosRequestDataMapper\:\:create3DFormInitializeRequestData\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/DataMapper/RequestDataMapper/PayFlexV4PosRequestDataMapper.php
-
-		-
 			message: '#^Default value of the parameter \#2 \$data \(array\{\}\) of method Mews\\Pos\\DataMapper\\RequestDataMapper\\PayForPosRequestDataMapper\:\:createHistoryRequestData\(\) is incompatible with type array\{transaction_date\: DateTimeInterface\}\.$#'
 			identifier: parameter.defaultValue
 			count: 1
 			path: src/DataMapper/RequestDataMapper/PayForPosRequestDataMapper.php
-
-		-
-			message: '#^Cannot assign offset ''authCode'' to array\<string, string\>\|string\.$#'
-			identifier: offsetAssign.dimType
-			count: 1
-			path: src/DataMapper/RequestDataMapper/PosNetPosRequestDataMapper.php
-
-		-
-			message: '#^Cannot assign offset ''hostLogKey'' to array\<string, int\|string\>\|string\.$#'
-			identifier: offsetAssign.dimType
-			count: 1
-			path: src/DataMapper/RequestDataMapper/PosNetPosRequestDataMapper.php
-
-		-
-			message: '#^Cannot assign offset ''hostLogKey'' to array\<string, mixed\>\|string\.$#'
-			identifier: offsetAssign.dimType
-			count: 1
-			path: src/DataMapper/RequestDataMapper/PosNetPosRequestDataMapper.php
-
-		-
-			message: '#^Cannot assign offset ''orderID'' to array\<string, int\|string\>\|string\.$#'
-			identifier: offsetAssign.dimType
-			count: 1
-			path: src/DataMapper/RequestDataMapper/PosNetPosRequestDataMapper.php
-
-		-
-			message: '#^Cannot assign offset ''orderID'' to array\<string, mixed\>\|string\.$#'
-			identifier: offsetAssign.dimType
-			count: 1
-			path: src/DataMapper/RequestDataMapper/PosNetPosRequestDataMapper.php
-
-		-
-			message: '#^Method Mews\\Pos\\DataMapper\\RequestDataMapper\\PosNetV1PosRequestDataMapper\:\:create3DFormData\(\) has parameter \$extraData with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/DataMapper/RequestDataMapper/PosNetV1PosRequestDataMapper.php
-
-		-
-			message: '#^Argument of an invalid type array\<mixed, mixed\>\|object supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: src/DataMapper/ResponseDataMapper/AbstractResponseDataMapper.php
-
-		-
-			message: '#^Offset ''ErrorMsg'' might not exist on array\<string, string\>\|string\.$#'
-			identifier: offsetAccess.notFound
-			count: 2
-			path: src/DataMapper/ResponseDataMapper/GarantiPosResponseDataMapper.php
-
-		-
-			message: '#^Offset ''ReasonCode'' might not exist on array\<string, string\>\|string\.$#'
-			identifier: offsetAccess.notFound
-			count: 2
-			path: src/DataMapper/ResponseDataMapper/GarantiPosResponseDataMapper.php
-
-		-
-			message: '#^Method Mews\\Pos\\DataMapper\\ResponseDataMapper\\PayFlexV4PosResponseDataMapper\:\:getCommonPaymentResponse\(\) should return array\<string, string\> but returns array\<string, array\<string, string\>\|string\|null\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/DataMapper/ResponseDataMapper/PayFlexV4PosResponseDataMapper.php
 
 		-
 			message: '#^Strict comparison using \=\=\= between ''3d_host'' and ''3d_host'' will always evaluate to true\.$#'
@@ -119,12 +35,6 @@ parameters:
 			identifier: deadCode.unreachable
 			count: 1
 			path: src/Gateways/AbstractGateway.php
-
-		-
-			message: '#^Parameter \#2 \$rawPaymentResponseData of method Mews\\Pos\\DataMapper\\ResponseDataMapper\\GarantiPosResponseDataMapper\:\:map3DPaymentData\(\) expects array\{Order\: array\<string, array\<string, string\|null\>\|string\>, Response\: array\<string, string\>, Transaction\: array\<string, array\<string, string\>\|string\>\}\|null, array\<string, mixed\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Gateways/GarantiPos.php
 
 		-
 			message: '#^Method Mews\\Pos\\Gateways\\PayFlexCPV4Pos\:\:get3DPaymentStatus\(\) should return array\{ErrorCode\: string\}\|array\{Rc\: string, AuthCode\: string, TransactionId\: string, PaymentToken\: string, MaskedPan\: string\}\|array\{Rc\: string, Message\: string, TransactionId\: string, PaymentToken\: string\} but returns array\<string, mixed\>\.$#'
@@ -156,20 +66,3 @@ parameters:
 			count: 1
 			path: src/Gateways/PayFlexV4Pos.php
 
-		-
-			message: '#^Method Mews\\Pos\\Gateways\\PosNetPos\:\:getOosTransactionData\(\) should return array\{approved\: string, respCode\: string, respText\: string, oosRequestDataResponse\?\: array\{data1\: string, data2\: string, sign\: string\}\} but returns array\<string, mixed\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Gateways/PosNetPos.php
-
-		-
-			message: '#^Offset ''oosRequestDataResponse'' might not exist on array\{approved\: string, respCode\: string, respText\: string, oosRequestDataResponse\?\: array\{data1\: string, data2\: string, sign\: string\}\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: src/Gateways/PosNetPos.php
-
-		-
-			message: '#^Parameter \#4 \$creditCard of method Mews\\Pos\\Gateways\\PosNetPos\:\:getOosTransactionData\(\) expects Mews\\Pos\\Entity\\Card\\CreditCardInterface, Mews\\Pos\\Entity\\Card\\CreditCardInterface\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Gateways/PosNetPos.php

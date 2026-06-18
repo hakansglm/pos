@@ -71,7 +71,7 @@ class PayFlexV4PosRequestDataMapper extends AbstractRequestDataMapper
      * @param array<string, int|string|float|null> $order
      * @param CreditCardInterface                  $creditCard
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function create3DFormInitializeRequestData(AbstractPosAccount $posAccount, array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): array
     {

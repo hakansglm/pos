@@ -151,28 +151,26 @@ class PosNetPosRequestDataMapper extends AbstractRequestDataMapper
     {
         $order = $this->prepareCancelOrder($order);
 
-        $txType      = $this->valueMapper->mapTxType(PosInterface::TX_TYPE_CANCEL);
-        $requestData = [
-            'mid'              => $posAccount->getClientId(),
-            'tid'              => $posAccount->getTerminalId(),
-            'tranDateRequired' => '1',
-            $txType            => [
-                'transaction' => 'sale',
-            ],
-        ];
+        $txType     = $this->valueMapper->mapTxType(PosInterface::TX_TYPE_CANCEL);
+        $txTypeData = ['transaction' => 'sale'];
 
         if (isset($order['auth_code'])) {
-            $requestData[$txType]['authCode'] = $order['auth_code'];
+            $txTypeData['authCode'] = $order['auth_code'];
         }
 
         //either will work
         if (isset($order['ref_ret_num'])) {
-            $requestData[$txType]['hostLogKey'] = $order['ref_ret_num'];
+            $txTypeData['hostLogKey'] = $order['ref_ret_num'];
         } else {
-            $requestData[$txType]['orderID'] = $this->valueFormatter->formatOrderId($order['id'], PosInterface::TX_TYPE_CANCEL, $order['payment_model']);
+            $txTypeData['orderID'] = $this->valueFormatter->formatOrderId($order['id'], PosInterface::TX_TYPE_CANCEL, $order['payment_model']);
         }
 
-        return $requestData;
+        return [
+            'mid'              => $posAccount->getClientId(),
+            'tid'              => $posAccount->getTerminalId(),
+            'tranDateRequired' => '1',
+            $txType            => $txTypeData,
+        ];
     }
 
     /**
@@ -184,24 +182,24 @@ class PosNetPosRequestDataMapper extends AbstractRequestDataMapper
     {
         $order = $this->prepareRefundOrder($order);
 
-        $txType      = $this->valueMapper->mapTxType($refundTxType);
-        $requestData = [
-            'mid'              => $posAccount->getClientId(),
-            'tid'              => $posAccount->getTerminalId(),
-            'tranDateRequired' => '1',
-            $txType            => [
-                'amount'       => $this->valueFormatter->formatAmount($order['amount']),
-                'currencyCode' => $this->valueMapper->mapCurrency($order['currency']),
-            ],
+        $txType     = $this->valueMapper->mapTxType($refundTxType);
+        $txTypeData = [
+            'amount'       => $this->valueFormatter->formatAmount($order['amount']),
+            'currencyCode' => $this->valueMapper->mapCurrency($order['currency']),
         ];
 
         if (isset($order['ref_ret_num'])) {
-            $requestData[$txType]['hostLogKey'] = $order['ref_ret_num'];
+            $txTypeData['hostLogKey'] = $order['ref_ret_num'];
         } else {
-            $requestData[$txType]['orderID'] = $this->valueFormatter->formatOrderId($order['id'], $refundTxType, $order['payment_model']);
+            $txTypeData['orderID'] = $this->valueFormatter->formatOrderId($order['id'], $refundTxType, $order['payment_model']);
         }
 
-        return $requestData;
+        return [
+            'mid'              => $posAccount->getClientId(),
+            'tid'              => $posAccount->getTerminalId(),
+            'tranDateRequired' => '1',
+            $txType            => $txTypeData,
+        ];
     }
 
     /**

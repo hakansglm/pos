@@ -46,8 +46,6 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
     }
 
     /**
-     * @param PaymentStatusModel|null $rawPaymentResponseData
-     *
      * {@inheritdoc}
      */
     public function map3DPaymentData(array $raw3DAuthResponseData, ?array $rawPaymentResponseData, string $txType, array $order): array
@@ -68,6 +66,7 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
         $defaultPaymentResponse = $this->getDefaultPaymentResponse($txType, $paymentModel);
         $mappedPaymentResponse  = [];
         if (self::TX_APPROVED === $mapped3DAuthData['status'] && null !== $rawPaymentResponseData) {
+            /** @var PaymentStatusModel $rawPaymentResponseData */
             $mappedPaymentResponse = $this->mapPaymentResponseCommon($txType, $paymentModel, $rawPaymentResponseData);
         }
 
@@ -192,8 +191,8 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
             'proc_return_code'  => $procReturnCode,
             'order_status'      => null !== $orderInqResult['Status'] ? $this->valueMapper->mapOrderStatus($orderInqResult['Status'], $txType) : null,
             'status'            => $status,
-            'error_code'        => self::TX_APPROVED === $status ? null : $transaction['Response']['Code'],
-            'error_message'     => self::TX_APPROVED === $status ? null : $transaction['Response']['ErrorMsg'],
+            'error_code'        => self::TX_APPROVED === $status ? null : ($transaction['Response']['Code'] ?? null),
+            'error_message'     => self::TX_APPROVED === $status ? null : ($transaction['Response']['ErrorMsg'] ?? null),
         ];
         if (self::TX_APPROVED === $status) {
             $transTime                  = $orderInqResult['ProvDate'] ?? $orderInqResult['PreAuthDate'];
@@ -239,7 +238,7 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
             'order_id'         => $rawResponseData['Order']['OrderID'],
             'proc_return_code' => $procReturnCode,
             'error_code'       => self::TX_DECLINED === $status ? $procReturnCode : null,
-            'error_message'    => self::TX_DECLINED === $status ? $rawResponseData['Transaction']['Response']['ErrorMsg'] : null,
+            'error_message'    => self::TX_DECLINED === $status ? ($rawResponseData['Transaction']['Response']['ErrorMsg'] ?? null) : null,
             'status'           => $status,
             'trans_count'      => \count($mappedTransactions),
             'transactions'     => $mappedTransactions,
@@ -275,7 +274,7 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
         return [
             'proc_return_code' => $procReturnCode,
             'error_code'       => self::TX_DECLINED === $status ? $procReturnCode : null,
-            'error_message'    => self::TX_DECLINED === $status ? $rawResponseData['Transaction']['Response']['ErrorMsg'] : null,
+            'error_message'    => self::TX_DECLINED === $status ? ($rawResponseData['Transaction']['Response']['ErrorMsg'] ?? null) : null,
             'status'           => $status,
             'trans_count'      => \count($mappedTransactions),
             'transactions'     => $mappedTransactions,
@@ -503,8 +502,8 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
             'transaction_time' => self::TX_APPROVED === $status ? $this->valueFormatter->formatDateTime($provDate, $txType) : null,
             'proc_return_code' => $procReturnCode,
             'status'           => $status,
-            'error_code'       => self::TX_APPROVED !== $status ? $transaction['Response']['ReasonCode'] : null,
-            'error_message'    => self::TX_APPROVED !== $status ? $transaction['Response']['ErrorMsg'] : null,
+            'error_code'       => self::TX_APPROVED !== $status ? ($transaction['Response']['ReasonCode'] ?? null) : null,
+            'error_message'    => self::TX_APPROVED !== $status ? ($transaction['Response']['ErrorMsg'] ?? null) : null,
             'all'              => $rawPaymentResponseData,
         ];
 

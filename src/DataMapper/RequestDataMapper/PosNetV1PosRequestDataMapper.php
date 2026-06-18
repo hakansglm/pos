@@ -335,8 +335,14 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
      *
      * {@inheritDoc}
      */
-    public function create3DFormData(AbstractPosAccount $posAccount, array $order, string $paymentModel, string $txType, string $gatewayURL, ?CreditCardInterface $creditCard = null, $extraData = null): array
-    {
+    public function create3DFormData(
+        AbstractPosAccount $posAccount,
+        array $order,
+        string $paymentModel,
+        string $txType,
+        string $gatewayURL,
+        ?CreditCardInterface $creditCard = null
+    ): array {
         $order = $this->preparePaymentOrder($order);
 
         $inputs = [

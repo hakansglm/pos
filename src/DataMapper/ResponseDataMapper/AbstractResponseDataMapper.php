@@ -156,7 +156,7 @@ abstract class AbstractResponseDataMapper implements ResponseDataMapperInterface
             $result = '' === $data ? null : $data;
         } elseif (\is_numeric($data)) {
             $result = $data;
-        } elseif (\is_array($data) || \is_object($data)) {
+        } elseif (\is_iterable($data)) {
             $result = [];
             foreach ($data as $key => $value) {
                 $result[$key] = self::emptyStringsToNull($value);

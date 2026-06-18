@@ -75,7 +75,7 @@ class Param3DHostPosRequestDataMapper extends AbstractRequestDataMapper
             'Terminal_ID'      => $posAccount->getClientId(),
             'Borclu_GSM'       => 'r|',
             // = 0 ise tüm taksitler listelenir. > 0 ise sadece o taksit seçeneği listelenir.
-            'Taksit'           => $this->valueFormatter->formatInstallment((int) $order['installment']),
+            'Taksit'           => $this->valueFormatter->formatInstallment(max(0, (int) $order['installment'])),
         ];
 
         if (PosInterface::CURRENCY_TRY !== $order['currency']) {

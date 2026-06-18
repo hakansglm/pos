@@ -265,7 +265,7 @@ class PayFlexV4PosResponseDataMapper extends AbstractResponseDataMapper
      * @param array<string, string> $responseData
      * @param string                $txType
      *
-     * @return array<string, string>
+     * @return array<string, mixed>
      */
     private function getCommonPaymentResponse(array $responseData, string $txType): array
     {

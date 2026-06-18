@@ -192,6 +192,10 @@ class PosNetPos extends AbstractGateway
             throw new UnsupportedFormFormatException();
         }
 
+        if (!$creditCard instanceof CreditCardInterface) {
+            throw new \LogicException('Bu işlem için kredi kartı bilgileri gereklidir.');
+        }
+
         $data = $this->getOosTransactionData($order, $txType, $paymentModel, $creditCard);
 
         if ($this->responseDataMapper::PROCEDURE_SUCCESS_CODE !== $data['approved']) {
@@ -200,6 +204,10 @@ class PosNetPos extends AbstractGateway
         }
 
         $this->logger->debug('preparing 3D form data');
+
+        if (!isset($data['oosRequestDataResponse'])) {
+            throw new \RuntimeException('Beklenmeyen yanıt: oosRequestDataResponse eksik.');
+        }
 
         /** @var array{data1: string, data2: string, sign: string} $responseData */
         $responseData = $data['oosRequestDataResponse'];
@@ -284,7 +292,7 @@ class PosNetPos extends AbstractGateway
             $requestData = $event->getRequestData();
         }
 
-        /** @var array<string, mixed> $result */
+        /** @var array{approved: string, respCode: string, respText: string, oosRequestDataResponse?: array{data1: string, data2: string, sign: string}} $result */
         $result = $this->clientStrategy->getClient(
             $txType,
             $paymentModel,

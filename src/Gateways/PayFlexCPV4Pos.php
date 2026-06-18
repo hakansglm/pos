@@ -279,7 +279,7 @@ class PayFlexCPV4Pos extends AbstractGateway
      * @param array<string, mixed> $gatewayResponseData
      * @param array<string, mixed> $order
      *
-     * @return  array{ErrorCode: string}|array{
+     * @return array{ErrorCode: string}|array{
      *         Rc: string,
      *         AuthCode: string,
      *         TransactionId: string,
