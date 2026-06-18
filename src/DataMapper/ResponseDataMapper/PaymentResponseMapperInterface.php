@@ -29,7 +29,7 @@ interface PaymentResponseMapperInterface
      * @param string                     $txType
      * @param array<string, mixed>       $order
      *
-     * @return array<string, string|float|null>
+     * @return array<string, mixed>
      */
     public function map3DPaymentData(array $raw3DAuthResponseData, ?array $rawPaymentResponseData, string $txType, array $order): array;
 

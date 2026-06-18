@@ -486,7 +486,7 @@ class AssecoPosResponseDataMapper extends AbstractResponseDataMapper
     /**
      * @param array<int, string> $rawTx
      *
-     * @return array<string, string|int|float|null>
+     * @return array<string, mixed>
      */
     private function mapSingleOrderHistoryTransaction(array $rawTx): array
     {
