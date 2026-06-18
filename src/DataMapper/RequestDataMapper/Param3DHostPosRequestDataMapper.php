@@ -153,14 +153,17 @@ class Param3DHostPosRequestDataMapper extends AbstractRequestDataMapper
      * @param array<string, mixed> $extraData
      */
     public function create3DFormData(
-        ?AbstractPosAccount  $posAccount,
-        ?array               $order,
-        string               $paymentModel,
-        string               $txType,
-        ?string              $gatewayURL = null,
-        ?CreditCardInterface $creditCard = null,
-        array                $extraData = []
+        ?AbstractPosAccount   $posAccount,
+        ?array                $order,
+        string                $paymentModel,
+        string                $txType,
+        ?string               $gatewayURL = null,
+        ?CreditCardInterface  $creditCard = null,
+        ?array                $extraData = null
     ): array {
+        if (null === $extraData) {
+            throw new \InvalidArgumentException('$extraData can not be null');
+        }
         if (PosInterface::MODEL_3D_HOST !== $paymentModel) {
             throw new \InvalidArgumentException();
         }

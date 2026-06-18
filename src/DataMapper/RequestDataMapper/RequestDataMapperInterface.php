@@ -46,12 +46,22 @@ interface RequestDataMapperInterface
      * @param string                               $txType
      * @param string                               $gatewayURL
      * @param CreditCardInterface|null             $creditCard
+     * @param array<string, mixed>                 $extraData    additional data that can be used when creating a 3D form data.
+     *                                                           It is usually a Bank API response data
      *
      * @return array{gateway: string, method: 'POST'|'GET', inputs: array<string, string>}|non-empty-string
      *
      * @throws UnsupportedTransactionTypeException
      */
-    public function create3DFormData(AbstractPosAccount $posAccount, array $order, string $paymentModel, string $txType, string $gatewayURL, ?CreditCardInterface $creditCard = null);
+    public function create3DFormData(
+        AbstractPosAccount   $posAccount,
+        array                $order,
+        string               $paymentModel,
+        string               $txType,
+        string               $gatewayURL,
+        ?CreditCardInterface $creditCard = null,
+        ?array               $extraData = null
+    );
 
     /**
      * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType

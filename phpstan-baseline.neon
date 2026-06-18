@@ -7,16 +7,16 @@ parameters:
 			path: src/Crypt/PosNetPosCrypt.php
 
 		-
-			message: '#^Default value of the parameter \#7 \$extraData \(array\{\}\) of method Mews\\Pos\\DataMapper\\RequestDataMapper\\PayFlexCPV4PosRequestDataMapper\:\:create3DFormData\(\) is incompatible with type array\{CommonPaymentUrl\: string, PaymentToken\: string\}\.$#'
-			identifier: parameter.defaultValue
+			message: '#^Offset ''CommonPaymentUrl'' might not exist on array\{CommonPaymentUrl\: string, PaymentToken\: string\}\|null\.$#'
+			identifier: offsetAccess.notFound
 			count: 1
 			path: src/DataMapper/RequestDataMapper/PayFlexCPV4PosRequestDataMapper.php
 
 		-
-			message: '#^Default value of the parameter \#7 \$extraData \(array\{\}\) of method Mews\\Pos\\DataMapper\\RequestDataMapper\\PayFlexV4PosRequestDataMapper\:\:create3DFormData\(\) is incompatible with type array\{PaReq\: string, TermUrl\: string, MD\: string, ACSUrl\: string\}\.$#'
-			identifier: parameter.defaultValue
+			message: '#^Offset ''PaymentToken'' might not exist on array\{CommonPaymentUrl\: string, PaymentToken\: string\}\|null\.$#'
+			identifier: offsetAccess.notFound
 			count: 1
-			path: src/DataMapper/RequestDataMapper/PayFlexV4PosRequestDataMapper.php
+			path: src/DataMapper/RequestDataMapper/PayFlexCPV4PosRequestDataMapper.php
 
 		-
 			message: '#^Default value of the parameter \#2 \$data \(array\{\}\) of method Mews\\Pos\\DataMapper\\RequestDataMapper\\PayForPosRequestDataMapper\:\:createHistoryRequestData\(\) is incompatible with type array\{transaction_date\: DateTimeInterface\}\.$#'
@@ -55,7 +55,7 @@ parameters:
 			path: src/Gateways/PayFlexCPV4Pos.php
 
 		-
-			message: '#^Parameter \#7 \$extraData of method Mews\\Pos\\DataMapper\\RequestDataMapper\\PayFlexCPV4PosRequestDataMapper\:\:create3DFormData\(\) expects array\{CommonPaymentUrl\: string, PaymentToken\: string\}, array\{CommonPaymentUrl\: string\|null, PaymentToken\: string\|null, ErrorCode\: null, ResponseMessage\: string\|null\} given\.$#'
+			message: '#^Parameter \#7 \$extraData of method Mews\\Pos\\DataMapper\\RequestDataMapper\\PayFlexCPV4PosRequestDataMapper\:\:create3DFormData\(\) expects array\{CommonPaymentUrl\: string, PaymentToken\: string\}\|null, array\{CommonPaymentUrl\: string\|null, PaymentToken\: string\|null, ErrorCode\: null, ResponseMessage\: string\|null\} given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Gateways/PayFlexCPV4Pos.php

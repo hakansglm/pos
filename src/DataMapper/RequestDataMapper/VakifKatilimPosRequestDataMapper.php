@@ -248,8 +248,15 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
      *
      * @return array{gateway: string, method: 'POST', inputs: array<string, string>}
      */
-    public function create3DFormData(AbstractPosAccount $posAccount, array $order, string $paymentModel, string $txType, string $gatewayURL, ?CreditCardInterface $creditCard = null): array
-    {
+    public function create3DFormData(
+        AbstractPosAccount   $posAccount,
+        array                $order,
+        string               $paymentModel,
+        string               $txType,
+        string               $gatewayURL,
+        ?CreditCardInterface $creditCard = null,
+        ?array               $extraData = null
+    ): array {
         if (PosInterface::MODEL_3D_HOST !== $paymentModel) {
             throw new \LogicException('3D Form oluşturma sadece 3D Host modeli için desteklenmektedir!
             Diğer modeller için banka API hazır HTML string döndürmektedir.');

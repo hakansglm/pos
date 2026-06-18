@@ -229,8 +229,15 @@ class PosNetPosRequestDataMapper extends AbstractRequestDataMapper
      *
      * @throws InvalidArgumentException
      */
-    public function create3DFormData(AbstractPosAccount $posAccount, array $order, string $paymentModel, string $txType, string $gatewayURL, ?CreditCardInterface $creditCard = null, ?array $extraData = null): array
-    {
+    public function create3DFormData(
+        AbstractPosAccount   $posAccount,
+        array                $order,
+        string               $paymentModel,
+        string               $txType,
+        string               $gatewayURL,
+        ?CreditCardInterface $creditCard = null,
+        ?array               $extraData = null
+    ): array {
         if (null === $extraData) {
             throw new InvalidArgumentException('$extraData can not be null');
         }

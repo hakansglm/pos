@@ -205,7 +205,7 @@ class PayFlexCPV4PosRequestDataMapper extends AbstractRequestDataMapper
         ?string              $txType,
         ?string              $gatewayURL,
         ?CreditCardInterface $creditCard = null,
-        array                $extraData = []
+        ?array               $extraData = null
     ): array {
         return [
             'gateway' => $extraData['CommonPaymentUrl'],

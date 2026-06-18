@@ -359,8 +359,15 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
      * Küveyt Türk kendisi hazır HTML form gönderiyor.
      * {@inheritDoc}
      */
-    public function create3DFormData(AbstractPosAccount $posAccount, array $order, string $paymentModel, string $txType, string $gatewayURL, ?CreditCardInterface $creditCard = null)
-    {
+    public function create3DFormData(
+        AbstractPosAccount   $posAccount,
+        array                $order,
+        string               $paymentModel,
+        string               $txType,
+        string               $gatewayURL,
+        ?CreditCardInterface $creditCard = null,
+        ?array               $extraData = null
+    ) {
         throw new NotImplementedException();
     }
 
