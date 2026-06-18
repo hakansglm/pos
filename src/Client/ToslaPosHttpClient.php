@@ -58,7 +58,7 @@ class ToslaPosHttpClient extends AbstractHttpClient
 
         try {
             $this->getRequestURIByTransactionType($txType, $paymentModel);
-        } catch (UnsupportedTransactionTypeException $e) {
+        } catch (UnsupportedTransactionTypeException) {
             return false;
         }
 

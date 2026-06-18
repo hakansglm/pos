@@ -87,7 +87,7 @@ class VakifKatilimPos extends AbstractGateway
      *
      * @inheritDoc
      */
-    public function get3DFormData(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null, bool $createWithoutCard = false, ?string $formFormat = null)
+    public function get3DFormData(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null, bool $createWithoutCard = false, ?string $formFormat = null): array|string
     {
         $this->check3DFormInputs($paymentModel, $txType, $creditCard, $createWithoutCard);
 
@@ -141,7 +141,7 @@ class VakifKatilimPos extends AbstractGateway
             $requestData,
             $this->account->getBankName(),
             $txType,
-            \get_class($this),
+            static::class,
             $order,
             $paymentModel
         );
@@ -221,7 +221,7 @@ class VakifKatilimPos extends AbstractGateway
             $requestData,
             $this->account->getBankName(),
             $apiRequestTxType,
-            \get_class($this),
+            static::class,
             $order,
             $paymentModel
         );

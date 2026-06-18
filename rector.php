@@ -12,7 +12,7 @@ return RectorConfig::configure()
         __DIR__.'/tests',
     ])
     ->withSets([
-        LevelSetList::UP_TO_PHP_74,
+        LevelSetList::UP_TO_PHP_80,
     ])
     ->withSkip([
         \Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector::class,

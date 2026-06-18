@@ -142,7 +142,7 @@ class IyzicoPosTest extends TestCase
      */
     public function testStatusSuccess(array $lastResponse): array
     {
-        $statusOrder = $this->createStatusOrder(\get_class($this->pos), $lastResponse);
+        $statusOrder = $this->createStatusOrder($this->pos::class, $lastResponse);
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
@@ -168,7 +168,7 @@ class IyzicoPosTest extends TestCase
      */
     public function testStatusCanceledOrder(array $lastResponse): void
     {
-        $statusOrder = $this->createStatusOrder(\get_class($this->pos), $lastResponse);
+        $statusOrder = $this->createStatusOrder($this->pos::class, $lastResponse);
 
         $response = $this->pos->status($statusOrder);
 
@@ -183,7 +183,7 @@ class IyzicoPosTest extends TestCase
             'order_id' => 'nonexistent-order-99999',
             'currency' => PosInterface::CURRENCY_TRY,
         ];
-        $statusOrder = $this->createStatusOrder(\get_class($this->pos), $lastResponse);
+        $statusOrder = $this->createStatusOrder($this->pos::class, $lastResponse);
 
         $response = $this->pos->status($statusOrder);
         $this->assertFalse($this->pos->isSuccess());
@@ -197,7 +197,7 @@ class IyzicoPosTest extends TestCase
      */
     public function testCancelSuccess(array $lastResponse): array
     {
-        $cancelOrder = $this->createCancelOrder(\get_class($this->pos), $lastResponse);
+        $cancelOrder = $this->createCancelOrder($this->pos::class, $lastResponse);
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
@@ -223,7 +223,7 @@ class IyzicoPosTest extends TestCase
      */
     public function testCancelForCanceledOrder(array $lastResponse): void
     {
-        $cancelOrder = $this->createCancelOrder(\get_class($this->pos), $lastResponse);
+        $cancelOrder = $this->createCancelOrder($this->pos::class, $lastResponse);
 
         $response = $this->pos->cancel($cancelOrder);
         $this->assertFalse($this->pos->isSuccess(), $response['error_message'] ?? '');
@@ -265,7 +265,7 @@ class IyzicoPosTest extends TestCase
     public function testNonSecurePostPaymentSuccess(array $lastResponse): array
     {
         $order = $this->createPostPayOrder(
-            \get_class($this->pos),
+            $this->pos::class,
             $lastResponse,
             $lastResponse['amount'] + 0.20
         );
@@ -299,7 +299,7 @@ class IyzicoPosTest extends TestCase
     public function testNonSecurePostPaymentFailWithAlreadyCompletedPostOrder(array $lastResponse): void
     {
         $order = $this->createPostPayOrder(
-            \get_class($this->pos),
+            $this->pos::class,
             $lastResponse,
             $lastResponse['amount']
         );
@@ -320,7 +320,7 @@ class IyzicoPosTest extends TestCase
      */
     public function testRefundSuccess(array $lastResponse): array
     {
-        $refundOrder           = $this->createRefundOrder(\get_class($this->pos), $lastResponse);
+        $refundOrder           = $this->createRefundOrder($this->pos::class, $lastResponse);
         $refundOrder['amount'] = 1.0;
 
         $eventIsThrown = false;
@@ -347,7 +347,7 @@ class IyzicoPosTest extends TestCase
      */
     public function testRefundFailAlreadyCanceledOrder(array $lastResponse): void
     {
-        $refundOrder           = $this->createRefundOrder(\get_class($this->pos), $lastResponse);
+        $refundOrder           = $this->createRefundOrder($this->pos::class, $lastResponse);
         $response = $this->pos->refund($refundOrder);
 
         $this->assertFalse($this->pos->isSuccess());
@@ -361,7 +361,7 @@ class IyzicoPosTest extends TestCase
      */
     public function testOrderHistorySuccess(array $lastResponse): void
     {
-        $historyOrder = $this->createOrderHistoryOrder(\get_class($this->pos), $lastResponse);
+        $historyOrder = $this->createOrderHistoryOrder($this->pos::class, $lastResponse);
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
@@ -395,7 +395,7 @@ class IyzicoPosTest extends TestCase
 
     public function testHistorySuccess(): void
     {
-        $historyOrder = $this->createHistoryOrder(\get_class($this->pos), [], '127.0.0.1');
+        $historyOrder = $this->createHistoryOrder($this->pos::class, [], '127.0.0.1');
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(

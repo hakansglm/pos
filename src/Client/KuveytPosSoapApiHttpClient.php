@@ -22,8 +22,6 @@ use Psr\Log\LoggerInterface;
 
 class KuveytPosSoapApiHttpClient extends AbstractHttpClient
 {
-    private RequestValueMapperInterface $requestValueMapper;
-
     /**
      * @param non-empty-string        $baseApiUrl
      * @param ClientInterface         $psrClient
@@ -31,12 +29,12 @@ class KuveytPosSoapApiHttpClient extends AbstractHttpClient
      * @param StreamFactoryInterface  $streamFactory
      */
     public function __construct(
-        string                      $baseApiUrl,
-        ClientInterface             $psrClient,
-        RequestFactoryInterface     $requestFactory,
-        StreamFactoryInterface      $streamFactory,
-        LoggerInterface             $logger,
-        RequestValueMapperInterface $requestValueMapper
+        string                              $baseApiUrl,
+        ClientInterface                     $psrClient,
+        RequestFactoryInterface             $requestFactory,
+        StreamFactoryInterface              $streamFactory,
+        LoggerInterface                     $logger,
+        private RequestValueMapperInterface $requestValueMapper
     ) {
         parent::__construct(
             $baseApiUrl,
@@ -47,7 +45,6 @@ class KuveytPosSoapApiHttpClient extends AbstractHttpClient
             new KuveytPosSoapApiXmlDecoder(),
             $logger
         );
-        $this->requestValueMapper = $requestValueMapper;
     }
 
     /**

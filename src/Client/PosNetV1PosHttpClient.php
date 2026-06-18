@@ -22,8 +22,6 @@ use Psr\Log\LoggerInterface;
 
 class PosNetV1PosHttpClient extends AbstractHttpClient
 {
-    private RequestValueMapperInterface $requestValueMapper;
-
     /**
      * @param non-empty-string        $apiBaseUrl
      * @param ClientInterface         $psrClient
@@ -31,12 +29,12 @@ class PosNetV1PosHttpClient extends AbstractHttpClient
      * @param StreamFactoryInterface  $streamFactory
      */
     public function __construct(
-        string                      $apiBaseUrl,
-        ClientInterface             $psrClient,
-        RequestFactoryInterface     $requestFactory,
-        StreamFactoryInterface      $streamFactory,
-        LoggerInterface             $logger,
-        RequestValueMapperInterface $requestValueMapper
+        string                              $apiBaseUrl,
+        ClientInterface                     $psrClient,
+        RequestFactoryInterface             $requestFactory,
+        StreamFactoryInterface              $streamFactory,
+        LoggerInterface                     $logger,
+        private RequestValueMapperInterface $requestValueMapper
     ) {
         parent::__construct(
             $apiBaseUrl,
@@ -47,7 +45,6 @@ class PosNetV1PosHttpClient extends AbstractHttpClient
             new JsonDecoder(),
             $logger,
         );
-        $this->requestValueMapper = $requestValueMapper;
     }
 
     /**
@@ -69,7 +66,7 @@ class PosNetV1PosHttpClient extends AbstractHttpClient
 
         try {
             $this->getRequestURIByTransactionType($txType);
-        } catch (UnsupportedTransactionTypeException $e) {
+        } catch (UnsupportedTransactionTypeException) {
             return false;
         }
 

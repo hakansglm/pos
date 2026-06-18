@@ -16,25 +16,16 @@ abstract class AbstractResponseDataMapper implements ResponseDataMapperInterface
     /** @var string */
     public const PROCEDURE_SUCCESS_CODE = '00';
 
-    protected ResponseValueFormatterInterface $valueFormatter;
-
-    protected ResponseValueMapperInterface $valueMapper;
-
-    protected LoggerInterface $logger;
-
     /**
      * @param ResponseValueFormatterInterface $valueFormatter
      * @param ResponseValueMapperInterface    $valueMapper
      * @param LoggerInterface                 $logger
      */
     public function __construct(
-        ResponseValueFormatterInterface $valueFormatter,
-        ResponseValueMapperInterface    $valueMapper,
-        LoggerInterface                 $logger
+        protected ResponseValueFormatterInterface $valueFormatter,
+        protected ResponseValueMapperInterface    $valueMapper,
+        protected LoggerInterface                 $logger
     ) {
-        $this->logger             = $logger;
-        $this->valueFormatter     = $valueFormatter;
-        $this->valueMapper        = $valueMapper;
     }
 
     /**

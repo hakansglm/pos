@@ -48,7 +48,7 @@ class VakifKatilimPosResponseValueMapperTest extends TestCase
     /**
      * @dataProvider mapOrderStatusDataProvider
      */
-    public function testMapOrderStatus($orderStatus, $expected): void
+    public function testMapOrderStatus(int|string $orderStatus, string|int $expected): void
     {
         $this->assertSame($expected, $this->mapper->mapOrderStatus($orderStatus));
     }

@@ -20,18 +20,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
  */
 abstract class AbstractRequestDataMapper implements RequestDataMapperInterface
 {
-    protected EventDispatcherInterface $eventDispatcher;
-
-    protected RequestValueMapperInterface $valueMapper;
-
-    protected RequestValueFormatterInterface $valueFormatter;
-
-    protected CryptInterface $crypt;
-
     protected bool $testMode = false;
-
-    /** @var PosInterface::LANG_* */
-    protected string $defaultLang;
 
     /**
      * @param RequestValueMapperInterface    $valueMapper
@@ -41,17 +30,12 @@ abstract class AbstractRequestDataMapper implements RequestDataMapperInterface
      * @param PosInterface::LANG_*           $defaultLang
      */
     public function __construct(
-        RequestValueMapperInterface    $valueMapper,
-        RequestValueFormatterInterface $valueFormatter,
-        EventDispatcherInterface       $eventDispatcher,
-        CryptInterface                 $crypt,
-        string                         $defaultLang = PosInterface::LANG_TR
+        protected RequestValueMapperInterface    $valueMapper,
+        protected RequestValueFormatterInterface $valueFormatter,
+        protected EventDispatcherInterface       $eventDispatcher,
+        protected CryptInterface                 $crypt,
+        protected string                         $defaultLang = PosInterface::LANG_TR
     ) {
-        $this->valueMapper     = $valueMapper;
-        $this->valueFormatter  = $valueFormatter;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->crypt           = $crypt;
-        $this->defaultLang     = $defaultLang;
     }
 
     /**

@@ -50,8 +50,8 @@ class KuveytPosResponseValueMapperTest extends TestCase
      * @dataProvider mapOrderStatusDataProvider
      */
     public function testMapOrderStatus(
-        $orderStatus,
-        $expected
+        int|string $orderStatus,
+        string|int $expected
     ): void {
         $this->assertSame(
             $expected,

@@ -11,26 +11,17 @@ namespace Mews\Pos\Entity\Account;
  */
 class GarantiPosAccount extends AbstractPosAccount
 {
-    private string $terminalId;
-
-    private ?string $refundUsername;
-
-    private ?string $refundPassword;
-
     public function __construct(
-        string  $bankName,
-        string  $merchantId,
-        string  $username,
-        string  $password,
-        string  $terminalId,
-        ?string $storeKey = null,
-        ?string $refundUsername = null,
-        ?string $refundPassword = null
+        string          $bankName,
+        string          $merchantId,
+        string          $username,
+        string          $password,
+        private string  $terminalId,
+        ?string         $storeKey = null,
+        private ?string $refundUsername = null,
+        private ?string $refundPassword = null
     ) {
         parent::__construct($bankName, $merchantId, $username, $password, $storeKey);
-        $this->terminalId = $terminalId;
-        $this->refundUsername = $refundUsername;
-        $this->refundPassword = $refundPassword;
     }
 
     /**

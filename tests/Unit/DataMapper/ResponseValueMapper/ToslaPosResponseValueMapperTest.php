@@ -38,7 +38,7 @@ class ToslaPosResponseValueMapperTest extends TestCase
     /**
      * @dataProvider mapTxTypeDataProvider
      */
-    public function testMapTxType($txType, ?string $expected): void
+    public function testMapTxType(string|int $txType, ?string $expected): void
     {
         $this->assertSame($expected, $this->mapper->mapTxType($txType));
     }
@@ -47,7 +47,7 @@ class ToslaPosResponseValueMapperTest extends TestCase
      * @dataProvider mapOrderStatusDataProvider
      */
     public function testMapOrderStatus(
-        $orderStatus,
+        int|string $orderStatus,
         string $expected
     ): void {
         $this->assertSame(

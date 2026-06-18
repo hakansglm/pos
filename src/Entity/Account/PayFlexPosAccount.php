@@ -27,15 +27,6 @@ class PayFlexPosAccount extends AbstractPosAccount
         self::MERCHANT_TYPE_SUB_DEALER,
     ];
 
-    private string $terminalId;
-
-    /**
-     * Banka tarafından Üye işyerine iletilmektedir
-     *
-     * @var self::MERCHANT_TYPE_*
-     */
-    private int $merchantType;
-
     /**
      * @param string                $bankName
      * @param string                $merchantId    Isyeri No
@@ -45,16 +36,17 @@ class PayFlexPosAccount extends AbstractPosAccount
      * @param string|null           $subMerchantId
      */
     public function __construct(
-        string  $bankName,
-        string  $merchantId,
-        string  $password,
-        string  $terminalId,
-        int     $merchantType = self::MERCHANT_TYPE_STANDARD,
-        ?string $subMerchantId = null
+        string         $bankName,
+        string         $merchantId,
+        string         $password,
+        private string $terminalId,
+        /**
+         * Banka tarafından Üye işyerine iletilmektedir
+         */
+        private int    $merchantType = self::MERCHANT_TYPE_STANDARD,
+        ?string        $subMerchantId = null
     ) {
         parent::__construct($bankName, $merchantId, '', $password, 'tr', $subMerchantId);
-        $this->terminalId   = $terminalId;
-        $this->merchantType = $merchantType;
     }
 
     /**

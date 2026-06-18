@@ -18,40 +18,33 @@ abstract class AbstractCreditCard implements CreditCardInterface
      */
     protected string $number;
 
-    protected DateTimeImmutable $expDate;
-
-    protected string $cvv;
-
-    protected ?string $holderName;
-
     /**
-     * @phpstan-var CreditCardInterface::CARD_TYPE_*
-     */
-    protected ?string $type;
-
-    /**
-     * @phpstan-param CreditCardInterface::CARD_TYPE_*|null $cardType
+     * @phpstan-param CreditCardInterface::CARD_TYPE_*|null $type
      *
-     * @param string            $number         credit card number with or without spaces
+     * @param string            $number     credit card number with or without spaces
      * @param DateTimeImmutable $expDate
      * @param string            $cvv
-     * @param string|null       $cardHolderName
-     * @param string|null       $cardType       examples values: 'visa', 'master', '1', '2'
+     * @param string|null       $holderName
+     * @param string|null       $type       examples values: 'visa', 'master', '1', '2'
      *
      * @throws \LogicException
      */
-    public function __construct(string $number, DateTimeImmutable $expDate, string $cvv, ?string $cardHolderName = null, ?string $cardType = null)
-    {
+    public function __construct(
+        string $number,
+        protected DateTimeImmutable $expDate,
+        protected string $cvv,
+        protected ?string $holderName = null,
+        /**
+         * @phpstan-var CreditCardInterface::CARD_TYPE_*
+         */
+        protected ?string $type = null
+    ) {
         $number = \preg_replace('/\s+/', '', $number);
         if (null === $number) {
             throw new \LogicException('Kredit numarası formatlanamadı!');
         }
 
         $this->number     = $number;
-        $this->expDate    = $expDate;
-        $this->cvv        = $cvv;
-        $this->holderName = $cardHolderName;
-        $this->type       = $cardType;
     }
 
     /**

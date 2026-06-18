@@ -27,23 +27,6 @@ use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 abstract class AbstractHttpClient implements HttpClientInterface
 {
     /**
-     * @var non-empty-string
-     */
-    protected string $baseApiUrl;
-
-    protected ClientInterface $psrClient;
-
-    protected RequestFactoryInterface $requestFactory;
-
-    protected StreamFactoryInterface $streamFactory;
-
-    protected EncoderInterface $encoder;
-
-    protected DecoderInterface $decoder;
-
-    protected LoggerInterface $logger;
-
-    /**
      * @param non-empty-string        $baseApiUrl
      * @param ClientInterface         $psrClient
      * @param RequestFactoryInterface $requestFactory
@@ -53,21 +36,14 @@ abstract class AbstractHttpClient implements HttpClientInterface
      * @param LoggerInterface         $logger
      */
     public function __construct(
-        string                  $baseApiUrl,
-        ClientInterface         $psrClient,
-        RequestFactoryInterface $requestFactory,
-        StreamFactoryInterface  $streamFactory,
-        EncoderInterface        $encoder,
-        DecoderInterface        $decoder,
-        LoggerInterface         $logger
+        protected string                  $baseApiUrl,
+        protected ClientInterface         $psrClient,
+        protected RequestFactoryInterface $requestFactory,
+        protected StreamFactoryInterface  $streamFactory,
+        protected EncoderInterface        $encoder,
+        protected DecoderInterface        $decoder,
+        protected LoggerInterface         $logger
     ) {
-        $this->baseApiUrl     = $baseApiUrl;
-        $this->psrClient      = $psrClient;
-        $this->requestFactory = $requestFactory;
-        $this->streamFactory  = $streamFactory;
-        $this->encoder        = $encoder;
-        $this->decoder        = $decoder;
-        $this->logger         = $logger;
     }
 
     /**

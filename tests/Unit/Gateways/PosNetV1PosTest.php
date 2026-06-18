@@ -797,7 +797,7 @@ class PosNetV1PosTest extends TestCase
                     function (RequestDataPreparedEvent $dispatchedEvent) use ($requestData, $txType, $order, $paymentModel, &$updatedRequestDataPreparedEvent): bool {
                         $updatedRequestDataPreparedEvent = $dispatchedEvent;
 
-                        return get_class($this->pos) === $dispatchedEvent->getGatewayClass()
+                        return $this->pos::class === $dispatchedEvent->getGatewayClass()
                             && $txType === $dispatchedEvent->getTxType()
                             && $requestData === $dispatchedEvent->getRequestData()
                             && $order === $dispatchedEvent->getOrder()

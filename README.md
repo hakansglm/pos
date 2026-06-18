@@ -84,7 +84,7 @@ sistemlerinin kullanılabilmesidir.
 
 ### Minimum Gereksinimler
 
-- PHP >= 7.4
+- PHP >= 8.0
 - ext-dom
 - ext-json
 - ext-openssl

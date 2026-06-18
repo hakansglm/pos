@@ -51,7 +51,7 @@ class CreditCardFactory
         $supportedCardTypes = \array_keys($pos->getCardTypeMapping());
         if ([] !== $supportedCardTypes) {
             if (null === $cardType) {
-                throw new CardTypeRequiredException(\get_class($pos));
+                throw new CardTypeRequiredException($pos::class);
             }
 
             if (!\in_array($cardType, $supportedCardTypes, true)) {

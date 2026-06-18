@@ -93,7 +93,7 @@ class PayForPosTest extends TestCase
      */
     public function testStatusSuccess(array $lastResponse): array
     {
-        $statusOrder = $this->createStatusOrder(\get_class($this->pos), $lastResponse);
+        $statusOrder = $this->createStatusOrder($this->pos::class, $lastResponse);
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
@@ -121,7 +121,7 @@ class PayForPosTest extends TestCase
      */
     public function testCancelSuccess(array $lastResponse): array
     {
-        $statusOrder = $this->createCancelOrder(\get_class($this->pos), $lastResponse);
+        $statusOrder = $this->createCancelOrder($this->pos::class, $lastResponse);
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
@@ -149,7 +149,7 @@ class PayForPosTest extends TestCase
      */
     public function testOrderHistorySuccess(array $lastResponse): void
     {
-        $historyOrder = $this->createOrderHistoryOrder(\get_class($this->pos), $lastResponse);
+        $historyOrder = $this->createOrderHistoryOrder($this->pos::class, $lastResponse);
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
@@ -170,7 +170,7 @@ class PayForPosTest extends TestCase
 
     public function testHistorySuccess(): void
     {
-        $historyOrder = $this->createHistoryOrder(\get_class($this->pos), [], '127.0.0.1');
+        $historyOrder = $this->createHistoryOrder($this->pos::class, [], '127.0.0.1');
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
@@ -228,7 +228,7 @@ class PayForPosTest extends TestCase
      */
     public function testNonSecurePostPaymentSuccess(array $lastResponse): array
     {
-        $order = $this->createPostPayOrder(\get_class($this->pos), $lastResponse);
+        $order = $this->createPostPayOrder($this->pos::class, $lastResponse);
         $order['amount'] += .02;
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
@@ -308,7 +308,7 @@ class PayForPosTest extends TestCase
      */
     public function testRefundFail(array $lastResponse): array
     {
-        $refundOrder = $this->createRefundOrder(\get_class($this->pos), $lastResponse);
+        $refundOrder = $this->createRefundOrder($this->pos::class, $lastResponse);
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(

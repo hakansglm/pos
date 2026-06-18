@@ -22,22 +22,6 @@ use Psr\Log\LoggerInterface;
 abstract class AbstractGateway implements PosInterface
 {
     /**
-     * @var array{
-     *     gateway_configs?: array{
-     *          test_mode?: bool,
-     *          disable_3d_hash_check?: bool
-     *     },
-     *     gateway_endpoints: array{
-     *          gateway_3d: non-empty-string,
-     *          gateway_3d_host?: non-empty-string
-     *     }
-     * }
-     */
-    protected array $config;
-
-    protected AbstractPosAccount $account;
-
-    /**
      * Processed Response Data
      *
      * @var array<string, mixed>|null
@@ -50,18 +34,6 @@ abstract class AbstractGateway implements PosInterface
      * @var array<string, mixed>|null
      */
     protected ?array $data;
-
-    protected HttpClientStrategyInterface $clientStrategy;
-
-    protected RequestValueMapperInterface $valueMapper;
-
-    protected RequestDataMapperInterface $requestDataMapper;
-
-    protected ResponseDataMapperInterface $responseDataMapper;
-
-    protected EventDispatcherInterface $eventDispatcher;
-
-    protected LoggerInterface $logger;
 
     /**
      * @var array<PosInterface::TX_TYPE_*, array<int, PosInterface::MODEL_*>|bool>
@@ -102,25 +74,15 @@ abstract class AbstractGateway implements PosInterface
      *  } $config
      */
     public function __construct(
-        array                       $config,
-        AbstractPosAccount          $posAccount,
-        RequestValueMapperInterface $valueMapper,
-        RequestDataMapperInterface  $requestDataMapper,
-        ResponseDataMapperInterface $responseDataMapper,
-        EventDispatcherInterface    $eventDispatcher,
-        HttpClientStrategyInterface $httpClientStrategy,
-        LoggerInterface             $logger
+        protected array                       $config,
+        protected AbstractPosAccount          $account,
+        protected RequestValueMapperInterface $valueMapper,
+        protected RequestDataMapperInterface  $requestDataMapper,
+        protected ResponseDataMapperInterface $responseDataMapper,
+        protected EventDispatcherInterface    $eventDispatcher,
+        protected HttpClientStrategyInterface $clientStrategy,
+        protected LoggerInterface             $logger
     ) {
-        $this->valueMapper        = $valueMapper;
-        $this->requestDataMapper  = $requestDataMapper;
-        $this->responseDataMapper = $responseDataMapper;
-        $this->eventDispatcher    = $eventDispatcher;
-
-        $this->config         = $config;
-        $this->account        = $posAccount;
-        $this->clientStrategy = $httpClientStrategy;
-        $this->logger         = $logger;
-
         if (isset($this->config['gateway_configs']['test_mode'])) {
             $this->setTestMode($this->config['gateway_configs']['test_mode']);
         }
@@ -253,7 +215,7 @@ abstract class AbstractGateway implements PosInterface
             $requestData,
             $this->account->getBankName(),
             $txType,
-            \get_class($this),
+            static::class,
             $order,
             $paymentModel
         );
@@ -304,7 +266,7 @@ abstract class AbstractGateway implements PosInterface
             $requestData,
             $this->account->getBankName(),
             $txType,
-            \get_class($this),
+            static::class,
             $order,
             $paymentModel
         );
@@ -355,7 +317,7 @@ abstract class AbstractGateway implements PosInterface
             $requestData,
             $this->account->getBankName(),
             $txType,
-            \get_class($this),
+            static::class,
             $order,
             $paymentModel
         );
@@ -402,7 +364,7 @@ abstract class AbstractGateway implements PosInterface
             $requestData,
             $this->account->getBankName(),
             $txType,
-            \get_class($this),
+            static::class,
             $order,
             $paymentModel
         );
@@ -449,7 +411,7 @@ abstract class AbstractGateway implements PosInterface
             $requestData,
             $this->account->getBankName(),
             $txType,
-            \get_class($this),
+            static::class,
             $order,
             $paymentModel
         );
@@ -496,7 +458,7 @@ abstract class AbstractGateway implements PosInterface
             $requestData,
             $this->account->getBankName(),
             $txType,
-            \get_class($this),
+            static::class,
             $data,
             $paymentModel
         );
@@ -543,7 +505,7 @@ abstract class AbstractGateway implements PosInterface
             $requestData,
             $this->account->getBankName(),
             $txType,
-            \get_class($this),
+            static::class,
             $order,
             $paymentModel
         );
@@ -590,7 +552,7 @@ abstract class AbstractGateway implements PosInterface
             $updatedRequestData,
             $this->account->getBankName(),
             $txType,
-            \get_class($this),
+            static::class,
             $requestData,
             $paymentModel
         );

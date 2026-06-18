@@ -14,23 +14,6 @@ use Mews\Pos\PosInterface;
  */
 class RequestDataPreparedEvent
 {
-    /** @var array<string, mixed> */
-    private array $requestData;
-
-    /** @var array<string, mixed> */
-    private array $order;
-
-    private string $bankName;
-
-    /** @var PosInterface::TX_TYPE_* */
-    private string $txType;
-
-    /** @var PosInterface::MODEL_* */
-    private string $paymentModel;
-
-    /** @var class-string<PosInterface> */
-    private string $gatewayClass;
-
     /**
      * @phpstan-param PosInterface::TX_TYPE_*    $txType
      * @phpstan-param PosInterface::MODEL_*      $paymentModel
@@ -44,19 +27,13 @@ class RequestDataPreparedEvent
      * @param string               $paymentModel
      */
     public function __construct(
-        array  $requestData,
-        string $bankName,
-        string $txType,
-        string $gatewayClass,
-        array  $order,
-        string $paymentModel
+        private array  $requestData,
+        private string $bankName,
+        private string $txType,
+        private string $gatewayClass,
+        private array  $order,
+        private string $paymentModel
     ) {
-        $this->requestData = $requestData;
-        $this->bankName    = $bankName;
-        $this->txType      = $txType;
-        $this->gatewayClass = $gatewayClass;
-        $this->order        = $order;
-        $this->paymentModel = $paymentModel;
     }
 
     /**

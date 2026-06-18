@@ -92,7 +92,7 @@ class IyzicoPosQueryApiHttpClient extends AbstractIyzicoPosHttpClient
             throw new \InvalidArgumentException(\sprintf(
                 'Expected %s, got %s.',
                 IyzicoPosAccount::class,
-                $account instanceof \Mews\Pos\Entity\Account\AbstractPosAccount ? \get_class($account) : 'null'
+                $account instanceof \Mews\Pos\Entity\Account\AbstractPosAccount ? $account::class : 'null'
             ));
         }
 

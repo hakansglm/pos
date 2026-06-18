@@ -140,7 +140,7 @@ class PayFlexV4PosTest extends TestCase
      */
     public function testCancelSuccess(array $lastResponse): array
     {
-        $statusOrder = $this->createCancelOrder(\get_class($this->pos), $lastResponse);
+        $statusOrder = $this->createCancelOrder($this->pos::class, $lastResponse);
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
@@ -201,7 +201,7 @@ class PayFlexV4PosTest extends TestCase
      */
     public function testNonSecurePostPaymentSuccess(array $lastResponse): array
     {
-        $order         = $this->createPostPayOrder(\get_class($this->pos), $lastResponse);
+        $order         = $this->createPostPayOrder($this->pos::class, $lastResponse);
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
             RequestDataPreparedEvent::class,
@@ -231,7 +231,7 @@ class PayFlexV4PosTest extends TestCase
      */
     public function testRefundSuccess(array $lastResponse): array
     {
-        $refundOrder = $this->createRefundOrder(\get_class($this->pos), $lastResponse);
+        $refundOrder = $this->createRefundOrder($this->pos::class, $lastResponse);
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
             RequestDataPreparedEvent::class,

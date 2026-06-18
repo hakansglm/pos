@@ -9,16 +9,10 @@ namespace Mews\Pos\Client;
 class GenericPosHttpClientStrategy implements HttpClientStrategyInterface
 {
     /**
-     * @var array<HttpClientInterface>
-     */
-    private array $clients;
-
-    /**
      * @param array<HttpClientInterface::API_NAME_*, HttpClientInterface> $clients
      */
-    public function __construct(array $clients)
+    public function __construct(private array $clients)
     {
-        $this->clients = $clients;
     }
 
     /**

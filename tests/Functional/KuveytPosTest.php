@@ -119,7 +119,7 @@ class KuveytPosTest extends TestCase
      */
     public function testCancelSuccess(array $lastResponse): array
     {
-        $statusOrder = $this->createCancelOrder(\get_class($this->pos), $lastResponse);
+        $statusOrder = $this->createCancelOrder($this->pos::class, $lastResponse);
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
@@ -146,7 +146,7 @@ class KuveytPosTest extends TestCase
      */
     public function testStatusSuccess(array $lastResponse): array
     {
-        $statusOrder = $this->createStatusOrder(\get_class($this->pos), $lastResponse);
+        $statusOrder = $this->createStatusOrder($this->pos::class, $lastResponse);
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
@@ -189,7 +189,7 @@ class KuveytPosTest extends TestCase
      */
     public function testFullRefundFail(array $lastResponse): array
     {
-        $refundOrder = $this->createRefundOrder(\get_class($this->pos), $lastResponse);
+        $refundOrder = $this->createRefundOrder($this->pos::class, $lastResponse);
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
@@ -221,7 +221,7 @@ class KuveytPosTest extends TestCase
     public function testPartialRefundSuccess(array $lastResponse): array
     {
         $refundOrder           = $this->createRefundOrder(
-            \get_class($this->pos),
+            $this->pos::class,
             $lastResponse,
             $lastResponse['amount'] - 3,
         );

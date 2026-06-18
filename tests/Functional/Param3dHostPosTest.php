@@ -185,7 +185,7 @@ class Param3dHostPosTest extends TestCase
      */
     public function testNonSecurePostPaymentSuccess(array $lastResponse): array
     {
-        $order = $this->createPostPayOrder(\get_class($this->pos), $lastResponse);
+        $order = $this->createPostPayOrder($this->pos::class, $lastResponse);
 
         $this->eventDispatcher->addListener(
             RequestDataPreparedEvent::class,
@@ -217,7 +217,7 @@ class Param3dHostPosTest extends TestCase
      */
     public function testStatusSuccess(array $lastResponse): array
     {
-        $statusOrder = $this->createStatusOrder(\get_class($this->pos), $lastResponse);
+        $statusOrder = $this->createStatusOrder($this->pos::class, $lastResponse);
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
@@ -245,7 +245,7 @@ class Param3dHostPosTest extends TestCase
      */
     public function testCancelSuccess(array $lastResponse): array
     {
-        $cancelOrder = $this->createCancelOrder(\get_class($this->pos), $lastResponse);
+        $cancelOrder = $this->createCancelOrder($this->pos::class, $lastResponse);
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
@@ -280,7 +280,7 @@ class Param3dHostPosTest extends TestCase
 
         $this->assertTrue($this->pos->isSuccess(), $response['error_message'] ?? 'hata');
 
-        $cancelOrder = $this->createCancelOrder(\get_class($this->pos), $lastResponse);
+        $cancelOrder = $this->createCancelOrder($this->pos::class, $lastResponse);
 
         $this->pos->cancel($cancelOrder);
 
@@ -393,7 +393,7 @@ class Param3dHostPosTest extends TestCase
         $this->assertTrue($this->pos->isSuccess());
         $this->assertTrue($this->pos->isSuccess(), $lastResponse['error_message'] ?? 'hata');
 
-        $refundOrder = $this->createRefundOrder(\get_class($this->pos), $lastResponse);
+        $refundOrder = $this->createRefundOrder($this->pos::class, $lastResponse);
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
@@ -446,7 +446,7 @@ class Param3dHostPosTest extends TestCase
 
     public function testHistorySuccess(): void
     {
-        $historyOrder = $this->createHistoryOrder(\get_class($this->pos), [], '127.0.0.1');
+        $historyOrder = $this->createHistoryOrder($this->pos::class, [], '127.0.0.1');
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(

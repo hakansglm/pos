@@ -96,7 +96,7 @@ class GarantiPosTest extends TestCase
      */
     public function testStatusSuccess(array $lastResponse): array
     {
-        $statusOrder = $this->createStatusOrder(\get_class($this->pos), $lastResponse);
+        $statusOrder = $this->createStatusOrder($this->pos::class, $lastResponse);
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
@@ -124,7 +124,7 @@ class GarantiPosTest extends TestCase
      */
     public function testCancelSuccess(array $lastResponse): void
     {
-        $statusOrder = $this->createCancelOrder(\get_class($this->pos), $lastResponse);
+        $statusOrder = $this->createCancelOrder($this->pos::class, $lastResponse);
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
@@ -183,7 +183,7 @@ class GarantiPosTest extends TestCase
      */
     public function testNonSecurePostPaymentSuccess(array $lastResponse): void
     {
-        $order = $this->createPostPayOrder(\get_class($this->pos), $lastResponse);
+        $order = $this->createPostPayOrder($this->pos::class, $lastResponse);
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
@@ -240,7 +240,7 @@ class GarantiPosTest extends TestCase
      */
     public function testOrderHistorySuccess(array $lastResponse): void
     {
-        $historyOrder = $this->createOrderHistoryOrder(\get_class($this->pos), $lastResponse);
+        $historyOrder = $this->createOrderHistoryOrder($this->pos::class, $lastResponse);
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
@@ -264,7 +264,7 @@ class GarantiPosTest extends TestCase
      */
     public function testHistorySuccess(): void
     {
-        $historyOrder = $this->createHistoryOrder(\get_class($this->pos), [], '127.0.0.1');
+        $historyOrder = $this->createHistoryOrder($this->pos::class, [], '127.0.0.1');
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(

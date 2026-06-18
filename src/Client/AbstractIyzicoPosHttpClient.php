@@ -32,7 +32,11 @@ abstract class AbstractIyzicoPosHttpClient extends AbstractHttpClient
         DecoderInterface        $decoder
     ) {
         if (!$crypt instanceof IyzicoPosCrypt) {
-            throw new \LogicException(\sprintf('Expected %s, got %s.', IyzicoPosCrypt::class, \get_class($crypt)));
+            throw new \LogicException(\sprintf(
+                'Expected %s, got %s.',
+                IyzicoPosCrypt::class,
+                $crypt::class
+            ));
         }
 
         parent::__construct(

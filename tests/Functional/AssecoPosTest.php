@@ -92,7 +92,7 @@ class AssecoPosTest extends TestCase
      */
     public function testStatusSuccess(array $lastResponse): array
     {
-        $statusOrder = $this->createStatusOrder(\get_class($this->pos), $lastResponse);
+        $statusOrder = $this->createStatusOrder($this->pos::class, $lastResponse);
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
@@ -120,7 +120,7 @@ class AssecoPosTest extends TestCase
      */
     public function testCancelSuccess(array $lastResponse): array
     {
-        $cancelOrder = $this->createCancelOrder(\get_class($this->pos), $lastResponse);
+        $cancelOrder = $this->createCancelOrder($this->pos::class, $lastResponse);
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
@@ -182,7 +182,7 @@ class AssecoPosTest extends TestCase
     public function testNonSecurePostPaymentSuccessWithMoreAmount(array $lastResponse): array
     {
         $order           = $this->createPostPayOrder(
-            \get_class($this->pos),
+            $this->pos::class,
             $lastResponse,
             // deduct more money than in pre auth request
             $lastResponse['amount'] + 0.20,
@@ -217,7 +217,7 @@ class AssecoPosTest extends TestCase
      */
     public function testRefundSuccess(array $lastResponse): array
     {
-        $refundOrder = $this->createRefundOrder(\get_class($this->pos), $lastResponse);
+        $refundOrder = $this->createRefundOrder($this->pos::class, $lastResponse);
         $refundOrder['amount'] = 1.0;
 
         $eventIsThrown = false;
@@ -246,7 +246,7 @@ class AssecoPosTest extends TestCase
      */
     public function testOrderHistorySuccess(array $lastResponse): void
     {
-        $historyOrder = $this->createOrderHistoryOrder(\get_class($this->pos), $lastResponse);
+        $historyOrder = $this->createOrderHistoryOrder($this->pos::class, $lastResponse);
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(

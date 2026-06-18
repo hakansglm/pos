@@ -159,7 +159,7 @@ class KuveytPos extends AbstractGateway
             $requestData,
             $this->account->getBankName(),
             $txType,
-            \get_class($this),
+            static::class,
             $order,
             $paymentModel
         );
@@ -232,7 +232,7 @@ class KuveytPos extends AbstractGateway
             $requestData,
             $this->account->getBankName(),
             $apiRequestTxType,
-            \get_class($this),
+            static::class,
             $order,
             $paymentModel
         );

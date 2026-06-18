@@ -243,7 +243,7 @@ class PayFlexCPV4Pos extends AbstractGateway
             $requestData,
             $this->account->getBankName(),
             $requestTxType,
-            \get_class($this),
+            static::class,
             $order,
             $paymentModel
         );
@@ -307,7 +307,7 @@ class PayFlexCPV4Pos extends AbstractGateway
             $requestData,
             $this->account->getBankName(),
             $apiRequestTxType,
-            \get_class($this),
+            static::class,
             $order,
             $paymentModel
         );

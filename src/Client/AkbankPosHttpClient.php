@@ -22,15 +22,13 @@ use Psr\Log\LoggerInterface;
 
 class AkbankPosHttpClient extends AbstractHttpClient
 {
-    private CryptInterface $crypt;
-
     public function __construct(
         string                  $baseApiUrl,
         ClientInterface         $client,
         RequestFactoryInterface $requestFactory,
         StreamFactoryInterface  $streamFactory,
         LoggerInterface         $logger,
-        CryptInterface          $crypt
+        private CryptInterface  $crypt
     ) {
         parent::__construct(
             $baseApiUrl,
@@ -41,7 +39,6 @@ class AkbankPosHttpClient extends AbstractHttpClient
             new AkbankPosJsonDecoder(),
             $logger
         );
-        $this->crypt = $crypt;
     }
 
     /**

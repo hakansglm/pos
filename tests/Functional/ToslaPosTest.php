@@ -88,7 +88,7 @@ class ToslaPosTest extends TestCase
      */
     public function testStatusSuccess(array $lastResponse): array
     {
-        $statusOrder = $this->createStatusOrder(\get_class($this->pos), $lastResponse);
+        $statusOrder = $this->createStatusOrder($this->pos::class, $lastResponse);
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
@@ -116,7 +116,7 @@ class ToslaPosTest extends TestCase
      */
     public function testCancelSuccess(array $lastResponse): array
     {
-        $statusOrder = $this->createCancelOrder(\get_class($this->pos), $lastResponse);
+        $statusOrder = $this->createCancelOrder($this->pos::class, $lastResponse);
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
@@ -143,7 +143,7 @@ class ToslaPosTest extends TestCase
      */
     public function testOrderHistorySuccess(array $lastResponse): void
     {
-        $historyOrder = $this->createOrderHistoryOrder(\get_class($this->pos), $lastResponse);
+        $historyOrder = $this->createOrderHistoryOrder($this->pos::class, $lastResponse);
 
         $eventIsThrown = false;
         $this->eventDispatcher->addListener(
@@ -199,7 +199,7 @@ class ToslaPosTest extends TestCase
 
         $this->assertTrue($this->pos->isSuccess());
 
-        $refundOrder           = $this->createRefundOrder(\get_class($this->pos), $lastResponse);
+        $refundOrder           = $this->createRefundOrder($this->pos::class, $lastResponse);
         $refundOrder['amount'] = 0.59;
 
         $eventIsThrown = false;

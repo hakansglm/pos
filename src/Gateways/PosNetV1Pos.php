@@ -93,7 +93,7 @@ class PosNetV1Pos extends AbstractGateway
             $requestData,
             $this->account->getBankName(),
             $txType,
-            \get_class($this),
+            static::class,
             $order,
             $paymentModel
         );

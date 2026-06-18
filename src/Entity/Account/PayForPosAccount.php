@@ -12,9 +12,6 @@ class PayForPosAccount extends AbstractPosAccount
 
     public const MBR_ID_ZIRAAT_KATILIM = '12';
 
-    /** @var self::MBR_ID_*  */
-    private string $mbrId;
-
     /**
      * AbstractPosAccount constructor.
      *
@@ -26,15 +23,13 @@ class PayForPosAccount extends AbstractPosAccount
      * @param self::MBR_ID_* $mbrId        Kurum kodudur.
      */
     public function __construct(
-        string  $bankName,
-        string  $merchantId,
-        string  $userCode,
-        string  $userPassword,
-        ?string $merchantPass = null,
-        string  $mbrId = self::MBR_ID_FINANSBANK
+        string         $bankName,
+        string         $merchantId,
+        string         $userCode,
+        string         $userPassword,
+        ?string        $merchantPass = null,
+        private string $mbrId = self::MBR_ID_FINANSBANK
     ) {
-        $this->mbrId = $mbrId;
-
         parent::__construct(
             $bankName,
             $merchantId,

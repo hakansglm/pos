@@ -222,7 +222,7 @@ class ParamPosRequestDataMapperTest extends TestCase
         bool    $withCard,
         ?string $gatewayURL,
         array   $extraData,
-        $expected
+        string|array $expected
     ): void {
         $card = $withCard ? self::$card : null;
 
