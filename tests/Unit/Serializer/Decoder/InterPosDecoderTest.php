@@ -7,12 +7,11 @@
 namespace Mews\Pos\Tests\Unit\Serializer\Decoder;
 
 use Mews\Pos\Serializer\Decoder\InterPosDecoder;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
-/**
- * @covers \Mews\Pos\Serializer\Decoder\InterPosDecoder
- */
+#[CoversClass(InterPosDecoder::class)]
 class InterPosDecoderTest extends TestCase
 {
     private InterPosDecoder $decoder;

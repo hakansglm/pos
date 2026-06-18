@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper;
 
+use Mews\Pos\DataMapper\ResponseDataMapper\AbstractResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\KuveytPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\ResponseDataMapperInterface;
 use Mews\Pos\DataMapper\ResponseValueFormatter\ResponseValueFormatterInterface;
@@ -14,14 +15,14 @@ use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\KuveytPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\DataMapper\ResponseDataMapper\KuveytPosResponseDataMapper
- * @covers \Mews\Pos\DataMapper\ResponseDataMapper\AbstractResponseDataMapper
- */
+#[CoversClass(KuveytPosResponseDataMapper::class)]
+#[CoversClass(AbstractResponseDataMapper::class)]
 class KuveytPosResponseDataMapperTest extends TestCase
 {
     private KuveytPosResponseDataMapper $responseDataMapper;
@@ -61,13 +62,10 @@ class KuveytPosResponseDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @testWith [null, false]
-     * ["", false]
-     * ["HashDataError", false]
-     * ["00", true]
-     *
-     */
+    #[TestWith([null, false])]
+    #[TestWith(['', false])]
+    #[TestWith(['HashDataError', false])]
+    #[TestWith(['00', true])]
     public function testIs3dAuthSuccess(?string $mdStatus, bool $expected): void
     {
         $actual = $this->responseDataMapper->is3dAuthSuccess($mdStatus);
@@ -75,11 +73,8 @@ class KuveytPosResponseDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @testWith [[], null]
-     * [{"ResponseCode": "00"}, "00"]
-     *
-     */
+    #[TestWith([[], null])]
+    #[TestWith([['ResponseCode' => '00'], '00'])]
     public function testExtractMdStatus(array $responseData, ?string $expected): void
     {
         $actual = $this->responseDataMapper->extractMdStatus($responseData);

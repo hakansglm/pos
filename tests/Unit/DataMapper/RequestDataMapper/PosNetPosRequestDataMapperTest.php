@@ -8,6 +8,7 @@ namespace Mews\Pos\Tests\Unit\DataMapper\RequestDataMapper;
 
 use InvalidArgumentException;
 use Mews\Pos\Crypt\CryptInterface;
+use Mews\Pos\DataMapper\RequestDataMapper\AbstractRequestDataMapper;
 use Mews\Pos\DataMapper\RequestDataMapper\PosNetPosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestValueFormatter\PosNetPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueMapper\PosNetPosRequestValueMapper;
@@ -18,14 +19,13 @@ use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
-/**
- * @covers \Mews\Pos\DataMapper\RequestDataMapper\PosNetPosRequestDataMapper
- * @covers \Mews\Pos\DataMapper\RequestDataMapper\AbstractRequestDataMapper
- */
+#[CoversClass(PosNetPosRequestDataMapper::class)]
+#[CoversClass(AbstractRequestDataMapper::class)]
 class PosNetPosRequestDataMapperTest extends TestCase
 {
     private CreditCardInterface $card;

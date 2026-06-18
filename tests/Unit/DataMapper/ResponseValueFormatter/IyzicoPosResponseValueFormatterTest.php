@@ -6,16 +6,16 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseValueFormatter;
 
+use Mews\Pos\DataMapper\ResponseValueFormatter\AbstractResponseValueFormatter;
 use Mews\Pos\DataMapper\ResponseValueFormatter\IyzicoPosResponseValueFormatter;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\IyzicoPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\ResponseValueFormatter\IyzicoPosResponseValueFormatter
- * @covers \Mews\Pos\DataMapper\ResponseValueFormatter\AbstractResponseValueFormatter
- */
+#[CoversClass(IyzicoPosResponseValueFormatter::class)]
+#[CoversClass(AbstractResponseValueFormatter::class)]
 class IyzicoPosResponseValueFormatterTest extends TestCase
 {
     private IyzicoPosResponseValueFormatter $formatter;

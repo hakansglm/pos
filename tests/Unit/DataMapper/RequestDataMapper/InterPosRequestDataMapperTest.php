@@ -7,6 +7,7 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\RequestDataMapper;
 
 use Mews\Pos\Crypt\CryptInterface;
+use Mews\Pos\DataMapper\RequestDataMapper\AbstractRequestDataMapper;
 use Mews\Pos\DataMapper\RequestDataMapper\InterPosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestValueFormatter\InterPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueMapper\InterPosRequestValueMapper;
@@ -18,14 +19,13 @@ use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\InterPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
-/**
- * @covers \Mews\Pos\DataMapper\RequestDataMapper\InterPosRequestDataMapper
- * @covers \Mews\Pos\DataMapper\RequestDataMapper\AbstractRequestDataMapper
- */
+#[CoversClass(InterPosRequestDataMapper::class)]
+#[CoversClass(AbstractRequestDataMapper::class)]
 class InterPosRequestDataMapperTest extends TestCase
 {
     private InterPosAccount $account;

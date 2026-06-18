@@ -8,12 +8,11 @@ namespace Mews\Pos\Tests\Unit\Serializer\Encoder;
 
 use Mews\Pos\Serializer\EncodedData;
 use Mews\Pos\Serializer\Encoder\XmlEncoder;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\Encoder\XmlEncoder as SymfonyXmlEncoder;
 
-/**
- * @covers \Mews\Pos\Serializer\Encoder\XmlEncoder
- */
+#[CoversClass(XmlEncoder::class)]
 class XmlEncoderTest extends TestCase
 {
     /**

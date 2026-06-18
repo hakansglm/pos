@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Client;
 
+use Mews\Pos\Client\AbstractHttpClient;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\PayForPos3DFormHttpClient;
 use Mews\Pos\Crypt\CryptInterface;
@@ -14,6 +15,7 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\PayForPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -21,10 +23,8 @@ use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Client\PayForPos3DFormHttpClient
- * @covers \Mews\Pos\Client\AbstractHttpClient
- */
+#[CoversClass(PayForPos3DFormHttpClient::class)]
+#[CoversClass(AbstractHttpClient::class)]
 class PayForPos3DFormHttpClientTest extends TestCase
 {
     use HttpClientTestTrait;

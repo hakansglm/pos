@@ -15,6 +15,7 @@ use Mews\Pos\Factory\PosFactory;
 use Mews\Pos\Gateways\GarantiPos;
 use Mews\Pos\PosInterface;
 use Monolog\Test\TestCase;
+use PHPUnit\Framework\Attributes\Depends;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class GarantiPosTest extends TestCase
@@ -91,9 +92,7 @@ class GarantiPosTest extends TestCase
         return $response;
     }
 
-    /**
-     * @depends testNonSecurePaymentSuccess
-     */
+    #[Depends('testNonSecurePaymentSuccess')]
     public function testStatusSuccess(array $lastResponse): array
     {
         $statusOrder = $this->createStatusOrder($this->pos::class, $lastResponse);
@@ -118,10 +117,8 @@ class GarantiPosTest extends TestCase
         return $lastResponse;
     }
 
-    /**
-     * @depends testNonSecurePaymentSuccess
-     * @depends testStatusSuccess
-     */
+    #[Depends('testNonSecurePaymentSuccess')]
+    #[Depends('testStatusSuccess')]
     public function testCancelSuccess(array $lastResponse): void
     {
         $statusOrder = $this->createCancelOrder($this->pos::class, $lastResponse);
@@ -178,9 +175,7 @@ class GarantiPosTest extends TestCase
         return $response;
     }
 
-    /**
-     * @depends testNonSecurePrePaymentSuccess
-     */
+    #[Depends('testNonSecurePrePaymentSuccess')]
     public function testNonSecurePostPaymentSuccess(array $lastResponse): void
     {
         $order = $this->createPostPayOrder($this->pos::class, $lastResponse);
@@ -235,9 +230,7 @@ class GarantiPosTest extends TestCase
         $this->assertTrue($eventIsThrown);
     }
 
-    /**
-     * @depends testNonSecurePaymentSuccess
-     */
+    #[Depends('testNonSecurePaymentSuccess')]
     public function testOrderHistorySuccess(array $lastResponse): void
     {
         $historyOrder = $this->createOrderHistoryOrder($this->pos::class, $lastResponse);
@@ -259,9 +252,7 @@ class GarantiPosTest extends TestCase
         $this->assertTrue($eventIsThrown);
     }
 
-    /**
-     * @depends testStatusSuccess
-     */
+    #[Depends('testStatusSuccess')]
     public function testHistorySuccess(): void
     {
         $historyOrder = $this->createHistoryOrder($this->pos::class, [], '127.0.0.1');

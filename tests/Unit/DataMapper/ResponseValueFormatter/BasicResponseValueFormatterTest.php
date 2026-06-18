@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseValueFormatter;
 
+use Mews\Pos\DataMapper\ResponseValueFormatter\AbstractResponseValueFormatter;
 use Mews\Pos\DataMapper\ResponseValueFormatter\BasicResponseValueFormatter;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\AssecoPos;
@@ -13,12 +14,11 @@ use Mews\Pos\Gateways\PayFlexCPV4Pos;
 use Mews\Pos\Gateways\PayFlexV4Pos;
 use Mews\Pos\Gateways\PayForPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\ResponseValueFormatter\BasicResponseValueFormatter
- * @covers \Mews\Pos\DataMapper\ResponseValueFormatter\AbstractResponseValueFormatter
- */
+#[CoversClass(BasicResponseValueFormatter::class)]
+#[CoversClass(AbstractResponseValueFormatter::class)]
 class BasicResponseValueFormatterTest extends TestCase
 {
     private BasicResponseValueFormatter $formatter;

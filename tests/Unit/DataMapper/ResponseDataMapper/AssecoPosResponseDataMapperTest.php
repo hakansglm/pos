@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper;
 
+use Mews\Pos\DataMapper\ResponseDataMapper\AbstractResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\AssecoPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\ResponseDataMapperInterface;
 use Mews\Pos\DataMapper\ResponseValueFormatter\ResponseValueFormatterInterface;
@@ -16,14 +17,14 @@ use Mews\Pos\Factory\ResponseValueMapperFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\DataMapper\ResponseDataMapper\AssecoPosResponseDataMapper
- * @covers \Mews\Pos\DataMapper\ResponseDataMapper\AbstractResponseDataMapper
- */
+#[CoversClass(AssecoPosResponseDataMapper::class)]
+#[CoversClass(AbstractResponseDataMapper::class)]
 class AssecoPosResponseDataMapperTest extends TestCase
 {
     private AssecoPosResponseDataMapper $responseDataMapper;
@@ -62,16 +63,13 @@ class AssecoPosResponseDataMapperTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @testWith [null, false]
-     * ["", false]
-     * ["2", false]
-     * ["3", false]
-     * ["4", false]
-     * ["7", false]
-     * ["1", true]
-     *
-     */
+    #[TestWith([null, false])]
+    #[TestWith(['', false])]
+    #[TestWith(['2', false])]
+    #[TestWith(['3', false])]
+    #[TestWith(['4', false])]
+    #[TestWith(['7', false])]
+    #[TestWith(['1', true])]
     public function testIs3dAuthSuccess(?string $mdStatus, bool $expected): void
     {
         $actual = $this->responseDataMapper->is3dAuthSuccess($mdStatus);
@@ -79,11 +77,8 @@ class AssecoPosResponseDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @testWith [[], null]
-     * [{"mdStatus": "1"}, "1"]
-     *
-     */
+    #[TestWith([[], null])]
+    #[TestWith([['mdStatus' => '1'], '1'])]
     public function testExtractMdStatus(array $responseData, ?string $expected): void
     {
         $actual = $this->responseDataMapper->extractMdStatus($responseData);

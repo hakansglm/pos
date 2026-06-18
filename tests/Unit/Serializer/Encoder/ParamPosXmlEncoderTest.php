@@ -8,11 +8,10 @@ namespace Mews\Pos\Tests\Unit\Serializer\Encoder;
 
 use Mews\Pos\Serializer\EncodedData;
 use Mews\Pos\Serializer\Encoder\ParamPosXmlEncoder;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\Serializer\Encoder\ParamPosXmlEncoder
- */
+#[CoversClass(ParamPosXmlEncoder::class)]
 class ParamPosXmlEncoderTest extends TestCase
 {
     private ParamPosXmlEncoder $encoder;

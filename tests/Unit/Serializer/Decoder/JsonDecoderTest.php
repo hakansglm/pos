@@ -7,11 +7,10 @@
 namespace Mews\Pos\Tests\Unit\Serializer\Decoder;
 
 use Mews\Pos\Serializer\Decoder\JsonDecoder;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\Serializer\Decoder\JsonDecoder
- */
+#[CoversClass(JsonDecoder::class)]
 class JsonDecoderTest extends TestCase
 {
     private JsonDecoder $decoder;

@@ -22,18 +22,19 @@ use Mews\Pos\Exceptions\UnsupportedPaymentModelException;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
+use Mews\Pos\Gateways\AbstractGateway;
 use Mews\Pos\Gateways\PosNetV1Pos;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\PosNetV1PosResponseDataMapperTest;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Gateways\PosNetV1Pos
- * @covers \Mews\Pos\Gateways\AbstractGateway
- */
+#[CoversClass(PosNetV1Pos::class)]
+#[CoversClass(AbstractGateway::class)]
 class PosNetV1PosTest extends TestCase
 {
     private PosNetPosAccount $account;
@@ -118,9 +119,7 @@ class PosNetV1PosTest extends TestCase
         $this->assertFalse($this->pos->isTestMode());
     }
 
-    /**
-     * @testWith [true]
-     */
+    #[TestWith([true])]
     public function testGet3DFormData(
         bool $isWithCard
     ): void {

@@ -10,11 +10,11 @@ use Mews\Pos\DataMapper\RequestValueFormatter\InterPosRequestValueFormatter;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\InterPos;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\RequestValueFormatter\InterPosRequestValueFormatter
- */
+#[CoversClass(InterPosRequestValueFormatter::class)]
 class InterPosRequestValueFormatterTest extends TestCase
 {
     private InterPosRequestValueFormatter $formatter;
@@ -34,31 +34,25 @@ class InterPosRequestValueFormatterTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @testWith [0, ""]
-     *            [1, ""]
-     *            [2, "2"]
-     */
+    #[TestWith([0, ''])]
+    #[TestWith([1, ''])]
+    #[TestWith([2, '2'])]
     public function testFormatInstallment(int $installment, string $expected): void
     {
         $actual = $this->formatter->formatInstallment($installment);
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @testWith [1.1, "1.1"]
-     * [1.0, "1"]
-     */
+    #[TestWith([1.1, '1.1'])]
+    #[TestWith([1.0, '1'])]
     public function testFormatAmount(float $amount, $expected): void
     {
         $actual = $this->formatter->formatAmount($amount);
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @testWith ["", "0424"]
-     * ["Expiry", "0424"]
-     */
+    #[TestWith(['', '0424'])]
+    #[TestWith(['Expiry', '0424'])]
     public function testFormatCreditCardExpDate(string $fieldName, string $expected): void
     {
         $expDate = new \DateTime('2024-04-14T16:45:30.000');

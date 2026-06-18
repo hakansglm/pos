@@ -6,17 +6,18 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\RequestValueMapper;
 
+use Mews\Pos\DataMapper\RequestValueMapper\AbstractRequestValueMapper;
 use Mews\Pos\DataMapper\RequestValueMapper\PayForPosRequestValueMapper;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\PayForPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\RequestValueMapper\PayForPosRequestValueMapper
- * @covers \Mews\Pos\DataMapper\RequestValueMapper\AbstractRequestValueMapper
- */
+#[CoversClass(PayForPosRequestValueMapper::class)]
+#[CoversClass(AbstractRequestValueMapper::class)]
 class PayForPosRequestValueMapperTest extends TestCase
 {
     private PayForPosRequestValueMapper $valueMapper;
@@ -45,9 +46,7 @@ class PayForPosRequestValueMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @testWith ["Auth"]
-     */
+    #[TestWith(['Auth'])]
     public function testMapTxTypeException(string $txType): void
     {
         $this->expectException(UnsupportedTransactionTypeException::class);

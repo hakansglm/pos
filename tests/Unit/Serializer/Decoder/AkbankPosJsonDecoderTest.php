@@ -7,12 +7,11 @@
 namespace Mews\Pos\Tests\Unit\Serializer\Decoder;
 
 use Mews\Pos\Serializer\Decoder\AkbankPosJsonDecoder;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
-/**
- * @covers \Mews\Pos\Serializer\Decoder\AkbankPosJsonDecoder
- */
+#[CoversClass(AkbankPosJsonDecoder::class)]
 class AkbankPosJsonDecoderTest extends TestCase
 {
     private AkbankPosJsonDecoder $decoder;

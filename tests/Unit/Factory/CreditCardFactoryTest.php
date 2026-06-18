@@ -11,11 +11,10 @@ use Mews\Pos\Exceptions\CardTypeNotSupportedException;
 use Mews\Pos\Exceptions\CardTypeRequiredException;
 use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\Factory\CreditCardFactory
- */
+#[CoversClass(CreditCardFactory::class)]
 class CreditCardFactoryTest extends TestCase
 {
     /**

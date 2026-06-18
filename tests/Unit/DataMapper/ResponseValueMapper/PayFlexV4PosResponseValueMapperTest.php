@@ -6,16 +6,16 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseValueMapper;
 
+use Mews\Pos\DataMapper\ResponseValueMapper\AbstractResponseValueMapper;
 use Mews\Pos\DataMapper\ResponseValueMapper\PayFlexV4PosResponseValueMapper;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\PayFlexV4Pos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\ResponseValueMapper\PayFlexV4PosResponseValueMapper
- * @covers \Mews\Pos\DataMapper\ResponseValueMapper\AbstractResponseValueMapper
- */
+#[CoversClass(PayFlexV4PosResponseValueMapper::class)]
+#[CoversClass(AbstractResponseValueMapper::class)]
 class PayFlexV4PosResponseValueMapperTest extends TestCase
 {
     private PayFlexV4PosResponseValueMapper $mapper;

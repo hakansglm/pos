@@ -6,18 +6,18 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\RequestValueMapper;
 
+use Mews\Pos\DataMapper\RequestValueMapper\AbstractRequestValueMapper;
 use Mews\Pos\DataMapper\RequestValueMapper\ParamPosRequestValueMapper;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\Param3DHostPos;
 use Mews\Pos\Gateways\ParamPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\RequestValueMapper\ParamPosRequestValueMapper
- * @covers \Mews\Pos\DataMapper\RequestValueMapper\AbstractRequestValueMapper
- */
+#[CoversClass(ParamPosRequestValueMapper::class)]
+#[CoversClass(AbstractRequestValueMapper::class)]
 class ParamPosRequestValueMapperTest extends TestCase
 {
     private ParamPosRequestValueMapper $valueMapper;

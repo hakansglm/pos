@@ -7,6 +7,7 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\RequestDataMapper;
 
 use Mews\Pos\Crypt\CryptInterface;
+use Mews\Pos\DataMapper\RequestDataMapper\AbstractRequestDataMapper;
 use Mews\Pos\DataMapper\RequestDataMapper\PayFlexCPV4PosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestValueFormatter\PayFlexCPV4PosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueMapper\PayFlexCPV4PosRequestValueMapper;
@@ -19,14 +20,13 @@ use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\PayFlexCPV4Pos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
-/**
- * @covers \Mews\Pos\DataMapper\RequestDataMapper\PayFlexCPV4PosRequestDataMapper
- * @covers \Mews\Pos\DataMapper\RequestDataMapper\AbstractRequestDataMapper
- */
+#[CoversClass(PayFlexCPV4PosRequestDataMapper::class)]
+#[CoversClass(AbstractRequestDataMapper::class)]
 class PayFlexCPV4PosRequestDataMapperTest extends TestCase
 {
     public PayFlexPosAccount $account;

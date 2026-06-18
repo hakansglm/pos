@@ -6,17 +6,18 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\RequestValueMapper;
 
+use Mews\Pos\DataMapper\RequestValueMapper\AbstractRequestValueMapper;
 use Mews\Pos\DataMapper\RequestValueMapper\ToslaPosRequestValueMapper;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\ToslaPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\RequestValueMapper\ToslaPosRequestValueMapper
- * @covers \Mews\Pos\DataMapper\RequestValueMapper\AbstractRequestValueMapper
- */
+#[CoversClass(ToslaPosRequestValueMapper::class)]
+#[CoversClass(AbstractRequestValueMapper::class)]
 class ToslaPosRequestValueMapperTest extends TestCase
 {
     private ToslaPosRequestValueMapper $valueMapper;
@@ -45,9 +46,7 @@ class ToslaPosRequestValueMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @testWith ["1"]
-     */
+    #[TestWith(['1'])]
     public function testMapTxTypeException(string $txType): void
     {
         $this->expectException(UnsupportedTransactionTypeException::class);

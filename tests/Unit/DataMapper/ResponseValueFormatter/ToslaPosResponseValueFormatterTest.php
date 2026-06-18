@@ -10,11 +10,10 @@ use Mews\Pos\DataMapper\ResponseValueFormatter\ToslaPosResponseValueFormatter;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\ToslaPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\ResponseValueFormatter\ToslaPosResponseValueFormatter
- */
+#[CoversClass(ToslaPosResponseValueFormatter::class)]
 class ToslaPosResponseValueFormatterTest extends TestCase
 {
     private ToslaPosResponseValueFormatter $formatter;

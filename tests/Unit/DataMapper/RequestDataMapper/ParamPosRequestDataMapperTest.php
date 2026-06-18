@@ -7,6 +7,7 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\RequestDataMapper;
 
 use Mews\Pos\Crypt\CryptInterface;
+use Mews\Pos\DataMapper\RequestDataMapper\AbstractRequestDataMapper;
 use Mews\Pos\DataMapper\RequestDataMapper\ParamPosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestValueFormatter\ParamPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueMapper\ParamPosRequestValueMapper;
@@ -19,14 +20,13 @@ use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\ParamPos;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\ParamPosResponseDataMapperTest;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
-/**
- * @covers \Mews\Pos\DataMapper\RequestDataMapper\ParamPosRequestDataMapper
- * @covers \Mews\Pos\DataMapper\RequestDataMapper\AbstractRequestDataMapper
- */
+#[CoversClass(ParamPosRequestDataMapper::class)]
+#[CoversClass(AbstractRequestDataMapper::class)]
 class ParamPosRequestDataMapperTest extends TestCase
 {
     private ParamPosAccount $account;

@@ -6,16 +6,16 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseValueMapper;
 
+use Mews\Pos\DataMapper\ResponseValueMapper\AbstractResponseValueMapper;
 use Mews\Pos\DataMapper\ResponseValueMapper\PosNetV1PosResponseValueMapper;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\PosNetV1Pos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\ResponseValueMapper\PosNetV1PosResponseValueMapper
- * @covers \Mews\Pos\DataMapper\ResponseValueMapper\AbstractResponseValueMapper
- */
+#[CoversClass(PosNetV1PosResponseValueMapper::class)]
+#[CoversClass(AbstractResponseValueMapper::class)]
 class PosNetV1PosResponseValueMapperTest extends TestCase
 {
     private PosNetV1PosResponseValueMapper $mapper;

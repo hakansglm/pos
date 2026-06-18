@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
+use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\KuveytPosCrypt;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Entity\Account\BoaPosAccount;
@@ -13,13 +14,12 @@ use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\KuveytPos;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Crypt\KuveytPosCrypt
- * @covers \Mews\Pos\Crypt\AbstractCrypt
- */
+#[CoversClass(KuveytPosCrypt::class)]
+#[CoversClass(AbstractCrypt::class)]
 class KuveytPosCryptTest extends TestCase
 {
     public KuveytPosCrypt $crypt;

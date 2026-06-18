@@ -25,19 +25,19 @@ use Mews\Pos\Exceptions\UnsupportedPaymentModelException;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
+use Mews\Pos\Gateways\AbstractGateway;
 use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Tests\Unit\DataMapper\RequestDataMapper\PosNetPosRequestDataMapperTest;
 use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\PosNetPosResponseDataMapperTest;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Gateways\PosNetPos
- * @covers \Mews\Pos\Gateways\AbstractGateway
- */
+#[CoversClass(PosNetPos::class)]
+#[CoversClass(AbstractGateway::class)]
 class PosNetPosTest extends TestCase
 {
     private PosNetPosAccount $account;
@@ -331,7 +331,7 @@ class PosNetPosTest extends TestCase
                     $txType,
                     $order,
                     $paymentModel
-                ) {
+                ): \Mews\Pos\Event\RequestDataPreparedEvent {
                     $dispatchCallCount++;
                     $this->assertInstanceOf(RequestDataPreparedEvent::class, $dispatchedEvent);
                     $this->assertSame($this->pos::class, $dispatchedEvent->getGatewayClass());
@@ -485,7 +485,7 @@ class PosNetPosTest extends TestCase
                     $txType,
                     $order,
                     $paymentModel
-                ) {
+                ): \Mews\Pos\Event\RequestDataPreparedEvent {
                     $dispatchCallCount++;
                     $this->assertInstanceOf(RequestDataPreparedEvent::class, $dispatchedEvent);
                     $this->assertSame($this->pos::class, $dispatchedEvent->getGatewayClass());

@@ -7,6 +7,7 @@
 namespace Mews\Pos\Tests\Unit\Client;
 
 use InvalidArgumentException;
+use Mews\Pos\Client\AbstractHttpClient;
 use Mews\Pos\Client\AkbankPosHttpClient;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Crypt\CryptInterface;
@@ -16,6 +17,7 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -24,10 +26,8 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
-/**
- * @covers \Mews\Pos\Client\AkbankPosHttpClient
- * @covers \Mews\Pos\Client\AbstractHttpClient
- */
+#[CoversClass(AkbankPosHttpClient::class)]
+#[CoversClass(AbstractHttpClient::class)]
 class AkbankPosHttpClientTest extends TestCase
 {
     use HttpClientTestTrait;

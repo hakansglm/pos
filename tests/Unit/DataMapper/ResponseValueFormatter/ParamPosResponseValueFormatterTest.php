@@ -11,11 +11,10 @@ use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\Param3DHostPos;
 use Mews\Pos\Gateways\ParamPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\ResponseValueFormatter\ParamPosResponseValueFormatter
- */
+#[CoversClass(ParamPosResponseValueFormatter::class)]
 class ParamPosResponseValueFormatterTest extends TestCase
 {
     private ParamPosResponseValueFormatter $formatter;

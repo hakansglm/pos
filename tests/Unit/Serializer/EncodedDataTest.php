@@ -7,11 +7,10 @@
 namespace Mews\Pos\Tests\Unit\Serializer;
 
 use Mews\Pos\Serializer\EncodedData;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\Serializer\EncodedData
- */
+#[CoversClass(EncodedData::class)]
 class EncodedDataTest extends TestCase
 {
     public function testGetters(): void

@@ -11,11 +11,11 @@ use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\PosNetV1Pos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\RequestValueFormatter\PosNetV1PosRequestValueFormatter
- */
+#[CoversClass(PosNetV1PosRequestValueFormatter::class)]
 class PosNetV1PosRequestValueFormatterTest extends TestCase
 {
     private PosNetV1PosRequestValueFormatter $formatter;
@@ -36,21 +36,17 @@ class PosNetV1PosRequestValueFormatterTest extends TestCase
     }
 
 
-    /**
-     * @testWith [0, "0"]
-     *            [1, "0"]
-     *            [2, "2"]
-     */
+    #[TestWith([0, '0'])]
+    #[TestWith([1, '0'])]
+    #[TestWith([2, '2'])]
     public function testFormatInstallment(int $installment, string $expected): void
     {
         $actual = $this->formatter->formatInstallment($installment);
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @testWith [1.1, 110]
-     * [1.0, 100]
-     */
+    #[TestWith([1.1, 110])]
+    #[TestWith([1.0, 100])]
     public function testFormatAmount(float $amount, $expected): void
     {
         $actual = $this->formatter->formatAmount($amount);
@@ -72,10 +68,8 @@ class PosNetV1PosRequestValueFormatterTest extends TestCase
         $this->formatter->formatOrderId('1234567890123456789AB');
     }
 
-    /**
-     * @testWith ["Expiry", "2404"]
-     * ["", "2404"]
-     */
+    #[TestWith(['Expiry', '2404'])]
+    #[TestWith(['', '2404'])]
     public function testFormatCreditCardExpDate(string $fieldName, string $expected): void
     {
         $expDate = new \DateTime('2024-04-14T16:45:30.000');

@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
+use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\ToslaPosCrypt;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Entity\Account\ToslaPosAccount;
@@ -13,13 +14,12 @@ use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\ToslaPos;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Crypt\ToslaPosCrypt
- * @covers \Mews\Pos\Crypt\AbstractCrypt
- */
+#[CoversClass(ToslaPosCrypt::class)]
+#[CoversClass(AbstractCrypt::class)]
 class ToslaPosCryptTest extends TestCase
 {
     private ToslaPosAccount $account;

@@ -6,16 +6,16 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseValueMapper;
 
+use Mews\Pos\DataMapper\ResponseValueMapper\AbstractResponseValueMapper;
 use Mews\Pos\DataMapper\ResponseValueMapper\GarantiPosResponseValueMapper;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\GarantiPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\ResponseValueMapper\GarantiPosResponseValueMapper
- * @covers \Mews\Pos\DataMapper\ResponseValueMapper\AbstractResponseValueMapper
- */
+#[CoversClass(GarantiPosResponseValueMapper::class)]
+#[CoversClass(AbstractResponseValueMapper::class)]
 class GarantiPosResponseValueMapperTest extends TestCase
 {
     private GarantiPosResponseValueMapper $mapper;

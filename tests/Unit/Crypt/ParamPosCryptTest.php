@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
+use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\ParamPosCrypt;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Entity\Account\ParamPosAccount;
@@ -14,14 +15,13 @@ use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\Param3DHostPos;
 use Mews\Pos\Gateways\ParamPos;
 use Mews\Pos\Tests\Unit\DataMapper\RequestDataMapper\ParamPosRequestDataMapperTest;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Crypt\ParamPosCrypt
- * @covers \Mews\Pos\Crypt\AbstractCrypt
- */
+#[CoversClass(ParamPosCrypt::class)]
+#[CoversClass(AbstractCrypt::class)]
 class ParamPosCryptTest extends TestCase
 {
     /**

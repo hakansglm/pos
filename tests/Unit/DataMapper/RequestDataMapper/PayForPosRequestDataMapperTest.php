@@ -18,13 +18,12 @@ use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\PayForPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
-/**
- * @covers \Mews\Pos\DataMapper\RequestDataMapper\PayForPosRequestDataMapper
- */
+#[CoversClass(PayForPosRequestDataMapper::class)]
 class PayForPosRequestDataMapperTest extends TestCase
 {
     /**

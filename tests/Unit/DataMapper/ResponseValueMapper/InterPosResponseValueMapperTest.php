@@ -6,16 +6,16 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseValueMapper;
 
+use Mews\Pos\DataMapper\ResponseValueMapper\AbstractResponseValueMapper;
 use Mews\Pos\DataMapper\ResponseValueMapper\InterPosResponseValueMapper;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\InterPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\ResponseValueMapper\InterPosResponseValueMapper
- * @covers \Mews\Pos\DataMapper\ResponseValueMapper\AbstractResponseValueMapper
- */
+#[CoversClass(InterPosResponseValueMapper::class)]
+#[CoversClass(AbstractResponseValueMapper::class)]
 class InterPosResponseValueMapperTest extends TestCase
 {
     private InterPosResponseValueMapper $mapper;

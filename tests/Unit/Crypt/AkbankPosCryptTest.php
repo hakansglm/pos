@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
+use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\AkbankPosCrypt;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Entity\Account\AkbankPosAccount;
@@ -15,13 +16,12 @@ use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\AkbankPosResponseDataMapperTest;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Crypt\AkbankPosCrypt
- * @covers \Mews\Pos\Crypt\AbstractCrypt
- */
+#[CoversClass(AkbankPosCrypt::class)]
+#[CoversClass(AbstractCrypt::class)]
 class AkbankPosCryptTest extends TestCase
 {
     private AkbankPosAccount $account;

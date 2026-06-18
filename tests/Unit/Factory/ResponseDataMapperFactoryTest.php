@@ -9,12 +9,11 @@ namespace Mews\Pos\Tests\Unit\Factory;
 use Mews\Pos\DataMapper\ResponseValueFormatter\ResponseValueFormatterInterface;
 use Mews\Pos\DataMapper\ResponseValueMapper\ResponseValueMapperInterface;
 use Mews\Pos\Factory\ResponseDataMapperFactory;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Factory\ResponseDataMapperFactory
- */
+#[CoversClass(ResponseDataMapperFactory::class)]
 class ResponseDataMapperFactoryTest extends TestCase
 {
     /**

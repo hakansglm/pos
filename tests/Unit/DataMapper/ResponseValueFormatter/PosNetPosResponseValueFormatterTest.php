@@ -11,11 +11,10 @@ use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\Gateways\PosNetV1Pos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\ResponseValueFormatter\PosNetPosResponseValueFormatter
- */
+#[CoversClass(PosNetPosResponseValueFormatter::class)]
 class PosNetPosResponseValueFormatterTest extends TestCase
 {
     private PosNetPosResponseValueFormatter $formatter;

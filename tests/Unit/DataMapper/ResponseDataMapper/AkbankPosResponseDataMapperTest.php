@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper;
 
+use Mews\Pos\DataMapper\ResponseDataMapper\AbstractResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\AkbankPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseValueFormatter\ResponseValueFormatterInterface;
 use Mews\Pos\DataMapper\ResponseValueMapper\ResponseValueMapperInterface;
@@ -14,14 +15,14 @@ use Mews\Pos\Factory\ResponseValueMapperFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\DataMapper\ResponseDataMapper\AkbankPosResponseDataMapper
- * @covers \Mews\Pos\DataMapper\ResponseDataMapper\AbstractResponseDataMapper
- */
+#[CoversClass(AkbankPosResponseDataMapper::class)]
+#[CoversClass(AbstractResponseDataMapper::class)]
 class AkbankPosResponseDataMapperTest extends TestCase
 {
     private AkbankPosResponseDataMapper $responseDataMapper;
@@ -60,10 +61,8 @@ class AkbankPosResponseDataMapperTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @testWith ["VPS-0000", true]
-     * ["VPS-1073", false]
-     */
+    #[TestWith(['VPS-0000', true])]
+    #[TestWith(['VPS-1073', false])]
     public function testIs3dAuthSuccess(?string $mdStatus, bool $expected): void
     {
         $actual = $this->responseDataMapper->is3dAuthSuccess($mdStatus);
@@ -71,11 +70,8 @@ class AkbankPosResponseDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @testWith [[], null]
-     * [{"responseCode": "VPS-0000"}, "VPS-0000"]
-     *
-     */
+    #[TestWith([[], null])]
+    #[TestWith([['responseCode' => 'VPS-0000'], 'VPS-0000'])]
     public function testExtractMdStatus(array $responseData, ?string $expected): void
     {
         $actual = $this->responseDataMapper->extractMdStatus($responseData);

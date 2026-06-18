@@ -21,18 +21,19 @@ use Mews\Pos\Exceptions\UnsupportedFormFormatException;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
+use Mews\Pos\Gateways\AbstractGateway;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\AssecoPosResponseDataMapperTest;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Gateways\AssecoPos
- * @covers \Mews\Pos\Gateways\AbstractGateway
- */
+#[CoversClass(AssecoPos::class)]
+#[CoversClass(AbstractGateway::class)]
 class AssecoPosTest extends TestCase
 {
     private AssecoPosAccount $account;
@@ -138,10 +139,8 @@ class AssecoPosTest extends TestCase
         $this->assertFalse($this->pos->isTestMode());
     }
 
-    /**
-     * @testWith [true]
-     * [false]
-     */
+    #[TestWith([true])]
+    #[TestWith([false])]
     public function testGet3DFormData(
         bool $isWithCard
     ): void {

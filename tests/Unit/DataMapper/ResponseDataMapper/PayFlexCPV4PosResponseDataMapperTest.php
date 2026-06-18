@@ -7,6 +7,7 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper;
 
 use Generator;
+use Mews\Pos\DataMapper\ResponseDataMapper\AbstractResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\PayFlexCPV4PosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\ResponseDataMapperInterface;
 use Mews\Pos\DataMapper\ResponseValueFormatter\ResponseValueFormatterInterface;
@@ -15,14 +16,14 @@ use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\PayFlexCPV4Pos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\DataMapper\ResponseDataMapper\PayFlexCPV4PosResponseDataMapper
- * @covers \Mews\Pos\DataMapper\ResponseDataMapper\AbstractResponseDataMapper
- */
+#[CoversClass(PayFlexCPV4PosResponseDataMapper::class)]
+#[CoversClass(AbstractResponseDataMapper::class)]
 class PayFlexCPV4PosResponseDataMapperTest extends TestCase
 {
     private PayFlexCPV4PosResponseDataMapper $responseDataMapper;
@@ -62,12 +63,9 @@ class PayFlexCPV4PosResponseDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @testWith [null, true]
-     * ["", true]
-     * ["21", true]
-     *
-     */
+    #[TestWith([null, true])]
+    #[TestWith(['', true])]
+    #[TestWith(['21', true])]
     public function testIs3dAuthSuccess(?string $mdStatus, bool $expected): void
     {
         $actual = $this->responseDataMapper->is3dAuthSuccess($mdStatus);
@@ -75,11 +73,8 @@ class PayFlexCPV4PosResponseDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @testWith [[], null]
-     * [{"blabla": "1"}, null]
-     *
-     */
+    #[TestWith([[], null])]
+    #[TestWith([['blabla' => '1'], null])]
     public function testExtractMdStatus(array $responseData, ?string $expected): void
     {
         $actual = $this->responseDataMapper->extractMdStatus($responseData);

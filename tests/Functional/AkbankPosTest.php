@@ -13,6 +13,7 @@ use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Factory\PosFactory;
 use Mews\Pos\PosInterface;
 use Monolog\Test\TestCase;
+use PHPUnit\Framework\Attributes\Depends;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class AkbankPosTest extends TestCase
@@ -92,9 +93,7 @@ class AkbankPosTest extends TestCase
         return $response;
     }
 
-    /**
-     * @depends testNonSecurePaymentSuccess
-     */
+    #[Depends('testNonSecurePaymentSuccess')]
     public function testCancelSuccess(array $lastResponse): array
     {
         $statusOrder = $this->createCancelOrder($this->pos::class, $lastResponse);
@@ -119,9 +118,7 @@ class AkbankPosTest extends TestCase
         return $lastResponse;
     }
 
-    /**
-     * @depends testCancelSuccess
-     */
+    #[Depends('testCancelSuccess')]
     public function testOrderHistorySuccess(array $lastResponse): void
     {
         $historyOrder = $this->createOrderHistoryOrder($this->pos::class, $lastResponse);
@@ -201,9 +198,7 @@ class AkbankPosTest extends TestCase
         return $response;
     }
 
-    /**
-     * @depends testNonSecurePrePaymentSuccess
-     */
+    #[Depends('testNonSecurePrePaymentSuccess')]
     public function testNonSecurePostPaymentSuccess(array $lastResponse): array
     {
         $order         = $this->createPostPayOrder($this->pos::class, $lastResponse);
@@ -231,9 +226,7 @@ class AkbankPosTest extends TestCase
         return $lastResponse;
     }
 
-    /**
-     * @depends testNonSecurePostPaymentSuccess
-     */
+    #[Depends('testNonSecurePostPaymentSuccess')]
     public function testRefundSuccess(array $lastResponse): array
     {
         $refundOrder = $this->createRefundOrder($this->pos::class, $lastResponse);
@@ -292,9 +285,7 @@ class AkbankPosTest extends TestCase
         return $response;
     }
 
-    /**
-     * @depends testNonSecurePaymentRecurringSuccess
-     */
+    #[Depends('testNonSecurePaymentRecurringSuccess')]
     public function testCancelRecurringOrder(array $lastResponse): array
     {
         $statusOrder = [
@@ -322,9 +313,7 @@ class AkbankPosTest extends TestCase
         return $response;
     }
 
-    /**
-     * @depends testNonSecurePaymentRecurringSuccess
-     */
+    #[Depends('testNonSecurePaymentRecurringSuccess')]
     public function testCancelPendingRecurringOrder(array $lastResponse): array
     {
         $statusOrder = [
@@ -353,9 +342,7 @@ class AkbankPosTest extends TestCase
         return $response;
     }
 
-    /**
-     * @depends testCancelPendingRecurringOrder
-     */
+    #[Depends('testCancelPendingRecurringOrder')]
     public function testCancelAllPendingRecurringOrder(array $lastResponse): array
     {
         $statusOrder = [
@@ -384,9 +371,7 @@ class AkbankPosTest extends TestCase
         return $response;
     }
 
-    /**
-     * @depends testCancelRecurringOrder
-     */
+    #[Depends('testCancelRecurringOrder')]
     public function testRecurringOrderHistorySuccess(array $lastResponse): void
     {
         $historyOrder = $this->createOrderHistoryOrder($this->recurringPos::class, $lastResponse);
@@ -409,9 +394,7 @@ class AkbankPosTest extends TestCase
         $this->assertTrue($eventIsThrown);
     }
 
-    /**
-     * @depends testCancelRecurringOrder
-     */
+    #[Depends('testCancelRecurringOrder')]
     public function testRecurringHistorySuccess(): void
     {
         $historyOrder = $this->createHistoryOrder($this->pos::class, [], '127.0.0.1');

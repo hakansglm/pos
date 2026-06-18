@@ -6,18 +6,20 @@
 
 namespace Mews\Pos\Tests\Unit\Factory;
 
+use Mews\Pos\Entity\Account\AkbankPosAccount;
+use Mews\Pos\Entity\Account\BoaPosAccount;
+use Mews\Pos\Entity\Account\ParamPosAccount;
 use Mews\Pos\Entity\Account\PayForPosAccount;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\Factory\AccountFactory
- * @covers \Mews\Pos\Entity\Account\BoaPosAccount
- * @covers \Mews\Pos\Entity\Account\AkbankPosAccount
- * @covers \Mews\Pos\Entity\Account\ParamPosAccount
- * @covers \Mews\Pos\Entity\Account\PayForPosAccount
- */
+#[CoversClass(AccountFactory::class)]
+#[CoversClass(BoaPosAccount::class)]
+#[CoversClass(AkbankPosAccount::class)]
+#[CoversClass(ParamPosAccount::class)]
+#[CoversClass(PayForPosAccount::class)]
 class AccountFactoryTest extends TestCase
 {
     public function testCreateBoaPosAccount(): void
@@ -80,7 +82,7 @@ class AccountFactoryTest extends TestCase
             'UcBN0',
             PosInterface::MODEL_3D_SECURE,
             '12345678',
-            \Mews\Pos\Entity\Account\PayForPosAccount::MBR_ID_ZIRAAT_KATILIM
+            PayForPosAccount::MBR_ID_ZIRAAT_KATILIM
         );
 
         $this->assertSame('085300000009704', $account->getClientId());

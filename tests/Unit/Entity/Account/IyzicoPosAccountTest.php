@@ -6,13 +6,14 @@
 
 namespace Mews\Pos\Tests\Unit\Entity\Account;
 
+use Mews\Pos\Entity\Account\AbstractPosAccount;
+use Mews\Pos\Entity\Account\IyzicoPosAccount;
 use Mews\Pos\Factory\AccountFactory;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\Entity\Account\IyzicoPosAccount
- * @covers \Mews\Pos\Entity\Account\AbstractPosAccount
- */
+#[CoversClass(IyzicoPosAccount::class)]
+#[CoversClass(AbstractPosAccount::class)]
 class IyzicoPosAccountTest extends TestCase
 {
     public function testGetters(): void

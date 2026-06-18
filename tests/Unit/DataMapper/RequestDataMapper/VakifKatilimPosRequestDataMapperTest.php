@@ -8,6 +8,7 @@ namespace Mews\Pos\Tests\Unit\DataMapper\RequestDataMapper;
 
 use Generator;
 use Mews\Pos\Crypt\CryptInterface;
+use Mews\Pos\DataMapper\RequestDataMapper\AbstractRequestDataMapper;
 use Mews\Pos\DataMapper\RequestDataMapper\VakifKatilimPosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestValueFormatter\VakifKatilimPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueMapper\VakifKatilimPosRequestValueMapper;
@@ -18,14 +19,13 @@ use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\VakifKatilimPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
-/**
- * @covers \Mews\Pos\DataMapper\RequestDataMapper\VakifKatilimPosRequestDataMapper
- * @covers \Mews\Pos\DataMapper\RequestDataMapper\AbstractRequestDataMapper
- */
+#[CoversClass(VakifKatilimPosRequestDataMapper::class)]
+#[CoversClass(AbstractRequestDataMapper::class)]
 class VakifKatilimPosRequestDataMapperTest extends TestCase
 {
     private BoaPosAccount $account;

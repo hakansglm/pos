@@ -22,17 +22,17 @@ use Mews\Pos\Exceptions\UnsupportedFormFormatException;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
+use Mews\Pos\Gateways\AbstractGateway;
 use Mews\Pos\Gateways\IyzicoPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Gateways\IyzicoPos
- * @covers \Mews\Pos\Gateways\AbstractGateway
- */
+#[CoversClass(IyzicoPos::class)]
+#[CoversClass(AbstractGateway::class)]
 class IyzicoPosTest extends TestCase
 {
     private IyzicoPosAccount $account;

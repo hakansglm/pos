@@ -24,20 +24,20 @@ use Mews\Pos\Exceptions\UnsupportedPaymentModelException;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
+use Mews\Pos\Gateways\AbstractGateway;
 use Mews\Pos\Gateways\PayFlexV4Pos;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Tests\Unit\DataMapper\RequestDataMapper\PayFlexV4PosRequestDataMapperTest;
 use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\PayFlexV4PosResponseDataMapperTest;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 
-/**
- * @covers \Mews\Pos\Gateways\PayFlexV4Pos
- * @covers \Mews\Pos\Gateways\AbstractGateway
- */
+#[CoversClass(PayFlexV4Pos::class)]
+#[CoversClass(AbstractGateway::class)]
 class PayFlexV4PosTest extends TestCase
 {
     private PayFlexPosAccount $account;

@@ -6,17 +6,18 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\RequestValueMapper;
 
+use Mews\Pos\DataMapper\RequestValueMapper\AbstractRequestValueMapper;
 use Mews\Pos\DataMapper\RequestValueMapper\PayFlexV4PosRequestValueMapper;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\PayFlexV4Pos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\RequestValueMapper\PayFlexV4PosRequestValueMapper
- * @covers \Mews\Pos\DataMapper\RequestValueMapper\AbstractRequestValueMapper
- */
+#[CoversClass(PayFlexV4PosRequestValueMapper::class)]
+#[CoversClass(AbstractRequestValueMapper::class)]
 class PayFlexV4PosRequestValueMapperTest extends TestCase
 {
     private PayFlexV4PosRequestValueMapper $valueMapper;
@@ -45,9 +46,7 @@ class PayFlexV4PosRequestValueMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @testWith ["Auth"]
-     */
+    #[TestWith(['Auth'])]
     public function testMapTxTypeException(string $txType): void
     {
         $this->expectException(UnsupportedTransactionTypeException::class);
@@ -60,11 +59,9 @@ class PayFlexV4PosRequestValueMapperTest extends TestCase
         $this->valueMapper->mapSecureType(PosInterface::MODEL_3D_SECURE);
     }
 
-    /**
-     * @testWith ["DAY", "Day"]
-     * ["MONTH", "Month"]
-     * ["YEAR", "Year"]
-     */
+    #[TestWith(['DAY', 'Day'])]
+    #[TestWith(['MONTH', 'Month'])]
+    #[TestWith(['YEAR', 'Year'])]
     public function testMapRecurringFrequency(string $frequency, string $expected): void
     {
         $this->assertSame($expected, $this->valueMapper->mapRecurringFrequency($frequency));

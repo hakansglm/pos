@@ -20,18 +20,18 @@ use Mews\Pos\Exceptions\UnsupportedFormFormatException;
 use Mews\Pos\Exceptions\UnsupportedPaymentModelException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
+use Mews\Pos\Gateways\AbstractGateway;
 use Mews\Pos\Gateways\VakifKatilimPos;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\VakifKatilimPosResponseDataMapperTest;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Gateways\VakifKatilimPos
- * @covers \Mews\Pos\Gateways\AbstractGateway
- */
+#[CoversClass(VakifKatilimPos::class)]
+#[CoversClass(AbstractGateway::class)]
 class VakifKatilimTest extends TestCase
 {
     private BoaPosAccount $account;

@@ -7,12 +7,11 @@
 namespace Mews\Pos\Tests\Unit\Factory;
 
 use Mews\Pos\Factory\CryptFactory;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Factory\CryptFactory
- */
+#[CoversClass(CryptFactory::class)]
 class CryptFactoryTest extends TestCase
 {
     /**

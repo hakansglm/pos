@@ -6,16 +6,16 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\RequestValueMapper;
 
+use Mews\Pos\DataMapper\RequestValueMapper\AbstractRequestValueMapper;
 use Mews\Pos\DataMapper\RequestValueMapper\IyzicoPosRequestValueMapper;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\IyzicoPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\RequestValueMapper\IyzicoPosRequestValueMapper
- * @covers \Mews\Pos\DataMapper\RequestValueMapper\AbstractRequestValueMapper
- */
+#[CoversClass(IyzicoPosRequestValueMapper::class)]
+#[CoversClass(AbstractRequestValueMapper::class)]
 class IyzicoPosRequestValueMapperTest extends TestCase
 {
     private IyzicoPosRequestValueMapper $valueMapper;

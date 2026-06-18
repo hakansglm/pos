@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper;
 
+use Mews\Pos\DataMapper\ResponseDataMapper\AbstractResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\VakifKatilimPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseValueFormatter\ResponseValueFormatterInterface;
 use Mews\Pos\DataMapper\ResponseValueMapper\ResponseValueMapperInterface;
@@ -15,14 +16,14 @@ use Mews\Pos\Factory\ResponseValueMapperFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\VakifKatilimPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\DataMapper\ResponseDataMapper\VakifKatilimPosResponseDataMapper
- * @covers \Mews\Pos\DataMapper\ResponseDataMapper\AbstractResponseDataMapper
- */
+#[CoversClass(VakifKatilimPosResponseDataMapper::class)]
+#[CoversClass(AbstractResponseDataMapper::class)]
 class VakifKatilimPosResponseDataMapperTest extends TestCase
 {
     private VakifKatilimPosResponseDataMapper $responseDataMapper;
@@ -64,13 +65,10 @@ class VakifKatilimPosResponseDataMapperTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @testWith [null, false]
-     * ["", false]
-     * ["HashDataError", false]
-     * ["00", true]
-     *
-     */
+    #[TestWith([null, false])]
+    #[TestWith(['', false])]
+    #[TestWith(['HashDataError', false])]
+    #[TestWith(['00', true])]
     public function testIs3dAuthSuccess(?string $mdStatus, bool $expected): void
     {
         $actual = $this->responseDataMapper->is3dAuthSuccess($mdStatus);
@@ -78,11 +76,8 @@ class VakifKatilimPosResponseDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @testWith [[], null]
-     * [{"ResponseCode": "00"}, "00"]
-     *
-     */
+    #[TestWith([[], null])]
+    #[TestWith([['ResponseCode' => '00'], '00'])]
     public function testExtractMdStatus(array $responseData, ?string $expected): void
     {
         $actual = $this->responseDataMapper->extractMdStatus($responseData);

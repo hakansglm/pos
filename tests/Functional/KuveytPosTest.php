@@ -12,6 +12,7 @@ use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Factory\PosFactory;
 use Mews\Pos\PosInterface;
 use Monolog\Test\TestCase;
+use PHPUnit\Framework\Attributes\Depends;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -114,9 +115,7 @@ class KuveytPosTest extends TestCase
         return $response;
     }
 
-    /**
-     * @depends testStatusSuccess
-     */
+    #[Depends('testStatusSuccess')]
     public function testCancelSuccess(array $lastResponse): array
     {
         $statusOrder = $this->createCancelOrder($this->pos::class, $lastResponse);
@@ -141,9 +140,7 @@ class KuveytPosTest extends TestCase
         return $lastResponse;
     }
 
-    /**
-     * @depends testNonSecurePaymentSuccess
-     */
+    #[Depends('testNonSecurePaymentSuccess')]
     public function testStatusSuccess(array $lastResponse): array
     {
         $statusOrder = $this->createStatusOrder($this->pos::class, $lastResponse);
@@ -184,9 +181,7 @@ class KuveytPosTest extends TestCase
         return $response;
     }
 
-    /**
-     * @depends testNonSecurePaymentSuccessForRefundTest
-     */
+    #[Depends('testNonSecurePaymentSuccessForRefundTest')]
     public function testFullRefundFail(array $lastResponse): array
     {
         $refundOrder = $this->createRefundOrder($this->pos::class, $lastResponse);
@@ -215,9 +210,7 @@ class KuveytPosTest extends TestCase
         return $lastResponse;
     }
 
-    /**
-     * @depends testNonSecurePaymentSuccessForRefundTest
-     */
+    #[Depends('testNonSecurePaymentSuccessForRefundTest')]
     public function testPartialRefundSuccess(array $lastResponse): array
     {
         $refundOrder           = $this->createRefundOrder(

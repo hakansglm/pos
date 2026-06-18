@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper;
 
+use Mews\Pos\DataMapper\ResponseDataMapper\AbstractResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\PayFlexV4PosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseValueFormatter\ResponseValueFormatterInterface;
 use Mews\Pos\DataMapper\ResponseValueMapper\ResponseValueMapperInterface;
@@ -13,14 +14,14 @@ use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\PayFlexV4Pos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\DataMapper\ResponseDataMapper\PayFlexV4PosResponseDataMapper
- * @covers \Mews\Pos\DataMapper\ResponseDataMapper\AbstractResponseDataMapper
- */
+#[CoversClass(PayFlexV4PosResponseDataMapper::class)]
+#[CoversClass(AbstractResponseDataMapper::class)]
 class PayFlexV4PosResponseDataMapperTest extends TestCase
 {
     private PayFlexV4PosResponseDataMapper $responseDataMapper;
@@ -60,13 +61,10 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @testWith [null, false]
-     * ["", false]
-     * ["A", false]
-     * ["Y", true]
-     *
-     */
+    #[TestWith([null, false])]
+    #[TestWith(['', false])]
+    #[TestWith(['A', false])]
+    #[TestWith(['Y', true])]
     public function testIs3dAuthSuccess(?string $mdStatus, bool $expected): void
     {
         $actual = $this->responseDataMapper->is3dAuthSuccess($mdStatus);
@@ -74,12 +72,9 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @testWith [[], null]
-     * [{"Status": "Y"}, "Y"]
-     * [{"Status": "Y"}, "Y"]
-     *
-     */
+    #[TestWith([[], null])]
+    #[TestWith([['Status' => 'Y'], 'Y'])]
+    #[TestWith([['Status' => 'Y'], 'Y'])]
     public function testExtractMdStatus(array $responseData, ?string $expected): void
     {
         $actual = $this->responseDataMapper->extractMdStatus($responseData);

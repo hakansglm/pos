@@ -14,6 +14,7 @@ use Mews\Pos\Factory\PosFactory;
 use Mews\Pos\Gateways\ParamPos;
 use Mews\Pos\PosInterface;
 use Monolog\Test\TestCase;
+use PHPUnit\Framework\Attributes\Depends;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class ParamPosTest extends TestCase
@@ -176,9 +177,7 @@ class ParamPosTest extends TestCase
         return $response;
     }
 
-    /**
-     * @depends testNonSecurePrePaymentSuccess
-     */
+    #[Depends('testNonSecurePrePaymentSuccess')]
     public function testNonSecurePostPaymentSuccess(array $lastResponse): array
     {
         $order = $this->createPostPayOrder($this->pos::class, $lastResponse);
@@ -207,9 +206,7 @@ class ParamPosTest extends TestCase
         return $response;
     }
 
-    /**
-     * @depends testNonSecurePaymentSuccess
-     */
+    #[Depends('testNonSecurePaymentSuccess')]
     public function testStatusSuccess(array $lastResponse): array
     {
         $statusOrder = $this->createStatusOrder($this->pos::class, $lastResponse);
@@ -234,10 +231,8 @@ class ParamPosTest extends TestCase
         return $lastResponse;
     }
 
-    /**
-     * @depends testNonSecurePaymentSuccess
-     * @depends testStatusSuccess
-     */
+    #[Depends('testNonSecurePaymentSuccess')]
+    #[Depends('testStatusSuccess')]
     public function testCancelSuccess(array $lastResponse): array
     {
         $cancelOrder = $this->createCancelOrder($this->pos::class, $lastResponse);

@@ -7,11 +7,10 @@
 namespace Mews\Pos\Tests\Unit\Serializer\Decoder;
 
 use Mews\Pos\Serializer\Decoder\PayForPosXmlDecoder;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\Serializer\Decoder\PayForPosXmlDecoder
- */
+#[CoversClass(PayForPosXmlDecoder::class)]
 class PayForPosXmlDecoderTest extends TestCase
 {
     private PayForPosXmlDecoder $decoder;

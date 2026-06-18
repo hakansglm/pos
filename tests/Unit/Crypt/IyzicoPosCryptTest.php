@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
+use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\IyzicoPosCrypt;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Entity\Account\IyzicoPosAccount;
@@ -13,13 +14,13 @@ use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\IyzicoPos;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Crypt\IyzicoPosCrypt
- * @covers \Mews\Pos\Crypt\AbstractCrypt
- */
+#[CoversClass(IyzicoPosCrypt::class)]
+#[CoversClass(AbstractCrypt::class)]
 class IyzicoPosCryptTest extends TestCase
 {
     private IyzicoPosAccount $account;
@@ -91,10 +92,8 @@ class IyzicoPosCryptTest extends TestCase
         $this->assertSame($expected, $this->crypt->check3DHash($this->account, $responseData));
     }
 
-    /**
-     * @testWith [null, 24]
-     *           [16, 16]
-     */
+    #[TestWith([null, 24])]
+    #[TestWith([16, 16])]
     public function testGenerateRandomString(?int $length, int $expectedLength): void
     {
         $str = null !== $length ? $this->crypt->generateRandomString($length) : $this->crypt->generateRandomString();

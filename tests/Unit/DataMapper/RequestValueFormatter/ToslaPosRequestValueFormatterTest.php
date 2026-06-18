@@ -9,11 +9,11 @@ namespace Mews\Pos\Tests\Unit\DataMapper\RequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\ToslaPosRequestValueFormatter;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\ToslaPos;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\RequestValueFormatter\ToslaPosRequestValueFormatter
- */
+#[CoversClass(ToslaPosRequestValueFormatter::class)]
 class ToslaPosRequestValueFormatterTest extends TestCase
 {
     private ToslaPosRequestValueFormatter $formatter;
@@ -34,31 +34,25 @@ class ToslaPosRequestValueFormatterTest extends TestCase
     }
 
 
-    /**
-     * @testWith [0, 0]
-     *            [1, 0]
-     *            [2, 2]
-     */
+    #[TestWith([0, 0])]
+    #[TestWith([1, 0])]
+    #[TestWith([2, 2])]
     public function testFormatInstallment(int $installment, int $expected): void
     {
         $actual = $this->formatter->formatInstallment($installment);
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @testWith [1.1, 110]
-     * [1, 100]
-     */
+    #[TestWith([1.1, 110])]
+    #[TestWith([1, 100])]
     public function testFormatAmount(float $amount, $expected): void
     {
         $actual = $this->formatter->formatAmount($amount);
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @testWith ["ExpireDate", "04/24"]
-     * ["expireDate", "0424"]
-     */
+    #[TestWith(['ExpireDate', '04/24'])]
+    #[TestWith(['expireDate', '0424'])]
     public function testFormatCreditCardExpDate(string $fieldName, string $expected): void
     {
         $expDate = new \DateTime('2024-04-14T16:45:30.000');
@@ -66,10 +60,8 @@ class ToslaPosRequestValueFormatterTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @testWith ["abc"]
-     * [""]
-     */
+    #[TestWith(['abc'])]
+    #[TestWith([''])]
     public function testFormatCreditCardExpDateUnSupportedField(string $fieldName): void
     {
         $expDate = new \DateTime('2024-04-14T16:45:30.000');
@@ -87,11 +79,9 @@ class ToslaPosRequestValueFormatterTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @testWith ["abc"]
-     * [null]
-     * [""]
-     */
+    #[TestWith(['abc'])]
+    #[TestWith([null])]
+    #[TestWith([''])]
     public function testFormatDateTimeUnsupportedField(?string $fieldName): void
     {
         $dateTime = new \DateTime('2024-04-14T16:45:30.000');

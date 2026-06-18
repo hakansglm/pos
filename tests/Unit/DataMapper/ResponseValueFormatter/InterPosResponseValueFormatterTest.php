@@ -10,11 +10,10 @@ use Mews\Pos\DataMapper\ResponseValueFormatter\InterPosResponseValueFormatter;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\InterPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\ResponseValueFormatter\InterPosResponseValueFormatter
- */
+#[CoversClass(InterPosResponseValueFormatter::class)]
 class InterPosResponseValueFormatterTest extends TestCase
 {
     private InterPosResponseValueFormatter $formatter;

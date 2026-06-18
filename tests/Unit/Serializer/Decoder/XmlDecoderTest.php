@@ -7,12 +7,11 @@
 namespace Mews\Pos\Tests\Unit\Serializer\Decoder;
 
 use Mews\Pos\Serializer\Decoder\XmlDecoder;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
-/**
- * @covers \Mews\Pos\Serializer\Decoder\XmlDecoder
- */
+#[CoversClass(XmlDecoder::class)]
 class XmlDecoderTest extends TestCase
 {
     private XmlDecoder $decoder;

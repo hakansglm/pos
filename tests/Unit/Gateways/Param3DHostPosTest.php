@@ -22,19 +22,19 @@ use Mews\Pos\Exceptions\UnsupportedFormFormatException;
 use Mews\Pos\Exceptions\UnsupportedPaymentModelException;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Factory\AccountFactory;
+use Mews\Pos\Gateways\AbstractGateway;
 use Mews\Pos\Gateways\Param3DHostPos;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Tests\Unit\DataMapper\RequestDataMapper\Param3DHostPosRequestDataMapperTest;
 use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\ParamPosResponseDataMapperTest;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Gateways\Param3DHostPos
- * @covers \Mews\Pos\Gateways\AbstractGateway
- */
+#[CoversClass(Param3DHostPos::class)]
+#[CoversClass(AbstractGateway::class)]
 class Param3DHostPosTest extends TestCase
 {
     private ParamPosAccount $account;

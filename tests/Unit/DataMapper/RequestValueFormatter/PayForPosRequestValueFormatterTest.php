@@ -9,11 +9,11 @@ namespace Mews\Pos\Tests\Unit\DataMapper\RequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\PayForPosRequestValueFormatter;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\PayForPos;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\RequestValueFormatter\PayForPosRequestValueFormatter
- */
+#[CoversClass(PayForPosRequestValueFormatter::class)]
 class PayForPosRequestValueFormatterTest extends TestCase
 {
     private PayForPosRequestValueFormatter $formatter;
@@ -33,31 +33,25 @@ class PayForPosRequestValueFormatterTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @testWith [0, "0"]
-     *            [1, "0"]
-     *            [2, "2"]
-     */
+    #[TestWith([0, '0'])]
+    #[TestWith([1, '0'])]
+    #[TestWith([2, '2'])]
     public function testFormatInstallment(int $installment, string $expected): void
     {
         $actual = $this->formatter->formatInstallment($installment);
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @testWith [1.1, "1.1"]
-     * [1.0, "1"]
-     */
+    #[TestWith([1.1, '1.1'])]
+    #[TestWith([1.0, '1'])]
     public function testFormatAmount(float $amount, $expected): void
     {
         $actual = $this->formatter->formatAmount($amount);
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @testWith ["", "0424"]
-     * ["abc", "0424"]
-     */
+    #[TestWith(['', '0424'])]
+    #[TestWith(['abc', '0424'])]
     public function testFormatCreditCardExpDate(string $fieldName, string $expected): void
     {
         $expDate = new \DateTime('2024-04-14T16:45:30.000');

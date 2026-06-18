@@ -13,13 +13,12 @@ use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\PosNetV1Pos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Crypt\PosNetV1PosCrypt
- * @covers \Mews\Pos\Crypt\AbstractCrypt
- */
+#[CoversClass(PosNetV1PosCrypt::class)]
+#[CoversClass(\Mews\Pos\Crypt\AbstractCrypt::class)]
 class PosNetV1PosCryptTest extends TestCase
 {
     public PosNetV1PosCrypt $crypt;

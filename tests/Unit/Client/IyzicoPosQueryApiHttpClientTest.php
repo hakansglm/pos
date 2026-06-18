@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\Client;
 
+use Mews\Pos\Client\AbstractHttpClient;
+use Mews\Pos\Client\AbstractIyzicoPosHttpClient;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\IyzicoPosQueryApiHttpClient;
 use Mews\Pos\Crypt\IyzicoPosCrypt;
@@ -15,6 +17,7 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\IyzicoPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -22,11 +25,9 @@ use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Client\IyzicoPosQueryApiHttpClient
- * @covers \Mews\Pos\Client\AbstractIyzicoPosHttpClient
- * @covers \Mews\Pos\Client\AbstractHttpClient
- */
+#[CoversClass(IyzicoPosQueryApiHttpClient::class)]
+#[CoversClass(AbstractIyzicoPosHttpClient::class)]
+#[CoversClass(AbstractHttpClient::class)]
 class IyzicoPosQueryApiHttpClientTest extends TestCase
 {
     use HttpClientTestTrait;

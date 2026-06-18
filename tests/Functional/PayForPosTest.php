@@ -16,6 +16,8 @@ use Mews\Pos\Factory\PosFactory;
 use Mews\Pos\Gateways\PayForPos;
 use Mews\Pos\PosInterface;
 use Monolog\Test\TestCase;
+use PHPUnit\Framework\Attributes\Depends;
+use PHPUnit\Framework\Attributes\TestWith;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class PayForPosTest extends TestCase
@@ -88,9 +90,7 @@ class PayForPosTest extends TestCase
         return $response;
     }
 
-    /**
-     * @depends testNonSecurePostPaymentSuccess
-     */
+    #[Depends('testNonSecurePostPaymentSuccess')]
     public function testStatusSuccess(array $lastResponse): array
     {
         $statusOrder = $this->createStatusOrder($this->pos::class, $lastResponse);
@@ -115,10 +115,8 @@ class PayForPosTest extends TestCase
         return $lastResponse;
     }
 
-    /**
-     * @depends testNonSecurePaymentSuccess
-     * @depends testStatusSuccess
-     */
+    #[Depends('testNonSecurePaymentSuccess')]
+    #[Depends('testStatusSuccess')]
     public function testCancelSuccess(array $lastResponse): array
     {
         $statusOrder = $this->createCancelOrder($this->pos::class, $lastResponse);
@@ -144,9 +142,7 @@ class PayForPosTest extends TestCase
     }
 
 
-    /**
-     * @depends testCancelSuccess
-     */
+    #[Depends('testCancelSuccess')]
     public function testOrderHistorySuccess(array $lastResponse): void
     {
         $historyOrder = $this->createOrderHistoryOrder($this->pos::class, $lastResponse);
@@ -223,9 +219,7 @@ class PayForPosTest extends TestCase
         return $response;
     }
 
-    /**
-     * @depends testNonSecurePrePaymentSuccess
-     */
+    #[Depends('testNonSecurePrePaymentSuccess')]
     public function testNonSecurePostPaymentSuccess(array $lastResponse): array
     {
         $order = $this->createPostPayOrder($this->pos::class, $lastResponse);
@@ -282,11 +276,9 @@ class PayForPosTest extends TestCase
         $this->assertTrue($eventIsThrown);
     }
 
-    /**
-     * @testWith ["3d"]
-     *           ["3d_pay"]
-     */
-    public function testGet3DFormDataAsHtml($paymentModel): void
+    #[TestWith([PosInterface::MODEL_3D_SECURE])]
+    #[TestWith([PosInterface::MODEL_3D_PAY])]
+    public function testGet3DFormDataAsHtml(string $paymentModel): void
     {
         $order = $this->createPaymentOrder($paymentModel);
 
@@ -303,9 +295,7 @@ class PayForPosTest extends TestCase
         $this->assertNotEmpty($formData);
     }
 
-    /**
-     * @depends testNonSecurePostPaymentSuccess
-     */
+    #[Depends('testNonSecurePostPaymentSuccess')]
     public function testRefundFail(array $lastResponse): array
     {
         $refundOrder = $this->createRefundOrder($this->pos::class, $lastResponse);

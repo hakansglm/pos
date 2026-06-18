@@ -13,6 +13,7 @@ use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Factory\PosFactory;
 use Mews\Pos\PosInterface;
 use Monolog\Test\TestCase;
+use PHPUnit\Framework\Attributes\Depends;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class PayFlexV4PosTest extends TestCase
@@ -135,9 +136,7 @@ class PayFlexV4PosTest extends TestCase
         return $response;
     }
 
-    /**
-     * @depends testNonSecurePaymentSuccess
-     */
+    #[Depends('testNonSecurePaymentSuccess')]
     public function testCancelSuccess(array $lastResponse): array
     {
         $statusOrder = $this->createCancelOrder($this->pos::class, $lastResponse);
@@ -196,9 +195,7 @@ class PayFlexV4PosTest extends TestCase
         return $response;
     }
 
-    /**
-     * @depends testNonSecurePrePaymentSuccess
-     */
+    #[Depends('testNonSecurePrePaymentSuccess')]
     public function testNonSecurePostPaymentSuccess(array $lastResponse): array
     {
         $order         = $this->createPostPayOrder($this->pos::class, $lastResponse);
@@ -226,9 +223,7 @@ class PayFlexV4PosTest extends TestCase
         return $response;
     }
 
-    /**
-     * @depends testNonSecurePostPaymentSuccess
-     */
+    #[Depends('testNonSecurePostPaymentSuccess')]
     public function testRefundSuccess(array $lastResponse): array
     {
         $refundOrder = $this->createRefundOrder($this->pos::class, $lastResponse);

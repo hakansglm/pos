@@ -21,18 +21,19 @@ use Mews\Pos\Exceptions\UnsupportedFormFormatException;
 use Mews\Pos\Exceptions\UnsupportedPaymentModelException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
+use Mews\Pos\Gateways\AbstractGateway;
 use Mews\Pos\Gateways\GarantiPos;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\GarantiPosResponseDataMapperTest;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Gateways\GarantiPos
- * @covers \Mews\Pos\Gateways\AbstractGateway
- */
+#[CoversClass(GarantiPos::class)]
+#[CoversClass(AbstractGateway::class)]
 class GarantiPosTest extends TestCase
 {
     private GarantiPosAccount $account;
@@ -151,9 +152,7 @@ class GarantiPosTest extends TestCase
         $this->pos = $this->createGateway($config);
     }
 
-    /**
-     * @testWith [true]
-     */
+    #[TestWith([true])]
     public function testGet3DFormData(
         bool $isWithCard
     ): void {

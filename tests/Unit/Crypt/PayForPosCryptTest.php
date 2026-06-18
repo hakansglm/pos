@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
+use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\PayForPosCrypt;
 use Mews\Pos\Entity\Account\PayForPosAccount;
 use Mews\Pos\Exceptions\NotImplementedException;
@@ -13,13 +14,12 @@ use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\PayForPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Crypt\PayForPosCrypt
- * @covers \Mews\Pos\Crypt\AbstractCrypt
- */
+#[CoversClass(PayForPosCrypt::class)]
+#[CoversClass(AbstractCrypt::class)]
 class PayForPosCryptTest extends TestCase
 {
     public PayForPosCrypt $crypt;

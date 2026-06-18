@@ -9,11 +9,11 @@ namespace Mews\Pos\Tests\Unit\DataMapper\RequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\IyzicoPosRequestValueFormatter;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\IyzicoPos;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\RequestValueFormatter\IyzicoPosRequestValueFormatter
- */
+#[CoversClass(IyzicoPosRequestValueFormatter::class)]
 class IyzicoPosRequestValueFormatterTest extends TestCase
 {
     private IyzicoPosRequestValueFormatter $formatter;
@@ -30,22 +30,18 @@ class IyzicoPosRequestValueFormatterTest extends TestCase
         $this->assertFalse($this->formatter::supports(AkbankPos::class));
     }
 
-    /**
-     * @testWith [0, 1]
-     *           [1, 1]
-     *           [2, 2]
-     *           [12, 12]
-     */
+    #[TestWith([0, 1])]
+    #[TestWith([1, 1])]
+    #[TestWith([2, 2])]
+    #[TestWith([12, 12])]
     public function testFormatInstallment(int $installment, int $expected): void
     {
         $this->assertSame($expected, $this->formatter->formatInstallment($installment));
     }
 
-    /**
-     * @testWith [1.0, 1.0]
-     *           [100.25, 100.25]
-     *           [0.0, 0.0]
-     */
+    #[TestWith([1.0, 1.0])]
+    #[TestWith([100.25, 100.25])]
+    #[TestWith([0.0, 0.0])]
     public function testFormatAmount(float $amount, float $expected): void
     {
         $this->assertSame($expected, $this->formatter->formatAmount($amount));
@@ -70,9 +66,7 @@ class IyzicoPosRequestValueFormatterTest extends TestCase
         $this->formatter->formatCardExpDate($expDate, 'unsupportedField');
     }
 
-    /**
-     * @testWith ["someField", "2024-06-15"]
-     */
+    #[TestWith(['someField', '2024-06-15'])]
     public function testFormatDateTime(string $fieldName, string $expected): void
     {
         $dateTime = new \DateTimeImmutable('2024-06-15');

@@ -11,11 +11,10 @@ use Mews\Pos\Exceptions\BankClassNullException;
 use Mews\Pos\Exceptions\BankNotFoundException;
 use Mews\Pos\Factory\PosFactory;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\Factory\PosFactory
- */
+#[CoversClass(PosFactory::class)]
 class PosFactoryTest extends TestCase
 {
     /**

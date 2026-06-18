@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Client;
 
+use Mews\Pos\Client\AbstractHttpClient;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\PosNetV1PosHttpClient;
 use Mews\Pos\Crypt\CryptInterface;
@@ -15,6 +16,7 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\Gateways\PosNetV1Pos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -23,10 +25,8 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
-/**
- * @covers \Mews\Pos\Client\PosNetV1PosHttpClient
- * @covers \Mews\Pos\Client\AbstractHttpClient
- */
+#[CoversClass(PosNetV1PosHttpClient::class)]
+#[CoversClass(AbstractHttpClient::class)]
 class PosNetV1PosHttpClientTest extends TestCase
 {
     use HttpClientTestTrait;

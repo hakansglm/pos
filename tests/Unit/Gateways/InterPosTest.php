@@ -21,18 +21,19 @@ use Mews\Pos\Exceptions\UnsupportedFormFormatException;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
+use Mews\Pos\Gateways\AbstractGateway;
 use Mews\Pos\Gateways\InterPos;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\InterPosResponseDataMapperTest;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Gateways\InterPos
- * @covers \Mews\Pos\Gateways\AbstractGateway
- */
+#[CoversClass(InterPos::class)]
+#[CoversClass(AbstractGateway::class)]
 class InterPosTest extends TestCase
 {
     private InterPosAccount $account;
@@ -123,10 +124,8 @@ class InterPosTest extends TestCase
         $this->assertFalse($this->pos->isTestMode());
     }
 
-    /**
-     * @testWith [true]
-     * [false]
-     */
+    #[TestWith([true])]
+    #[TestWith([false])]
     public function testGet3DFormData(
         bool $isWithCard
     ): void {

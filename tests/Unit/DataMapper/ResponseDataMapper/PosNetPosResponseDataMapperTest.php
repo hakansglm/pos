@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper;
 
+use Mews\Pos\DataMapper\ResponseDataMapper\AbstractResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\PosNetPosResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseValueFormatter\ResponseValueFormatterInterface;
 use Mews\Pos\DataMapper\ResponseValueMapper\ResponseValueMapperInterface;
@@ -13,14 +14,14 @@ use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\DataMapper\ResponseDataMapper\PosNetPosResponseDataMapper
- * @covers \Mews\Pos\DataMapper\ResponseDataMapper\AbstractResponseDataMapper
- */
+#[CoversClass(PosNetPosResponseDataMapper::class)]
+#[CoversClass(AbstractResponseDataMapper::class)]
 class PosNetPosResponseDataMapperTest extends TestCase
 {
     private PosNetPosResponseDataMapper $responseDataMapper;
@@ -60,16 +61,13 @@ class PosNetPosResponseDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @testWith [null, false]
-     * ["", false]
-     * ["2", true]
-     * ["3", true]
-     * ["4", true]
-     * ["7", false]
-     * ["1", true]
-     *
-     */
+    #[TestWith([null, false])]
+    #[TestWith(['', false])]
+    #[TestWith(['2', true])]
+    #[TestWith(['3', true])]
+    #[TestWith(['4', true])]
+    #[TestWith(['7', false])]
+    #[TestWith(['1', true])]
     public function testIs3dAuthSuccess(?string $mdStatus, bool $expected): void
     {
         $actual = $this->responseDataMapper->is3dAuthSuccess($mdStatus);
@@ -77,11 +75,8 @@ class PosNetPosResponseDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @testWith [[], null]
-     * [{"oosResolveMerchantDataResponse": {"mdStatus": "1"}}, "1"]
-     *
-     */
+    #[TestWith([[], null])]
+    #[TestWith([['oosResolveMerchantDataResponse' => ['mdStatus' => '1']], '1'])]
     public function testExtractMdStatus(array $responseData, ?string $expected): void
     {
         $actual = $this->responseDataMapper->extractMdStatus($responseData);

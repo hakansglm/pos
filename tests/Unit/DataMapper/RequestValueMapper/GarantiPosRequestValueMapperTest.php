@@ -6,17 +6,18 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\RequestValueMapper;
 
+use Mews\Pos\DataMapper\RequestValueMapper\AbstractRequestValueMapper;
 use Mews\Pos\DataMapper\RequestValueMapper\GarantiPosRequestValueMapper;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\GarantiPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\RequestValueMapper\GarantiPosRequestValueMapper
- * @covers \Mews\Pos\DataMapper\RequestValueMapper\AbstractRequestValueMapper
- */
+#[CoversClass(GarantiPosRequestValueMapper::class)]
+#[CoversClass(AbstractRequestValueMapper::class)]
 class GarantiPosRequestValueMapperTest extends TestCase
 {
     private GarantiPosRequestValueMapper $valueMapper;
@@ -45,9 +46,7 @@ class GarantiPosRequestValueMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @testWith ["sales"]
-     */
+    #[TestWith(['sales'])]
     public function testMapTxTypeException(string $txType): void
     {
         $this->expectException(UnsupportedTransactionTypeException::class);
@@ -63,11 +62,9 @@ class GarantiPosRequestValueMapperTest extends TestCase
         $this->assertSame($expected, $mappedSecureType);
     }
 
-    /**
-     * @testWith ["DAY", "D"]
-     * ["WEEK", "W"]
-     * ["MONTH", "M"]
-     */
+    #[TestWith(['DAY', 'D'])]
+    #[TestWith(['WEEK', 'W'])]
+    #[TestWith(['MONTH', 'M'])]
     public function testMapRecurringFrequency(string $frequency, string $expected): void
     {
         $this->assertSame($expected, $this->valueMapper->mapRecurringFrequency($frequency));

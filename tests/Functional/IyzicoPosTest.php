@@ -14,6 +14,7 @@ use Mews\Pos\Factory\PosFactory;
 use Mews\Pos\Gateways\IyzicoPos;
 use Mews\Pos\PosInterface;
 use Monolog\Test\TestCase;
+use PHPUnit\Framework\Attributes\Depends;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class IyzicoPosTest extends TestCase
@@ -137,9 +138,7 @@ class IyzicoPosTest extends TestCase
         $this->assertNotEmpty($response);
     }
 
-    /**
-     * @depends testNonSecurePaymentSuccess
-     */
+    #[Depends('testNonSecurePaymentSuccess')]
     public function testStatusSuccess(array $lastResponse): array
     {
         $statusOrder = $this->createStatusOrder($this->pos::class, $lastResponse);
@@ -163,9 +162,7 @@ class IyzicoPosTest extends TestCase
         return $lastResponse;
     }
 
-    /**
-     * @depends testCancelSuccess
-     */
+    #[Depends('testCancelSuccess')]
     public function testStatusCanceledOrder(array $lastResponse): void
     {
         $statusOrder = $this->createStatusOrder($this->pos::class, $lastResponse);
@@ -191,10 +188,8 @@ class IyzicoPosTest extends TestCase
         $this->assertNotEmpty($response);
     }
 
-    /**
-     * @depends testNonSecurePaymentSuccess
-     * @depends testStatusSuccess
-     */
+    #[Depends('testNonSecurePaymentSuccess')]
+    #[Depends('testStatusSuccess')]
     public function testCancelSuccess(array $lastResponse): array
     {
         $cancelOrder = $this->createCancelOrder($this->pos::class, $lastResponse);
@@ -218,9 +213,7 @@ class IyzicoPosTest extends TestCase
         return $lastResponse;
     }
 
-    /**
-     * @depends testCancelSuccess
-     */
+    #[Depends('testCancelSuccess')]
     public function testCancelForCanceledOrder(array $lastResponse): void
     {
         $cancelOrder = $this->createCancelOrder($this->pos::class, $lastResponse);
@@ -259,9 +252,7 @@ class IyzicoPosTest extends TestCase
         return $response;
     }
 
-    /**
-     * @depends testNonSecurePrePaymentSuccess
-     */
+    #[Depends('testNonSecurePrePaymentSuccess')]
     public function testNonSecurePostPaymentSuccess(array $lastResponse): array
     {
         $order = $this->createPostPayOrder(
@@ -293,9 +284,7 @@ class IyzicoPosTest extends TestCase
         return $response;
     }
 
-    /**
-     * @depends testNonSecurePostPaymentSuccess
-     */
+    #[Depends('testNonSecurePostPaymentSuccess')]
     public function testNonSecurePostPaymentFailWithAlreadyCompletedPostOrder(array $lastResponse): void
     {
         $order = $this->createPostPayOrder(
@@ -315,9 +304,7 @@ class IyzicoPosTest extends TestCase
         $this->assertNotEmpty($response);
     }
 
-    /**
-     * @depends testNonSecurePostPaymentSuccess
-     */
+    #[Depends('testNonSecurePostPaymentSuccess')]
     public function testRefundSuccess(array $lastResponse): array
     {
         $refundOrder           = $this->createRefundOrder($this->pos::class, $lastResponse);
@@ -342,9 +329,7 @@ class IyzicoPosTest extends TestCase
         return $lastResponse;
     }
 
-    /**
-     * @depends testCancelSuccess
-     */
+    #[Depends('testCancelSuccess')]
     public function testRefundFailAlreadyCanceledOrder(array $lastResponse): void
     {
         $refundOrder           = $this->createRefundOrder($this->pos::class, $lastResponse);
@@ -356,9 +341,7 @@ class IyzicoPosTest extends TestCase
     }
 
 
-    /**
-     * @depends testCancelSuccess
-     */
+    #[Depends('testCancelSuccess')]
     public function testOrderHistorySuccess(array $lastResponse): void
     {
         $historyOrder = $this->createOrderHistoryOrder($this->pos::class, $lastResponse);

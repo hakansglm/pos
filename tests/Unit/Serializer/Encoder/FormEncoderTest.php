@@ -8,11 +8,10 @@ namespace Mews\Pos\Tests\Unit\Serializer\Encoder;
 
 use Mews\Pos\Serializer\EncodedData;
 use Mews\Pos\Serializer\Encoder\FormEncoder;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\Serializer\Encoder\FormEncoder
- */
+#[CoversClass(FormEncoder::class)]
 class FormEncoderTest extends TestCase
 {
     private FormEncoder $encoder;

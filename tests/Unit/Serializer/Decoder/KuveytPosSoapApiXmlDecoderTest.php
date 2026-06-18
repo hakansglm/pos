@@ -7,11 +7,10 @@
 namespace Mews\Pos\Tests\Unit\Serializer\Decoder;
 
 use Mews\Pos\Serializer\Decoder\KuveytPosSoapApiXmlDecoder;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\Serializer\Decoder\KuveytPosSoapApiXmlDecoder
- */
+#[CoversClass(KuveytPosSoapApiXmlDecoder::class)]
 class KuveytPosSoapApiXmlDecoderTest extends TestCase
 {
     private KuveytPosSoapApiXmlDecoder $decoder;

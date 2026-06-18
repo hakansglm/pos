@@ -8,6 +8,7 @@ namespace Mews\Pos\Tests\Unit\DataMapper\RequestDataMapper;
 
 use Generator;
 use Mews\Pos\Crypt\CryptInterface;
+use Mews\Pos\DataMapper\RequestDataMapper\AbstractRequestDataMapper;
 use Mews\Pos\DataMapper\RequestDataMapper\KuveytPosRequestDataMapper;
 use Mews\Pos\DataMapper\RequestValueFormatter\KuveytPosRequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueMapper\KuveytPosRequestValueMapper;
@@ -19,14 +20,13 @@ use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\KuveytPos;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Tests\TestUtil\TestUtilTrait;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
-/**
- * @covers \Mews\Pos\DataMapper\RequestDataMapper\KuveytPosRequestDataMapper
- * @covers \Mews\Pos\DataMapper\RequestDataMapper\AbstractRequestDataMapper
- */
+#[CoversClass(KuveytPosRequestDataMapper::class)]
+#[CoversClass(AbstractRequestDataMapper::class)]
 class KuveytPosRequestDataMapperTest extends TestCase
 {
     use TestUtilTrait;

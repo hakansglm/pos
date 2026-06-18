@@ -10,11 +10,10 @@ use Mews\Pos\DataMapper\RequestValueFormatter\RequestValueFormatterInterface;
 use Mews\Pos\DataMapper\RequestValueMapper\RequestValueMapperInterface;
 use Mews\Pos\Factory\RequestDataMapperFactory;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\Factory\RequestDataMapperFactory
- */
+#[CoversClass(RequestDataMapperFactory::class)]
 class RequestDataMapperFactoryTest extends TestCase
 {
     /**

@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
+use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\PayFlexCPV4Crypt;
 use Mews\Pos\Entity\Account\PayFlexPosAccount;
 use Mews\Pos\Exceptions\NotImplementedException;
@@ -13,13 +14,12 @@ use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\PayFlexCPV4Pos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Crypt\PayFlexCPV4Crypt
- * @covers \Mews\Pos\Crypt\AbstractCrypt
- */
+#[CoversClass(PayFlexCPV4Crypt::class)]
+#[CoversClass(AbstractCrypt::class)]
 class PayFlexCP4CryptTest extends TestCase
 {
     public PayFlexCPV4Crypt $crypt;

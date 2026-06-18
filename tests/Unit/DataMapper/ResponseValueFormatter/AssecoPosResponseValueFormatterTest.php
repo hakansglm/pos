@@ -10,11 +10,10 @@ use Mews\Pos\DataMapper\ResponseValueFormatter\AssecoPosResponseValueFormatter;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\ResponseValueFormatter\AssecoPosResponseValueFormatter
- */
+#[CoversClass(AssecoPosResponseValueFormatter::class)]
 class AssecoPosResponseValueFormatterTest extends TestCase
 {
     private AssecoPosResponseValueFormatter $formatter;

@@ -10,11 +10,10 @@ use Mews\Pos\DataMapper\ResponseValueFormatter\GarantiPosResponseValueFormatter;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\GarantiPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\ResponseValueFormatter\GarantiPosResponseValueFormatter
- */
+#[CoversClass(GarantiPosResponseValueFormatter::class)]
 class GarantiPosResponseValueFormatterTest extends TestCase
 {
     private GarantiPosResponseValueFormatter $formatter;

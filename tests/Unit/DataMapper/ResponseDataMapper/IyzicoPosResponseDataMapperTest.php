@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper;
 
+use Mews\Pos\DataMapper\ResponseDataMapper\AbstractResponseDataMapper;
 use Mews\Pos\DataMapper\ResponseDataMapper\IyzicoPosResponseDataMapper;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Factory\ResponseValueFormatterFactory;
@@ -13,14 +14,14 @@ use Mews\Pos\Factory\ResponseValueMapperFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\IyzicoPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\DataMapper\ResponseDataMapper\IyzicoPosResponseDataMapper
- * @covers \Mews\Pos\DataMapper\ResponseDataMapper\AbstractResponseDataMapper
- */
+#[CoversClass(IyzicoPosResponseDataMapper::class)]
+#[CoversClass(AbstractResponseDataMapper::class)]
 class IyzicoPosResponseDataMapperTest extends TestCase
 {
     private IyzicoPosResponseDataMapper $responseDataMapper;
@@ -47,23 +48,19 @@ class IyzicoPosResponseDataMapperTest extends TestCase
         $this->assertFalse($this->responseDataMapper::supports(AkbankPos::class));
     }
 
-    /**
-     * @testWith [null, false]
-     *           ["0", false]
-     *           ["1", true]
-     *           ["2", false]
-     *           ["4", false]
-     */
+    #[TestWith([null, false])]
+    #[TestWith(['0', false])]
+    #[TestWith(['1', true])]
+    #[TestWith(['2', false])]
+    #[TestWith(['4', false])]
     public function testIs3dAuthSuccess(?string $mdStatus, bool $expected): void
     {
         $this->assertSame($expected, $this->responseDataMapper->is3dAuthSuccess($mdStatus));
     }
 
-    /**
-     * @testWith [{}, null]
-     *           [{"mdStatus": "1"}, "1"]
-     *           [{"mdStatus": "0"}, "0"]
-     */
+    #[TestWith([[], null])]
+    #[TestWith([['mdStatus' => '1'], '1'])]
+    #[TestWith([['mdStatus' => '0'], '0'])]
     public function testExtractMdStatus(array $responseData, ?string $expected): void
     {
         $this->assertSame($expected, $this->responseDataMapper->extractMdStatus($responseData));

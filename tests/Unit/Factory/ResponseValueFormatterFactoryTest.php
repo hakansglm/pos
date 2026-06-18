@@ -29,11 +29,10 @@ use Mews\Pos\Gateways\PosNetPos;
 use Mews\Pos\Gateways\PosNetV1Pos;
 use Mews\Pos\Gateways\ToslaPos;
 use Mews\Pos\Gateways\VakifKatilimPos;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\Factory\ResponseValueFormatterFactory
- */
+#[CoversClass(ResponseValueFormatterFactory::class)]
 class ResponseValueFormatterFactoryTest extends TestCase
 {
     /**

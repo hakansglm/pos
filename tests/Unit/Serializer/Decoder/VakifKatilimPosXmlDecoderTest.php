@@ -7,11 +7,10 @@
 namespace Mews\Pos\Tests\Unit\Serializer\Decoder;
 
 use Mews\Pos\Serializer\Decoder\VakifKatilimPosXmlDecoder;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\Serializer\Decoder\VakifKatilimPosXmlDecoder
- */
+#[CoversClass(VakifKatilimPosXmlDecoder::class)]
 class VakifKatilimPosXmlDecoderTest extends TestCase
 {
     private VakifKatilimPosXmlDecoder $decoder;

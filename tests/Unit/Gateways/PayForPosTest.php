@@ -20,18 +20,19 @@ use Mews\Pos\Exceptions\HashMismatchException;
 use Mews\Pos\Exceptions\UnsupportedFormFormatException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
+use Mews\Pos\Gateways\AbstractGateway;
 use Mews\Pos\Gateways\PayForPos;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\PayForPosResponseDataMapperTest;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Gateways\PayForPos
- * @covers \Mews\Pos\Gateways\AbstractGateway
- */
+#[CoversClass(PayForPos::class)]
+#[CoversClass(AbstractGateway::class)]
 class PayForPosTest extends TestCase
 {
     private PayForPosAccount $account;
@@ -128,10 +129,8 @@ class PayForPosTest extends TestCase
         $this->assertSame($this->config['gateway_endpoints']['gateway_3d'], $this->pos->get3DGatewayURL());
     }
 
-    /**
-     * @testWith [true, "3d", "https://vpostest.qnbfinansbank.com/Gateway/Default.aspx"]
-     * [false, "3d_host", "https://vpostest.qnbfinansbank.com/Gateway/3DHost.aspx"]
-     */
+    #[TestWith([true, '3d', 'https://vpostest.qnbfinansbank.com/Gateway/Default.aspx'])]
+    #[TestWith([false, '3d_host', 'https://vpostest.qnbfinansbank.com/Gateway/3DHost.aspx'])]
     public function testGet3DFormData(
         bool   $isWithCard,
         string $paymentModel,

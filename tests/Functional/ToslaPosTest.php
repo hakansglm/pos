@@ -14,6 +14,7 @@ use Mews\Pos\Factory\PosFactory;
 use Mews\Pos\Gateways\ToslaPos;
 use Mews\Pos\PosInterface;
 use Monolog\Test\TestCase;
+use PHPUnit\Framework\Attributes\Depends;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class ToslaPosTest extends TestCase
@@ -83,9 +84,7 @@ class ToslaPosTest extends TestCase
         return $response;
     }
 
-    /**
-     * @depends testNonSecurePaymentSuccess
-     */
+    #[Depends('testNonSecurePaymentSuccess')]
     public function testStatusSuccess(array $lastResponse): array
     {
         $statusOrder = $this->createStatusOrder($this->pos::class, $lastResponse);
@@ -110,10 +109,8 @@ class ToslaPosTest extends TestCase
         return $lastResponse;
     }
 
-    /**
-     * @depends testNonSecurePaymentSuccess
-     * @depends testStatusSuccess
-     */
+    #[Depends('testNonSecurePaymentSuccess')]
+    #[Depends('testStatusSuccess')]
     public function testCancelSuccess(array $lastResponse): array
     {
         $statusOrder = $this->createCancelOrder($this->pos::class, $lastResponse);
@@ -138,9 +135,7 @@ class ToslaPosTest extends TestCase
         return $lastResponse;
     }
 
-    /**
-     * @depends testCancelSuccess
-     */
+    #[Depends('testCancelSuccess')]
     public function testOrderHistorySuccess(array $lastResponse): void
     {
         $historyOrder = $this->createOrderHistoryOrder($this->pos::class, $lastResponse);

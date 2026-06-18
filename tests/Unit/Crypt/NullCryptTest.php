@@ -10,13 +10,12 @@ use Mews\Pos\Crypt\NullCrypt;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\KuveytPos;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Crypt\NullCrypt
- */
+#[CoversClass(NullCrypt::class)]
 class NullCryptTest extends TestCase
 {
     private NullCrypt $crypt;

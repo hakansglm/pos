@@ -11,11 +11,11 @@ use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\Param3DHostPos;
 use Mews\Pos\Gateways\ParamPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\RequestValueFormatter\ParamPosRequestValueFormatter
- */
+#[CoversClass(ParamPosRequestValueFormatter::class)]
 class ParamPosRequestValueFormatterTest extends TestCase
 {
     private ParamPosRequestValueFormatter $formatter;
@@ -37,11 +37,9 @@ class ParamPosRequestValueFormatterTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @testWith [0, "1"]
-     *            [1, "1"]
-     *            [2, "2"]
-     */
+    #[TestWith([0, '1'])]
+    #[TestWith([1, '1'])]
+    #[TestWith([2, '2'])]
     public function testFormatInstallment(int $installment, string $expected): void
     {
         $actual = $this->formatter->formatInstallment($installment);
@@ -57,10 +55,8 @@ class ParamPosRequestValueFormatterTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @testWith ["KK_SK_Yil", "2024"]
-     * ["KK_SK_Ay", "04"]
-     */
+    #[TestWith(['KK_SK_Yil', '2024'])]
+    #[TestWith(['KK_SK_Ay', '04'])]
     public function testFormatCreditCardExpDate(string $fieldName, string $expected): void
     {
         $expDate = new \DateTime('2024-04-14T16:45:30.000');
@@ -68,10 +64,8 @@ class ParamPosRequestValueFormatterTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @testWith ["abc"]
-     * [""]
-     */
+    #[TestWith(['abc'])]
+    #[TestWith([''])]
     public function testFormatCreditCardExpDateUnSupportedField(string $fieldName): void
     {
         $expDate = new \DateTime('2024-04-14T16:45:30.000');

@@ -9,11 +9,11 @@ namespace Mews\Pos\Tests\Unit\DataMapper\RequestValueFormatter;
 use Mews\Pos\DataMapper\RequestValueFormatter\PayFlexV4PosRequestValueFormatter;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\PayFlexV4Pos;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\RequestValueFormatter\PayFlexV4PosRequestValueFormatter
- */
+#[CoversClass(PayFlexV4PosRequestValueFormatter::class)]
 class PayFlexV4PosRequestValueFormatterTest extends TestCase
 {
     private PayFlexV4PosRequestValueFormatter $formatter;
@@ -34,31 +34,25 @@ class PayFlexV4PosRequestValueFormatterTest extends TestCase
     }
 
 
-    /**
-     * @testWith [0, "0"]
-     *            [1, "0"]
-     *            [2, "2"]
-     */
+    #[TestWith([0, '0'])]
+    #[TestWith([1, '0'])]
+    #[TestWith([2, '2'])]
     public function testFormatInstallment(int $installment, string $expected): void
     {
         $actual = $this->formatter->formatInstallment($installment);
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @testWith [1, "1.00"]
-     * [1.1, "1.10"]
-     */
+    #[TestWith([1, '1.00'])]
+    #[TestWith([1.1, '1.10'])]
     public function testFormatAmount(float $amount, $expected): void
     {
         $actual = $this->formatter->formatAmount($amount);
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @testWith ["abc"]
-     * [""]
-     */
+    #[TestWith(['abc'])]
+    #[TestWith([''])]
     public function testFormatCreditCardExpDateUnSupportedField(string $fieldName): void
     {
         $expDate = new \DateTime('2024-04-14T16:45:30.000');
@@ -66,10 +60,8 @@ class PayFlexV4PosRequestValueFormatterTest extends TestCase
         $this->formatter->formatCardExpDate($expDate, $fieldName);
     }
 
-    /**
-     * @testWith ["ExpiryDate", "2404"]
-     * ["Expiry", "202404"]
-     */
+    #[TestWith(['ExpiryDate', '2404'])]
+    #[TestWith(['Expiry', '202404'])]
     public function testFormatCreditCardExpDate(string $fieldName, string $expected): void
     {
         $expDate = new \DateTime('2024-04-14T16:45:30.000');

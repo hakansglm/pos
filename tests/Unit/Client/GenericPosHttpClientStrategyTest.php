@@ -8,8 +8,10 @@ namespace Mews\Pos\Tests\Unit\Client;
 
 use Mews\Pos\Client\GenericPosHttpClientStrategy;
 use Mews\Pos\Client\HttpClientInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(GenericPosHttpClientStrategy::class)]
 class GenericPosHttpClientStrategyTest extends TestCase
 {
     public function testGetClientSuccess(): void

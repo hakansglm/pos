@@ -11,11 +11,10 @@ use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\KuveytPos;
 use Mews\Pos\Gateways\VakifKatilimPos;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\DataMapper\ResponseValueFormatter\BoaPosResponseValueFormatter
- */
+#[CoversClass(BoaPosResponseValueFormatter::class)]
 class BoaPosResponseValueFormatterTest extends TestCase
 {
     private BoaPosResponseValueFormatter $formatter;
