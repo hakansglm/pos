@@ -37,40 +37,12 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
      */
     public function mapPaymentResponse(array $rawPaymentResponseData, string $txType, array $order): array
     {
-        /** @var PaymentStatusModel $rawPaymentResponseData */
-        $rawPaymentResponseData = $this->emptyStringsToNull($rawPaymentResponseData);
-        $procReturnCode         = $this->getProcReturnCode($rawPaymentResponseData);
         $this->logger->debug('mapping payment response', [$rawPaymentResponseData]);
-        $status = self::TX_DECLINED;
-        if (self::PROCEDURE_SUCCESS_CODE === $procReturnCode) {
-            $status = self::TX_APPROVED;
-        }
+        $mappedResponse = $this->mapPaymentResponseCommon($txType, PosInterface::MODEL_NON_SECURE, $rawPaymentResponseData);
+        $mappedResponse['currency'] = $order['currency'];
+        $mappedResponse['amount']   = $order['amount'];
 
-        $defaultResponse = $this->getDefaultPaymentResponse($txType, PosInterface::MODEL_NON_SECURE);
-        $transaction     = $rawPaymentResponseData['Transaction'];
-
-        /** @var string $provDate */
-        $provDate = $transaction['ProvDate'] ?? 'now';
-
-        $mappedResponse = [
-            'order_id'         => $rawPaymentResponseData['Order']['OrderID'],
-            'group_id'         => $rawPaymentResponseData['Order']['GroupID'],
-            'auth_code'        => self::TX_APPROVED === $status ? $transaction['AuthCode'] : null,
-            'ref_ret_num'      => self::TX_APPROVED === $status ? $transaction['RetrefNum'] : null,
-            'batch_num'        => self::TX_APPROVED === $status ? $transaction['BatchNum'] : null,
-            'transaction_time' => self::TX_APPROVED === $status ? $this->valueFormatter->formatDateTime($provDate, $txType) : null,
-            'proc_return_code' => $procReturnCode,
-            'status'           => $status,
-            'currency'         => $order['currency'],
-            'amount'           => $order['amount'],
-            'error_code'       => self::TX_APPROVED !== $status ? $transaction['Response']['ReasonCode'] : null,
-            'error_message'    => self::TX_APPROVED !== $status ? $transaction['Response']['ErrorMsg'] : null,
-            'all'              => $rawPaymentResponseData,
-        ];
-
-        $this->logger->debug('mapped payment response', $mappedResponse);
-
-        return $this->mergeArraysPreferNonNullValues($defaultResponse, $mappedResponse);
+        return $mappedResponse;
     }
 
     /**
@@ -80,67 +52,30 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
      */
     public function map3DPaymentData(array $raw3DAuthResponseData, ?array $rawPaymentResponseData, string $txType, array $order): array
     {
-        $raw3DAuthResponseData = $this->emptyStringsToNull($raw3DAuthResponseData);
-        /** @var PaymentStatusModel|null $rawPaymentResponseData */
-        $rawPaymentResponseData = $this->emptyStringsToNull($rawPaymentResponseData);
         $this->logger->debug('mapping 3D payment data', [
             '3d_auth_response'   => $raw3DAuthResponseData,
             'provision_response' => $rawPaymentResponseData,
         ]);
+        $raw3DAuthResponseData = $this->emptyStringsToNull($raw3DAuthResponseData);
 
-        $commonResult = $this->map3DCommonResponseData(
+        $paymentModel = PosInterface::MODEL_3D_SECURE;
+        $mapped3DAuthData = $this->map3DCommonResponseData(
             $raw3DAuthResponseData,
-            PosInterface::MODEL_3D_SECURE,
             $txType
         );
-        $mdStatus     = $this->extractMdStatus($raw3DAuthResponseData);
-        // todo refactor
-        if ($this->is3dAuthSuccess($mdStatus)) {
-            //these data only available on success
-            $commonResult['auth_code']      = $raw3DAuthResponseData['authcode'];
-            $commonResult['transaction_id'] = $raw3DAuthResponseData['transid'];
-            $commonResult['ref_ret_num']    = $raw3DAuthResponseData['hostrefnum'];
-            $commonResult['masked_number']  = $raw3DAuthResponseData['MaskedPan'];
-            $commonResult['tx_status']      = $raw3DAuthResponseData['txnstatus'];
-            $commonResult['eci']            = $raw3DAuthResponseData['eci'];
-            $commonResult['cavv']           = $raw3DAuthResponseData['cavv'];
-        }
+        $mapped3DAuthData['3d_all'] = $raw3DAuthResponseData;
 
-        $paymentStatus          = self::TX_DECLINED;
-        $paymentModel           = $this->valueMapper->mapSecureType($raw3DAuthResponseData['secure3dsecuritylevel'], $txType);
         $defaultPaymentResponse = $this->getDefaultPaymentResponse($txType, $paymentModel);
         $mappedPaymentResponse  = [];
-        if (self::TX_APPROVED === $commonResult['status'] && null !== $rawPaymentResponseData) {
-            $transaction    = $rawPaymentResponseData['Transaction'];
-            $procReturnCode = $this->getProcReturnCode($rawPaymentResponseData);
-            if (self::PROCEDURE_SUCCESS_CODE === $procReturnCode) {
-                $paymentStatus = self::TX_APPROVED;
-            }
-
-            /** @var string $provDate */
-            $provDate = $transaction['ProvDate'] ?? 'now';
-
-            $mappedPaymentResponse = [
-                'group_id'         => $transaction['SequenceNum'] ?? null,
-                'auth_code'        => $transaction['AuthCode'] ?? null,
-                'ref_ret_num'      => $transaction['RetrefNum'] ?? null,
-                'batch_num'        => $transaction['BatchNum'] ?? null,
-                'transaction_time' => self::TX_APPROVED === $paymentStatus ? $this->valueFormatter->formatDateTime($provDate, $txType) : null,
-                'error_code'       => self::TX_APPROVED === $paymentStatus ? null : $transaction['Response']['ReasonCode'],
-                'error_message'    => self::TX_APPROVED === $paymentStatus ? null : $transaction['Response']['ErrorMsg'],
-                'all'              => $rawPaymentResponseData,
-                'proc_return_code' => $procReturnCode,
-                'status'           => $paymentStatus,
-            ];
-
-            $mappedPaymentResponse = $this->mergeArraysPreferNonNullValues($defaultPaymentResponse, $mappedPaymentResponse);
+        if (self::TX_APPROVED === $mapped3DAuthData['status'] && null !== $rawPaymentResponseData) {
+            $mappedPaymentResponse = $this->mapPaymentResponseCommon($txType, $paymentModel, $rawPaymentResponseData);
         }
 
         if ([] === $mappedPaymentResponse) {
-            return $this->mergeArraysPreferNonNullValues($defaultPaymentResponse, $commonResult);
+            return $this->mergeArraysPreferNonNullValues($defaultPaymentResponse, $mapped3DAuthData);
         }
 
-        return $this->mergeArraysPreferNonNullValues($commonResult, $mappedPaymentResponse);
+        return $this->mergeArraysPreferNonNullValues($mapped3DAuthData, $mappedPaymentResponse);
     }
 
     /**
@@ -150,9 +85,9 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
     {
         $raw3DAuthResponseData = $this->emptyStringsToNull($raw3DAuthResponseData);
 
+        $paymentModel = PosInterface::MODEL_3D_PAY;
         $threeDAuthResult = $this->map3DCommonResponseData(
             $raw3DAuthResponseData,
-            PosInterface::MODEL_3D_PAY,
             $txType
         );
         $threeDAuthStatus = $threeDAuthResult['status'];
@@ -162,25 +97,12 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
             $paymentStatus = self::TX_APPROVED;
         }
 
-        $paymentModel = $this->valueMapper->mapSecureType($raw3DAuthResponseData['secure3dsecuritylevel'], $txType);
-        /** @var PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType */
-        $txType                           = $threeDAuthResult['transaction_type'] ?? $txType;
         $defaultPaymentResponse           = $this->getDefaultPaymentResponse(
             $txType,
             $paymentModel
         );
         $defaultPaymentResponse['status'] = $paymentStatus;
         $defaultPaymentResponse['all']    = $raw3DAuthResponseData;
-
-        if (self::TX_APPROVED === $threeDAuthStatus) {
-            $threeDAuthResult['auth_code']      = $raw3DAuthResponseData['authcode'];
-            $threeDAuthResult['transaction_id'] = $raw3DAuthResponseData['transid'];
-            $threeDAuthResult['ref_ret_num']    = $raw3DAuthResponseData['hostrefnum'];
-            $threeDAuthResult['masked_number']  = $raw3DAuthResponseData['MaskedPan'];
-            $threeDAuthResult['tx_status']      = $raw3DAuthResponseData['txnstatus'];
-            $threeDAuthResult['eci']            = $raw3DAuthResponseData['eci'];
-            $threeDAuthResult['cavv']           = $raw3DAuthResponseData['cavv'];
-        }
 
         if (self::TX_APPROVED !== $paymentStatus) {
             $defaultPaymentResponse['error_message'] = $raw3DAuthResponseData['errmsg'];
@@ -381,12 +303,11 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
      * returns mapped data of the common response data among all 3d models.
      *
      * @param array<string, string>       $raw3DAuthResponseData
-     * @param PosInterface::MODEL_3D_*    $paymentModel
      * @param PosInterface::TX_TYPE_PAY_* $txType
      *
      * @return array<string, mixed>
      */
-    protected function map3DCommonResponseData(array $raw3DAuthResponseData, string $paymentModel, string $txType): array
+    protected function map3DCommonResponseData(array $raw3DAuthResponseData, string $txType): array
     {
         $procReturnCode = $raw3DAuthResponseData['procreturncode'];
         $mdStatus       = $this->extractMdStatus($raw3DAuthResponseData);
@@ -417,10 +338,17 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
             'error_code'           => 'Error' === $raw3DAuthResponseData['response'] ? $procReturnCode : null,
             'error_message'        => self::TX_APPROVED === $status ? null : $raw3DAuthResponseData['errmsg'],
             'md_error_message'     => self::TX_APPROVED === $status ? null : $raw3DAuthResponseData['mderrormessage'],
+            'payment_model'        => $this->valueMapper->mapSecureType($raw3DAuthResponseData['secure3dsecuritylevel'], $txType),
         ];
 
-        if (PosInterface::MODEL_3D_SECURE === $paymentModel) {
-            $result['3d_all'] = $raw3DAuthResponseData;
+        if (self::TX_APPROVED === $status) {
+            $result['auth_code']      = $raw3DAuthResponseData['authcode'];
+            $result['transaction_id'] = $raw3DAuthResponseData['transid'];
+            $result['ref_ret_num']    = $raw3DAuthResponseData['hostrefnum'];
+            $result['masked_number']  = $raw3DAuthResponseData['MaskedPan'];
+            $result['tx_status']      = $raw3DAuthResponseData['txnstatus'];
+            $result['eci']            = $raw3DAuthResponseData['eci'];
+            $result['cavv']           = $raw3DAuthResponseData['cavv'];
         }
 
         return $result;
@@ -541,5 +469,47 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
         }
 
         return $defaultResponse;
+    }
+
+    /**
+     * @param PosInterface::TX_TYPE_PAY_* $txType
+     * @param PosInterface::MODEL_*       $paymentModel
+     * @param PaymentStatusModel          $rawPaymentResponseData
+     *
+     * @return array<string, mixed>
+     */
+    private function mapPaymentResponseCommon(string $txType, string $paymentModel, array $rawPaymentResponseData)
+    {
+        /** @var PaymentStatusModel $rawPaymentResponseData */
+        $rawPaymentResponseData = $this->emptyStringsToNull($rawPaymentResponseData);
+        $procReturnCode         = $this->getProcReturnCode($rawPaymentResponseData);
+        $status = self::TX_DECLINED;
+        if (self::PROCEDURE_SUCCESS_CODE === $procReturnCode) {
+            $status = self::TX_APPROVED;
+        }
+
+        $defaultResponse = $this->getDefaultPaymentResponse($txType, $paymentModel);
+        $transaction     = $rawPaymentResponseData['Transaction'];
+
+        /** @var string $provDate */
+        $provDate = $transaction['ProvDate'] ?? 'now';
+
+        $mappedResponse = [
+            'order_id'         => $rawPaymentResponseData['Order']['OrderID'],
+            'group_id'         => $rawPaymentResponseData['Order']['GroupID'],
+            'auth_code'        => self::TX_APPROVED === $status ? $transaction['AuthCode'] : null,
+            'ref_ret_num'      => self::TX_APPROVED === $status ? $transaction['RetrefNum'] : null,
+            'batch_num'        => self::TX_APPROVED === $status ? $transaction['BatchNum'] : null,
+            'transaction_time' => self::TX_APPROVED === $status ? $this->valueFormatter->formatDateTime($provDate, $txType) : null,
+            'proc_return_code' => $procReturnCode,
+            'status'           => $status,
+            'error_code'       => self::TX_APPROVED !== $status ? $transaction['Response']['ReasonCode'] : null,
+            'error_message'    => self::TX_APPROVED !== $status ? $transaction['Response']['ErrorMsg'] : null,
+            'all'              => $rawPaymentResponseData,
+        ];
+
+        $this->logger->debug('mapped payment response', $mappedResponse);
+
+        return $this->mergeArraysPreferNonNullValues($defaultResponse, $mappedResponse);
     }
 }
