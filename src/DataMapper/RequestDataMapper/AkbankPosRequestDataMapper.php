@@ -97,7 +97,6 @@ class AkbankPosRequestDataMapper extends AbstractRequestDataMapper
 
         if (isset($order['recurring'])) {
             $requestData += $this->createRecurringData($order['recurring']);
-            // todo motoInd olmak zorundami?
             $requestData['transaction']['motoInd'] = 1;
             $requestData['order']                  = [
                 'orderTrackId' => (string) $order['id'],

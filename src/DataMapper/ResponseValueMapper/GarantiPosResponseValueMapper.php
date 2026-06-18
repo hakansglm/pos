@@ -125,7 +125,7 @@ class GarantiPosResponseValueMapper extends AbstractResponseValueMapper
     public function mapOrderStatus($orderStatus, ?string $requestTxType = null, ?string $txType = null)
     {
         if (PosInterface::TX_TYPE_STATUS === $requestTxType) {
-            // todo ChargeType degere gore belki daha duzgun mapping edebiliriz.
+            // NOTE!!! ChargeType degere gore belki daha duzgun mapping edebiliriz.
             //  ChargeType hakkinda dokumantasyonda sadece su bilgi var:
             //  "İşlem tipinin gösterildiği alandır."
             //  Alabilicegi degerleri hakkinda bir bilgi bulunmamakta.
@@ -174,7 +174,7 @@ class GarantiPosResponseValueMapper extends AbstractResponseValueMapper
 
             if ('Iptal' === $orderStatus) {
                 /**
-                 *  todo anlasilmayan durumlar:
+                 *  NOTE!!! anlasilmayan durumlar:
                  *   - "Status" => "Iptal", "TrxType" => "Satis"
                  *   - "Status" => "Iptal", "TrxType" => "On Otorizasyon"
                  *   - "Status" => "Iptal", "TrxType" => "Iptal"

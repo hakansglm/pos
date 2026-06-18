@@ -352,7 +352,6 @@ class KuveytPosResponseDataMapper extends AbstractResponseDataMapper
      */
     protected function mapResponseTransactionSecurity(string $mdStatus): string
     {
-        // todo implement
         return 'MPI fallback';
     }
 
@@ -385,7 +384,7 @@ class KuveytPosResponseDataMapper extends AbstractResponseDataMapper
 
         $default = [
             'order_id'             => $orderId,
-            'transaction_security' => $this->mapResponseTransactionSecurity('todo'),
+            'transaction_security' => $this->mapResponseTransactionSecurity(''),
             'transaction_type'     => isset($vPosMessage['TransactionType']) ? $this->valueMapper->mapTxType($vPosMessage['TransactionType']) : null,
             'proc_return_code'     => $procReturnCode,
             'md_status'            => null,

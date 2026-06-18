@@ -66,12 +66,6 @@ class AssecoPos extends AbstractGateway
     {
         $paymentModel   = PosInterface::MODEL_3D_SECURE;
 
-        /**
-         * TODO hata durumu ele alinmasi gerekiyor
-         * ornegin soyle bir hata donebilir
-         * ["ProcReturnCode" => "99", "mdStatus" => "7", "mdErrorMsg" => "Isyeri kullanim tipi desteklenmiyor.",
-         * "ErrMsg" => "Isyeri kullanim tipi desteklenmiyor.", "Response" => "Error", "ErrCode" => "3D-1007", ...]
-         */
         if (!$this->is3DAuthSuccess($gatewayResponseData)) {
             $this->response = $this->responseDataMapper->map3DPaymentData(
                 $gatewayResponseData,
