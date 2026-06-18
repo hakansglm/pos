@@ -221,6 +221,12 @@ class PosNetPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
+    public function testMapOrderHistoryResponse(): void
+    {
+        $this->expectException(NotImplementedException::class);
+        $this->responseDataMapper->mapOrderHistoryResponse([]);
+    }
+
     public function testMapHistoryResponse(): void
     {
         $this->expectException(NotImplementedException::class);

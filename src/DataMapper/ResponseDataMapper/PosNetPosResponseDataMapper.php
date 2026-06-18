@@ -242,80 +242,11 @@ class PosNetPosResponseDataMapper extends AbstractResponseDataMapper
     }
 
     /**
-     * todo refactor
      * {@inheritDoc}
      */
     public function mapOrderHistoryResponse(array $rawResponseData): array
     {
-        $txType          = PosInterface::TX_TYPE_ORDER_HISTORY;
-        $status          = self::TX_DECLINED;
-        $rawResponseData = $this->emptyStringsToNull($rawResponseData);
-        $errorCode       = $rawResponseData['respCode'] ?? null;
-        $procReturnCode  = $this->getProcReturnCode($rawResponseData);
-
-        if (self::PROCEDURE_SUCCESS_CODE === $procReturnCode && isset($rawResponseData['transactions']) && !$errorCode) {
-            $status = self::TX_APPROVED;
-        }
-
-        $state     = null;
-        $txResults = [];
-        $refunds   = [];
-        if (isset($rawResponseData['transactions']['transaction'])) {
-            $transactionDetails = $rawResponseData['transactions']['transaction'];
-
-            $state    = $transactionDetails['state'] ?? null;
-            $authCode = $transactionDetails['authCode'] ?? null;
-
-            if (is_array($transactionDetails)) {
-                if ([] !== $transactionDetails) {
-                    $state    = $transactionDetails[0]['state'];
-                    $authCode = $transactionDetails[0]['authCode'];
-                }
-
-                if (count($transactionDetails) > 1) {
-                    foreach ($transactionDetails as $key => $_transaction) {
-                        if ($key > 0) {
-                            $currency  = $this->valueMapper->mapCurrency($_transaction['currencyCode'], $txType);
-                            $refunds[] = [
-                                'amount'    => $this->valueFormatter->formatAmount($_transaction['amount'], $txType),
-                                'currency'  => $currency,
-                                'auth_code' => $_transaction['authCode'],
-                                'date'      => $_transaction['tranDate'],
-                            ];
-                        }
-                    }
-                }
-            }
-
-            $txResults = [
-                'auth_code'      => $authCode,
-                'transaction_id' => null,
-                'ref_ret_num'    => $transactionDetails['hostlogkey'] ?? null,
-                'date'           => $transactionDetails['tranDate'] ?? null,
-            ];
-        }
-
-        $transactionType = null;
-        if (null !== $state) {
-            $transactionType = $this->valueMapper->mapTxType($state);
-        }
-
-        $results = [
-            'auth_code'        => null,
-            'transaction_id'   => null,
-            'ref_ret_num'      => null,
-            'group_id'         => null,
-            'date'             => null,
-            'transaction_type' => $transactionType,
-            'proc_return_code' => $procReturnCode,
-            'status'           => $status,
-            'error_code'       => $errorCode,
-            'error_message'    => $rawResponseData['respText'] ?? null,
-            'refunds'          => $refunds,
-            'all'              => $rawResponseData,
-        ];
-
-        return \array_merge($results, $txResults);
+        throw new NotImplementedException();
     }
 
     /**
@@ -370,30 +301,6 @@ class PosNetPosResponseDataMapper extends AbstractResponseDataMapper
     protected function getProcReturnCode(array $response): ?string
     {
         return $response['approved'] ?? null;
-    }
-
-    /**
-     * "100001" => 1000.01
-     *
-     * @param string $amount
-     *
-     * @return float
-     */
-    protected function formatAmount(string $amount): float
-    {
-        return ((int) $amount) / 100;
-    }
-
-    /**
-     * "1,16" => 1.16
-     *
-     * @param string $amount
-     *
-     * @return float
-     */
-    protected function formatStatusAmount(string $amount): float
-    {
-        return (float) \str_replace(',', '.', \str_replace('.', '', $amount));
     }
 
     /**
