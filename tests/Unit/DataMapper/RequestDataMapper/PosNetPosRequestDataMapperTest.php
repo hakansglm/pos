@@ -410,10 +410,7 @@ class PosNetPosRequestDataMapperTest extends TestCase
         return [
             'with_order_id'    => [
                 'order'    => [
-                    'id'            => '2020110828BC',
-                    'payment_model' => PosInterface::MODEL_3D_SECURE,
-                    'amount'        => 50,
-                    'currency'      => PosInterface::CURRENCY_TRY,
+                    'id' => '2020110828BC',
                 ],
                 'expected' => [
                     'mid'              => '6706598320',
@@ -427,10 +424,7 @@ class PosNetPosRequestDataMapperTest extends TestCase
             ],
             'with_ref_ret_num' => [
                 'order'    => [
-                    'ref_ret_num'   => '019676067890000191',
-                    'payment_model' => PosInterface::MODEL_3D_SECURE,
-                    'amount'        => 50,
-                    'currency'      => PosInterface::CURRENCY_TRY,
+                    'ref_ret_num' => '019676067890000191',
                 ],
                 'expected' => [
                     'mid'              => '6706598320',
@@ -444,11 +438,8 @@ class PosNetPosRequestDataMapperTest extends TestCase
             ],
             'with_auth_code'   => [
                 'order'    => [
-                    'id'            => '2020110828BC',
-                    'auth_code'     => '901477',
-                    'payment_model' => PosInterface::MODEL_3D_SECURE,
-                    'amount'        => 50,
-                    'currency'      => PosInterface::CURRENCY_TRY,
+                    'id'        => '2020110828BC',
+                    'auth_code' => '901477',
                 ],
                 'expected' => [
                     'mid'              => '6706598320',
@@ -457,6 +448,21 @@ class PosNetPosRequestDataMapperTest extends TestCase
                     'reverse'          => [
                         'transaction' => 'sale',
                         'authCode'    => '901477',
+                        'orderID'     => 'TDSC000000002020110828BC',
+                    ],
+                ],
+            ],
+            'pre_pay'          => [
+                'order'    => [
+                    'id'               => '2020110828BC',
+                    'transaction_type' => PosInterface::TX_TYPE_PAY_PRE_AUTH,
+                ],
+                'expected' => [
+                    'mid'              => '6706598320',
+                    'tid'              => '67005551',
+                    'tranDateRequired' => '1',
+                    'reverse'          => [
+                        'transaction' => 'auth',
                         'orderID'     => 'TDSC000000002020110828BC',
                     ],
                 ],

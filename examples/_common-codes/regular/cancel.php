@@ -48,7 +48,7 @@ function createCancelOrder(string $gatewayClass, array $lastResponse, string $ip
          */
         $cancelOrder['payment_model'] = $lastResponse['payment_model'];
         // satis islem disinda baska bir islemi (Ön Provizyon İptali, Provizyon Kapama İptali, vs...) iptal edildiginde saglanmasi gerekiyor
-        // 'transaction_type' => $lastResponse['transaction_type'],
+        // $cancelOrder['transaction_type'] = $lastResponse['transaction_type'],
     }
 
 
