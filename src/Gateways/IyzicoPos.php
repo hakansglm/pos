@@ -95,7 +95,6 @@ class IyzicoPos extends AbstractGateway
         if ($this->responseDataMapper::PROCEDURE_SUCCESS_CODE !== ($initResponse['status'] ?? null)) {
             $this->logger->error('3D form generation failed', [
                 'response_body' => $initResponse,
-                'url'           => $this->get3DGatewayURL(),
                 'tx_type'       => $txType,
             ]);
 

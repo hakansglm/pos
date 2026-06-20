@@ -79,7 +79,6 @@ class IyzicoPosTest extends TestCase
             'class'             => IyzicoPos::class,
             'gateway_endpoints' => [
                 'payment_api' => 'https://sandbox-api.iyzipay.com',
-                'gateway_3d'  => 'https://sandbox-api.iyzipay.com',
                 'query_api'   => 'https://sandbox-api.iyzipay.com/v2/reporting/payment',
             ],
         ];
