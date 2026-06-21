@@ -109,9 +109,9 @@ return [
             'name'  => 'QNBFinansbank-PayFor',
             'class' => Mews\Pos\Gateways\PayForPos::class,
             'gateway_endpoints'  => [
-                'payment_api'     => 'https://vpos.qnbfinansbank.com/Gateway/XMLGate.aspx',
-                'gateway_3d'      => 'https://vpos.qnbfinansbank.com/Gateway/Default.aspx',
-                'gateway_3d_host' => 'https://vpos.qnbfinansbank.com/Gateway/3DHost.aspx',
+                'payment_api'     => 'https://vpos.qnb.com.tr/Gateway/XMLGate.aspx',
+                'gateway_3d'      => 'https://vpos.qnb.com.tr/Gateway/Default.aspx',
+                'gateway_3d_host' => 'https://vpos.qnb.com.tr/Gateway/3DHost.aspx',
             ],
         ],
         'ziraat-katilim-payfor' => [
