@@ -1,4 +1,16 @@
 # Changelog
+## [1.9.0] - 2026-06-21
+
+### Changed
+- **PosNet** - iptal işleminde sipariş işlem tipi (`transaction_type`)
+  artık dinamik olarak kullanılıyor; önceden sabit `sale` gönderiliyordu.
+  İptal sırasında `order['transaction_type']` belirtilmezse varsayılan olarak `TX_TYPE_PAY_AUTH` kullanılır.
+- **PayForPos** - dil kodu mapping'i PayFor dokümantasyonuyla uyumlu olması için büyük harfe güncellendi (`tr` → `TR`, `en` → `EN`).
+- **PayForPos** - üretim ortamı API endpoint URL'leri güncellendi (`vpos.qnbfinansbank.com` → `vpos.qnb.com.tr`).
+
+### Fixed
+- **PosNet** - response mapper'da `getStatusDetail()` kontrolü gereksiz yere tekrar ediliyordu; bu koşul kaldırıldı.
+
 ## [1.8.0] - 2026-02-16
 
 ### Changed
