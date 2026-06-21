@@ -9,7 +9,6 @@ namespace Mews\Pos\Tests\Functional;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\Before3DFormHashCalculatedEvent;
 use Mews\Pos\Event\RequestDataPreparedEvent;
-use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Factory\PosFactory;
 use Mews\Pos\Gateways\AssecoPos;
@@ -35,13 +34,13 @@ class AssecoPosTest extends TestCase
 
         $config = require __DIR__.'/../../config/pos_test.php';
 
-        $account = AccountFactory::createAssecoPosAccount(
+        $account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
             'payten_v3_hash',
-            (string) getenv('PAYTEN_TERMINAL_ID'),
-            (string) getenv('PAYTEN_USERNAME'),
-            (string) getenv('PAYTEN_PASSWORD'),
+            (string) getenv('ASSECO_CLIENT_ID'),
+            (string) getenv('ASSECO_USERNAME'),
+            (string) getenv('ASSECO_PASSWORD'),
             PosInterface::MODEL_3D_SECURE,
-            (string) getenv('PAYTEN_STORE_KEY'),
+            (string) getenv('ASSECO_STORE_KEY')
         );
         $this->eventDispatcher = new EventDispatcher();
 

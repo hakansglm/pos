@@ -4,7 +4,7 @@ use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\PosInterface;
 
 // dinamik olarak ilgili bunkanin regular klasor altindaki _config.php yuklenir
-// ornegin: payten/regular/_config.php
+// ornegin: asseco/regular/_config.php
 require_once '_config.php';
 require '../../_templates/_header.php';
 

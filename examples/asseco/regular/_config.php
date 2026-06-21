@@ -6,12 +6,13 @@ require '../_payment_config.php';
 
 $baseUrl = $bankTestsUrl.'/regular/';
 
+
 $account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
     'payten_v3_hash',
-    (string) getenv('PAYTEN_TERMINAL_ID'),
-    (string) getenv('PAYTEN_USERNAME'),
-    (string) getenv('PAYTEN_PASSWORD'),
-    PosInterface::MODEL_NON_SECURE
+    (string) getenv('ASSECO_CLIENT_ID'),
+    (string) getenv('ASSECO_USERNAME'),
+    (string) getenv('ASSECO_PASSWORD'),
+    PosInterface::MODEL_NON_SECURE,
 );
 
 $pos = getGateway($account, $eventDispatcher);

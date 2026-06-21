@@ -5,7 +5,7 @@ use Mews\Pos\Exceptions\HashMismatchException;
 use Mews\Pos\PosInterface;
 
 // ilgili gatewayin payment modele gore configini load ediyoruz
-// ornegin: payten/3d/_config.php ya da payten/3d-host/_config.php
+// ornegin: asseco/3d/_config.php ya da asseco/3d-host/_config.php
 require_once '_config.php';
 require '../../_templates/_header.php';
 

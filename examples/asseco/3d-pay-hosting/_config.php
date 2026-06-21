@@ -8,11 +8,11 @@ $baseUrl = $bankTestsUrl.'/3d-pay-hosting/';
 
 $account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
     'payten_v3_hash',
-    (string) getenv('PAYTEN_TERMINAL_ID'),
-    (string) getenv('PAYTEN_USERNAME'),
-    (string) getenv('PAYTEN_PASSWORD'),
+    (string) getenv('ASSECO_CLIENT_ID'),
+    (string) getenv('ASSECO_USERNAME'),
+    (string) getenv('ASSECO_PASSWORD'),
     PosInterface::MODEL_3D_PAY_HOSTING,
-    (string) getenv('PAYTEN_STORE_KEY')
+    (string) getenv('ASSECO_STORE_KEY')
 );
 
 $pos = getGateway($account, $eventDispatcher);

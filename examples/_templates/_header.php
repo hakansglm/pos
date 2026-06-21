@@ -35,7 +35,7 @@
                             <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\Param3DHostPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/parampos-3d-host/index.php">Param POS (3D Host)</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\AssecoPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/payten/index.php">Payten V3</a>
+                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\AssecoPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/asseco/index.php">Asseco/Payten Pos</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\PayForPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/finansbank-payfor/index.php">PayFor (Finansbank)</a>

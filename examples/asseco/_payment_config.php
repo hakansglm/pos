@@ -2,7 +2,7 @@
 
 require __DIR__.'/../_main_config.php';
 
-$bankTestsUrl = $hostUrl.'/payten';
+$bankTestsUrl = $hostUrl.'/asseco';
 $posClass = \Mews\Pos\Gateways\AssecoPos::class;
 
 $testCards = [

@@ -332,7 +332,7 @@ inceleyebilirsiniz.
    ```
 
 **Note**: localhost port 80 boş olması gerekiyor.
-Sorunsuz çalışması durumda kod örneklerine http://localhost/payten/3d/index.php
+Sorunsuz çalışması durumda kod örneklerine http://localhost/asseco/3d/index.php
 şekilde erişebilirsiniz.
 http://localhost/ URL projenin `examples` klasörünün içine bakar.
 

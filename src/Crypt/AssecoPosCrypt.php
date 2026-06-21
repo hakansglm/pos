@@ -38,7 +38,7 @@ class AssecoPosCrypt extends AbstractCrypt
              *
              * nationalidno: Ziraat ödeme dönüşlerinde checkHash arrayi içerisinde yer alabiliyor.
              *  Hash string içine dahil edildiğinde hataya sebep oluyor,
-             *  Payten tarafından hash içerisinde olmaması gerektiği teyidi alındı.
+             *  Asseco tarafından hash içerisinde olmaması gerektiği teyidi alındı.
              */
             if (\in_array(\strtolower($key), ['hash', 'encoding' , 'nationalidno'], true)) {
                 unset($formInputs[$key]);
