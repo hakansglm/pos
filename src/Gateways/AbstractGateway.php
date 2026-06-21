@@ -8,9 +8,9 @@ namespace Mews\Pos\Gateways;
 
 use LogicException;
 use Mews\Pos\Client\HttpClientStrategyInterface;
-use Mews\Pos\DataMapper\RequestDataMapper\RequestDataMapperInterface;
-use Mews\Pos\DataMapper\RequestValueMapper\RequestValueMapperInterface;
-use Mews\Pos\DataMapper\ResponseDataMapper\ResponseDataMapperInterface;
+use Mews\Pos\DataMapper\Request\Mapper\RequestDataMapperInterface;
+use Mews\Pos\DataMapper\Request\ValueMapper\RequestValueMapperInterface;
+use Mews\Pos\DataMapper\Response\Mapper\ResponseDataMapperInterface;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;

@@ -8,11 +8,11 @@ namespace Mews\Pos\Tests\Unit\Gateways;
 
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\HttpClientStrategyInterface;
-use Mews\Pos\DataMapper\ResponseDataMapper\ResponseDataMapperInterface;
+use Mews\Pos\DataMapper\Response\Mapper\ResponseDataMapperInterface;
 use Mews\Pos\Crypt\CryptInterface;
-use Mews\Pos\DataMapper\RequestDataMapper\IyzicoPosRequestDataMapper;
-use Mews\Pos\DataMapper\RequestValueMapper\IyzicoPosRequestValueMapper;
-use Mews\Pos\DataMapper\ResponseDataMapper\IyzicoPosResponseDataMapper;
+use Mews\Pos\DataMapper\Request\Mapper\IyzicoPosRequestDataMapper;
+use Mews\Pos\DataMapper\Request\ValueMapper\IyzicoPosRequestValueMapper;
+use Mews\Pos\DataMapper\Response\Mapper\IyzicoPosResponseDataMapper;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Entity\Account\IyzicoPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;

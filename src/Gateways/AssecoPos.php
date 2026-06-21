@@ -6,8 +6,8 @@
 
 namespace Mews\Pos\Gateways;
 
-use Mews\Pos\DataMapper\RequestDataMapper\AssecoPosRequestDataMapper;
-use Mews\Pos\DataMapper\RequestDataMapper\RequestDataMapperInterface;
+use Mews\Pos\DataMapper\Request\Mapper\AssecoPosRequestDataMapper;
+use Mews\Pos\DataMapper\Request\Mapper\RequestDataMapperInterface;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Entity\Account\AssecoPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;

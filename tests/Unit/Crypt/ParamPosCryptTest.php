@@ -14,7 +14,7 @@ use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\Param3DHostPos;
 use Mews\Pos\Gateways\ParamPos;
-use Mews\Pos\Tests\Unit\DataMapper\RequestDataMapper\ParamPosRequestDataMapperTest;
+use Mews\Pos\Tests\Unit\DataMapper\Request\Mapper\ParamPosRequestDataMapperTest;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

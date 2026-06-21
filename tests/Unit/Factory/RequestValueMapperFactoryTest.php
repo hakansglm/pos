@@ -6,19 +6,19 @@
 
 namespace Mews\Pos\Tests\Unit\Factory;
 
-use Mews\Pos\DataMapper\RequestValueMapper\AkbankPosRequestValueMapper;
-use Mews\Pos\DataMapper\RequestValueMapper\AssecoPosRequestValueMapper;
-use Mews\Pos\DataMapper\RequestValueMapper\GarantiPosRequestValueMapper;
-use Mews\Pos\DataMapper\RequestValueMapper\InterPosRequestValueMapper;
-use Mews\Pos\DataMapper\RequestValueMapper\KuveytPosRequestValueMapper;
-use Mews\Pos\DataMapper\RequestValueMapper\ParamPosRequestValueMapper;
-use Mews\Pos\DataMapper\RequestValueMapper\PayFlexCPV4PosRequestValueMapper;
-use Mews\Pos\DataMapper\RequestValueMapper\PayFlexV4PosRequestValueMapper;
-use Mews\Pos\DataMapper\RequestValueMapper\PayForPosRequestValueMapper;
-use Mews\Pos\DataMapper\RequestValueMapper\PosNetPosRequestValueMapper;
-use Mews\Pos\DataMapper\RequestValueMapper\PosNetV1PosRequestValueMapper;
-use Mews\Pos\DataMapper\RequestValueMapper\ToslaPosRequestValueMapper;
-use Mews\Pos\DataMapper\RequestValueMapper\VakifKatilimPosRequestValueMapper;
+use Mews\Pos\DataMapper\Request\ValueMapper\AkbankPosRequestValueMapper;
+use Mews\Pos\DataMapper\Request\ValueMapper\AssecoPosRequestValueMapper;
+use Mews\Pos\DataMapper\Request\ValueMapper\GarantiPosRequestValueMapper;
+use Mews\Pos\DataMapper\Request\ValueMapper\InterPosRequestValueMapper;
+use Mews\Pos\DataMapper\Request\ValueMapper\KuveytPosRequestValueMapper;
+use Mews\Pos\DataMapper\Request\ValueMapper\ParamPosRequestValueMapper;
+use Mews\Pos\DataMapper\Request\ValueMapper\PayFlexCPV4PosRequestValueMapper;
+use Mews\Pos\DataMapper\Request\ValueMapper\PayFlexV4PosRequestValueMapper;
+use Mews\Pos\DataMapper\Request\ValueMapper\PayForPosRequestValueMapper;
+use Mews\Pos\DataMapper\Request\ValueMapper\PosNetPosRequestValueMapper;
+use Mews\Pos\DataMapper\Request\ValueMapper\PosNetV1PosRequestValueMapper;
+use Mews\Pos\DataMapper\Request\ValueMapper\ToslaPosRequestValueMapper;
+use Mews\Pos\DataMapper\Request\ValueMapper\VakifKatilimPosRequestValueMapper;
 use Mews\Pos\Factory\RequestValueMapperFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\AssecoPos;

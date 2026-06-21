@@ -6,14 +6,14 @@
 
 namespace Mews\Pos\Tests\Unit\Factory;
 
-use Mews\Pos\DataMapper\ResponseValueFormatter\BasicResponseValueFormatter;
-use Mews\Pos\DataMapper\ResponseValueFormatter\BoaPosResponseValueFormatter;
-use Mews\Pos\DataMapper\ResponseValueFormatter\AssecoPosResponseValueFormatter;
-use Mews\Pos\DataMapper\ResponseValueFormatter\GarantiPosResponseValueFormatter;
-use Mews\Pos\DataMapper\ResponseValueFormatter\InterPosResponseValueFormatter;
-use Mews\Pos\DataMapper\ResponseValueFormatter\ParamPosResponseValueFormatter;
-use Mews\Pos\DataMapper\ResponseValueFormatter\PosNetPosResponseValueFormatter;
-use Mews\Pos\DataMapper\ResponseValueFormatter\ToslaPosResponseValueFormatter;
+use Mews\Pos\DataMapper\Response\ValueFormatter\BasicResponseValueFormatter;
+use Mews\Pos\DataMapper\Response\ValueFormatter\BoaPosResponseValueFormatter;
+use Mews\Pos\DataMapper\Response\ValueFormatter\AssecoPosResponseValueFormatter;
+use Mews\Pos\DataMapper\Response\ValueFormatter\GarantiPosResponseValueFormatter;
+use Mews\Pos\DataMapper\Response\ValueFormatter\InterPosResponseValueFormatter;
+use Mews\Pos\DataMapper\Response\ValueFormatter\ParamPosResponseValueFormatter;
+use Mews\Pos\DataMapper\Response\ValueFormatter\PosNetPosResponseValueFormatter;
+use Mews\Pos\DataMapper\Response\ValueFormatter\ToslaPosResponseValueFormatter;
 use Mews\Pos\Factory\ResponseValueFormatterFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\AssecoPos;

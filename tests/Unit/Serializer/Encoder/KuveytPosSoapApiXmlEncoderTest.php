@@ -8,7 +8,7 @@ namespace Mews\Pos\Tests\Unit\Serializer\Encoder;
 
 use Mews\Pos\Serializer\EncodedData;
 use Mews\Pos\Serializer\Encoder\KuveytPosSoapApiXmlEncoder;
-use Mews\Pos\Tests\Unit\DataMapper\RequestDataMapper\KuveytPosRequestDataMapperTest;
+use Mews\Pos\Tests\Unit\DataMapper\Request\Mapper\KuveytPosRequestDataMapperTest;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

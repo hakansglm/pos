@@ -25,7 +25,7 @@ use Mews\Pos\Client\ToslaPosHttpClient;
 use Mews\Pos\Client\VakifKatilimPosHttpClient;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\Crypt\IyzicoPosCrypt;
-use Mews\Pos\DataMapper\RequestValueMapper\RequestValueMapperInterface;
+use Mews\Pos\DataMapper\Request\ValueMapper\RequestValueMapperInterface;
 use Mews\Pos\Factory\PosHttpClientFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;

@@ -13,7 +13,7 @@ use Mews\Pos\Client\IyzicoPosQueryApiHttpClient;
 use Mews\Pos\Client\KuveytPosSoapApiHttpClient;
 use Mews\Pos\Client\PosNetV1PosHttpClient;
 use Mews\Pos\Crypt\CryptInterface;
-use Mews\Pos\DataMapper\RequestValueMapper\RequestValueMapperInterface;
+use Mews\Pos\DataMapper\Request\ValueMapper\RequestValueMapperInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;

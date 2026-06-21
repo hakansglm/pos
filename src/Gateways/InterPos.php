@@ -6,10 +6,10 @@
 
 namespace Mews\Pos\Gateways;
 
-use Mews\Pos\DataMapper\RequestDataMapper\InterPosRequestDataMapper;
-use Mews\Pos\DataMapper\RequestDataMapper\RequestDataMapperInterface;
-use Mews\Pos\DataMapper\ResponseDataMapper\InterPosResponseDataMapper;
-use Mews\Pos\DataMapper\ResponseDataMapper\ResponseDataMapperInterface;
+use Mews\Pos\DataMapper\Request\Mapper\InterPosRequestDataMapper;
+use Mews\Pos\DataMapper\Request\Mapper\RequestDataMapperInterface;
+use Mews\Pos\DataMapper\Response\Mapper\InterPosResponseDataMapper;
+use Mews\Pos\DataMapper\Response\Mapper\ResponseDataMapperInterface;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Entity\Account\InterPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;

@@ -1,0 +1,71 @@
+<?php
+
+/**
+ * @license MIT
+ */
+
+namespace Mews\Pos\DataMapper\Response\ValueMapper;
+
+use Mews\Pos\Gateways\KuveytPos;
+use Mews\Pos\PosInterface;
+
+/**
+ * Value mapper for KuveytPos gateway
+ */
+class KuveytPosResponseValueMapper extends AbstractResponseValueMapper
+{
+    /** @var array<string, PosInterface::CURRENCY_*> */
+    protected array $currencyMappings = [
+        '0949' => PosInterface::CURRENCY_TRY,
+        '0840' => PosInterface::CURRENCY_USD,
+        '0978' => PosInterface::CURRENCY_EUR,
+    ];
+
+    /** @var array<PosInterface::TX_TYPE_*, string> */
+    protected array $txTypeMappings = [
+        PosInterface::TX_TYPE_PAY_AUTH       => 'Sale',
+        PosInterface::TX_TYPE_CANCEL         => 'SaleReversal',
+        PosInterface::TX_TYPE_STATUS         => 'GetMerchantOrderDetail',
+        PosInterface::TX_TYPE_REFUND         => 'DrawBack',
+        PosInterface::TX_TYPE_REFUND_PARTIAL => 'PartialDrawback',
+    ];
+
+    /** @var array<string|int, PosInterface::MODEL_*> */
+    protected array $secureTypeMappings = [
+        '3' => PosInterface::MODEL_3D_SECURE,
+        '0' => PosInterface::MODEL_NON_SECURE,
+    ];
+
+    /**
+     * Order Status Codes
+     *
+     * @inheritDoc
+     */
+    protected array $orderStatusMappings = [
+        1 => PosInterface::PAYMENT_STATUS_PAYMENT_COMPLETED,
+        4 => PosInterface::PAYMENT_STATUS_FULLY_REFUNDED,
+        5 => PosInterface::PAYMENT_STATUS_PARTIALLY_REFUNDED,
+        6 => PosInterface::PAYMENT_STATUS_CANCELED,
+    ];
+
+    /**
+     * @inheritDoc
+     */
+    public static function supports(string $gatewayClass): bool
+    {
+        return KuveytPos::class === $gatewayClass;
+    }
+
+    /**
+     * in '0949' or '949' formats
+     *
+     * @inheritDoc
+     */
+    public function mapCurrency($currency, ?string $apiRequestTxType = null): ?string
+    {
+        // 949 => 0949; for the request gateway wants 0949 code, but in response they send 949 code.
+        $currencyNormalized = \str_pad((string) $currency, 4, '0', STR_PAD_LEFT);
+
+        return parent::mapCurrency($currencyNormalized, $apiRequestTxType);
+    }
+}

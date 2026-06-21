@@ -9,7 +9,7 @@ namespace Mews\Pos\Tests\Unit\Factory;
 use Mews\Pos\Client\GenericPosHttpClientStrategy;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Crypt\CryptInterface;
-use Mews\Pos\DataMapper\RequestValueMapper\RequestValueMapperInterface;
+use Mews\Pos\DataMapper\Request\ValueMapper\RequestValueMapperInterface;
 use Mews\Pos\Factory\PosHttpClientStrategyFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\AssecoPos;

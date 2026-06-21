@@ -6,10 +6,10 @@
 
 namespace Mews\Pos\Gateways;
 
-use Mews\Pos\DataMapper\RequestDataMapper\PayFlexCPV4PosRequestDataMapper;
-use Mews\Pos\DataMapper\RequestDataMapper\RequestDataMapperInterface;
-use Mews\Pos\DataMapper\ResponseDataMapper\PayFlexCPV4PosResponseDataMapper;
-use Mews\Pos\DataMapper\ResponseDataMapper\ResponseDataMapperInterface;
+use Mews\Pos\DataMapper\Request\Mapper\PayFlexCPV4PosRequestDataMapper;
+use Mews\Pos\DataMapper\Request\Mapper\RequestDataMapperInterface;
+use Mews\Pos\DataMapper\Response\Mapper\PayFlexCPV4PosResponseDataMapper;
+use Mews\Pos\DataMapper\Response\Mapper\ResponseDataMapperInterface;
 use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Entity\Account\PayFlexPosAccount;
 use Mews\Pos\Entity\Card\CreditCardInterface;

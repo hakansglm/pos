@@ -11,7 +11,7 @@ use Mews\Pos\Client\AbstractIyzicoPosHttpClient;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\IyzicoPosHttpClient;
 use Mews\Pos\Crypt\IyzicoPosCrypt;
-use Mews\Pos\DataMapper\RequestValueMapper\RequestValueMapperInterface;
+use Mews\Pos\DataMapper\Request\ValueMapper\RequestValueMapperInterface;
 use Mews\Pos\Entity\Account\IyzicoPosAccount;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\PosHttpClientFactory;

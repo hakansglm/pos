@@ -10,19 +10,19 @@ parameters:
 			message: '#^Offset ''CommonPaymentUrl'' might not exist on array\{CommonPaymentUrl\: string, PaymentToken\: string\}\|null\.$#'
 			identifier: offsetAccess.notFound
 			count: 1
-			path: src/DataMapper/RequestDataMapper/PayFlexCPV4PosRequestDataMapper.php
+			path: src/DataMapper/Request/Mapper/PayFlexCPV4PosRequestDataMapper.php
 
 		-
 			message: '#^Offset ''PaymentToken'' might not exist on array\{CommonPaymentUrl\: string, PaymentToken\: string\}\|null\.$#'
 			identifier: offsetAccess.notFound
 			count: 1
-			path: src/DataMapper/RequestDataMapper/PayFlexCPV4PosRequestDataMapper.php
+			path: src/DataMapper/Request/Mapper/PayFlexCPV4PosRequestDataMapper.php
 
 		-
-			message: '#^Default value of the parameter \#2 \$data \(array\{\}\) of method Mews\\Pos\\DataMapper\\RequestDataMapper\\PayForPosRequestDataMapper\:\:createHistoryRequestData\(\) is incompatible with type array\{transaction_date\: DateTimeInterface\}\.$#'
+			message: '#^Default value of the parameter \#2 \$data \(array\{\}\) of method Mews\\Pos\\DataMapper\\Request\\Mapper\\PayForPosRequestDataMapper\:\:createHistoryRequestData\(\) is incompatible with type array\{transaction_date\: DateTimeInterface\}\.$#'
 			identifier: parameter.defaultValue
 			count: 1
-			path: src/DataMapper/RequestDataMapper/PayForPosRequestDataMapper.php
+			path: src/DataMapper/Request/Mapper/PayForPosRequestDataMapper.php
 
 		-
 			message: '#^Strict comparison using \=\=\= between ''3d_host'' and ''3d_host'' will always evaluate to true\.$#'
@@ -43,19 +43,19 @@ parameters:
 			path: src/Gateways/PayFlexCPV4Pos.php
 
 		-
-			message: '#^Parameter \#1 \$raw3DAuthResponseData of method Mews\\Pos\\DataMapper\\ResponseDataMapper\\PayFlexCPV4PosResponseDataMapper\:\:map3DHostResponseData\(\) expects array\{ErrorCode\: string\}\|array\{Rc\: string, AuthCode\: string, TransactionId\: string, PaymentToken\: string, MaskedPan\: string\}\|array\{Rc\: string, Message\: string, TransactionId\: string, PaymentToken\: string\}, array\<string, string\> given\.$#'
+			message: '#^Parameter \#1 \$raw3DAuthResponseData of method Mews\\Pos\\DataMapper\\Response\\Mapper\\PayFlexCPV4PosResponseDataMapper\:\:map3DHostResponseData\(\) expects array\{ErrorCode\: string\}\|array\{Rc\: string, AuthCode\: string, TransactionId\: string, PaymentToken\: string, MaskedPan\: string\}\|array\{Rc\: string, Message\: string, TransactionId\: string, PaymentToken\: string\}, array\<string, string\> given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Gateways/PayFlexCPV4Pos.php
 
 		-
-			message: '#^Parameter \#1 \$raw3DAuthResponseData of method Mews\\Pos\\DataMapper\\ResponseDataMapper\\PayFlexCPV4PosResponseDataMapper\:\:map3DPayResponseData\(\) expects array\{ErrorCode\: string\}\|array\{Rc\: string, AuthCode\: string, TransactionId\: string, PaymentToken\: string, MaskedPan\: string\}\|array\{Rc\: string, Message\: string, TransactionId\: string, PaymentToken\: string\}, array\<string, string\> given\.$#'
+			message: '#^Parameter \#1 \$raw3DAuthResponseData of method Mews\\Pos\\DataMapper\\Response\\Mapper\\PayFlexCPV4PosResponseDataMapper\:\:map3DPayResponseData\(\) expects array\{ErrorCode\: string\}\|array\{Rc\: string, AuthCode\: string, TransactionId\: string, PaymentToken\: string, MaskedPan\: string\}\|array\{Rc\: string, Message\: string, TransactionId\: string, PaymentToken\: string\}, array\<string, string\> given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Gateways/PayFlexCPV4Pos.php
 
 		-
-			message: '#^Parameter \#7 \$extraData of method Mews\\Pos\\DataMapper\\RequestDataMapper\\PayFlexCPV4PosRequestDataMapper\:\:create3DFormData\(\) expects array\{CommonPaymentUrl\: string, PaymentToken\: string\}\|null, array\{CommonPaymentUrl\: string\|null, PaymentToken\: string\|null, ErrorCode\: null, ResponseMessage\: string\|null\} given\.$#'
+			message: '#^Parameter \#7 \$extraData of method Mews\\Pos\\DataMapper\\Request\\Mapper\\PayFlexCPV4PosRequestDataMapper\:\:create3DFormData\(\) expects array\{CommonPaymentUrl\: string, PaymentToken\: string\}\|null, array\{CommonPaymentUrl\: string\|null, PaymentToken\: string\|null, ErrorCode\: null, ResponseMessage\: string\|null\} given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Gateways/PayFlexCPV4Pos.php

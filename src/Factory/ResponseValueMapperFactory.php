@@ -7,21 +7,21 @@
 namespace Mews\Pos\Factory;
 
 use DomainException;
-use Mews\Pos\DataMapper\ResponseValueMapper\AkbankPosResponseValueMapper;
-use Mews\Pos\DataMapper\ResponseValueMapper\IyzicoPosResponseValueMapper;
-use Mews\Pos\DataMapper\ResponseValueMapper\KuveytPosResponseValueMapper;
-use Mews\Pos\DataMapper\ResponseValueMapper\AssecoPosResponseValueMapper;
-use Mews\Pos\DataMapper\ResponseValueMapper\GarantiPosResponseValueMapper;
-use Mews\Pos\DataMapper\ResponseValueMapper\InterPosResponseValueMapper;
-use Mews\Pos\DataMapper\ResponseValueMapper\ParamPosResponseValueMapper;
-use Mews\Pos\DataMapper\ResponseValueMapper\PayFlexCPV4PosResponseValueMapper;
-use Mews\Pos\DataMapper\ResponseValueMapper\PayFlexV4PosResponseValueMapper;
-use Mews\Pos\DataMapper\ResponseValueMapper\PayForPosResponseValueMapper;
-use Mews\Pos\DataMapper\ResponseValueMapper\PosNetPosResponseValueMapper;
-use Mews\Pos\DataMapper\ResponseValueMapper\PosNetV1PosResponseValueMapper;
-use Mews\Pos\DataMapper\ResponseValueMapper\ResponseValueMapperInterface;
-use Mews\Pos\DataMapper\ResponseValueMapper\ToslaPosResponseValueMapper;
-use Mews\Pos\DataMapper\ResponseValueMapper\VakifKatilimPosResponseValueMapper;
+use Mews\Pos\DataMapper\Response\ValueMapper\AkbankPosResponseValueMapper;
+use Mews\Pos\DataMapper\Response\ValueMapper\IyzicoPosResponseValueMapper;
+use Mews\Pos\DataMapper\Response\ValueMapper\KuveytPosResponseValueMapper;
+use Mews\Pos\DataMapper\Response\ValueMapper\AssecoPosResponseValueMapper;
+use Mews\Pos\DataMapper\Response\ValueMapper\GarantiPosResponseValueMapper;
+use Mews\Pos\DataMapper\Response\ValueMapper\InterPosResponseValueMapper;
+use Mews\Pos\DataMapper\Response\ValueMapper\ParamPosResponseValueMapper;
+use Mews\Pos\DataMapper\Response\ValueMapper\PayFlexCPV4PosResponseValueMapper;
+use Mews\Pos\DataMapper\Response\ValueMapper\PayFlexV4PosResponseValueMapper;
+use Mews\Pos\DataMapper\Response\ValueMapper\PayForPosResponseValueMapper;
+use Mews\Pos\DataMapper\Response\ValueMapper\PosNetPosResponseValueMapper;
+use Mews\Pos\DataMapper\Response\ValueMapper\PosNetV1PosResponseValueMapper;
+use Mews\Pos\DataMapper\Response\ValueMapper\ResponseValueMapperInterface;
+use Mews\Pos\DataMapper\Response\ValueMapper\ToslaPosResponseValueMapper;
+use Mews\Pos\DataMapper\Response\ValueMapper\VakifKatilimPosResponseValueMapper;
 use Mews\Pos\PosInterface;
 
 class ResponseValueMapperFactory

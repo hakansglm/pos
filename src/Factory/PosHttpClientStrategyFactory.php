@@ -31,7 +31,7 @@ use Mews\Pos\Client\PosNetV1PosHttpClient;
 use Mews\Pos\Client\ToslaPosHttpClient;
 use Mews\Pos\Client\VakifKatilimPosHttpClient;
 use Mews\Pos\Crypt\CryptInterface;
-use Mews\Pos\DataMapper\RequestValueMapper\RequestValueMapperInterface;
+use Mews\Pos\DataMapper\Request\ValueMapper\RequestValueMapperInterface;
 use Mews\Pos\PosInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;

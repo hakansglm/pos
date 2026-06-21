@@ -10,7 +10,7 @@ use Mews\Pos\Client\AbstractHttpClient;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\KuveytPosHttpClient;
 use Mews\Pos\Crypt\CryptInterface;
-use Mews\Pos\DataMapper\RequestValueMapper\RequestValueMapperInterface;
+use Mews\Pos\DataMapper\Request\ValueMapper\RequestValueMapperInterface;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateways\AkbankPos;
