@@ -8,6 +8,7 @@ namespace Mews\Pos\Tests\Unit\Crypt;
 
 use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\AssecoPosCrypt;
+use Mews\Pos\Entity\Account\AbstractPosAccount;
 use Mews\Pos\Entity\Account\AssecoPosAccount;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
@@ -15,6 +16,7 @@ use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -63,28 +65,10 @@ class AssecoPosCryptTest extends TestCase
         $this->assertFalse($this->crypt->check3DHash($this->account, $responseData));
     }
 
-    public function testCreate3DHashFor3DPay(): void
+    #[DataProvider('create3DHashDataProvider')]
+    public function testCreate3DHash(array $requestData, AbstractPosAccount $account, string $expected): void
     {
-        $expected = '/uPxhEKWCEGi3NsDOOQ4u8Hu5g71v5GWspOid70WehTWEz97PqxG3IN1Jv5jsbOXOw3Z3Rr/0UtywzEgbqFfdA==';
-
-        $requestData = [
-            'clientid'      => $this->account->getClientId(),
-            'storetype'     => '3d_pay',
-            'amount'        => '100.25',
-            'oid'           => 'order222',
-            'okUrl'         => 'https://domain.com/success',
-            'failUrl'       => 'https://domain.com/fail_url',
-            'rnd'           => 'rand',
-            'lang'          => 'tr',
-            'currency'      => '949',
-            'taksit'        => '',
-            'islemtipi'     => 'Auth',
-            'firmaadi'      => 'siparis veren',
-            'Email'         => 'test@test.com',
-            'hashAlgorithm' => 'ver3',
-        ];
-
-        $actual = $this->crypt->create3DHash($this->account, $requestData);
+        $actual = $this->crypt->create3DHash($account, $requestData);
         $this->assertSame($expected, $actual);
     }
 
@@ -115,6 +99,59 @@ class AssecoPosCryptTest extends TestCase
     {
         $this->expectException(NotImplementedException::class);
         $this->crypt->createHash($this->account, []);
+    }
+
+    public static function create3DHashDataProvider(): array
+    {
+        $account = AccountFactory::createAssecoPosAccount(
+            'akbank',
+            '190100000',
+            'ISBANKAPI',
+            'ISBANK07',
+            PosInterface::MODEL_3D_SECURE,
+            '123456'
+        );
+
+        return [
+            '3d_pay'    => [
+                'requestData' => [
+                    'clientid'      => $account->getClientId(),
+                    'storetype'     => '3d_pay',
+                    'amount'        => '100.25',
+                    'oid'           => 'order222',
+                    'okUrl'         => 'https://domain.com/success',
+                    'failUrl'       => 'https://domain.com/fail_url',
+                    'rnd'           => 'rand',
+                    'lang'          => 'tr',
+                    'currency'      => '949',
+                    'taksit'        => '',
+                    'islemtipi'     => 'Auth',
+                    'firmaadi'      => 'siparis veren',
+                    'Email'         => 'test@test.com',
+                    'hashAlgorithm' => 'ver3',
+                ],
+                'account'     => $account,
+                'expected'    => '/uPxhEKWCEGi3NsDOOQ4u8Hu5g71v5GWspOid70WehTWEz97PqxG3IN1Jv5jsbOXOw3Z3Rr/0UtywzEgbqFfdA==',
+            ],
+            '3d_secure' => [
+                'requestData' => [
+                    'clientid'      => $account->getClientId(),
+                    'storetype'     => PosInterface::MODEL_3D_SECURE,
+                    'amount'        => '100.25',
+                    'oid'           => 'order222',
+                    'okUrl'         => 'https://domain.com/success',
+                    'failUrl'       => 'https://domain.com/fail_url',
+                    'rnd'           => 12345,
+                    'hashAlgorithm' => 'ver3',
+                    'lang'          => 'tr',
+                    'currency'      => 949,
+                    'islemtipi'     => 'Auth',
+                    'taksit'        => '',
+                ],
+                'account'     => $account,
+                'expected'    => '4aUsG5hqlIFLc9s8PKc5rWb2OLhmxDDewNgKa2XrwoYCIxlyVq8Fjl4IVaZzoqL983CfTseicmnTA0PjZr74xg==',
+            ],
+        ];
     }
 
     public static function threeDHashCheckDataProvider(): array
