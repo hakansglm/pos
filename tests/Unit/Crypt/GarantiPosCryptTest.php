@@ -8,8 +8,8 @@ namespace Mews\Pos\Tests\Unit\Crypt;
 
 use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\GarantiPosCrypt;
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\GarantiPosAccount;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\GarantiPosAccount;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\GarantiPos;

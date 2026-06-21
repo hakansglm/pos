@@ -7,8 +7,8 @@
 namespace Mews\Pos\Tests\Unit\Crypt;
 
 use Mews\Pos\Crypt\PosNetV1PosCrypt;
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\PosNetPosAccount;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\PosNetPosAccount;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\PosNetV1Pos;

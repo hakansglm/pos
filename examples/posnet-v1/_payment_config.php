@@ -1,6 +1,6 @@
 <?php
 
-use Mews\Pos\Entity\Card\CreditCardInterface;
+use Mews\Pos\Model\Card\CreditCardInterface;
 
 require __DIR__.'/../_main_config.php';
 

@@ -6,9 +6,9 @@
 
 namespace Mews\Pos\DataMapper\Request\Mapper;
 
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\PayForPosAccount;
-use Mews\Pos\Entity\Card\CreditCardInterface;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\PayForPosAccount;
+use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Event\Before3DFormHashCalculatedEvent;
 use Mews\Pos\Gateways\PayForPos;
 use Mews\Pos\PosInterface;

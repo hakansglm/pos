@@ -6,8 +6,8 @@
 
 namespace Mews\Pos\Crypt;
 
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\GarantiPosAccount;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\GarantiPosAccount;
 use Mews\Pos\Gateways\GarantiPos;
 
 class GarantiPosCrypt extends AbstractCrypt

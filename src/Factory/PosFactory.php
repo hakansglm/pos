@@ -7,7 +7,7 @@
 namespace Mews\Pos\Factory;
 
 use Mews\Pos\Client\HttpClientStrategyInterface;
-use Mews\Pos\Entity\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Exceptions\BankClassNullException;
 use Mews\Pos\Exceptions\BankNotFoundException;
 use Mews\Pos\PosInterface;

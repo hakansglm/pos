@@ -4,10 +4,10 @@
  * @license MIT
  */
 
-namespace Mews\Pos\Tests\Unit\Entity\Account;
+namespace Mews\Pos\Tests\Unit\Model\Account;
 
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\IyzicoPosAccount;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\IyzicoPosAccount;
 use Mews\Pos\Factory\AccountFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;

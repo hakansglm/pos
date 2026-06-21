@@ -7,7 +7,7 @@
 namespace Mews\Pos\Tests\Unit\Crypt;
 
 use Mews\Pos\Crypt\NullCrypt;
-use Mews\Pos\Entity\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\KuveytPos;
 use PHPUnit\Framework\Attributes\CoversClass;

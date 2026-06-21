@@ -8,7 +8,7 @@ namespace Mews\Pos\Tests\Unit\Crypt;
 
 use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\PayFlexCPV4Crypt;
-use Mews\Pos\Entity\Account\PayFlexPosAccount;
+use Mews\Pos\Model\Account\PayFlexPosAccount;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateways\AssecoPos;

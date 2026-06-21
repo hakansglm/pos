@@ -10,9 +10,9 @@ use Mews\Pos\DataMapper\Request\ValueFormatter\ParamPosRequestValueFormatter;
 use Mews\Pos\DataMapper\Request\ValueFormatter\RequestValueFormatterInterface;
 use Mews\Pos\DataMapper\Request\ValueMapper\ParamPosRequestValueMapper;
 use Mews\Pos\DataMapper\Request\ValueMapper\RequestValueMapperInterface;
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\ParamPosAccount;
-use Mews\Pos\Entity\Card\CreditCardInterface;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\ParamPosAccount;
+use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Gateways\ParamPos;
 use Mews\Pos\PosInterface;
@@ -72,7 +72,7 @@ class ParamPosRequestDataMapper extends AbstractRequestDataMapper
             throw new \InvalidArgumentException();
         }
 
-        if (!$creditCard instanceof \Mews\Pos\Entity\Card\CreditCardInterface) {
+        if (!$creditCard instanceof \Mews\Pos\Model\Card\CreditCardInterface) {
             throw new \InvalidArgumentException('Bu işlem için kredi kartı bilgileri gereklidir.');
         }
 

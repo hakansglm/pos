@@ -4,7 +4,7 @@
  * @license MIT
  */
 
-namespace Mews\Pos\Entity\Card;
+namespace Mews\Pos\Model\Card;
 
 use DateTimeImmutable;
 

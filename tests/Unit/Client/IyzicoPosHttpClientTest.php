@@ -12,7 +12,7 @@ use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\IyzicoPosHttpClient;
 use Mews\Pos\Crypt\IyzicoPosCrypt;
 use Mews\Pos\DataMapper\Request\ValueMapper\RequestValueMapperInterface;
-use Mews\Pos\Entity\Account\IyzicoPosAccount;
+use Mews\Pos\Model\Account\IyzicoPosAccount;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateways\AkbankPos;
@@ -179,7 +179,7 @@ class IyzicoPosHttpClientTest extends TestCase
         $this->requestFactory->expects(self::never())
             ->method('createRequest');
 
-        $wrongAccount = $this->createMock(\Mews\Pos\Entity\Account\AbstractPosAccount::class);
+        $wrongAccount = $this->createMock(\Mews\Pos\Model\Account\AbstractPosAccount::class);
 
         $this->expectException(\InvalidArgumentException::class);
         $this->client->request($txType, $paymentModel, ['data' => 'x'], [], null, $wrongAccount);

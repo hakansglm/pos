@@ -8,7 +8,7 @@ namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueMapper;
 
 use Mews\Pos\DataMapper\Request\ValueMapper\AbstractRequestValueMapper;
 use Mews\Pos\DataMapper\Request\ValueMapper\KuveytPosRequestValueMapper;
-use Mews\Pos\Entity\Card\CreditCardInterface;
+use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\KuveytPos;

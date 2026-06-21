@@ -8,8 +8,8 @@ namespace Mews\Pos\Tests\Unit\Crypt;
 
 use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\ToslaPosCrypt;
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\ToslaPosAccount;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\ToslaPosAccount;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateways\AssecoPos;

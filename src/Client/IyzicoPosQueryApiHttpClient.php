@@ -7,8 +7,8 @@
 namespace Mews\Pos\Client;
 
 use Mews\Pos\Crypt\CryptInterface;
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\IyzicoPosAccount;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\IyzicoPosAccount;
 use Mews\Pos\Gateways\IyzicoPos;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Serializer\Decoder\JsonDecoder;
@@ -92,7 +92,7 @@ class IyzicoPosQueryApiHttpClient extends AbstractIyzicoPosHttpClient
             throw new \InvalidArgumentException(\sprintf(
                 'Expected %s, got %s.',
                 IyzicoPosAccount::class,
-                $account instanceof \Mews\Pos\Entity\Account\AbstractPosAccount ? $account::class : 'null'
+                $account instanceof \Mews\Pos\Model\Account\AbstractPosAccount ? $account::class : 'null'
             ));
         }
 

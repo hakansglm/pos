@@ -6,10 +6,10 @@
 
 namespace Mews\Pos\Tests\Unit\Factory;
 
-use Mews\Pos\Entity\Account\AkbankPosAccount;
-use Mews\Pos\Entity\Account\BoaPosAccount;
-use Mews\Pos\Entity\Account\ParamPosAccount;
-use Mews\Pos\Entity\Account\PayForPosAccount;
+use Mews\Pos\Model\Account\AkbankPosAccount;
+use Mews\Pos\Model\Account\BoaPosAccount;
+use Mews\Pos\Model\Account\ParamPosAccount;
+use Mews\Pos\Model\Account\PayForPosAccount;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;

@@ -7,9 +7,9 @@
 namespace Mews\Pos\DataMapper\Request\Mapper;
 
 use DateTimeInterface;
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\PayFlexPosAccount;
-use Mews\Pos\Entity\Card\CreditCardInterface;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\PayFlexPosAccount;
+use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Gateways\PayFlexV4Pos;
@@ -36,7 +36,7 @@ class PayFlexV4PosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function create3DPaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, array $responseData, ?CreditCardInterface $creditCard = null): array
     {
-        if (!$creditCard instanceof \Mews\Pos\Entity\Card\CreditCardInterface) {
+        if (!$creditCard instanceof \Mews\Pos\Model\Card\CreditCardInterface) {
             throw new \LogicException('Ödemeyi tamamlamak için kart bilgiler zorunlu!');
         }
 

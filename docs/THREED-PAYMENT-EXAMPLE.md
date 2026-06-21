@@ -123,7 +123,7 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
                 $_POST['card_name'],
 
                 // kart tipi Gateway'e göre zorunlu, alabileceği örnek değer: "visa"
-                // alabileceği alternatif değerler için \Mews\Pos\Entity\Card\CreditCardInterface'a bakınız.
+                // alabileceği alternatif değerler için \Mews\Pos\Model\Card\CreditCardInterface'a bakınız.
                 $_POST['card_type'] ?? null
           );
         } catch (\Mews\Pos\Exceptions\CardTypeRequiredException $e) {

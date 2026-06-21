@@ -6,8 +6,8 @@
 
 namespace Mews\Pos\Crypt;
 
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\PosNetPosAccount;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\PosNetPosAccount;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Gateways\PosNetPos;
 

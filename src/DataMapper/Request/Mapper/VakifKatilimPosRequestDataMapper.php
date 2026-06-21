@@ -8,9 +8,9 @@ namespace Mews\Pos\DataMapper\Request\Mapper;
 
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\Crypt\KuveytPosCrypt;
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\BoaPosAccount;
-use Mews\Pos\Entity\Card\CreditCardInterface;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\BoaPosAccount;
+use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Gateways\VakifKatilimPos;
 use Mews\Pos\PosInterface;
 

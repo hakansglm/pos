@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\Client;
 
-use Mews\Pos\Entity\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Serializer\Decoder\XmlDecoder;
 use Mews\Pos\Serializer\EncodedData;

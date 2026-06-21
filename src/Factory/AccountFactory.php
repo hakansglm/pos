@@ -6,17 +6,17 @@
 
 namespace Mews\Pos\Factory;
 
-use Mews\Pos\Entity\Account\AkbankPosAccount;
-use Mews\Pos\Entity\Account\AssecoPosAccount;
-use Mews\Pos\Entity\Account\IyzicoPosAccount;
-use Mews\Pos\Entity\Account\GarantiPosAccount;
-use Mews\Pos\Entity\Account\InterPosAccount;
-use Mews\Pos\Entity\Account\BoaPosAccount;
-use Mews\Pos\Entity\Account\ParamPosAccount;
-use Mews\Pos\Entity\Account\PayFlexPosAccount;
-use Mews\Pos\Entity\Account\PayForPosAccount;
-use Mews\Pos\Entity\Account\PosNetPosAccount;
-use Mews\Pos\Entity\Account\ToslaPosAccount;
+use Mews\Pos\Model\Account\AkbankPosAccount;
+use Mews\Pos\Model\Account\AssecoPosAccount;
+use Mews\Pos\Model\Account\IyzicoPosAccount;
+use Mews\Pos\Model\Account\GarantiPosAccount;
+use Mews\Pos\Model\Account\InterPosAccount;
+use Mews\Pos\Model\Account\BoaPosAccount;
+use Mews\Pos\Model\Account\ParamPosAccount;
+use Mews\Pos\Model\Account\PayFlexPosAccount;
+use Mews\Pos\Model\Account\PayForPosAccount;
+use Mews\Pos\Model\Account\PosNetPosAccount;
+use Mews\Pos\Model\Account\ToslaPosAccount;
 use Mews\Pos\Exceptions\MissingAccountInfoException;
 use Mews\Pos\PosInterface;
 

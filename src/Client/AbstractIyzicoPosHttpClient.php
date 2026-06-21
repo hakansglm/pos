@@ -8,7 +8,7 @@ namespace Mews\Pos\Client;
 
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\Crypt\IyzicoPosCrypt;
-use Mews\Pos\Entity\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Serializer\Decoder\DecoderInterface;
 use Mews\Pos\Serializer\Encoder\EncoderInterface;
 use Psr\Http\Client\ClientInterface;

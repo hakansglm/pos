@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\DataMapper\Request\ValueMapper;
 
-use Mews\Pos\Entity\Card\CreditCardInterface;
+use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Gateways\PayFlexV4Pos;
 use Mews\Pos\PosInterface;
 

@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Factory;
 
-use Mews\Pos\Entity\Card\CreditCardInterface;
+use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Exceptions\CardTypeNotSupportedException;
 use Mews\Pos\Exceptions\CardTypeRequiredException;
 use Mews\Pos\Factory\CreditCardFactory;

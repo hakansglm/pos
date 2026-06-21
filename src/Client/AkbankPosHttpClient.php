@@ -7,7 +7,7 @@
 namespace Mews\Pos\Client;
 
 use Mews\Pos\Crypt\CryptInterface;
-use Mews\Pos\Entity\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Serializer\Decoder\AkbankPosJsonDecoder;

@@ -11,8 +11,8 @@ use Mews\Pos\Client\HttpClientStrategyInterface;
 use Mews\Pos\DataMapper\Request\Mapper\RequestDataMapperInterface;
 use Mews\Pos\DataMapper\Request\ValueMapper\RequestValueMapperInterface;
 use Mews\Pos\DataMapper\Response\Mapper\ResponseDataMapperInterface;
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Card\CreditCardInterface;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exceptions\UnsupportedPaymentModelException;
 use Mews\Pos\PosInterface;
@@ -673,7 +673,7 @@ abstract class AbstractGateway implements PosInterface
         }
 
         if ((PosInterface::MODEL_3D_SECURE === $paymentModel || PosInterface::MODEL_3D_PAY === $paymentModel)
-            && !$card instanceof \Mews\Pos\Entity\Card\CreditCardInterface
+            && !$card instanceof \Mews\Pos\Model\Card\CreditCardInterface
         ) {
             throw new \LogicException('Bu ödeme modeli için kart bilgileri zorunlu!');
         }

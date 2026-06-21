@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\Tests\Functional;
 
-use Mews\Pos\Entity\Card\CreditCardInterface;
+use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Event\Before3DFormHashCalculatedEvent;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Factory\CreditCardFactory;

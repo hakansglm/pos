@@ -40,7 +40,7 @@ $paymentModel  = null;
 $posClass      = null;
 $transaction   = null;
 
-function doPayment(PosInterface $pos, string $paymentModel, string $transaction, array $order, ?\Mews\Pos\Entity\Card\CreditCardInterface $card): array
+function doPayment(PosInterface $pos, string $paymentModel, string $transaction, array $order, ?\Mews\Pos\Model\Card\CreditCardInterface $card): array
 {
     if (!$pos::isSupportedTransaction($transaction, $paymentModel)) {
         throw new \LogicException(
@@ -88,7 +88,7 @@ function doPayment(PosInterface $pos, string $paymentModel, string $transaction,
     throw new \LogicException('Hatalı işlem');
 }
 
-function getGateway(\Mews\Pos\Entity\Account\AbstractPosAccount $account, \Psr\EventDispatcher\EventDispatcherInterface $eventDispatcher): ?PosInterface
+function getGateway(\Mews\Pos\Model\Account\AbstractPosAccount $account, \Psr\EventDispatcher\EventDispatcherInterface $eventDispatcher): ?PosInterface
 {
     try {
 /*        $client = new HttpClient(
@@ -107,7 +107,7 @@ function getGateway(\Mews\Pos\Entity\Account\AbstractPosAccount $account, \Psr\E
     }
 }
 
-function createCard(PosInterface $pos, array $card): \Mews\Pos\Entity\Card\CreditCardInterface
+function createCard(PosInterface $pos, array $card): \Mews\Pos\Model\Card\CreditCardInterface
 {
     try {
         return \Mews\Pos\Factory\CreditCardFactory::createForGateway(

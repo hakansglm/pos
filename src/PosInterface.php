@@ -6,8 +6,8 @@
 
 namespace Mews\Pos;
 
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Card\CreditCardInterface;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Exceptions\HashMismatchException;
 use Mews\Pos\Exceptions\UnsupportedFormFormatException;
 use Mews\Pos\Exceptions\UnsupportedPaymentModelException;

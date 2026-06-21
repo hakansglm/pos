@@ -7,7 +7,7 @@
 namespace Mews\Pos\Client;
 
 use Mews\Pos\DataMapper\Request\ValueMapper\RequestValueMapperInterface;
-use Mews\Pos\Entity\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Gateways\PosNetV1Pos;
 use Mews\Pos\PosInterface;

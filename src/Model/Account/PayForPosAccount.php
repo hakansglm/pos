@@ -4,7 +4,7 @@
  * @license MIT
  */
 
-namespace Mews\Pos\Entity\Account;
+namespace Mews\Pos\Model\Account;
 
 class PayForPosAccount extends AbstractPosAccount
 {

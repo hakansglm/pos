@@ -8,8 +8,8 @@ namespace Mews\Pos\Tests\Unit\Crypt;
 
 use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\ParamPosCrypt;
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\ParamPosAccount;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\ParamPosAccount;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Gateways\AssecoPos;
 use Mews\Pos\Gateways\Param3DHostPos;

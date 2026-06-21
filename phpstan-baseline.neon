@@ -61,7 +61,7 @@ parameters:
 			path: src/Gateways/PayFlexCPV4Pos.php
 
 		-
-			message: '#^Parameter \#2 \$creditCard of method Mews\\Pos\\Gateways\\PayFlexV4Pos\:\:sendEnrollmentRequest\(\) expects Mews\\Pos\\Entity\\Card\\CreditCardInterface, Mews\\Pos\\Entity\\Card\\CreditCardInterface\|null given\.$#'
+			message: '#^Parameter \#2 \$creditCard of method Mews\\Pos\\Gateways\\PayFlexV4Pos\:\:sendEnrollmentRequest\(\) expects Mews\\Pos\\Model\\Card\\CreditCardInterface, Mews\\Pos\\Model\\Card\\CreditCardInterface\|null given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Gateways/PayFlexV4Pos.php

@@ -6,9 +6,9 @@
 
 namespace Mews\Pos\DataMapper\Request\Mapper;
 
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\PayFlexPosAccount;
-use Mews\Pos\Entity\Card\CreditCardInterface;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\PayFlexPosAccount;
+use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Exceptions\NotImplementedException;
 use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
 use Mews\Pos\Gateways\PayFlexCPV4Pos;

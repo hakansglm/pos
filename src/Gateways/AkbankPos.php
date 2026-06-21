@@ -8,9 +8,9 @@ namespace Mews\Pos\Gateways;
 
 use Mews\Pos\DataMapper\Request\Mapper\AkbankPosRequestDataMapper;
 use Mews\Pos\DataMapper\Request\Mapper\RequestDataMapperInterface;
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\AkbankPosAccount;
-use Mews\Pos\Entity\Card\CreditCardInterface;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\AkbankPosAccount;
+use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exceptions\HashMismatchException;
 use Mews\Pos\Exceptions\UnsupportedFormFormatException;

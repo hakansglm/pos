@@ -227,7 +227,7 @@ class IyzicoPosQueryApiHttpClientTest extends TestCase
         $txType      = PosInterface::TX_TYPE_HISTORY;
         $paymentModel = PosInterface::MODEL_NON_SECURE;
 
-        $wrongAccount = $this->createMock(\Mews\Pos\Entity\Account\AbstractPosAccount::class);
+        $wrongAccount = $this->createMock(\Mews\Pos\Model\Account\AbstractPosAccount::class);
 
         $this->expectException(\InvalidArgumentException::class);
         $this->client->request($txType, $paymentModel, ['transactionDate' => '2024-01-01'], [], self::BASE_URL . '/transactions', $wrongAccount);

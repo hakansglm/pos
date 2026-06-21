@@ -12,7 +12,7 @@ use Mews\Pos\Client\AkbankPosHttpClient;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\Request\ValueMapper\RequestValueMapperInterface;
-use Mews\Pos\Entity\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateways\AkbankPos;
 use Mews\Pos\Gateways\AssecoPos;

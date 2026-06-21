@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Factory;
 
-use Mews\Pos\Entity\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Exceptions\BankClassNullException;
 use Mews\Pos\Exceptions\BankNotFoundException;
 use Mews\Pos\Factory\PosFactory;
