@@ -7,9 +7,9 @@
 namespace Mews\Pos\Crypt;
 
 use Mews\Pos\Model\Account\AbstractPosAccount;
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\KuveytPos;
-use Mews\Pos\Gateways\VakifKatilimPos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\KuveytPos;
+use Mews\Pos\Gateway\VakifKatilimPos;
 
 class KuveytPosCrypt extends AbstractCrypt
 {

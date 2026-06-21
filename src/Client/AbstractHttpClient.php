@@ -7,7 +7,7 @@
 namespace Mews\Pos\Client;
 
 use Mews\Pos\Model\Account\AbstractPosAccount;
-use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
+use Mews\Pos\Exception\UnsupportedTransactionTypeException;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Serializer\Decoder\DecoderInterface;
 use Mews\Pos\Serializer\Encoder\EncoderInterface;

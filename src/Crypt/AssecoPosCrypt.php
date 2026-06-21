@@ -7,8 +7,8 @@
 namespace Mews\Pos\Crypt;
 
 use Mews\Pos\Model\Account\AbstractPosAccount;
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\AssecoPos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\AssecoPos;
 
 class AssecoPosCrypt extends AbstractCrypt
 {

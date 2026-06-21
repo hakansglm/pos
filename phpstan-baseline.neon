@@ -28,41 +28,41 @@ parameters:
 			message: '#^Strict comparison using \=\=\= between ''3d_host'' and ''3d_host'' will always evaluate to true\.$#'
 			identifier: identical.alwaysTrue
 			count: 1
-			path: src/Gateways/AbstractGateway.php
+			path: src/Gateway/AbstractGateway.php
 
 		-
 			message: '#^Unreachable statement \- code above always terminates\.$#'
 			identifier: deadCode.unreachable
 			count: 1
-			path: src/Gateways/AbstractGateway.php
+			path: src/Gateway/AbstractGateway.php
 
 		-
-			message: '#^Method Mews\\Pos\\Gateways\\PayFlexCPV4Pos\:\:get3DPaymentStatus\(\) should return array\{ErrorCode\: string\}\|array\{Rc\: string, AuthCode\: string, TransactionId\: string, PaymentToken\: string, MaskedPan\: string\}\|array\{Rc\: string, Message\: string, TransactionId\: string, PaymentToken\: string\} but returns array\<string, mixed\>\.$#'
+			message: '#^Method Mews\\Pos\\Gateway\\PayFlexCPV4Pos\:\:get3DPaymentStatus\(\) should return array\{ErrorCode\: string\}\|array\{Rc\: string, AuthCode\: string, TransactionId\: string, PaymentToken\: string, MaskedPan\: string\}\|array\{Rc\: string, Message\: string, TransactionId\: string, PaymentToken\: string\} but returns array\<string, mixed\>\.$#'
 			identifier: return.type
 			count: 1
-			path: src/Gateways/PayFlexCPV4Pos.php
+			path: src/Gateway/PayFlexCPV4Pos.php
 
 		-
 			message: '#^Parameter \#1 \$raw3DAuthResponseData of method Mews\\Pos\\DataMapper\\Response\\Mapper\\PayFlexCPV4PosResponseDataMapper\:\:map3DHostResponseData\(\) expects array\{ErrorCode\: string\}\|array\{Rc\: string, AuthCode\: string, TransactionId\: string, PaymentToken\: string, MaskedPan\: string\}\|array\{Rc\: string, Message\: string, TransactionId\: string, PaymentToken\: string\}, array\<string, string\> given\.$#'
 			identifier: argument.type
 			count: 1
-			path: src/Gateways/PayFlexCPV4Pos.php
+			path: src/Gateway/PayFlexCPV4Pos.php
 
 		-
 			message: '#^Parameter \#1 \$raw3DAuthResponseData of method Mews\\Pos\\DataMapper\\Response\\Mapper\\PayFlexCPV4PosResponseDataMapper\:\:map3DPayResponseData\(\) expects array\{ErrorCode\: string\}\|array\{Rc\: string, AuthCode\: string, TransactionId\: string, PaymentToken\: string, MaskedPan\: string\}\|array\{Rc\: string, Message\: string, TransactionId\: string, PaymentToken\: string\}, array\<string, string\> given\.$#'
 			identifier: argument.type
 			count: 1
-			path: src/Gateways/PayFlexCPV4Pos.php
+			path: src/Gateway/PayFlexCPV4Pos.php
 
 		-
 			message: '#^Parameter \#7 \$extraData of method Mews\\Pos\\DataMapper\\Request\\Mapper\\PayFlexCPV4PosRequestDataMapper\:\:create3DFormData\(\) expects array\{CommonPaymentUrl\: string, PaymentToken\: string\}\|null, array\{CommonPaymentUrl\: string\|null, PaymentToken\: string\|null, ErrorCode\: null, ResponseMessage\: string\|null\} given\.$#'
 			identifier: argument.type
 			count: 1
-			path: src/Gateways/PayFlexCPV4Pos.php
+			path: src/Gateway/PayFlexCPV4Pos.php
 
 		-
-			message: '#^Parameter \#2 \$creditCard of method Mews\\Pos\\Gateways\\PayFlexV4Pos\:\:sendEnrollmentRequest\(\) expects Mews\\Pos\\Model\\Card\\CreditCardInterface, Mews\\Pos\\Model\\Card\\CreditCardInterface\|null given\.$#'
+			message: '#^Parameter \#2 \$creditCard of method Mews\\Pos\\Gateway\\PayFlexV4Pos\:\:sendEnrollmentRequest\(\) expects Mews\\Pos\\Model\\Card\\CreditCardInterface, Mews\\Pos\\Model\\Card\\CreditCardInterface\|null given\.$#'
 			identifier: argument.type
 			count: 1
-			path: src/Gateways/PayFlexV4Pos.php
+			path: src/Gateway/PayFlexV4Pos.php
 

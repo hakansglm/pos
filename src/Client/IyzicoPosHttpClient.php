@@ -9,7 +9,7 @@ namespace Mews\Pos\Client;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Account\IyzicoPosAccount;
-use Mews\Pos\Gateways\IyzicoPos;
+use Mews\Pos\Gateway\IyzicoPos;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Serializer\Decoder\JsonDecoder;
 use Mews\Pos\Serializer\EncodedData;

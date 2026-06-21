@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\DataMapper\Request\ValueMapper;
 
-use Mews\Pos\Gateways\VakifKatilimPos;
+use Mews\Pos\Gateway\VakifKatilimPos;
 use Mews\Pos\PosInterface;
 
 class VakifKatilimPosRequestValueMapper extends AbstractRequestValueMapper

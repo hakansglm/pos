@@ -7,8 +7,8 @@
 namespace Mews\Pos\Client;
 
 use Mews\Pos\Model\Account\AbstractPosAccount;
-use Mews\Pos\Gateways\Param3DHostPos;
-use Mews\Pos\Gateways\ParamPos;
+use Mews\Pos\Gateway\Param3DHostPos;
+use Mews\Pos\Gateway\ParamPos;
 use Mews\Pos\Serializer\Decoder\ParamPosXmlDecoder;
 use Mews\Pos\Serializer\EncodedData;
 use Mews\Pos\Serializer\Encoder\ParamPosXmlEncoder;

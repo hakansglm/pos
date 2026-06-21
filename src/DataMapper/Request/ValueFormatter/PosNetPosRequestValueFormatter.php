@@ -6,8 +6,8 @@
 
 namespace Mews\Pos\DataMapper\Request\ValueFormatter;
 
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\PosNetPos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\PosNetPos;
 use Mews\Pos\PosInterface;
 
 class PosNetPosRequestValueFormatter implements RequestValueFormatterInterface

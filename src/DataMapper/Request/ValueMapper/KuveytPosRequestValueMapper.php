@@ -7,7 +7,7 @@
 namespace Mews\Pos\DataMapper\Request\ValueMapper;
 
 use Mews\Pos\Model\Card\CreditCardInterface;
-use Mews\Pos\Gateways\KuveytPos;
+use Mews\Pos\Gateway\KuveytPos;
 use Mews\Pos\PosInterface;
 
 class KuveytPosRequestValueMapper extends AbstractRequestValueMapper

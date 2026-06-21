@@ -6,9 +6,9 @@
 
 namespace Mews\Pos\DataMapper\Response\Mapper;
 
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\Param3DHostPos;
-use Mews\Pos\Gateways\ParamPos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\Param3DHostPos;
+use Mews\Pos\Gateway\ParamPos;
 use Mews\Pos\PosInterface;
 
 class ParamPosResponseDataMapper extends AbstractResponseDataMapper

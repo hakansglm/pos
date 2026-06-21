@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\DataMapper\Request\ValueFormatter;
 
-use Mews\Pos\Gateways\AkbankPos;
+use Mews\Pos\Gateway\AkbankPos;
 
 class AkbankPosRequestValueFormatter implements RequestValueFormatterInterface
 {

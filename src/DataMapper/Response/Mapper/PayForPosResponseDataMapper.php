@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\DataMapper\Response\Mapper;
 
-use Mews\Pos\Gateways\PayForPos;
+use Mews\Pos\Gateway\PayForPos;
 use Mews\Pos\PosInterface;
 
 class PayForPosResponseDataMapper extends AbstractResponseDataMapper

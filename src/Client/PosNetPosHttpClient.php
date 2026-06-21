@@ -7,7 +7,7 @@
 namespace Mews\Pos\Client;
 
 use Mews\Pos\Model\Account\AbstractPosAccount;
-use Mews\Pos\Gateways\PosNetPos;
+use Mews\Pos\Gateway\PosNetPos;
 use Mews\Pos\Serializer\Decoder\XmlDecoder;
 use Mews\Pos\Serializer\EncodedData;
 use Mews\Pos\Serializer\Encoder\XmlEncoder;

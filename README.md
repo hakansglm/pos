@@ -170,7 +170,7 @@ return [
     'banks'         => [
         'akbank'    => [
             'name'  => 'AKBANK T.A.S.',
-            'class' => \Mews\Pos\Gateways\AssecoPos::class,
+            'class' => \Mews\Pos\Gateway\AssecoPos::class,
             'lang'  => \Mews\Pos\PosInterface::LANG_TR, // optional
             'gateway_endpoints'  => [
                 'payment_api'     => 'https://www.sanalakpos.com/fim/api',
@@ -182,7 +182,7 @@ return [
         // Yeni eklenen banka
         'isbank'    => [ // unique bir isim vermeniz gerekir.
             'name'  => 'İŞ BANKASI .A.S.',
-            'class' => \Mews\Pos\Gateways\AssecoPos::class, // Altyapı sınıfı
+            'class' => \Mews\Pos\Gateway\AssecoPos::class, // Altyapı sınıfı
             'lang'  => \Mews\Pos\PosInterface::LANG_TR, // optional
             'gateway_endpoints'  => [
                 'payment_api'     => 'https://sanalpos.isbank.com.tr/fim/api',

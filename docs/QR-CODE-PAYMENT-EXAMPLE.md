@@ -50,7 +50,7 @@ try {
     $config = require __DIR__.'/pos_test_ayarlar.php';
 
     $pos = \Mews\Pos\Factory\PosFactory::createPosGateway($account, $config, $eventDispatcher);
-} catch (\Mews\Pos\Exceptions\BankNotFoundException | \Mews\Pos\Exceptions\BankClassNullException $e) {
+} catch (\Mews\Pos\Exception\BankNotFoundException | \Mews\Pos\Exception\BankClassNullException $e) {
     var_dump($e);
     exit;
 }
@@ -76,7 +76,7 @@ $order = [
     'fail_url'    => 'https://example.com/response.php',
 
     // lang degeri verilmezse config'de tanimlanan dil veya default olarak LANG_TR kullanılacak.
-    'lang' => \Mews\Pos\Gateways\PosInterface::LANG_TR, // Kullanıcının yönlendirileceği banka gateway sayfasının ve gateway'den dönen mesajların dili.
+    'lang' => \Mews\Pos\Gateway\PosInterface::LANG_TR, // Kullanıcının yönlendirileceği banka gateway sayfasının ve gateway'den dönen mesajların dili.
 ];
 
 $_SESSION['order'] = $order;
@@ -140,7 +140,7 @@ $card  = null;
 
 // Sonuç işleniyor
 $gatewayResponseData = $_POST;
-if (get_class($pos) === \Mews\Pos\Gateways\PayFlexCPV4Pos::class) {
+if (get_class($pos) === \Mews\Pos\Gateway\PayFlexCPV4Pos::class) {
     $gatewayResponseData = $_GET;
 }
 try  {
@@ -158,7 +158,7 @@ try  {
     if ($pos->isSuccess()) {
         // NOT: Ödeme durum sorgulama, iptal ve iade işlemleri yapacaksanız $response değerini saklayınız.
     }
-} catch (\Mews\Pos\Exceptions\HashMismatchException $e) {
+} catch (\Mews\Pos\Exception\HashMismatchException $e) {
     /**
      * Bankadan gelen verilerin bankaya ait olmadığında bu exception oluşur.
      * Veya Banka API bilgileriniz hatalı ise de oluşur.

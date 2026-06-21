@@ -7,7 +7,7 @@
 namespace Mews\Pos\Client;
 
 use Mews\Pos\Model\Account\AbstractPosAccount;
-use Mews\Pos\Gateways\InterPos;
+use Mews\Pos\Gateway\InterPos;
 use Mews\Pos\Serializer\Decoder\InterPosDecoder;
 use Mews\Pos\Serializer\EncodedData;
 use Mews\Pos\Serializer\Encoder\FormEncoder;

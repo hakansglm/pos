@@ -23,49 +23,49 @@
                             <a class="nav-link" href="<?= $hostUrl ?>">Main Page</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\ToslaPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/tosla/index.php">Tosla (Ak Öde)</a>
+                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateway\ToslaPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/tosla/index.php">Tosla (Ak Öde)</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\AkbankPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/akbankpos/index.php">Akbank POS</a>
+                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateway\AkbankPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/akbankpos/index.php">Akbank POS</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\ParamPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/parampos/index.php">Param POS</a>
+                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateway\ParamPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/parampos/index.php">Param POS</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\Param3DHostPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/parampos-3d-host/index.php">Param POS (3D Host)</a>
+                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateway\Param3DHostPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/parampos-3d-host/index.php">Param POS (3D Host)</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\AssecoPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/asseco/index.php">Asseco/Payten Pos</a>
+                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateway\AssecoPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/asseco/index.php">Asseco/Payten Pos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\PayForPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/finansbank-payfor/index.php">PayFor (Finansbank)</a>
+                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateway\PayForPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/finansbank-payfor/index.php">PayFor (Finansbank)</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\GarantiPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/garanti/index.php">Garanti POS</a>
+                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateway\GarantiPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/garanti/index.php">Garanti POS</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\InterPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/interpos/index.php">InterPos (Deniz bank)</a>
+                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateway\InterPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/interpos/index.php">InterPos (Deniz bank)</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\PayFlexV4Pos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/payflex-mpi-v4/index.php">PayFlex MPI V4 (VakifBank VPOS 7/24)</a>
+                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateway\PayFlexV4Pos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/payflex-mpi-v4/index.php">PayFlex MPI V4 (VakifBank VPOS 7/24)</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\PayFlexCPV4Pos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/payflex-cp-v4/index.php">PayFlex Common Payment V4 (VakifBank)</a>
+                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateway\PayFlexCPV4Pos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/payflex-cp-v4/index.php">PayFlex Common Payment V4 (VakifBank)</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\PosNetPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/posnet-ykb/index.php">PosNet (YKB)</a>
+                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateway\PosNetPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/posnet-ykb/index.php">PosNet (YKB)</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\PosNetV1Pos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/posnet-v1/index.php">PosNetV1 (Albaraka)</a>
+                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateway\PosNetV1Pos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/posnet-v1/index.php">PosNetV1 (Albaraka)</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\KuveytPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/kuveytpos/index.php">KuveytPOS</a>
+                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateway\KuveytPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/kuveytpos/index.php">KuveytPOS</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\VakifKatilimPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/vakif-katilim/index.php">VakifKatilimPos</a>
+                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateway\VakifKatilimPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/vakif-katilim/index.php">VakifKatilimPos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateways\IyzicoPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/iyzico/index.php">IyziCo</a>
+                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateway\IyzicoPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/iyzico/index.php">IyziCo</a>
                         </li>
                     </ul>
                 </div>
@@ -147,7 +147,7 @@
                                     <a class="nav-link <?= $transaction === \Mews\Pos\PosInterface::TX_TYPE_CUSTOM_QUERY ? 'active' : ''; ?>" href="<?= $bankTestsUrl ?>/regular/custom_query.php">Custom Query</a>
                                 </li>
                             <?php endif; ?>
-                            <?php if ($posClass === \Mews\Pos\Gateways\PayForPos::class): ?>
+                            <?php if ($posClass === \Mews\Pos\Gateway\PayForPos::class): ?>
                                 <li class="nav-item">
                                     <a class="nav-link" href="<?= $bankTestsUrl ?>/qr/index.php">QR Payment</a>
                                 </li>

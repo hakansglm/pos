@@ -8,8 +8,8 @@ namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueMapper;
 
 use Mews\Pos\DataMapper\Request\ValueMapper\AbstractRequestValueMapper;
 use Mews\Pos\DataMapper\Request\ValueMapper\IyzicoPosRequestValueMapper;
-use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\IyzicoPos;
+use Mews\Pos\Gateway\AkbankPos;
+use Mews\Pos\Gateway\IyzicoPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;

@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\DataMapper\Response\ValueMapper;
 
-use Mews\Pos\Gateways\AssecoPos;
+use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\PosInterface;
 
 class AssecoPosResponseValueMapper extends AbstractResponseValueMapper

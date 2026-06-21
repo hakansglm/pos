@@ -11,8 +11,8 @@ use DomainException;
 use Exception;
 use Mews\Pos\Model\Card\CreditCard;
 use Mews\Pos\Model\Card\CreditCardInterface;
-use Mews\Pos\Exceptions\CardTypeNotSupportedException;
-use Mews\Pos\Exceptions\CardTypeRequiredException;
+use Mews\Pos\Exception\CardTypeNotSupportedException;
+use Mews\Pos\Exception\CardTypeRequiredException;
 use Mews\Pos\PosInterface;
 
 /**

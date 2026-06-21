@@ -7,9 +7,9 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueFormatter;
 
 use Mews\Pos\DataMapper\Request\ValueFormatter\ParamPosRequestValueFormatter;
-use Mews\Pos\Gateways\AssecoPos;
-use Mews\Pos\Gateways\Param3DHostPos;
-use Mews\Pos\Gateways\ParamPos;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\Param3DHostPos;
+use Mews\Pos\Gateway\ParamPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;

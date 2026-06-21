@@ -12,9 +12,9 @@ use Mews\Pos\DataMapper\Response\Mapper\PayFlexCPV4PosResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\ResponseDataMapperInterface;
 use Mews\Pos\DataMapper\Response\ValueFormatter\ResponseValueFormatterInterface;
 use Mews\Pos\DataMapper\Response\ValueMapper\ResponseValueMapperInterface;
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\PayFlexCPV4Pos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\AkbankPos;
+use Mews\Pos\Gateway\PayFlexCPV4Pos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
@@ -182,25 +182,25 @@ class PayFlexCPV4PosResponseDataMapperTest extends TestCase
 
     public function testMapPaymentResponse(): void
     {
-        $this->expectException(\Mews\Pos\Exceptions\NotImplementedException::class);
+        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
         $this->responseDataMapper->mapPaymentResponse([], PosInterface::TX_TYPE_PAY_AUTH, []);
     }
 
     public function testMapRefundResponse(): void
     {
-        $this->expectException(\Mews\Pos\Exceptions\NotImplementedException::class);
+        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
         $this->responseDataMapper->mapRefundResponse([]);
     }
 
     public function testMapCancelResponse(): void
     {
-        $this->expectException(\Mews\Pos\Exceptions\NotImplementedException::class);
+        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
         $this->responseDataMapper->mapCancelResponse([]);
     }
 
     public function testMapStatusResponse(): void
     {
-        $this->expectException(\Mews\Pos\Exceptions\NotImplementedException::class);
+        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
         $this->responseDataMapper->mapStatusResponse([]);
     }
 

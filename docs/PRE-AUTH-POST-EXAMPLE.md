@@ -46,7 +46,7 @@ try {
     $config = require __DIR__.'/pos_test_ayarlar.php';
 
     $pos = \Mews\Pos\Factory\PosFactory::createPosGateway($account, $config, $eventDispatcher);
-} catch (\Mews\Pos\Exceptions\BankNotFoundException | \Mews\Pos\Exceptions\BankClassNullException $e) {
+} catch (\Mews\Pos\Exception\BankNotFoundException | \Mews\Pos\Exception\BankClassNullException $e) {
     var_dump($e));
     exit;
 }
@@ -70,9 +70,9 @@ $order = [
     'installment' => 0, //0 ya da 1'den büyük değer, optional. default: 0
 
     // lang degeri verilmezse config'de tanimlanan dil veya default olarak LANG_TR kullanılacak.
-    'lang' => \Mews\Pos\Gateways\PosInterface::LANG_TR, // Kullanıcının yönlendirileceği banka gateway sayfasının ve gateway'den dönen mesajların dili.
+    'lang' => \Mews\Pos\Gateway\PosInterface::LANG_TR, // Kullanıcının yönlendirileceği banka gateway sayfasının ve gateway'den dönen mesajların dili.
 ];
-    if ($pos instanceof \Mews\Pos\Gateways\ParamPos
+    if ($pos instanceof \Mews\Pos\Gateway\ParamPos
         || in_array($paymentModel, [
         PosInterface::MODEL_3D_SECURE,
         PosInterface::MODEL_3D_PAY,
@@ -102,13 +102,13 @@ $card = \Mews\Pos\Factory\CreditCardFactory::createForGateway(
         // alabileceği alternatif değerler için \Mews\Pos\Model\Card\CreditCardInterface'a bakınız.
         $_POST['card_type'] ?? null
   );
-} catch (\Mews\Pos\Exceptions\CardTypeRequiredException $e) {
+} catch (\Mews\Pos\Exception\CardTypeRequiredException $e) {
     // bu gateway için kart tipi zorunlu
-} catch (\Mews\Pos\Exceptions\CardTypeNotSupportedException $e) {
+} catch (\Mews\Pos\Exception\CardTypeNotSupportedException $e) {
     // sağlanan kart tipi bu gateway tarafından desteklenmiyor
 }
 
-if (get_class($pos) === \Mews\Pos\Gateways\PayFlexV4Pos::class) {
+if (get_class($pos) === \Mews\Pos\Gateway\PayFlexV4Pos::class) {
     // bu gateway için ödemeyi tamamlarken tekrar kart bilgisi lazım olacak.
     $_SESSION['card'] = $_POST;
 }
@@ -151,7 +151,7 @@ require 'config.php';
 
 $order = $_SESSION['order'];
 $card  = null;
-if (get_class($pos) === \Mews\Pos\Gateways\PayFlexV4Pos::class) {
+if (get_class($pos) === \Mews\Pos\Gateway\PayFlexV4Pos::class) {
     // bu gateway için ödemeyi tamamlarken tekrar kart bilgisi lazım.
     $cardData = $_SESSION['card'];;
     $card = \Mews\Pos\Factory\CreditCardFactory::createForGateway(
@@ -167,7 +167,7 @@ if (get_class($pos) === \Mews\Pos\Gateways\PayFlexV4Pos::class) {
 
 // Pre Auth Ödeme tamamlanıyor,
 $gatewayResponseData = $_POST;
-if (get_class($pos) === \Mews\Pos\Gateways\PayFlexCPV4Pos::class) {
+if (get_class($pos) === \Mews\Pos\Gateway\PayFlexCPV4Pos::class) {
     $gatewayResponseData = $_GET;
 }
 try  {
@@ -187,7 +187,7 @@ try  {
     if ($pos->isSuccess()) {
         $_SESSION['last_response'] = $response;
     }
-} catch (\Mews\Pos\Exceptions\HashMismatchException $e) {
+} catch (\Mews\Pos\Exception\HashMismatchException $e) {
     /**
      * Bankadan gelen verilerin bankaya ait olmadığında bu exception oluşur.
      * Veya Banka API bilgileriniz hatalı ise de oluşur.
@@ -223,10 +223,10 @@ function createPostPayOrder(string $gatewayClass, array $lastResponse, string $i
         'ip'              => filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? $ip : '127.0.0.1',
     ];
 
-    if (\Mews\Pos\Gateways\GarantiPos::class === $gatewayClass) {
+    if (\Mews\Pos\Gateway\GarantiPos::class === $gatewayClass) {
         $postAuth['ref_ret_num'] = $lastResponse['ref_ret_num'];
     }
-    if (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNetPos::class === $gatewayClass) {
+    if (\Mews\Pos\Gateway\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateway\PosNetPos::class === $gatewayClass) {
         $postAuth['installment'] = $lastResponse['installment_count'];
         $postAuth['ref_ret_num'] = $lastResponse['ref_ret_num'];
     }

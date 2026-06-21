@@ -6,8 +6,8 @@
 
 namespace Mews\Pos\DataMapper\Response\Mapper;
 
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\AssecoPos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\PosInterface;
 
 /**

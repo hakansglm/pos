@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\DataMapper\Response\ValueMapper;
 
-use Mews\Pos\Gateways\GarantiPos;
+use Mews\Pos\Gateway\GarantiPos;
 use Mews\Pos\PosInterface;
 
 class GarantiPosResponseValueMapper extends AbstractResponseValueMapper

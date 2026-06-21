@@ -11,8 +11,8 @@ use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Account\AkbankPosAccount;
 use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Event\Before3DFormHashCalculatedEvent;
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\AkbankPos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\PosInterface;
 
 /**

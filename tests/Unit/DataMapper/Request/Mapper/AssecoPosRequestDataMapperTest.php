@@ -17,8 +17,8 @@ use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Event\Before3DFormHashCalculatedEvent;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
-use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\AssecoPos;
+use Mews\Pos\Gateway\AkbankPos;
+use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -270,7 +270,7 @@ class AssecoPosRequestDataMapperTest extends TestCase
 
     public function testCreateHistoryRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exceptions\NotImplementedException::class);
+        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
         $this->requestDataMapper->createHistoryRequestData($this->account);
     }
 

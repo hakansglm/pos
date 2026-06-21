@@ -8,8 +8,8 @@ namespace Mews\Pos\DataMapper\Response\Mapper;
 
 use Mews\Pos\DataMapper\Response\ValueMapper\AkbankPosResponseValueMapper;
 use Mews\Pos\DataMapper\Response\ValueMapper\ResponseValueMapperInterface;
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\AkbankPos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\PosInterface;
 
 /**

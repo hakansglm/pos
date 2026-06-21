@@ -8,8 +8,8 @@ namespace Mews\Pos\Factory;
 
 use Mews\Pos\Client\HttpClientStrategyInterface;
 use Mews\Pos\Model\Account\AbstractPosAccount;
-use Mews\Pos\Exceptions\BankClassNullException;
-use Mews\Pos\Exceptions\BankNotFoundException;
+use Mews\Pos\Exception\BankClassNullException;
+use Mews\Pos\Exception\BankNotFoundException;
 use Mews\Pos\PosInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;

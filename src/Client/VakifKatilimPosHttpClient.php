@@ -7,8 +7,8 @@
 namespace Mews\Pos\Client;
 
 use Mews\Pos\Model\Account\AbstractPosAccount;
-use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
-use Mews\Pos\Gateways\VakifKatilimPos;
+use Mews\Pos\Exception\UnsupportedTransactionTypeException;
+use Mews\Pos\Gateway\VakifKatilimPos;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Serializer\Decoder\VakifKatilimPosXmlDecoder;
 use Mews\Pos\Serializer\EncodedData;

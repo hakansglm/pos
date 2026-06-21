@@ -8,8 +8,8 @@ namespace Mews\Pos\DataMapper\Request\Mapper;
 
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Card\CreditCardInterface;
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\IyzicoPos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\IyzicoPos;
 use Mews\Pos\PosInterface;
 
 /**

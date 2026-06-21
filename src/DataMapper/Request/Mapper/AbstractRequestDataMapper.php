@@ -11,7 +11,7 @@ use Mews\Pos\DataMapper\Request\ValueFormatter\RequestValueFormatterInterface;
 use Mews\Pos\DataMapper\Request\ValueMapper\RequestValueMapperInterface;
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Card\CreditCardInterface;
-use Mews\Pos\Exceptions\NotImplementedException;
+use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\PosInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 

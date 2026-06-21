@@ -6,8 +6,8 @@
 
 namespace Mews\Pos\DataMapper\Response\ValueFormatter;
 
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\ToslaPos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\ToslaPos;
 
 class ToslaPosResponseValueFormatter extends AbstractResponseValueFormatter
 {

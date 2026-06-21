@@ -8,11 +8,11 @@ namespace Mews\Pos\Tests\Unit\DataMapper\Response\ValueFormatter;
 
 use Mews\Pos\DataMapper\Response\ValueFormatter\AbstractResponseValueFormatter;
 use Mews\Pos\DataMapper\Response\ValueFormatter\BasicResponseValueFormatter;
-use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\AssecoPos;
-use Mews\Pos\Gateways\PayFlexCPV4Pos;
-use Mews\Pos\Gateways\PayFlexV4Pos;
-use Mews\Pos\Gateways\PayForPos;
+use Mews\Pos\Gateway\AkbankPos;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\PayFlexCPV4Pos;
+use Mews\Pos\Gateway\PayFlexV4Pos;
+use Mews\Pos\Gateway\PayForPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;

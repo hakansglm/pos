@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\DataMapper\Request\ValueFormatter;
 
-use Mews\Pos\Gateways\IyzicoPos;
+use Mews\Pos\Gateway\IyzicoPos;
 
 class IyzicoPosRequestValueFormatter implements RequestValueFormatterInterface
 {

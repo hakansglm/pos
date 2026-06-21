@@ -8,8 +8,8 @@ namespace Mews\Pos\Tests\Unit\DataMapper\Response\ValueMapper;
 
 use Mews\Pos\DataMapper\Response\ValueMapper\AbstractResponseValueMapper;
 use Mews\Pos\DataMapper\Response\ValueMapper\PosNetV1PosResponseValueMapper;
-use Mews\Pos\Gateways\AssecoPos;
-use Mews\Pos\Gateways\PosNetV1Pos;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\PosNetV1Pos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;

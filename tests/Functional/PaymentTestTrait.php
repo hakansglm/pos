@@ -6,12 +6,12 @@
 
 namespace Mews\Pos\Tests\Functional;
 
-use Mews\Pos\Gateways\AssecoPos;
-use Mews\Pos\Gateways\GarantiPos;
-use Mews\Pos\Gateways\IyzicoPos;
-use Mews\Pos\Gateways\PayForPos;
-use Mews\Pos\Gateways\ToslaPos;
-use Mews\Pos\Gateways\VakifKatilimPos;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\GarantiPos;
+use Mews\Pos\Gateway\IyzicoPos;
+use Mews\Pos\Gateway\PayForPos;
+use Mews\Pos\Gateway\ToslaPos;
+use Mews\Pos\Gateway\VakifKatilimPos;
 use Mews\Pos\PosInterface;
 
 trait PaymentTestTrait
@@ -23,7 +23,7 @@ trait PaymentTestTrait
         int    $installment = 0,
         bool   $tekrarlanan = false
     ): array {
-        if ($tekrarlanan && $this->pos instanceof \Mews\Pos\Gateways\AkbankPos) {
+        if ($tekrarlanan && $this->pos instanceof \Mews\Pos\Gateway\AkbankPos) {
             // AkbankPos'ta recurring odemede orderTrackId/orderId en az 36 karakter olmasi gerekiyor
             $orderId = date('Ymd').strtoupper(substr(uniqid(sha1(time())), 0, 28));
         } else {
@@ -38,7 +38,7 @@ trait PaymentTestTrait
             'ip'          => '127.0.0.1',
         ];
 
-        if ($this->pos instanceof \Mews\Pos\Gateways\ParamPos
+        if ($this->pos instanceof \Mews\Pos\Gateway\ParamPos
             || \in_array($paymentModel, [
                 PosInterface::MODEL_3D_SECURE,
                 PosInterface::MODEL_3D_PAY,
@@ -51,7 +51,7 @@ trait PaymentTestTrait
 
         if ($this->pos instanceof IyzicoPos) {
             $order = array_merge($order, $this->getIyzicoOrderExtraFields());
-        } elseif ($this->pos instanceof \Mews\Pos\Gateways\KuveytPos) {
+        } elseif ($this->pos instanceof \Mews\Pos\Gateway\KuveytPos) {
             $order = array_merge($order, $this->getKuveytPosSpecificOrderFields());
         }
 
@@ -86,16 +86,16 @@ trait PaymentTestTrait
             'ip'              => '127.0.0.1',
         ];
 
-        if (\Mews\Pos\Gateways\GarantiPos::class === $gatewayClass) {
+        if (\Mews\Pos\Gateway\GarantiPos::class === $gatewayClass) {
             $postAuth['ref_ret_num'] = $lastResponse['ref_ret_num'];
         }
 
-        if (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNetPos::class === $gatewayClass) {
+        if (\Mews\Pos\Gateway\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateway\PosNetPos::class === $gatewayClass) {
             $postAuth['installment'] = $lastResponse['installment_count'];
             $postAuth['ref_ret_num'] = $lastResponse['ref_ret_num'];
         }
 
-        if (\Mews\Pos\Gateways\PayFlexV4Pos::class === $gatewayClass || IyzicoPos::class === $gatewayClass) {
+        if (\Mews\Pos\Gateway\PayFlexV4Pos::class === $gatewayClass || IyzicoPos::class === $gatewayClass) {
             $postAuth['transaction_id'] = $lastResponse['transaction_id'];
         }
 
@@ -113,15 +113,15 @@ trait PaymentTestTrait
             'currency' => $lastResponse['currency'],
             'ip'       => '127.0.0.1',
         ];
-        if (\Mews\Pos\Gateways\IyzicoPos::class === $gatewayClass && isset($lastResponse['transaction_id'])) {
+        if (\Mews\Pos\Gateway\IyzicoPos::class === $gatewayClass && isset($lastResponse['transaction_id'])) {
             $statusOrder['transaction_id'] = $lastResponse['transaction_id'];
         }
 
-        if (\Mews\Pos\Gateways\KuveytPos::class === $gatewayClass) {
+        if (\Mews\Pos\Gateway\KuveytPos::class === $gatewayClass) {
             $statusOrder['remote_order_id'] = $lastResponse['remote_order_id']; // OrderId
         }
 
-        if (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNetPos::class === $gatewayClass) {
+        if (\Mews\Pos\Gateway\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateway\PosNetPos::class === $gatewayClass) {
             /**
              * payment_model:
              * siparis olusturulurken kullanilan odeme modeli
@@ -134,7 +134,7 @@ trait PaymentTestTrait
             return $statusOrder;
         }
 
-        if (\Mews\Pos\Gateways\AssecoPos::class === $gatewayClass) {
+        if (\Mews\Pos\Gateway\AssecoPos::class === $gatewayClass) {
             // tekrarlanan odemenin durumunu sorgulamak icin:
             return [
                 // tekrarlanan odeme sonucunda banktan donen deger: $response['Extra']['RECURRINGID']
@@ -158,13 +158,13 @@ trait PaymentTestTrait
             'ip'          => '127.0.0.1',
         ];
 
-        if (\Mews\Pos\Gateways\GarantiPos::class === $gatewayClass) {
+        if (\Mews\Pos\Gateway\GarantiPos::class === $gatewayClass) {
             $cancelOrder['amount'] = $lastResponse['amount'];
-        } elseif (\Mews\Pos\Gateways\ParamPos::class === $gatewayClass) {
+        } elseif (\Mews\Pos\Gateway\ParamPos::class === $gatewayClass) {
             $cancelOrder['amount'] = $lastResponse['amount'];
             // on otorizasyon islemin iptali icin PosInterface::TX_TYPE_PAY_PRE_AUTH saglanmasi gerekiyor
             $cancelOrder['transaction_type'] = $lastResponse['transaction_type'] ?? PosInterface::TX_TYPE_PAY_AUTH;
-        } elseif (\Mews\Pos\Gateways\KuveytPos::class === $gatewayClass) {
+        } elseif (\Mews\Pos\Gateway\KuveytPos::class === $gatewayClass) {
             $cancelOrder['remote_order_id'] = $lastResponse['remote_order_id']; // banka tarafındaki order id
             $cancelOrder['auth_code']       = $lastResponse['auth_code'];
             $cancelOrder['transaction_id']  = $lastResponse['transaction_id'];
@@ -173,12 +173,12 @@ trait PaymentTestTrait
             $cancelOrder['remote_order_id']  = $lastResponse['remote_order_id']; // banka tarafındaki order id
             $cancelOrder['amount']           = $lastResponse['amount'];
             $cancelOrder['transaction_type'] = $lastResponse['transaction_type'] ?? PosInterface::TX_TYPE_PAY_AUTH;
-        } elseif (\Mews\Pos\Gateways\PayFlexV4Pos::class === $gatewayClass || \Mews\Pos\Gateways\PayFlexCPV4Pos::class === $gatewayClass) {
+        } elseif (\Mews\Pos\Gateway\PayFlexV4Pos::class === $gatewayClass || \Mews\Pos\Gateway\PayFlexCPV4Pos::class === $gatewayClass) {
             // çalışmazsa $lastResponse['all']['ReferenceTransactionId']; ile denenmesi gerekiyor.
             $cancelOrder['transaction_id'] = $lastResponse['transaction_id'];
         } elseif (IyzicoPos::class === $gatewayClass) {
             $cancelOrder['transaction_id'] = $lastResponse['transaction_id'];
-        } elseif (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNetPos::class === $gatewayClass) {
+        } elseif (\Mews\Pos\Gateway\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateway\PosNetPos::class === $gatewayClass) {
             /**
              * payment_model:
              * siparis olusturulurken kullanilan odeme modeli
@@ -193,7 +193,7 @@ trait PaymentTestTrait
             return $cancelOrder;
         }
 
-        if (\Mews\Pos\Gateways\AssecoPos::class === $gatewayClass) {
+        if (\Mews\Pos\Gateway\AssecoPos::class === $gatewayClass) {
             // tekrarlanan odemeyi iptal etmek icin:
             return [
                 'recurringOrderInstallmentNumber' => 1, // hangi taksidi iptal etmek istiyoruz?
@@ -210,7 +210,7 @@ trait PaymentTestTrait
             $order = [
                 'id' => $lastResponse['order_id'],
             ];
-        } elseif (\Mews\Pos\Gateways\AkbankPos::class === $gatewayClass) {
+        } elseif (\Mews\Pos\Gateway\AkbankPos::class === $gatewayClass) {
             if (isset($lastResponse['recurring_id'])) {
                 $order = [
                     'id'           => $lastResponse['order_id'],
@@ -249,7 +249,7 @@ trait PaymentTestTrait
                 'start_date' => $txTime->modify('-1 day'),
                 'end_date'   => $txTime->modify('+1 day'),
             ];
-        } elseif (\Mews\Pos\Gateways\IyzicoPos::class === $gatewayClass) {
+        } elseif (\Mews\Pos\Gateway\IyzicoPos::class === $gatewayClass) {
             $order = [
                 'id' => $lastResponse['order_id'],
             ];
@@ -278,7 +278,7 @@ trait PaymentTestTrait
             ];
         }
 
-        if (\Mews\Pos\Gateways\VakifKatilimPos::class === $gatewayClass) {
+        if (\Mews\Pos\Gateway\VakifKatilimPos::class === $gatewayClass) {
             return [
                 'page'       => 1,
                 'page_size'  => 20,
@@ -290,7 +290,7 @@ trait PaymentTestTrait
             ];
         }
 
-        if (\Mews\Pos\Gateways\GarantiPos::class === $gatewayClass) {
+        if (\Mews\Pos\Gateway\GarantiPos::class === $gatewayClass) {
             return [
                 'ip'         => $ip,
                 'page'       => 1,
@@ -300,7 +300,7 @@ trait PaymentTestTrait
             ];
         }
 
-        if (\Mews\Pos\Gateways\AkbankPos::class === $gatewayClass) {
+        if (\Mews\Pos\Gateway\AkbankPos::class === $gatewayClass) {
             return [
                 // Gün aralığı 1 günden fazla girilemez
                 'start_date' => $txTime->modify('-23 hour'),
@@ -312,7 +312,7 @@ trait PaymentTestTrait
             //        ];
         }
 
-        if (\Mews\Pos\Gateways\ParamPos::class === $gatewayClass) {
+        if (\Mews\Pos\Gateway\ParamPos::class === $gatewayClass) {
             return [
                 // Gün aralığı 7 günden fazla girilemez
                 'start_date' => $txTime->modify('-5 hour'),
@@ -339,7 +339,7 @@ trait PaymentTestTrait
             'ip'           => '127.0.0.1',
         ];
 
-        if (\Mews\Pos\Gateways\KuveytPos::class === $gatewayClass) {
+        if (\Mews\Pos\Gateway\KuveytPos::class === $gatewayClass) {
             $refundOrder['remote_order_id'] = $lastResponse['remote_order_id']; // banka tarafındaki order id
             $refundOrder['auth_code']       = $lastResponse['auth_code'];
             $refundOrder['transaction_id']  = $lastResponse['transaction_id'];
@@ -347,12 +347,12 @@ trait PaymentTestTrait
             $refundOrder['remote_order_id']  = $lastResponse['remote_order_id']; // banka tarafındaki order id
             $refundOrder['amount']           = $lastResponse['amount'];
             $refundOrder['transaction_type'] = $lastResponse['transaction_type'] ?? PosInterface::TX_TYPE_PAY_AUTH;
-        } elseif (\Mews\Pos\Gateways\PayFlexV4Pos::class === $gatewayClass || \Mews\Pos\Gateways\PayFlexCPV4Pos::class === $gatewayClass) {
+        } elseif (\Mews\Pos\Gateway\PayFlexV4Pos::class === $gatewayClass || \Mews\Pos\Gateway\PayFlexCPV4Pos::class === $gatewayClass) {
             // çalışmazsa $lastResponse['all']['ReferenceTransactionId']; ile denenmesi gerekiyor.
             $refundOrder['transaction_id'] = $lastResponse['transaction_id'];
         } elseif (IyzicoPos::class === $gatewayClass) {
             $refundOrder['transaction_id'] = $lastResponse['transaction_id'];
-        } elseif (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNetPos::class === $gatewayClass) {
+        } elseif (\Mews\Pos\Gateway\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateway\PosNetPos::class === $gatewayClass) {
             /**
              * payment_model:
              * siparis olusturulurken kullanilan odeme modeli

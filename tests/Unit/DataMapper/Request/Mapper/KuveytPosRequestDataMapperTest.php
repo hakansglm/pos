@@ -16,8 +16,8 @@ use Mews\Pos\Model\Account\BoaPosAccount;
 use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
-use Mews\Pos\Gateways\AssecoPos;
-use Mews\Pos\Gateways\KuveytPos;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\KuveytPos;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Tests\TestUtil\TestUtilTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -218,7 +218,7 @@ class KuveytPosRequestDataMapperTest extends TestCase
         $txType       = PosInterface::TX_TYPE_PAY_AUTH;
         $paymentModel = PosInterface::MODEL_3D_SECURE;
 
-        $this->expectException(\Mews\Pos\Exceptions\NotImplementedException::class);
+        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
 
         $this->requestDataMapper->create3DFormData(
             $this->account,
@@ -231,25 +231,25 @@ class KuveytPosRequestDataMapperTest extends TestCase
 
     public function testCreateNonSecurePostAuthPaymentRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exceptions\NotImplementedException::class);
+        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
         $this->requestDataMapper->createNonSecurePostAuthPaymentRequestData($this->account, []);
     }
 
     public function testCreateOrderHistoryRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exceptions\NotImplementedException::class);
+        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
         $this->requestDataMapper->createOrderHistoryRequestData($this->account, []);
     }
 
     public function testCreateHistoryRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exceptions\NotImplementedException::class);
+        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
         $this->requestDataMapper->createHistoryRequestData($this->account, []);
     }
 
     public function testCreateCustomQueryRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exceptions\NotImplementedException::class);
+        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
         $this->requestDataMapper->createCustomQueryRequestData($this->account, []);
     }
 

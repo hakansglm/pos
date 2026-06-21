@@ -8,8 +8,8 @@ namespace Mews\Pos\DataMapper\Response\Mapper;
 
 use Mews\Pos\DataMapper\Response\ValueMapper\IyzicoPosResponseValueMapper;
 use Mews\Pos\DataMapper\Response\ValueMapper\ResponseValueMapperInterface;
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\IyzicoPos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\IyzicoPos;
 use Mews\Pos\PosInterface;
 
 /**

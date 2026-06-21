@@ -14,9 +14,9 @@ use Mews\Pos\DataMapper\Request\ValueFormatter\RequestValueFormatterInterface;
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Account\PosNetPosAccount;
 use Mews\Pos\Model\Card\CreditCardInterface;
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
-use Mews\Pos\Gateways\PosNetPos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Exception\UnsupportedTransactionTypeException;
+use Mews\Pos\Gateway\PosNetPos;
 use Mews\Pos\PosInterface;
 
 /**

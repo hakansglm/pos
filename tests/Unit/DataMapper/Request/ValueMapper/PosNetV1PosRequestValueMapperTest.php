@@ -8,9 +8,9 @@ namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueMapper;
 
 use Mews\Pos\DataMapper\Request\ValueMapper\AbstractRequestValueMapper;
 use Mews\Pos\DataMapper\Request\ValueMapper\PosNetV1PosRequestValueMapper;
-use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
-use Mews\Pos\Gateways\AssecoPos;
-use Mews\Pos\Gateways\PosNetV1Pos;
+use Mews\Pos\Exception\UnsupportedTransactionTypeException;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\PosNetV1Pos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;

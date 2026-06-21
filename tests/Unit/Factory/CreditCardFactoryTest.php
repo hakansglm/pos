@@ -7,8 +7,8 @@
 namespace Mews\Pos\Tests\Unit\Factory;
 
 use Mews\Pos\Model\Card\CreditCardInterface;
-use Mews\Pos\Exceptions\CardTypeNotSupportedException;
-use Mews\Pos\Exceptions\CardTypeRequiredException;
+use Mews\Pos\Exception\CardTypeNotSupportedException;
+use Mews\Pos\Exception\CardTypeRequiredException;
 use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;

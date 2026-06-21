@@ -7,8 +7,8 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueFormatter;
 
 use Mews\Pos\DataMapper\Request\ValueFormatter\KuveytPosRequestValueFormatter;
-use Mews\Pos\Gateways\AssecoPos;
-use Mews\Pos\Gateways\KuveytPos;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\KuveytPos;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;

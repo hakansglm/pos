@@ -12,8 +12,8 @@ use Mews\Pos\DataMapper\Response\ValueFormatter\ResponseValueFormatterInterface;
 use Mews\Pos\DataMapper\Response\ValueMapper\ResponseValueMapperInterface;
 use Mews\Pos\Factory\ResponseValueFormatterFactory;
 use Mews\Pos\Factory\ResponseValueMapperFactory;
-use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\AssecoPos;
+use Mews\Pos\Gateway\AkbankPos;
+use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
@@ -305,7 +305,7 @@ class AkbankPosResponseDataMapperTest extends TestCase
 
     public function testMapStatusResponse(): void
     {
-        $this->expectException(\Mews\Pos\Exceptions\NotImplementedException::class);
+        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
         $this->responseDataMapper->mapStatusResponse([]);
     }
 

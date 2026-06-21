@@ -6,8 +6,8 @@
 
 namespace Mews\Pos\DataMapper\Request\ValueMapper;
 
-use Mews\Pos\Gateways\Param3DHostPos;
-use Mews\Pos\Gateways\ParamPos;
+use Mews\Pos\Gateway\Param3DHostPos;
+use Mews\Pos\Gateway\ParamPos;
 use Mews\Pos\PosInterface;
 
 class ParamPosRequestValueMapper extends AbstractRequestValueMapper

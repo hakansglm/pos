@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\DataMapper\Response\ValueMapper;
 
-use Mews\Pos\Gateways\KuveytPos;
+use Mews\Pos\Gateway\KuveytPos;
 use Mews\Pos\PosInterface;
 
 /**

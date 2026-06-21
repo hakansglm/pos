@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\DataMapper\Request\ValueMapper;
 
-use Mews\Pos\Gateways\AkbankPos;
+use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\PosInterface;
 
 class AkbankPosRequestValueMapper extends AbstractRequestValueMapper

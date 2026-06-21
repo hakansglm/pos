@@ -11,7 +11,7 @@ use Mews\Pos\Crypt\KuveytPosCrypt;
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Account\BoaPosAccount;
 use Mews\Pos\Model\Card\CreditCardInterface;
-use Mews\Pos\Gateways\VakifKatilimPos;
+use Mews\Pos\Gateway\VakifKatilimPos;
 use Mews\Pos\PosInterface;
 
 /**

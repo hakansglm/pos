@@ -5,7 +5,7 @@ use Mews\Pos\Model\Card\CreditCardInterface;
 require __DIR__.'/../_main_config.php';
 
 $bankTestsUrl = $hostUrl.'/finansbank-payfor';
-$posClass = \Mews\Pos\Gateways\PayForPos::class;
+$posClass = \Mews\Pos\Gateway\PayForPos::class;
 
 $testCards = [
     'visa1' => [

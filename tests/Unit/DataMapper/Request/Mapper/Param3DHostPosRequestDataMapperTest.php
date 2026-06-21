@@ -13,10 +13,10 @@ use Mews\Pos\DataMapper\Request\ValueFormatter\ParamPosRequestValueFormatter;
 use Mews\Pos\DataMapper\Request\ValueMapper\ParamPosRequestValueMapper;
 use Mews\Pos\Model\Account\ParamPosAccount;
 use Mews\Pos\Model\Card\CreditCardInterface;
-use Mews\Pos\Exceptions\NotImplementedException;
+use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
-use Mews\Pos\Gateways\AssecoPos;
-use Mews\Pos\Gateways\Param3DHostPos;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\Param3DHostPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -78,7 +78,7 @@ class Param3DHostPosRequestDataMapperTest extends TestCase
 
     public function testCreateNonSecurePostAuthPaymentRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exceptions\NotImplementedException::class);
+        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
         $this->requestDataMapper->createNonSecurePostAuthPaymentRequestData($this->account, []);
     }
 

@@ -10,7 +10,7 @@ use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Account\PayForPosAccount;
 use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Event\Before3DFormHashCalculatedEvent;
-use Mews\Pos\Gateways\PayForPos;
+use Mews\Pos\Gateway\PayForPos;
 use Mews\Pos\PosInterface;
 
 /**

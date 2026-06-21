@@ -24,10 +24,10 @@ class AkbankPosTest extends TestCase
 
     private EventDispatcher $eventDispatcher;
 
-    /** @var \Mews\Pos\Gateways\AkbankPos */
+    /** @var \Mews\Pos\Gateway\AkbankPos */
     private PosInterface $pos;
 
-    /** @var \Mews\Pos\Gateways\AkbankPos */
+    /** @var \Mews\Pos\Gateway\AkbankPos */
     private PosInterface $recurringPos;
 
     protected function setUp(): void

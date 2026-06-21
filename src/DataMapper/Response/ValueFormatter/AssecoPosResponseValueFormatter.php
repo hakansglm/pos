@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\DataMapper\Response\ValueFormatter;
 
-use Mews\Pos\Gateways\AssecoPos;
+use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\PosInterface;
 
 class AssecoPosResponseValueFormatter extends AbstractResponseValueFormatter

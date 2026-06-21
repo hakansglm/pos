@@ -6,8 +6,8 @@
 
 namespace Mews\Pos\DataMapper\Response\ValueFormatter;
 
-use Mews\Pos\Gateways\PosNetPos;
-use Mews\Pos\Gateways\PosNetV1Pos;
+use Mews\Pos\Gateway\PosNetPos;
+use Mews\Pos\Gateway\PosNetV1Pos;
 use Mews\Pos\PosInterface;
 
 /**

@@ -50,20 +50,20 @@ class ResponseDataMapperFactoryTest extends TestCase
     public static function createForGatewayProvider(): array
     {
         return [
-            [\Mews\Pos\Gateways\AkbankPos::class, \Mews\Pos\DataMapper\Response\Mapper\AkbankPosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\AssecoPos::class, \Mews\Pos\DataMapper\Response\Mapper\AssecoPosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\GarantiPos::class, \Mews\Pos\DataMapper\Response\Mapper\GarantiPosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\InterPos::class, \Mews\Pos\DataMapper\Response\Mapper\InterPosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\KuveytPos::class, \Mews\Pos\DataMapper\Response\Mapper\KuveytPosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\ParamPos::class, \Mews\Pos\DataMapper\Response\Mapper\ParamPosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\Param3DHostPos::class, \Mews\Pos\DataMapper\Response\Mapper\ParamPosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\PayFlexCPV4Pos::class, \Mews\Pos\DataMapper\Response\Mapper\PayFlexCPV4PosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\PayFlexV4Pos::class, \Mews\Pos\DataMapper\Response\Mapper\PayFlexV4PosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\PayForPos::class, \Mews\Pos\DataMapper\Response\Mapper\PayForPosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\PosNetPos::class, \Mews\Pos\DataMapper\Response\Mapper\PosNetPosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\PosNetV1Pos::class, \Mews\Pos\DataMapper\Response\Mapper\PosNetV1PosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\ToslaPos::class, \Mews\Pos\DataMapper\Response\Mapper\ToslaPosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\VakifKatilimPos::class, \Mews\Pos\DataMapper\Response\Mapper\VakifKatilimPosResponseDataMapper::class],
+            [\Mews\Pos\Gateway\AkbankPos::class, \Mews\Pos\DataMapper\Response\Mapper\AkbankPosResponseDataMapper::class],
+            [\Mews\Pos\Gateway\AssecoPos::class, \Mews\Pos\DataMapper\Response\Mapper\AssecoPosResponseDataMapper::class],
+            [\Mews\Pos\Gateway\GarantiPos::class, \Mews\Pos\DataMapper\Response\Mapper\GarantiPosResponseDataMapper::class],
+            [\Mews\Pos\Gateway\InterPos::class, \Mews\Pos\DataMapper\Response\Mapper\InterPosResponseDataMapper::class],
+            [\Mews\Pos\Gateway\KuveytPos::class, \Mews\Pos\DataMapper\Response\Mapper\KuveytPosResponseDataMapper::class],
+            [\Mews\Pos\Gateway\ParamPos::class, \Mews\Pos\DataMapper\Response\Mapper\ParamPosResponseDataMapper::class],
+            [\Mews\Pos\Gateway\Param3DHostPos::class, \Mews\Pos\DataMapper\Response\Mapper\ParamPosResponseDataMapper::class],
+            [\Mews\Pos\Gateway\PayFlexCPV4Pos::class, \Mews\Pos\DataMapper\Response\Mapper\PayFlexCPV4PosResponseDataMapper::class],
+            [\Mews\Pos\Gateway\PayFlexV4Pos::class, \Mews\Pos\DataMapper\Response\Mapper\PayFlexV4PosResponseDataMapper::class],
+            [\Mews\Pos\Gateway\PayForPos::class, \Mews\Pos\DataMapper\Response\Mapper\PayForPosResponseDataMapper::class],
+            [\Mews\Pos\Gateway\PosNetPos::class, \Mews\Pos\DataMapper\Response\Mapper\PosNetPosResponseDataMapper::class],
+            [\Mews\Pos\Gateway\PosNetV1Pos::class, \Mews\Pos\DataMapper\Response\Mapper\PosNetV1PosResponseDataMapper::class],
+            [\Mews\Pos\Gateway\ToslaPos::class, \Mews\Pos\DataMapper\Response\Mapper\ToslaPosResponseDataMapper::class],
+            [\Mews\Pos\Gateway\VakifKatilimPos::class, \Mews\Pos\DataMapper\Response\Mapper\VakifKatilimPosResponseDataMapper::class],
         ];
     }
 }

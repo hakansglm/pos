@@ -7,9 +7,9 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\ValueFormatter;
 
 use Mews\Pos\DataMapper\Response\ValueFormatter\PosNetPosResponseValueFormatter;
-use Mews\Pos\Gateways\AssecoPos;
-use Mews\Pos\Gateways\PosNetPos;
-use Mews\Pos\Gateways\PosNetV1Pos;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\PosNetPos;
+use Mews\Pos\Gateway\PosNetV1Pos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;

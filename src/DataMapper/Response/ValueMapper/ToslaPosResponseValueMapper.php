@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\DataMapper\Response\ValueMapper;
 
-use Mews\Pos\Gateways\ToslaPos;
+use Mews\Pos\Gateway\ToslaPos;
 use Mews\Pos\PosInterface;
 
 class ToslaPosResponseValueMapper extends AbstractResponseValueMapper

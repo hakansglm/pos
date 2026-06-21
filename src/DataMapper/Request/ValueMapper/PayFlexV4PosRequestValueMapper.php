@@ -7,7 +7,7 @@
 namespace Mews\Pos\DataMapper\Request\ValueMapper;
 
 use Mews\Pos\Model\Card\CreditCardInterface;
-use Mews\Pos\Gateways\PayFlexV4Pos;
+use Mews\Pos\Gateway\PayFlexV4Pos;
 use Mews\Pos\PosInterface;
 
 class PayFlexV4PosRequestValueMapper extends AbstractRequestValueMapper

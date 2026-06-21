@@ -8,7 +8,7 @@ namespace Mews\Pos\Client;
 
 use Mews\Pos\DataMapper\Request\ValueMapper\RequestValueMapperInterface;
 use Mews\Pos\Model\Account\AbstractPosAccount;
-use Mews\Pos\Gateways\KuveytPos;
+use Mews\Pos\Gateway\KuveytPos;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Serializer\Decoder\KuveytPosSoapApiXmlDecoder;
 use Mews\Pos\Serializer\EncodedData;

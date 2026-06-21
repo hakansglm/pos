@@ -6,8 +6,8 @@
 
 namespace Mews\Pos\DataMapper\Response\Mapper;
 
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\KuveytPos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\KuveytPos;
 use Mews\Pos\PosInterface;
 
 class KuveytPosResponseDataMapper extends AbstractResponseDataMapper

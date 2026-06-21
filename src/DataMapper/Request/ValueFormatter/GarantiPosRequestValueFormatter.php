@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\DataMapper\Request\ValueFormatter;
 
-use Mews\Pos\Gateways\GarantiPos;
+use Mews\Pos\Gateway\GarantiPos;
 use Mews\Pos\PosInterface;
 
 class GarantiPosRequestValueFormatter implements RequestValueFormatterInterface

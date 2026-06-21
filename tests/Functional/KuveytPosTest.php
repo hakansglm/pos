@@ -26,7 +26,7 @@ class KuveytPosTest extends TestCase
 
     private EventDispatcher $eventDispatcher;
 
-    /** @var \Mews\Pos\Gateways\KuveytPos */
+    /** @var \Mews\Pos\Gateway\KuveytPos */
     private PosInterface $pos;
 
     protected function setUp(): void

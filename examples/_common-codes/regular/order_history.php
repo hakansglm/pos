@@ -14,14 +14,14 @@ function createOrderHistoryOrder(string $gatewayClass, array $lastResponse): arr
 {
     $order = [];
     if (
-        \Mews\Pos\Gateways\AssecoPos::class === $gatewayClass
-        || \Mews\Pos\Gateways\IyzicoPos::class === $gatewayClass
-        || \Mews\Pos\Gateways\PayForPos::class === $gatewayClass
+        \Mews\Pos\Gateway\AssecoPos::class === $gatewayClass
+        || \Mews\Pos\Gateway\IyzicoPos::class === $gatewayClass
+        || \Mews\Pos\Gateway\PayForPos::class === $gatewayClass
     ) {
         $order = [
             'id' => $lastResponse['order_id'],
         ];
-    } elseif (\Mews\Pos\Gateways\AkbankPos::class === $gatewayClass) {
+    } elseif (\Mews\Pos\Gateway\AkbankPos::class === $gatewayClass) {
         if (isset($lastResponse['recurring_id'])) {
             $order = [
                 'recurring_id' => $lastResponse['recurring_id'],
@@ -31,20 +31,20 @@ function createOrderHistoryOrder(string $gatewayClass, array $lastResponse): arr
                 'id' => $lastResponse['order_id'],
             ];
         }
-    } elseif (\Mews\Pos\Gateways\ToslaPos::class === $gatewayClass) {
+    } elseif (\Mews\Pos\Gateway\ToslaPos::class === $gatewayClass) {
         $order = [
             'id'               => $lastResponse['order_id'],
             'transaction_date' => $lastResponse['transaction_time'], // odeme tarihi
             'page'             => 1, // optional, default: 1
             'page_size'        => 10, // optional, default: 10
         ];
-    } elseif (\Mews\Pos\Gateways\GarantiPos::class === $gatewayClass) {
+    } elseif (\Mews\Pos\Gateway\GarantiPos::class === $gatewayClass) {
         $order = [
             'id'       => $lastResponse['order_id'],
             'currency' => $lastResponse['currency'],
             'ip'       => '127.0.0.1',
         ];
-    } elseif (\Mews\Pos\Gateways\VakifKatilimPos::class === $gatewayClass) {
+    } elseif (\Mews\Pos\Gateway\VakifKatilimPos::class === $gatewayClass) {
         /** @var \DateTimeImmutable $txTime */
         $txTime = $lastResponse['transaction_time'];
         $order  = [
@@ -55,7 +55,7 @@ function createOrderHistoryOrder(string $gatewayClass, array $lastResponse): arr
             'start_date' => $txTime->modify('-1 day'),
             'end_date'   => $txTime->modify('+1 day'),
         ];
-    } elseif (\Mews\Pos\Gateways\IyzicoPos::class === $gatewayClass) {
+    } elseif (\Mews\Pos\Gateway\IyzicoPos::class === $gatewayClass) {
         $order = [
             'id' => $lastResponse['order_id'],
         ];

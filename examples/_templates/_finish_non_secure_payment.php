@@ -37,13 +37,13 @@ $eventDispatcher->addListener(RequestDataPreparedEvent::class, function (Request
      * 5: Ekstre Erteleme
      * 6: Özel Vade Farkı
      */
-    if ($event->getGatewayClass() instanceof \Mews\Pos\Gateways\PosNetV1Pos) {
+    if ($event->getGatewayClass() instanceof \Mews\Pos\Gateway\PosNetV1Pos) {
         // Albaraka PosNet KOICode ekleme
         // $data            = $event->getRequestData();
         // $data['KOICode'] = '1';
         // $event->setRequestData($data);
     }
-    if ($event->getGatewayClass() instanceof \Mews\Pos\Gateways\PosNetPos) {
+    if ($event->getGatewayClass() instanceof \Mews\Pos\Gateway\PosNetPos) {
         // Yapikredi PosNet KOICode ekleme
         // $data            = $event->getRequestData();
         // $data['sale']['koiCode'] = '1';

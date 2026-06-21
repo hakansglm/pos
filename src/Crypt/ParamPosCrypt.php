@@ -7,9 +7,9 @@
 namespace Mews\Pos\Crypt;
 
 use Mews\Pos\Model\Account\AbstractPosAccount;
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\Param3DHostPos;
-use Mews\Pos\Gateways\ParamPos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\Param3DHostPos;
+use Mews\Pos\Gateway\ParamPos;
 
 class ParamPosCrypt extends AbstractCrypt
 {

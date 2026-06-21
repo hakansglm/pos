@@ -6,8 +6,8 @@
 
 namespace Mews\Pos\DataMapper\Response\ValueFormatter;
 
-use Mews\Pos\Gateways\KuveytPos;
-use Mews\Pos\Gateways\VakifKatilimPos;
+use Mews\Pos\Gateway\KuveytPos;
+use Mews\Pos\Gateway\VakifKatilimPos;
 use Mews\Pos\PosInterface;
 
 /**

@@ -7,9 +7,9 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueFormatter;
 
 use Mews\Pos\DataMapper\Request\ValueFormatter\PosNetV1PosRequestValueFormatter;
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\AssecoPos;
-use Mews\Pos\Gateways\PosNetV1Pos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\PosNetV1Pos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;

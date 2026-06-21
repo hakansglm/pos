@@ -7,8 +7,8 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\ValueFormatter;
 
 use Mews\Pos\DataMapper\Response\ValueFormatter\ToslaPosResponseValueFormatter;
-use Mews\Pos\Gateways\AssecoPos;
-use Mews\Pos\Gateways\ToslaPos;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\ToslaPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -44,7 +44,7 @@ class ToslaPosResponseValueFormatterTest extends TestCase
 
     public function testFormatInstallment(): void
     {
-        $this->expectException(\Mews\Pos\Exceptions\NotImplementedException::class);
+        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
         $this->formatter->formatInstallment("2", PosInterface::TX_TYPE_PAY_AUTH);
     }
 

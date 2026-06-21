@@ -8,8 +8,8 @@ namespace Mews\Pos\Crypt;
 
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Account\IyzicoPosAccount;
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\IyzicoPos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\IyzicoPos;
 
 class IyzicoPosCrypt extends AbstractCrypt
 {

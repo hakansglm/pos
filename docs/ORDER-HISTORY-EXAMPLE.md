@@ -29,7 +29,7 @@ try {
     $config = require __DIR__.'/pos_test_ayarlar.php';
 
     $pos = \Mews\Pos\Factory\PosFactory::createPosGateway($account, $config, $eventDispatcher);
-} catch (\Mews\Pos\Exceptions\BankNotFoundException | \Mews\Pos\Exceptions\BankClassNullException $e) {
+} catch (\Mews\Pos\Exception\BankNotFoundException | \Mews\Pos\Exception\BankClassNullException $e) {
     var_dump($e));
     exit;
 }
@@ -48,7 +48,7 @@ function createOrderHistoryOrder(string $gatewayClass, array $lastResponse): arr
         $order = [
             'id' => $lastResponse['order_id'],
         ];
-    } elseif (\Mews\Pos\Gateways\AkbankPos::class === $gatewayClass) {
+    } elseif (\Mews\Pos\Gateway\AkbankPos::class === $gatewayClass) {
         if (isset($lastResponse['recurring_id'])) {
             $order = [
                 'recurring_id' => $lastResponse['recurring_id'],
@@ -74,7 +74,7 @@ function createOrderHistoryOrder(string $gatewayClass, array $lastResponse): arr
             'currency' => $lastResponse['currency'],
             'ip'       => '127.0.0.1',
         ];
-    } elseif (\Mews\Pos\Gateways\VakifKatilimPos::class === $gatewayClass) {
+    } elseif (\Mews\Pos\Gateway\VakifKatilimPos::class === $gatewayClass) {
         /** @var DateTimeImmutable $txTime */
         $txTime = $lastResponse['transaction_time'];
         $order  = [

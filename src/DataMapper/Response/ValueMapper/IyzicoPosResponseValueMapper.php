@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\DataMapper\Response\ValueMapper;
 
-use Mews\Pos\Gateways\IyzicoPos;
+use Mews\Pos\Gateway\IyzicoPos;
 use Mews\Pos\PosInterface;
 
 class IyzicoPosResponseValueMapper extends AbstractResponseValueMapper

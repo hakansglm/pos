@@ -1,7 +1,7 @@
 <?php
 
 use Mews\Pos\Event\RequestDataPreparedEvent;
-use Mews\Pos\Exceptions\HashMismatchException;
+use Mews\Pos\Exception\HashMismatchException;
 use Mews\Pos\PosInterface;
 
 // ilgili gatewayin payment modele gore configini load ediyoruz
@@ -18,7 +18,7 @@ require '../../_templates/_header.php';
  */
 // 3D odemelerde gatewayden genelde POST istek bekleniyor.
 $requestMethod = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-if ('GET' === $requestMethod && get_class($pos) !== \Mews\Pos\Gateways\PayFlexCPV4Pos::class) {
+if ('GET' === $requestMethod && get_class($pos) !== \Mews\Pos\Gateway\PayFlexCPV4Pos::class) {
     // Hata: Sadece PayFlexCP GET request ile cevaplıyor.
     header('Location: '.$baseUrl);
     exit();
@@ -53,7 +53,7 @@ $eventDispatcher->addListener(RequestDataPreparedEvent::class, function (Request
      * 5: Ekstre Erteleme
      * 6: Özel Vade Farkı
      */
-    if ($event->getGatewayClass() instanceof \Mews\Pos\Gateways\PosNetV1Pos && $event->getTxType() === PosInterface::TX_TYPE_PAY_AUTH) {
+    if ($event->getGatewayClass() instanceof \Mews\Pos\Gateway\PosNetV1Pos && $event->getTxType() === PosInterface::TX_TYPE_PAY_AUTH) {
         // Albaraka PosNet KOICode ekleme
         // $data            = $event->getRequestData();
         // $data['KOICode'] = '1';
@@ -73,7 +73,7 @@ $eventDispatcher->addListener(RequestDataPreparedEvent::class, function (Request
     });
 
 $card = null;
-if (get_class($pos) === \Mews\Pos\Gateways\PayFlexV4Pos::class) {
+if (get_class($pos) === \Mews\Pos\Gateway\PayFlexV4Pos::class) {
     // bu gateway için ödemeyi tamamlarken tekrar kart bilgisi lazım.
     $savedCard = $_SESSION['card'] ?? null;
     if (isset($_SESSION['card'])) {

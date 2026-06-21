@@ -18,14 +18,14 @@ function createPostPayOrder(string $gatewayClass, array $lastResponse, string $i
         'ip'              => filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? $ip : '127.0.0.1',
     ];
 
-    if (\Mews\Pos\Gateways\GarantiPos::class === $gatewayClass) {
+    if (\Mews\Pos\Gateway\GarantiPos::class === $gatewayClass) {
         $postAuth['ref_ret_num'] = $lastResponse['ref_ret_num'];
     }
-    if (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNetPos::class === $gatewayClass) {
+    if (\Mews\Pos\Gateway\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateway\PosNetPos::class === $gatewayClass) {
         $postAuth['installment'] = $lastResponse['installment_count'];
         $postAuth['ref_ret_num'] = $lastResponse['ref_ret_num'];
     }
-    if (\Mews\Pos\Gateways\PayFlexV4Pos::class === $gatewayClass || \Mews\Pos\Gateways\IyzicoPos::class === $gatewayClass) {
+    if (\Mews\Pos\Gateway\PayFlexV4Pos::class === $gatewayClass || \Mews\Pos\Gateway\IyzicoPos::class === $gatewayClass) {
         $postAuth['transaction_id'] = $lastResponse['transaction_id'];
     }
 

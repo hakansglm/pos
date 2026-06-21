@@ -8,9 +8,9 @@ namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueMapper;
 
 use Mews\Pos\DataMapper\Request\ValueMapper\AbstractRequestValueMapper;
 use Mews\Pos\DataMapper\Request\ValueMapper\PayFlexV4PosRequestValueMapper;
-use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
-use Mews\Pos\Gateways\AssecoPos;
-use Mews\Pos\Gateways\PayFlexV4Pos;
+use Mews\Pos\Exception\UnsupportedTransactionTypeException;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\PayFlexV4Pos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;

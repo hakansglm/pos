@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\DataMapper\Request\ValueFormatter;
 
-use Mews\Pos\Gateways\KuveytPos;
+use Mews\Pos\Gateway\KuveytPos;
 
 class KuveytPosRequestValueFormatter implements RequestValueFormatterInterface
 {

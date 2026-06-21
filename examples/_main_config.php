@@ -1,6 +1,6 @@
 <?php
 
-use Mews\Pos\Gateways\AkbankPos;
+use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\PosInterface;
 
 ini_set('display_errors', 1);
@@ -72,10 +72,10 @@ function doPayment(PosInterface $pos, string $paymentModel, string $transaction,
             throw new \LogicException('Hatalı işlem');
         }
         $gatewayResponseData = $_POST; // 3D otorizasyon sonrası bankadan gelen yanıt verileri.
-        if (get_class($pos) === \Mews\Pos\Gateways\PayFlexCPV4Pos::class) {
+        if (get_class($pos) === \Mews\Pos\Gateway\PayFlexCPV4Pos::class) {
             $gatewayResponseData = $_GET;
         }
-        if (get_class($pos) === \Mews\Pos\Gateways\PayFlexV4Pos::class) {
+        if (get_class($pos) === \Mews\Pos\Gateway\PayFlexV4Pos::class) {
             /**
              * diğer banklaradan farklı olarak 3d işlemler için de PayFlex bu aşamada kredi kart bilgileri istiyor.
              */
@@ -119,10 +119,10 @@ function createCard(PosInterface $pos, array $card): \Mews\Pos\Model\Card\Credit
             $card['name'],
             $card['type'] ?? null
         );
-    } catch (\Mews\Pos\Exceptions\CardTypeRequiredException $e) {
+    } catch (\Mews\Pos\Exception\CardTypeRequiredException $e) {
         // bu gateway için kart tipi zorunlu
         dd($e);
-    } catch (\Mews\Pos\Exceptions\CardTypeNotSupportedException $e) {
+    } catch (\Mews\Pos\Exception\CardTypeNotSupportedException $e) {
         // sağlanan kart tipi bu gateway tarafından desteklenmiyor
         dd($e);
     } catch (\Exception $e) {
@@ -155,7 +155,7 @@ function createPaymentOrder(
         'ip'          => filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ? $ip : '127.0.0.1',
     ];
 
-    if ($pos instanceof \Mews\Pos\Gateways\ParamPos
+    if ($pos instanceof \Mews\Pos\Gateway\ParamPos
         || in_array($paymentModel, [
             PosInterface::MODEL_3D_SECURE,
             PosInterface::MODEL_3D_PAY,
@@ -171,7 +171,7 @@ function createPaymentOrder(
         $order['lang'] = $lang;
     }
 
-    if ($pos instanceof \Mews\Pos\Gateways\IyzicoPos || $pos instanceof \Mews\Pos\Gateways\KuveytPos) {
+    if ($pos instanceof \Mews\Pos\Gateway\IyzicoPos || $pos instanceof \Mews\Pos\Gateway\KuveytPos) {
         $order = array_merge($order, createGatewaySpecificOrderFields($ip, $paymentModel));
     }
 

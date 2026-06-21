@@ -8,9 +8,9 @@ namespace Mews\Pos\Tests\Unit\DataMapper\Response\ValueMapper;
 
 use Mews\Pos\DataMapper\Response\ValueMapper\AbstractResponseValueMapper;
 use Mews\Pos\DataMapper\Response\ValueMapper\VakifKatilimPosResponseValueMapper;
-use Mews\Pos\Gateways\AssecoPos;
-use Mews\Pos\Gateways\KuveytPos;
-use Mews\Pos\Gateways\VakifKatilimPos;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\KuveytPos;
+use Mews\Pos\Gateway\VakifKatilimPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;

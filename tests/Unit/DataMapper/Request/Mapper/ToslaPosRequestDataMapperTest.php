@@ -15,8 +15,8 @@ use Mews\Pos\Model\Account\ToslaPosAccount;
 use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
-use Mews\Pos\Gateways\AssecoPos;
-use Mews\Pos\Gateways\ToslaPos;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\ToslaPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -256,7 +256,7 @@ class ToslaPosRequestDataMapperTest extends TestCase
 
     public function testCreate3DPaymentRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exceptions\NotImplementedException::class);
+        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
         $this->requestDataMapper->create3DPaymentRequestData(
             $this->account,
             [],
@@ -267,7 +267,7 @@ class ToslaPosRequestDataMapperTest extends TestCase
 
     public function testCreateHistoryRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exceptions\NotImplementedException::class);
+        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
         $this->requestDataMapper->createHistoryRequestData($this->account);
     }
 

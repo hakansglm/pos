@@ -31,7 +31,7 @@ $_SESSION['tx'] = $transaction;
 
 if ($paymentModel !== PosInterface::MODEL_3D_HOST) {
     $card = createCard($pos, $_POST);
-    if (get_class($pos) === \Mews\Pos\Gateways\PayFlexV4Pos::class) {
+    if (get_class($pos) === \Mews\Pos\Gateway\PayFlexV4Pos::class) {
         // bu gateway için ödemeyi tamamlarken tekrar kart bilgisi lazım olacak.
         $_SESSION['card'] = $_POST;
     }
@@ -45,12 +45,12 @@ if ($paymentModel !== PosInterface::MODEL_3D_HOST) {
 // ============================================================================================
 
 $formVerisiniOlusturmakIcinApiIstegiGonderenGatewayler = [
-    \Mews\Pos\Gateways\PosNetPos::class,
-    \Mews\Pos\Gateways\KuveytPos::class,
-    \Mews\Pos\Gateways\ToslaPos::class,
-    \Mews\Pos\Gateways\VakifKatilimPos::class,
-    \Mews\Pos\Gateways\PayFlexV4Pos::class,
-    \Mews\Pos\Gateways\PayFlexCPV4Pos::class,
+    \Mews\Pos\Gateway\PosNetPos::class,
+    \Mews\Pos\Gateway\KuveytPos::class,
+    \Mews\Pos\Gateway\ToslaPos::class,
+    \Mews\Pos\Gateway\VakifKatilimPos::class,
+    \Mews\Pos\Gateway\PayFlexV4Pos::class,
+    \Mews\Pos\Gateway\PayFlexCPV4Pos::class,
 ];
 if (in_array(get_class($pos), $formVerisiniOlusturmakIcinApiIstegiGonderenGatewayler, true)) {
     /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
@@ -70,7 +70,7 @@ if (in_array(get_class($pos), $formVerisiniOlusturmakIcinApiIstegiGonderenGatewa
  * Eger ekleyeceginiz veri hash hesaplamada kullanilmiyorsa form verisi olusturduktan sonra da ekleyebilirsiniz.
  */
 $eventDispatcher->addListener(Before3DFormHashCalculatedEvent::class, function (Before3DFormHashCalculatedEvent $event): void {
-    if ($event->getGatewayClass() === \Mews\Pos\Gateways\AssecoPos::class) {
+    if ($event->getGatewayClass() === \Mews\Pos\Gateway\AssecoPos::class) {
         //Örnek 1: İşbank İmece Kart ile ödeme yaparken aşağıdaki verilerin eklenmesi gerekiyor:
 //                $supportedPaymentModels = [
 //                    \Mews\Pos\PosInterface::MODEL_3D_PAY,
@@ -84,7 +84,7 @@ $eventDispatcher->addListener(Before3DFormHashCalculatedEvent::class, function (
 //                    $event->setFormInputs($formInputs);
 //                }
     }
-    if ($event->getGatewayClass() === \Mews\Pos\Gateways\AssecoPos::class) {
+    if ($event->getGatewayClass() === \Mews\Pos\Gateway\AssecoPos::class) {
 //                // Örnek 2: callbackUrl eklenmesi
 //                $formInputs                = $event->getFormInputs();
 //                $formInputs['callbackUrl'] = $formInputs['failUrl'];
@@ -140,11 +140,11 @@ try {
  * Üye İşyeri için tanımlı olan kampanya kodu, İşyeri Yönetici Ekranlarına giriş
  * yapıldıktan sonra, Üye İşyeri bilgileri sayfasından öğrenilebilinir.
  */
-if ($pos instanceof \Mews\Pos\Gateways\PosNetPos) {
+if ($pos instanceof \Mews\Pos\Gateway\PosNetPos) {
     // YapiKredi
     // $formData['inputs']['vftCode'] = 'xxx';
 }
-if ($pos instanceof \Mews\Pos\Gateways\PosNetV1Pos) {
+if ($pos instanceof \Mews\Pos\Gateway\PosNetV1Pos) {
     // Albaraka
     // $formData['inputs']['VftCode'] = 'xxx';
 }
@@ -157,12 +157,12 @@ if ($pos instanceof \Mews\Pos\Gateways\PosNetV1Pos) {
  * sağlayabilir. İşyeri, müşterilere ortak ödeme sayfasında kampanya sunulmasını istemiyorsa
  * UseJokerVadaa alanını 0 set etmesi gerekir.
  */
-if ($pos instanceof \Mews\Pos\Gateways\PosNetV1Pos) {
+if ($pos instanceof \Mews\Pos\Gateway\PosNetV1Pos) {
     // Albaraka
     // $formData['inputs']['UseJokerVadaa'] = '1';
     // $formData['inputs']['KOICode']       = 'xxx';
 }
-if ($pos instanceof \Mews\Pos\Gateways\PosNetPos) {
+if ($pos instanceof \Mews\Pos\Gateway\PosNetPos) {
     // YapiKredi
     // $formData['inputs']['useJokerVadaa'] = '1';
 }

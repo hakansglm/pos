@@ -6,8 +6,8 @@
 
 namespace Mews\Pos\DataMapper\Response\Mapper;
 
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\VakifKatilimPos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\VakifKatilimPos;
 use Mews\Pos\PosInterface;
 
 class VakifKatilimPosResponseDataMapper extends AbstractResponseDataMapper

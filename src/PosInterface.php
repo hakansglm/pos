@@ -8,10 +8,10 @@ namespace Mews\Pos;
 
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Card\CreditCardInterface;
-use Mews\Pos\Exceptions\HashMismatchException;
-use Mews\Pos\Exceptions\UnsupportedFormFormatException;
-use Mews\Pos\Exceptions\UnsupportedPaymentModelException;
-use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
+use Mews\Pos\Exception\HashMismatchException;
+use Mews\Pos\Exception\UnsupportedFormFormatException;
+use Mews\Pos\Exception\UnsupportedPaymentModelException;
+use Mews\Pos\Exception\UnsupportedTransactionTypeException;
 use Psr\Http\Client\ClientExceptionInterface;
 
 /**

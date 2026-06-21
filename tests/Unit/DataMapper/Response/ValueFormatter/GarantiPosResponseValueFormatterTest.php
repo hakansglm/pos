@@ -7,8 +7,8 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\ValueFormatter;
 
 use Mews\Pos\DataMapper\Response\ValueFormatter\GarantiPosResponseValueFormatter;
-use Mews\Pos\Gateways\AssecoPos;
-use Mews\Pos\Gateways\GarantiPos;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\GarantiPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;

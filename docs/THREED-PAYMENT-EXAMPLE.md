@@ -52,7 +52,7 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
         $config = require __DIR__.'/pos_test_ayarlar.php';
 
         $pos = \Mews\Pos\Factory\PosFactory::createPosGateway($account, $config, $eventDispatcher);
-    } catch (\Mews\Pos\Exceptions\BankNotFoundException | \Mews\Pos\Exceptions\BankClassNullException $e) {
+    } catch (\Mews\Pos\Exception\BankNotFoundException | \Mews\Pos\Exception\BankClassNullException $e) {
         var_dump($e);
         exit;
     }
@@ -83,7 +83,7 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
         'fail_url'    => 'https://example.com/response.php',
 
         // lang degeri verilmezse config'de tanimlanan dil veya default olarak LANG_TR kullanılacak.
-        'lang' => \Mews\Pos\Gateways\PosInterface::LANG_TR, // Kullanıcının yönlendirileceği banka gateway sayfasının ve gateway'den dönen mesajların dili.
+        'lang' => \Mews\Pos\Gateway\PosInterface::LANG_TR, // Kullanıcının yönlendirileceği banka gateway sayfasının ve gateway'den dönen mesajların dili.
     ];
 
     // ============================================================================================
@@ -126,13 +126,13 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
                 // alabileceği alternatif değerler için \Mews\Pos\Model\Card\CreditCardInterface'a bakınız.
                 $_POST['card_type'] ?? null
           );
-        } catch (\Mews\Pos\Exceptions\CardTypeRequiredException $e) {
+        } catch (\Mews\Pos\Exception\CardTypeRequiredException $e) {
             // bu gateway için kart tipi zorunlu
-        } catch (\Mews\Pos\Exceptions\CardTypeNotSupportedException $e) {
+        } catch (\Mews\Pos\Exception\CardTypeNotSupportedException $e) {
             // sağlanan kart tipi bu gateway tarafından desteklenmiyor
         }
 
-        if (get_class($pos) === \Mews\Pos\Gateways\PayFlexV4Pos::class) {
+        if (get_class($pos) === \Mews\Pos\Gateway\PayFlexV4Pos::class) {
             // bu gateway için ödemeyi tamamlarken tekrar kart bilgisi lazım olacak.
             $_SESSION['card'] = $_POST;
         }
@@ -168,8 +168,8 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
          * Eğer ekleyeceğiniz veri hash hesaplamada kullanılmıyorsa Form verisi oluştuktan sonra da güncelleyebilirsiniz.
          */
         $eventDispatcher->addListener(Before3DFormHashCalculatedEvent::class, function (Before3DFormHashCalculatedEvent $event): void {
-            if ($event->getGatewayClass() === \Mews\Pos\Gateways\AssecoPos::class) {
-                //    if ($event->getGatewayClass() !== \Mews\Pos\Gateways\AssecoPos::class) {
+            if ($event->getGatewayClass() === \Mews\Pos\Gateway\AssecoPos::class) {
+                //    if ($event->getGatewayClass() !== \Mews\Pos\Gateway\AssecoPos::class) {
                 //        return;
                 //    }
                 //    // Örneğin İşbank İmece Kart ile ödeme yaparken aşağıdaki verilerin eklenmesi gerekiyor:
@@ -185,7 +185,7 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
                 //        $event->setFormInputs($formInputs);
                 //    }
             }
-            if ($event->getGatewayClass() === \Mews\Pos\Gateways\AssecoPos::class) {
+            if ($event->getGatewayClass() === \Mews\Pos\Gateway\AssecoPos::class) {
     //           Örnek 2: callbackUrl eklenmesi
     //           $formInputs                = $event->getFormInputs();
     //           $formInputs['callbackUrl'] = $formInputs['failUrl'];
@@ -220,7 +220,7 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
              */
             // null // $formFormat, default: null
         );
-    } catch (\Mews\Pos\Exceptions\UnsupportedFormFormatException $e) {
+    } catch (\Mews\Pos\Exception\UnsupportedFormFormatException $e) {
         var_dump($e);
         exit;
     } catch (\InvalidArgumentException $e) {
@@ -270,7 +270,7 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
     $order = $_SESSION['order'];
     $card  = null;
     if (\Mews\Pos\PosInterface::MODEL_3D_HOST !== $paymentModel) {
-        if (get_class($pos) === \Mews\Pos\Gateways\PayFlexV4Pos::class) {
+        if (get_class($pos) === \Mews\Pos\Gateway\PayFlexV4Pos::class) {
             // bu gateway için ödemeyi tamamlarken tekrar kart bilgisi lazım.
             $cardData = $_SESSION['card'];
             unset($_SESSION['card']);
@@ -307,7 +307,7 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
 
     // Ödeme tamamlanıyor
     $gatewayResponseData = $_POST;
-    if (get_class($pos) === \Mews\Pos\Gateways\PayFlexCPV4Pos::class) {
+    if (get_class($pos) === \Mews\Pos\Gateway\PayFlexCPV4Pos::class) {
         $gatewayResponseData = $_GET;
     }
 
@@ -330,7 +330,7 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
             // Hata durumunda kullanıcıya hata mesajını göstermek isterseniz:
             $errorMessage = $response['md_error_message'] ?? $response['error_message'];
         }
-    } catch (\Mews\Pos\Exceptions\HashMismatchException $e) {
+    } catch (\Mews\Pos\Exception\HashMismatchException $e) {
         /**
          * Bankadan gelen verilerin bankaya ait olmadığında bu exception oluşur.
          * Veya Banka API bilgileriniz hatalı ise de oluşur.

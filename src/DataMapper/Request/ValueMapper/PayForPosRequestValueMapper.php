@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\DataMapper\Request\ValueMapper;
 
-use Mews\Pos\Gateways\PayForPos;
+use Mews\Pos\Gateway\PayForPos;
 use Mews\Pos\PosInterface;
 
 class PayForPosRequestValueMapper extends AbstractRequestValueMapper

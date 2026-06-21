@@ -12,8 +12,8 @@ use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Account\PosNetPosAccount;
 use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Event\Before3DFormHashCalculatedEvent;
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\PosNetV1Pos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\PosNetV1Pos;
 use Mews\Pos\PosInterface;
 
 /**

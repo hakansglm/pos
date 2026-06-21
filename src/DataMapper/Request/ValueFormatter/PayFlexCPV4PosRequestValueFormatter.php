@@ -6,8 +6,8 @@
 
 namespace Mews\Pos\DataMapper\Request\ValueFormatter;
 
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\PayFlexCPV4Pos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\PayFlexCPV4Pos;
 
 class PayFlexCPV4PosRequestValueFormatter implements RequestValueFormatterInterface
 {

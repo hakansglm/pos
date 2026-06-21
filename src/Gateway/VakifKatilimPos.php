@@ -1,0 +1,253 @@
+<?php
+
+/**
+ * @license MIT
+ */
+
+namespace Mews\Pos\Gateway;
+
+use Mews\Pos\DataMapper\Request\Mapper\RequestDataMapperInterface;
+use Mews\Pos\DataMapper\Request\Mapper\VakifKatilimPosRequestDataMapper;
+use Mews\Pos\DataMapper\Response\Mapper\ResponseDataMapperInterface;
+use Mews\Pos\DataMapper\Response\Mapper\VakifKatilimPosResponseDataMapper;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\BoaPosAccount;
+use Mews\Pos\Model\Card\CreditCardInterface;
+use Mews\Pos\Event\RequestDataPreparedEvent;
+use Mews\Pos\Exception\UnsupportedFormFormatException;
+use Mews\Pos\Exception\UnsupportedPaymentModelException;
+use Mews\Pos\Exception\UnsupportedTransactionTypeException;
+use Mews\Pos\PosInterface;
+
+/**
+ * Vakif Katilim banki desteleyen Gateway
+ * V2.7
+ */
+class VakifKatilimPos extends AbstractGateway
+{
+    /** @var string */
+    public const NAME = 'VakifKatilim';
+
+    /** @var BoaPosAccount */
+    protected AbstractPosAccount $account;
+
+    /** @var VakifKatilimPosRequestDataMapper */
+    protected RequestDataMapperInterface $requestDataMapper;
+
+    /** @var VakifKatilimPosResponseDataMapper */
+    protected ResponseDataMapperInterface $responseDataMapper;
+
+    /** @inheritdoc */
+    protected static array $supportedTransactions = [
+        PosInterface::TX_TYPE_PAY_AUTH       => [
+            PosInterface::MODEL_NON_SECURE,
+            PosInterface::MODEL_3D_SECURE,
+            PosInterface::MODEL_3D_HOST,
+        ],
+        PosInterface::TX_TYPE_PAY_PRE_AUTH   => [
+            PosInterface::MODEL_NON_SECURE,
+        ],
+        PosInterface::TX_TYPE_PAY_POST_AUTH  => true,
+        PosInterface::TX_TYPE_STATUS         => true,
+        PosInterface::TX_TYPE_CANCEL         => true,
+        PosInterface::TX_TYPE_REFUND         => true,
+        PosInterface::TX_TYPE_REFUND_PARTIAL => true,
+        PosInterface::TX_TYPE_HISTORY        => true,
+        PosInterface::TX_TYPE_ORDER_HISTORY  => true,
+        PosInterface::TX_TYPE_CUSTOM_QUERY   => false,
+    ];
+
+    /** @return BoaPosAccount */
+    public function getAccount(): AbstractPosAccount
+    {
+        return $this->account;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function make3DPayPayment(array $gatewayResponseData, array $order, string $txType): array
+    {
+        throw new UnsupportedPaymentModelException();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function make3DHostPayment(array $gatewayResponseData, array $order, string $txType): array
+    {
+        $this->response = $this->responseDataMapper->map3DHostResponseData($gatewayResponseData, $txType, $order);
+
+        return $this->response;
+    }
+
+    /**
+     * 3D Host Model'de array döner,
+     * 3D Model'de ise HTML form içeren string döner.
+     *
+     * @inheritDoc
+     */
+    public function get3DFormData(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null, bool $createWithoutCard = false, ?string $formFormat = null): array|string
+    {
+        $this->check3DFormInputs($paymentModel, $txType, $creditCard, $createWithoutCard);
+
+        $this->logger->debug('preparing 3D form data');
+
+        if (PosInterface::MODEL_3D_HOST === $paymentModel) {
+            if (PosInterface::FORM_FORMAT_HTML === $formFormat) {
+                throw new UnsupportedFormFormatException();
+            }
+
+            return $this->requestDataMapper->create3DFormData(
+                $this->account,
+                $order,
+                $paymentModel,
+                $txType,
+                $this->get3DGatewayURL($paymentModel)
+            );
+        }
+
+        if (PosInterface::FORM_FORMAT_ARRAY === $formFormat) {
+            throw new UnsupportedFormFormatException();
+        }
+
+        return $this->sendEnrollmentRequest(
+            $this->account,
+            $order,
+            $paymentModel,
+            $txType,
+            $creditCard
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function make3DPayment(array $gatewayResponseData, array $order, string $txType, ?CreditCardInterface $creditCard = null): array
+    {
+        $paymentModel    = self::MODEL_3D_SECURE;
+
+        if (!$this->is3DAuthSuccess($gatewayResponseData)) {
+            $this->response = $this->responseDataMapper->map3DPaymentData($gatewayResponseData, null, $txType, $order);
+
+            return $this->response;
+        }
+
+        $this->logger->debug('finishing payment');
+
+        $requestData = $this->requestDataMapper->create3DPaymentRequestData($this->account, $order, $txType, $gatewayResponseData);
+
+        $event = new RequestDataPreparedEvent(
+            $requestData,
+            $this->account->getBankName(),
+            $txType,
+            static::class,
+            $order,
+            $paymentModel
+        );
+        /** @var RequestDataPreparedEvent $event */
+        $event = $this->eventDispatcher->dispatch($event);
+        if ($requestData !== $event->getRequestData()) {
+            $this->logger->debug('Request data is changed via listeners', [
+                'txType'      => $event->getTxType(),
+                'bankName'    => $event->getBankName(),
+                'initialData' => $requestData,
+                'updatedData' => $event->getRequestData(),
+            ]);
+            $requestData = $event->getRequestData();
+        }
+
+        /** @var array<string, mixed> $bankResponse */
+        $bankResponse = $this->clientStrategy->getClient(
+            $txType,
+            $paymentModel,
+        )->request(
+            $txType,
+            $paymentModel,
+            $requestData,
+            $order
+        );
+
+        $this->response = $this->responseDataMapper->map3DPaymentData($gatewayResponseData, $bankResponse, $txType, $order);
+        $this->logger->debug('finished 3D payment', ['mapped_response' => $this->response]);
+
+        return $this->response;
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function customQuery(array $requestData, ?string $apiUrl = null): array
+    {
+        if (null === $apiUrl) {
+            throw new \InvalidArgumentException('API URL is required for custom query');
+        }
+
+        return parent::customQuery($requestData, $apiUrl);
+    }
+
+    /**
+     * @phpstan-param PosInterface::MODEL_3D_*                                          $paymentModel
+     * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $orderTxType
+     *
+     * @param BoaPosAccount                        $boaPosAccount
+     * @param array<string, int|string|float|null> $order
+     * @param string                               $paymentModel
+     * @param string                               $orderTxType
+     * @param CreditCardInterface|null             $creditCard
+     *
+     * @return non-empty-string HTML string containing form inputs to be submitted to the bank
+     *
+     * @throws UnsupportedTransactionTypeException
+     */
+    private function sendEnrollmentRequest(
+        BoaPosAccount        $boaPosAccount,
+        array                $order,
+        string               $paymentModel,
+        string               $orderTxType,
+        ?CreditCardInterface $creditCard = null
+    ): string {
+        $requestData = $this->requestDataMapper->create3DFormInitializeRequestData(
+            $boaPosAccount,
+            $order,
+            $paymentModel,
+            $orderTxType,
+            $creditCard
+        );
+
+        $apiRequestTxType = PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD;
+        $event = new RequestDataPreparedEvent(
+            $requestData,
+            $this->account->getBankName(),
+            $apiRequestTxType,
+            static::class,
+            $order,
+            $paymentModel
+        );
+        /** @var RequestDataPreparedEvent $event */
+        $event = $this->eventDispatcher->dispatch($event);
+        if ($requestData !== $event->getRequestData()) {
+            $this->logger->debug('Request data is changed via listeners', [
+                'txType'      => $event->getTxType(),
+                'bankName'    => $event->getBankName(),
+                'initialData' => $requestData,
+                'updatedData' => $event->getRequestData(),
+            ]);
+            $requestData = $event->getRequestData();
+        }
+
+        /** @var non-empty-string $result */
+        $result = $this->clientStrategy->getClient(
+            $apiRequestTxType,
+            $paymentModel,
+        )->request(
+            $apiRequestTxType,
+            $paymentModel,
+            $requestData,
+            $order
+        );
+
+        return $result;
+    }
+}

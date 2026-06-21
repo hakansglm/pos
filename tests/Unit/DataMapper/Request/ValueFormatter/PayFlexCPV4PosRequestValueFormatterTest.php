@@ -7,9 +7,9 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueFormatter;
 
 use Mews\Pos\DataMapper\Request\ValueFormatter\PayFlexCPV4PosRequestValueFormatter;
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\AssecoPos;
-use Mews\Pos\Gateways\PayFlexCPV4Pos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\PayFlexCPV4Pos;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;

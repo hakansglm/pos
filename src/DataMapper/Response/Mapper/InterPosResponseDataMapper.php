@@ -6,8 +6,8 @@
 
 namespace Mews\Pos\DataMapper\Response\Mapper;
 
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\InterPos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\InterPos;
 use Mews\Pos\PosInterface;
 
 class InterPosResponseDataMapper extends AbstractResponseDataMapper

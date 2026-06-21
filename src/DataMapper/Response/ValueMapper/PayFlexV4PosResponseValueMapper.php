@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\DataMapper\Response\ValueMapper;
 
-use Mews\Pos\Gateways\PayFlexV4Pos;
+use Mews\Pos\Gateway\PayFlexV4Pos;
 use Mews\Pos\PosInterface;
 
 class PayFlexV4PosResponseValueMapper extends AbstractResponseValueMapper

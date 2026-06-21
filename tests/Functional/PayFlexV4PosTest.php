@@ -24,7 +24,7 @@ class PayFlexV4PosTest extends TestCase
 
     private EventDispatcher $eventDispatcher;
 
-    /** @var \Mews\Pos\Gateways\PayFlexV4Pos */
+    /** @var \Mews\Pos\Gateway\PayFlexV4Pos */
     private PosInterface $pos;
 
     protected function setUp(): void

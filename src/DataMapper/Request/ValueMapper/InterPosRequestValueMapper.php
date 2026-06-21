@@ -7,7 +7,7 @@
 namespace Mews\Pos\DataMapper\Request\ValueMapper;
 
 use Mews\Pos\Model\Card\CreditCardInterface;
-use Mews\Pos\Gateways\InterPos;
+use Mews\Pos\Gateway\InterPos;
 use Mews\Pos\PosInterface;
 
 class InterPosRequestValueMapper extends AbstractRequestValueMapper

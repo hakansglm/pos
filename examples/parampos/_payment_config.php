@@ -3,7 +3,7 @@
 require __DIR__.'/../_main_config.php';
 
 $bankTestsUrl = $hostUrl.'/parampos';
-$posClass = \Mews\Pos\Gateways\ParamPos::class;
+$posClass = \Mews\Pos\Gateway\ParamPos::class;
 
 $testCards = [
     'visa1' => [

@@ -7,7 +7,7 @@
 namespace Mews\Pos\DataMapper\Request\ValueMapper;
 
 use Mews\Pos\Model\Card\CreditCardInterface;
-use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
+use Mews\Pos\Exception\UnsupportedTransactionTypeException;
 use Mews\Pos\PosInterface;
 
 /**

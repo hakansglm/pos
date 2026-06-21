@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\DataMapper\Request\ValueMapper;
 
-use Mews\Pos\Gateways\IyzicoPos;
+use Mews\Pos\Gateway\IyzicoPos;
 use Mews\Pos\PosInterface;
 
 class IyzicoPosRequestValueMapper extends AbstractRequestValueMapper

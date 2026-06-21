@@ -9,8 +9,8 @@ namespace Mews\Pos\DataMapper\Request\Mapper;
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Account\ToslaPosAccount;
 use Mews\Pos\Model\Card\CreditCardInterface;
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\ToslaPos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\ToslaPos;
 use Mews\Pos\PosInterface;
 
 /**

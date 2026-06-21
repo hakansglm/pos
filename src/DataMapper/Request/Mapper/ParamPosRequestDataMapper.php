@@ -13,8 +13,8 @@ use Mews\Pos\DataMapper\Request\ValueMapper\RequestValueMapperInterface;
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Account\ParamPosAccount;
 use Mews\Pos\Model\Card\CreditCardInterface;
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\ParamPos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\ParamPos;
 use Mews\Pos\PosInterface;
 
 /**

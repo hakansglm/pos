@@ -32,7 +32,7 @@ try {
     $config = require __DIR__.'/pos_test_ayarlar.php';
 
     $pos = \Mews\Pos\Factory\PosFactory::createPosGateway($account, $config, $eventDispatcher);
-} catch (\Mews\Pos\Exceptions\BankNotFoundException | \Mews\Pos\Exceptions\BankClassNullException $e) {
+} catch (\Mews\Pos\Exception\BankNotFoundException | \Mews\Pos\Exception\BankClassNullException $e) {
     var_dump($e));
     exit;
 }
@@ -53,7 +53,7 @@ $order = [
     'installment' => 0, //0 ya da 1'den büyük değer, optional. default: 0
 
     // lang degeri verilmezse config'de tanimlanan dil veya default olarak LANG_TR kullanılacak.
-    'lang' => \Mews\Pos\Gateways\PosInterface::LANG_TR, // Kullanıcının yönlendirileceği banka gateway sayfasının ve gateway'den dönen mesajların  dili.
+    'lang' => \Mews\Pos\Gateway\PosInterface::LANG_TR, // Kullanıcının yönlendirileceği banka gateway sayfasının ve gateway'den dönen mesajların  dili.
 ];
 
 // Kredi kartı bilgileri
@@ -70,9 +70,9 @@ $card = \Mews\Pos\Factory\CreditCardFactory::createForGateway(
         // alabileceği alternatif değerler için \Mews\Pos\Model\Card\CreditCardInterface'a bakınız.
         $_POST['card_type'] ?? null
   );
-} catch (\Mews\Pos\Exceptions\CardTypeRequiredException $e) {
+} catch (\Mews\Pos\Exception\CardTypeRequiredException $e) {
     // bu gateway için kart tipi zorunlu
-} catch (\Mews\Pos\Exceptions\CardTypeNotSupportedException $e) {
+} catch (\Mews\Pos\Exception\CardTypeNotSupportedException $e) {
     // sağlanan kart tipi bu gateway tarafından desteklenmiyor
 }
 

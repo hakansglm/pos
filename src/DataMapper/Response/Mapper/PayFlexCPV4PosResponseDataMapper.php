@@ -6,8 +6,8 @@
 
 namespace Mews\Pos\DataMapper\Response\Mapper;
 
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\PayFlexCPV4Pos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\PayFlexCPV4Pos;
 use Mews\Pos\PosInterface;
 
 class PayFlexCPV4PosResponseDataMapper extends AbstractResponseDataMapper

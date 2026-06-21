@@ -7,9 +7,9 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueFormatter;
 
 use Mews\Pos\DataMapper\Request\ValueFormatter\AssecoPosRequestValueFormatter;
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\AssecoPos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\AkbankPos;
+use Mews\Pos\Gateway\AssecoPos;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;

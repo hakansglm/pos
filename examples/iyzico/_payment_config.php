@@ -3,7 +3,7 @@
 require __DIR__.'/../_main_config.php';
 
 $bankTestsUrl = $hostUrl.'/iyzico';
-$posClass = \Mews\Pos\Gateways\IyzicoPos::class;
+$posClass = \Mews\Pos\Gateway\IyzicoPos::class;
 
 $testCards = [
     'visa1' => [

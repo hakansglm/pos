@@ -17,7 +17,7 @@ use Mews\Pos\Model\Account\PayFlexPosAccount;
 use Mews\Pos\Model\Account\PayForPosAccount;
 use Mews\Pos\Model\Account\PosNetPosAccount;
 use Mews\Pos\Model\Account\ToslaPosAccount;
-use Mews\Pos\Exceptions\MissingAccountInfoException;
+use Mews\Pos\Exception\MissingAccountInfoException;
 use Mews\Pos\PosInterface;
 
 /**

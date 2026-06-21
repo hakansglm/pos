@@ -5,7 +5,7 @@ use Mews\Pos\Model\Card\CreditCardInterface;
 require __DIR__.'/../_main_config.php';
 
 $bankTestsUrl = $hostUrl.'/interpos';
-$posClass = \Mews\Pos\Gateways\InterPos::class;
+$posClass = \Mews\Pos\Gateway\InterPos::class;
 
 $testCards = [
     'visa1' => [

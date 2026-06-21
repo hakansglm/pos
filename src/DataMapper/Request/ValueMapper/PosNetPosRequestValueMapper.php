@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\DataMapper\Request\ValueMapper;
 
-use Mews\Pos\Gateways\PosNetPos;
+use Mews\Pos\Gateway\PosNetPos;
 use Mews\Pos\PosInterface;
 
 class PosNetPosRequestValueMapper extends AbstractRequestValueMapper

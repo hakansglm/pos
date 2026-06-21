@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\DataMapper\Request\ValueFormatter;
 
-use Mews\Pos\Gateways\ToslaPos;
+use Mews\Pos\Gateway\ToslaPos;
 
 class ToslaPosRequestValueFormatter implements RequestValueFormatterInterface
 {

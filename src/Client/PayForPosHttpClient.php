@@ -7,7 +7,7 @@
 namespace Mews\Pos\Client;
 
 use Mews\Pos\Model\Account\AbstractPosAccount;
-use Mews\Pos\Gateways\PayForPos;
+use Mews\Pos\Gateway\PayForPos;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Serializer\Decoder\PayForPosXmlDecoder;
 use Mews\Pos\Serializer\EncodedData;

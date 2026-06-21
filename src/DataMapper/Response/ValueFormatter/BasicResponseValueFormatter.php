@@ -6,10 +6,10 @@
 
 namespace Mews\Pos\DataMapper\Response\ValueFormatter;
 
-use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\PayFlexCPV4Pos;
-use Mews\Pos\Gateways\PayFlexV4Pos;
-use Mews\Pos\Gateways\PayForPos;
+use Mews\Pos\Gateway\AkbankPos;
+use Mews\Pos\Gateway\PayFlexCPV4Pos;
+use Mews\Pos\Gateway\PayFlexV4Pos;
+use Mews\Pos\Gateway\PayForPos;
 
 class BasicResponseValueFormatter extends AbstractResponseValueFormatter
 {

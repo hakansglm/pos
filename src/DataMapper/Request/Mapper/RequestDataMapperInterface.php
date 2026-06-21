@@ -9,7 +9,7 @@ namespace Mews\Pos\DataMapper\Request\Mapper;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Card\CreditCardInterface;
-use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
+use Mews\Pos\Exception\UnsupportedTransactionTypeException;
 use Mews\Pos\PosInterface;
 
 interface RequestDataMapperInterface

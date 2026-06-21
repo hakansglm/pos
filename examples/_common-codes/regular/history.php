@@ -12,13 +12,13 @@ require '../../_templates/_header.php';
 function createHistoryOrder(string $gatewayClass, array $extraData, string $ip): array
 {
     $txTime = new \DateTimeImmutable();
-    if (\Mews\Pos\Gateways\PayForPos::class === $gatewayClass) {
+    if (\Mews\Pos\Gateway\PayForPos::class === $gatewayClass) {
         return [
             // odeme tarihi
             'transaction_date' => $extraData['transaction_date'] ?? $txTime,
         ];
     }
-    if (\Mews\Pos\Gateways\IyzicoPos::class === $gatewayClass) {
+    if (\Mews\Pos\Gateway\IyzicoPos::class === $gatewayClass) {
         return [
             // odeme tarihi
             'transaction_date' => $extraData['transaction_date'] ?? $txTime,
@@ -28,7 +28,7 @@ function createHistoryOrder(string $gatewayClass, array $extraData, string $ip):
     }
 
 
-    if (\Mews\Pos\Gateways\VakifKatilimPos::class === $gatewayClass) {
+    if (\Mews\Pos\Gateway\VakifKatilimPos::class === $gatewayClass) {
         return [
             'page'       => 1,
             'page_size'  => 20,
@@ -40,7 +40,7 @@ function createHistoryOrder(string $gatewayClass, array $extraData, string $ip):
         ];
     }
 
-    if (\Mews\Pos\Gateways\GarantiPos::class === $gatewayClass) {
+    if (\Mews\Pos\Gateway\GarantiPos::class === $gatewayClass) {
         return [
             'ip'         => $ip,
             'currency'   => \Mews\Pos\PosInterface::CURRENCY_USD,
@@ -51,7 +51,7 @@ function createHistoryOrder(string $gatewayClass, array $extraData, string $ip):
         ];
     }
 
-    if (\Mews\Pos\Gateways\AkbankPos::class === $gatewayClass) {
+    if (\Mews\Pos\Gateway\AkbankPos::class === $gatewayClass) {
         return [
             // Gün aralığı 1 günden fazla girilemez
             'start_date' => $txTime->modify('-23 hour'),
@@ -63,7 +63,7 @@ function createHistoryOrder(string $gatewayClass, array $extraData, string $ip):
 //        ];
     }
 
-    if (\Mews\Pos\Gateways\ParamPos::class === $gatewayClass) {
+    if (\Mews\Pos\Gateway\ParamPos::class === $gatewayClass) {
         return [
             // Gün aralığı 7 günden fazla girilemez
             'start_date' => $txTime->modify('-23 hour'),

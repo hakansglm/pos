@@ -8,8 +8,8 @@ namespace Mews\Pos\Tests\Unit\DataMapper\Response\ValueFormatter;
 
 use Mews\Pos\DataMapper\Response\ValueFormatter\AbstractResponseValueFormatter;
 use Mews\Pos\DataMapper\Response\ValueFormatter\IyzicoPosResponseValueFormatter;
-use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\IyzicoPos;
+use Mews\Pos\Gateway\AkbankPos;
+use Mews\Pos\Gateway\IyzicoPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;

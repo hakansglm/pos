@@ -11,9 +11,9 @@ use Mews\Pos\Crypt\KuveytPosCrypt;
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Account\BoaPosAccount;
 use Mews\Pos\Model\Card\CreditCardInterface;
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
-use Mews\Pos\Gateways\KuveytPos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Exception\UnsupportedTransactionTypeException;
+use Mews\Pos\Gateway\KuveytPos;
 use Mews\Pos\PosInterface;
 
 /**

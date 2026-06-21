@@ -6,8 +6,8 @@
 
 namespace Mews\Pos\DataMapper\Response\Mapper;
 
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Gateways\PosNetV1Pos;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\PosNetV1Pos;
 use Mews\Pos\PosInterface;
 
 class PosNetV1PosResponseDataMapper extends AbstractResponseDataMapper

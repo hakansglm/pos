@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\DataMapper\Response\ValueMapper;
 
-use Mews\Pos\Gateways\InterPos;
+use Mews\Pos\Gateway\InterPos;
 use Mews\Pos\PosInterface;
 
 class InterPosResponseValueMapper extends AbstractResponseValueMapper

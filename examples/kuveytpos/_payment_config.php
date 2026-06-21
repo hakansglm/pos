@@ -5,7 +5,7 @@ use Mews\Pos\Model\Card\CreditCardInterface;
 require __DIR__.'/../_main_config.php';
 
 $bankTestsUrl = $hostUrl.'/kuveytpos';
-$posClass = \Mews\Pos\Gateways\KuveytPos::class;
+$posClass = \Mews\Pos\Gateway\KuveytPos::class;
 
 $testCards = [
     'visa1' => [

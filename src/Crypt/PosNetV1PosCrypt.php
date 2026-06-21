@@ -7,7 +7,7 @@
 namespace Mews\Pos\Crypt;
 
 use Mews\Pos\Model\Account\AbstractPosAccount;
-use Mews\Pos\Gateways\PosNetV1Pos;
+use Mews\Pos\Gateway\PosNetV1Pos;
 
 class PosNetV1PosCrypt extends AbstractCrypt
 {

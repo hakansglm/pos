@@ -6,7 +6,7 @@
 
 namespace Mews\Pos\DataMapper\Response\ValueFormatter;
 
-use Mews\Pos\Gateways\IyzicoPos;
+use Mews\Pos\Gateway\IyzicoPos;
 use Mews\Pos\PosInterface;
 
 class IyzicoPosResponseValueFormatter extends AbstractResponseValueFormatter
