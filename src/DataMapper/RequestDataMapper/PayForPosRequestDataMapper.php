@@ -49,6 +49,12 @@ class PayForPosRequestDataMapper extends AbstractRequestDataMapper
         PosInterface::TX_TYPE_STATUS         => 'OrderInquiry',
     ];
 
+    /** @var array<PosInterface::LANG_*, string> */
+    protected array $langMappings = [
+        PosInterface::LANG_TR => 'TR',
+        PosInterface::LANG_EN => 'EN',
+    ];
+
     /**
      * {@inheritDoc}
      *
