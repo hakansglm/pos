@@ -241,7 +241,7 @@ class AkbankPosTest extends TestCase
             }
         );
 
-        $response = $this->pos->status($refundOrder);
+        $response = $this->pos->refund($refundOrder);
 
         $this->assertTrue($this->pos->isSuccess(), $response['error_message'] ?? '');
         $this->assertIsArray($response);
