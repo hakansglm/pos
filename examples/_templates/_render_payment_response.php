@@ -56,7 +56,7 @@
         <dt class="col-sm-3">MD Status <small>(3D Secure doğrulama başarılı oldugu durumda degeri (genelde) 1
                 oluyor)</small>:
         </dt>
-        <dd class="col-sm-9"><?= $response['md_status'] ?: '-'; ?></dd>
+        <dd class="col-sm-9"><?= null === $response['md_status'] ? '-' : $response['md_status']; ?></dd>
     </dl>
     <hr>
     <hr>

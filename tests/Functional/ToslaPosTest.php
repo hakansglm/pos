@@ -46,10 +46,10 @@ class ToslaPosTest extends TestCase
 
         $this->card = CreditCardFactory::createForGateway(
             $this->pos,
-            '4159560047417732',
-            '24',
-            '08',
-            '123',
+            '4546711234567894',
+            '26',
+            '12',
+            '000',
             'John Doe',
             CreditCardInterface::CARD_TYPE_VISA
         );

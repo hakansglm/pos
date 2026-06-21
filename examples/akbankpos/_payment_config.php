@@ -9,9 +9,9 @@ $testCards = [
     'visa1' => [
         // OTP 123456
         'number' => '4355093000315232',
-        'year' => '40',
-        'month' => '11',
-        'cvv' => '471',
-        'name' => 'John Doe',
+        'year'   => '28',
+        'month'  => '01',
+        'cvv'    => '264',
+        'name'   => 'John Doe',
     ],
 ];

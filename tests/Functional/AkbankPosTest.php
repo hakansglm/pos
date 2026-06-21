@@ -57,9 +57,9 @@ class AkbankPosTest extends TestCase
         $this->card = CreditCardFactory::createForGateway(
             $this->pos,
             '4355093000315232',
-            '40',
-            '11',
-            '471',
+            '28',
+            '01',
+            '264',
         );
     }
 

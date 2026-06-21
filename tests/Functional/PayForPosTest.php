@@ -52,7 +52,7 @@ class PayForPosTest extends TestCase
         $this->card = CreditCardFactory::createForGateway(
             $this->pos,
             '4155650100416111',
-            '25',
+            '30',
             '1',
             '123',
             'John Doe',
