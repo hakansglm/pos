@@ -181,12 +181,13 @@ class PosNetRequestDataMapper extends AbstractRequestDataMapper
         $order = $this->prepareCancelOrder($order);
 
         $txType      = $this->mapTxType(PosInterface::TX_TYPE_CANCEL);
+        $orderTxType =  \strtolower($this->mapTxType($order['transaction_type']));
         $requestData = [
             'mid'              => $posAccount->getClientId(),
             'tid'              => $posAccount->getTerminalId(),
             'tranDateRequired' => '1',
             $txType            => [
-                'transaction' => 'sale',
+                'transaction' => $orderTxType,
             ],
         ];
 
@@ -495,10 +496,11 @@ class PosNetRequestDataMapper extends AbstractRequestDataMapper
     {
         $orderTemp = [
             //id or ref_ret_num
-            'id'          => $order['id'] ?? null,
-            'ref_ret_num' => $order['ref_ret_num'] ?? null,
+            'id'               => $order['id'] ?? null,
+            'ref_ret_num'      => $order['ref_ret_num'] ?? null,
             //optional
-            'auth_code'   => $order['auth_code'] ?? null,
+            'auth_code'        => $order['auth_code'] ?? null,
+            'transaction_type' => $order['transaction_type'] ?? PosInterface::TX_TYPE_PAY_AUTH,
         ];
 
         if (null !== $orderTemp['id']) {
