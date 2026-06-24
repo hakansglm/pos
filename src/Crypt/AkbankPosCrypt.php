@@ -80,7 +80,7 @@ class AkbankPosCrypt extends AbstractCrypt
             throw new \LogicException('Account storeKey eksik!');
         }
 
-        $actualHash = $this->hashFromParams($posAccount->getStoreKey(), $data, 'hashParams', '+');
+        $actualHash = $this->hashFromParams($posAccount, $data, $data['hashParams'], '+');
 
         if (\hash_equals($data['hash'], $actualHash)) {
             $this->logger->debug('hash check is successful');

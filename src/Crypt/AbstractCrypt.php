@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Crypt;
 
+use Mews\Pos\Model\Account\AbstractPosAccount;
 use Psr\Log\LoggerInterface;
 use RecursiveArrayIterator;
 use RecursiveIteratorIterator;
@@ -44,17 +45,19 @@ abstract class AbstractCrypt implements CryptInterface
     /**
      * @inheritDoc
      */
-    public function hashFromParams(string $storeKey, array $data, string $hashParamsKey, string $paramSeparator = ':'): string
+    public function hashFromParams(AbstractPosAccount $account, array $data, string $hashParamsValue, string $paramSeparator = ':'): string
     {
-        $hashParams = $this->recursiveFind($data, $hashParamsKey);
-        if ('' === $hashParams) {
-            throw new \InvalidArgumentException(\sprintf('"%s" key not found in data', $hashParamsKey));
+        if ('' === $hashParamsValue) {
+            throw new \InvalidArgumentException('hashParamsValue cannot be empty');
         }
 
-        /**
-         * @var non-empty-string $hashParams ex: "MerchantNo:TerminalNo:ReferenceCode:OrderId"
-         */
-        $hashParamsArr = \explode($paramSeparator, $hashParams);
+        $storeKey = $account->getStoreKey();
+        if (null === $storeKey) {
+            throw new \LogicException('Account storeKey eksik!');
+        }
+
+        /** @var non-empty-string $hashParamsValue ex: "MerchantNo:TerminalNo:ReferenceCode:OrderId" */
+        $hashParamsArr = \explode($paramSeparator, $hashParamsValue);
 
         $hashVal = $this->buildHashString($data, $hashParamsArr, '', $storeKey);
 

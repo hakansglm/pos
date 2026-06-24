@@ -55,7 +55,7 @@ class PosNetV1PosCrypt extends AbstractCrypt
             throw new \LogicException('Account storeKey eksik!');
         }
 
-        $actualHash = $this->hashFromParams($posAccount->getStoreKey(), $data, 'MacParams', ':');
+        $actualHash = $this->hashFromParams($posAccount, $data, $data['MacParams'], ':');
 
         if ($actualHash !== $data['Mac']) {
             $this->logger->error('hash check failed', [

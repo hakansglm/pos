@@ -54,22 +54,16 @@ class PosNetV1PosCryptTest extends TestCase
     /**
      * @dataProvider hashFromParamsDataProvider
      */
-    public function testHashFromParams(string $storeKey, array $data, string $expected): void
+    public function testHashFromParams(array $data, string $expected): void
     {
-        $this->assertSame($expected, $this->crypt->hashFromParams($storeKey, $data, 'MACParams', ':'));
+        $this->assertSame($expected, $this->crypt->hashFromParams($this->account, $data, $data['MACParams'], ':'));
     }
 
     public function testHashFromParamsWhenNotFound(): void
     {
-        $data = self::hashFromParamsDataProvider()[0];
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('"NonExistingField" key not found in data');
-        $this->crypt->hashFromParams(
-            $data['storeKey'],
-            $data,
-            'NonExistingField',
-            ':'
-        );
+        $this->expectExceptionMessage('hashParamsValue cannot be empty');
+        $this->crypt->hashFromParams($this->account, [], '', ':');
     }
 
     /**
@@ -128,8 +122,7 @@ class PosNetV1PosCryptTest extends TestCase
     {
         return [
             [
-                'storeKey' => '10,10,10,10,10,10,10,10',
-                'data '    => [
+                'data'     => [
                     'MACParams'     => 'MerchantNo:TerminalNo:ReferenceCode:OrderId',
                     'MerchantNo'    => '6700950031',
                     'TerminalNo'    => '67540050',
@@ -139,8 +132,7 @@ class PosNetV1PosCryptTest extends TestCase
                 'expected' => 'qhLo/2Ro+vT81i0SMV/VHifDV9VzQQgK+7d8hlId9YM=',
             ],
             [
-                'storeKey'    => '10,10,10,10,10,10,10,10',
-                'requestData' => [
+                'data'     => [
                     'MerchantNo'          => '6700950031',
                     'TerminalNo'          => '67540050',
                     'MACParams'           => 'MerchantNo:TerminalNo:CardNo:Cvc2:ExpireDate:Amount',
@@ -151,7 +143,7 @@ class PosNetV1PosCryptTest extends TestCase
                         'Cvc2'       => '056',
                     ],
                 ],
-                'expected'    => 'xuhPbpcPJ6kVs7JeIXS8f06Cv0mb9cNPMfjp1HiB7Ew=',
+                'expected' => 'xuhPbpcPJ6kVs7JeIXS8f06Cv0mb9cNPMfjp1HiB7Ew=',
             ],
         ];
     }

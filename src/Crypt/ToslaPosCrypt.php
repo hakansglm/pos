@@ -43,7 +43,7 @@ class ToslaPosCrypt extends AbstractCrypt
         $data['ClientId'] = $posAccount->getClientId();
         $data['ApiUser']  = $posAccount->getUsername();
 
-        $actualHash = $this->hashFromParams($posAccount->getStoreKey(), $data, 'HashParameters', ',');
+        $actualHash = $this->hashFromParams($posAccount, $data, $data['HashParameters'], ',');
 
         if (\hash_equals($data['Hash'], $actualHash)) {
             $this->logger->debug('hash check is successful');

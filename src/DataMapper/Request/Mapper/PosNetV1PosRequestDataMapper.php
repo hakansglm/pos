@@ -129,7 +129,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
             throw new \LogicException('Account storeKey eksik!');
         }
 
-        $requestData['MAC'] = $this->crypt->hashFromParams($posAccount->getStoreKey(), $requestData, 'MACParams', ':');
+        $requestData['MAC'] = $this->crypt->hashFromParams($posAccount, $requestData, $requestData['MACParams'], ':');
 
         return $requestData;
     }
@@ -168,7 +168,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
             throw new \LogicException('Account storeKey eksik!');
         }
 
-        $requestData['MAC'] = $this->crypt->hashFromParams($posAccount->getStoreKey(), $requestData, 'MACParams', ':');
+        $requestData['MAC'] = $this->crypt->hashFromParams($posAccount, $requestData, $requestData['MACParams'], ':');
 
         return $requestData;
     }
@@ -198,7 +198,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
             throw new \LogicException('Account storeKey eksik!');
         }
 
-        $requestData['MAC'] = $this->crypt->hashFromParams($posAccount->getStoreKey(), $requestData, 'MACParams', ':');
+        $requestData['MAC'] = $this->crypt->hashFromParams($posAccount, $requestData, $requestData['MACParams'], ':');
 
         return $requestData;
     }
@@ -237,7 +237,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
             throw new \LogicException('Account storeKey eksik!');
         }
 
-        $requestData['MAC'] = $this->crypt->hashFromParams($posAccount->getStoreKey(), $requestData, 'MACParams', ':');
+        $requestData['MAC'] = $this->crypt->hashFromParams($posAccount, $requestData, $requestData['MACParams'], ':');
 
         return $requestData;
     }
@@ -281,7 +281,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
             throw new \LogicException('Account storeKey eksik!');
         }
 
-        $requestData['MAC'] = $this->crypt->hashFromParams($posAccount->getStoreKey(), $requestData, 'MACParams', ':');
+        $requestData['MAC'] = $this->crypt->hashFromParams($posAccount, $requestData, $requestData['MACParams'], ':');
 
         return $requestData;
     }
@@ -305,7 +305,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
                 throw new \LogicException('Account storeKey eksik!');
             }
 
-            $requestData['MAC'] = $this->crypt->hashFromParams($posAccount->getStoreKey(), $requestData, 'MACParams', ':');
+            $requestData['MAC'] = $this->crypt->hashFromParams($posAccount, $requestData, $requestData['MACParams'], ':');
         }
 
         return $requestData;

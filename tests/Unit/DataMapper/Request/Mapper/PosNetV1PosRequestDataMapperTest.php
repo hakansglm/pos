@@ -92,7 +92,7 @@ class PosNetV1PosRequestDataMapperTest extends TestCase
 
         $this->crypt->expects(self::once())
             ->method('hashFromParams')
-            ->with($this->account->getStoreKey(), $hashCalculationData, 'MACParams', ':')
+            ->with($this->account, $hashCalculationData, $hashCalculationData['MACParams'], ':')
             ->willReturn($expectedData['MAC']);
 
         $actual = $this->requestDataMapper->createNonSecurePostAuthPaymentRequestData($this->account, $order);
@@ -110,7 +110,7 @@ class PosNetV1PosRequestDataMapperTest extends TestCase
 
         $this->crypt->expects(self::once())
             ->method('hashFromParams')
-            ->with($this->account->getStoreKey(), $hashCalculationData, 'MACParams', ':')
+            ->with($this->account, $hashCalculationData, $hashCalculationData['MACParams'], ':')
             ->willReturn($expectedData['MAC']);
 
         $actual = $this->requestDataMapper->createNonSecurePaymentRequestData($this->account, $order, PosInterface::TX_TYPE_PAY_AUTH, $this->card);
@@ -180,7 +180,7 @@ class PosNetV1PosRequestDataMapperTest extends TestCase
 
         $this->crypt->expects(self::once())
             ->method('hashFromParams')
-            ->with($this->account->getStoreKey(), $hashCalculationData, 'MACParams', ':')
+            ->with($this->account, $hashCalculationData, $hashCalculationData['MACParams'], ':')
             ->willReturn($expected['MAC']);
 
         $actual = $this->requestDataMapper->createStatusRequestData($this->account, $order);
@@ -197,7 +197,7 @@ class PosNetV1PosRequestDataMapperTest extends TestCase
 
         $this->crypt->expects(self::once())
             ->method('hashFromParams')
-            ->with($this->account->getStoreKey(), $hashCalculationData, 'MACParams', ':')
+            ->with($this->account, $hashCalculationData, $hashCalculationData['MACParams'], ':')
             ->willReturn($expected['MAC']);
 
         $actual = $this->requestDataMapper->createRefundRequestData($this->account, $order, $txType);
@@ -218,7 +218,7 @@ class PosNetV1PosRequestDataMapperTest extends TestCase
 
         $this->crypt->expects(self::once())
             ->method('hashFromParams')
-            ->with($this->account->getStoreKey(), $hashCalculationData, 'MACParams', ':')
+            ->with($this->account, $hashCalculationData, $hashCalculationData['MACParams'], ':')
             ->willReturn($expected['MAC']);
 
         $actual = $this->requestDataMapper->createCancelRequestData($this->account, $order);

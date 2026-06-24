@@ -105,16 +105,16 @@ class IyzicoPosCryptTest extends TestCase
     /**
      * @dataProvider hashFromParamsDataProvider
      */
-    public function testHashFromParams(string $storeKey, array $data, string $hashParamsKey, string $expected): void
+    public function testHashFromParams(array $data, string $hashParamsValue, string $expected): void
     {
-        $this->assertSame($expected, $this->crypt->hashFromParams($storeKey, $data, $hashParamsKey));
+        $this->assertSame($expected, $this->crypt->hashFromParams($this->account, $data, $hashParamsValue));
     }
 
     public function testHashFromParamsWhenNotFound(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('"hashParams" key not found in data');
-        $this->crypt->hashFromParams('key', ['a' => '1'], 'hashParams');
+        $this->expectExceptionMessage('hashParamsValue cannot be empty');
+        $this->crypt->hashFromParams($this->account, ['a' => '1'], '');
     }
 
     public static function createHashDataProvider(): array
@@ -147,14 +147,11 @@ class IyzicoPosCryptTest extends TestCase
     public static function hashFromParamsDataProvider(): array
     {
         return [
-            'with_hash_params'        => [
-                'storeKey'      => 'sandbox-secretKey',
-                'data'          => ['orderId' => 'order-1', 'amount' => '100', 'hashParams' => 'orderId:amount'],
-                'hashParamsKey' => 'hashParams',
-                // HMAC-SHA256('order-1100sandbox-secretKey', 'sandbox-secretKey') → hex
-                'expected'      => 'd45f9cd95075babe50ef5e10e3891f3dfdb9fca24dc1154dbf0bcb3833244b55',
+            'with_hash_params' => [
+                'data'            => ['orderId' => 'order-1', 'amount' => '100', 'hashParams' => 'orderId:amount'],
+                'hashParamsValue' => 'orderId:amount',
+                'expected'        => 'd45f9cd95075babe50ef5e10e3891f3dfdb9fca24dc1154dbf0bcb3833244b55',
             ],
-
         ];
     }
 

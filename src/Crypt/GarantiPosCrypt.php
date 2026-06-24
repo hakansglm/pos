@@ -59,7 +59,7 @@ class GarantiPosCrypt extends AbstractCrypt
             throw new \LogicException('Account storeKey eksik!');
         }
 
-        $actualHash = $this->hashFromParams($posAccount->getStoreKey(), $data, 'hashparams', ':');
+        $actualHash = $this->hashFromParams($posAccount, $data, $data['hashparams'], ':');
 
         if (\hash_equals($data['hash'], $actualHash)) {
             $this->logger->debug('hash check is successful');

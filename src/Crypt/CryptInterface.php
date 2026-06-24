@@ -57,17 +57,17 @@ interface CryptInterface
     public function createHash(AbstractPosAccount $posAccount, array $requestData): string;
 
     /**
-     * @param string               $storeKey       hashing key
-     * @param array<string, mixed> $data           array that contains values for the params specified in $hashParams
-     * @param string               $hashParamsKey  key name whose value $data that contains hashParamNames separated by
-     *                                             $paramSeparator
-     * @param non-empty-string     $paramSeparator [:;]
+     * @param AbstractPosAccount   $account         account whose storeKey is the hashing key
+     * @param array<string, mixed> $data            array that contains values for the params listed in $hashParamsValue
+     * @param string               $hashParamsValue parameter names separated by $paramSeparator (e.g. "MerchantNo:TerminalNo")
+     * @param non-empty-string     $paramSeparator  [:;+,]
      *
-     * @return non-empty-string hashed string from values of $hashParams
+     * @return non-empty-string hashed string from values of $hashParamsValue
      *
-     * @throws \InvalidArgumentException when $hashParamsKey is not found in $data
+     * @throws \InvalidArgumentException when $hashParamsValue is empty
+     * @throws \LogicException           when account storeKey is null
      */
-    public function hashFromParams(string $storeKey, array $data, string $hashParamsKey, string $paramSeparator): string;
+    public function hashFromParams(AbstractPosAccount $account, array $data, string $hashParamsValue, string $paramSeparator): string;
 
 
     /**
