@@ -8,7 +8,7 @@
 Bu paket ile amaçlanan; ortak bir arayüz sınıfı ile, tüm Türk banka sanal pos
 sistemlerinin kullanılabilmesidir.
 
-### Deskteklenen Payment Gateway'ler / Bankalar:
+### Desteklenen Payment Gateway'ler / Bankalar:
 
 | Gateway                                                    | Desktekleyen<br/>bankalar                                                      | Desteklenen<br/>Ödeme Tipleri                                                                               | Desteklenen Sorgular                                                                                                        |
 |------------------------------------------------------------|--------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
@@ -17,7 +17,7 @@ sistemlerinin kullanılabilmesidir.
 | IyzicoPos                                                  | Iyzico                                                                         | NonSecure<br/>3DSecure<br/>3DHost                                                                           | İptal<br/>İade (v2 API)<br/>Durum sorgulama<br/>Sipariş Tarihçesini sorgulama<br/>Geçmiş İşlemleri sorgulama<br/>Özel Sorgu |
 | PayTrPos                                                   | PayTr                                                                          | NonSecure<br/>3DPay<sup>(Direkt API)</sup><br/>3DHost<sup>(iFrame API)</sup>                                | İade<br/>Durum sorgulama<br/>Geçmiş İşlemleri sorgulama<br/>Özel Sorgu                                                      |
 | Param3DHostPos                                             | ?                                                                              | 3DHost<br/><sup>(test edilmesi gerekiyor)</sup>                                                             |                                                                                                                             |
-| AkbankPos <br/><sup>(Akbankın yeni altyapısı)</sup>        | Akbank                                                                         | NonSecure<br/>3DSecur<br/>3DPay<br/>3DHost<br/>Tekrarlanan Ödeme                                            | İptal<br/>İade<br/>Sipariş Tarihçesini sorgulama<br/>Geçmiş İşlemleri sorgulama<br/>Özel Sorgu                              |
+| AkbankPos <br/><sup>(Akbank'ın yeni altyapısı)</sup>       | Akbank                                                                         | NonSecure<br/>3DSecure<br/>3DPay<br/>3DHost<br/>Tekrarlanan Ödeme                                            | İptal<br/>İade<br/>Sipariş Tarihçesini sorgulama<br/>Geçmiş İşlemleri sorgulama<br/>Özel Sorgu                              |
 | AssecoPos<br/><sup>(Asseco/Payten)</sup><br/>eski EstV3Pos | Akbank<br/>TEB<br/>İşbank<br/>Şekerbank<br/>Halkbank<br/>Finansbank<br/>Ziraat | NonSecure<br/>3DSecure<br/>3DPay<br/>3DHost<br/>3DPayHost<br/>Tekrarlanan Ödeme                             | İptal<br/>İade<br/>Durum sorgulama<br/>Sipariş Tarihçesini sorgulama<br/>Özel Sorgu                                         |
 | PayFlex MPI VPOS V4                                        | Ziraat<br/>Vakıfbank VPOS 7/24<br/>İşbank                                      | NonSecure<br/>3DSecure<br/>Tekrarlanan Ödeme                                                                | İptal<br/>İade<br/>Durum sorgulama<br/>Özel Sorgu                                                                           |
 | PayFlex<br/>Common Payment V4<br/><sup>(Ortak Ödeme)</sup> | Ziraat<br/>Vakıfbank<br/>İşbank                                                | 3DPay<br/>3DHost                                                                                            | Özel Sorgu                                                                                                                  |
@@ -32,12 +32,12 @@ sistemlerinin kullanılabilmesidir.
 
 ### Ana başlıklar
 
-- [Özellikler](#ozellikler)
+- [Özellikler](#özellikler)
 - [Changelog](./docs/CHANGELOG.md)
 - [Minimum Gereksinimler](#minimum-gereksinimler)
 - [Kurulum](#kurulum)
-- [Farklı Banka Sanal Poslarını Eklemek](#farkli-banka-sanal-poslarini-eklemek)
-- [Ornek Kodlar](#ornek-kodlar)
+- [Farklı Banka Sanal Poslarını Eklemek](#farklı-banka-sanal-poslarını-eklemek)
+- [Örnek Kodlar](#örnek-kodlar)
     - [3DSecure, 3DPay ve 3DHost Ödeme Örneği](./docs/THREED-PAYMENT-EXAMPLE.md)
     - [3DSecure, 3DPay ve 3DHost Modal Box ile Ödeme Örneği](./docs/THREED-SECURE-AND-PAY-PAYMENT-IN-MODALBOX-EXAMPLE.md)
     - [QR Code ile Ödeme Örneği](./docs/QR-CODE-PAYMENT-EXAMPLE.md)
@@ -48,20 +48,19 @@ sistemlerinin kullanılabilmesidir.
     - [Ödeme Durum Sorgulama](./docs/STATUS-EXAMPLE.md)
     - [Özel Sorgular](./docs/CUSTOM-QUERY-EXAMPLE.md)
 
-- [Popup Windowda veya Iframe icinde odeme yapma](#popup-windowda-veya-iframe-icinde-odeme-yapma)
+- [Popup Window'da veya iframe içinde ödeme yapma](#popup-windowda-veya-iframe-içinde-ödeme-yapma)
 - [Troubleshoots](#troubleshoots)
-- [Genel Kültür](#genel-kultur)
-- [Docker ile examples kodlarin denenmesi](#docker-ile-examples-kodlarin-denenmesi)
+- [Genel Kültür](#genel-kültür)
+- [Docker ile Örnek Kodların Denenmesi](#docker-ile-örnek-kodların-denenmesi)
 
-### Ozellikler
+### Özellikler
 
 - Non Secure E-Commerce modeliyle ödeme (`PosInterface::MODEL_NON_SECURE`)
 - 3D Secure modeliyle ödeme (`PosInterface::MODEL_3D_SECURE`)
 - 3D Pay modeliyle ödeme (`PosInterface::MODEL_3D_PAY`)
 - 3D Host modeliyle ödeme (`PosInterface::MODEL_3D_HOST`)
 - Sipariş/Ödeme durum sorgulama (`PosInterface::TX_TYPE_STATUS`)
-- Sipariş Tarihçesini sorgulama
-  sorgulama (`PosInterface::TX_TYPE_ORDER_HISTORY`)
+- Sipariş Tarihçesini sorgulama (`PosInterface::TX_TYPE_ORDER_HISTORY`)
 - Geçmiş işlemleri sorgulama (`PosInterface::TX_TYPE_HISTORY`)
 - Sipariş/Para iadesi yapma (`PosInterface::TX_TYPE_REFUND`
   ve `PosInterface::TX_TYPE_PARTIAL_REFUND`)
@@ -73,7 +72,7 @@ sistemlerinin kullanılabilmesidir.
 - [PSR-3](https://www.php-fig.org/psr/psr-3/) logger desteği
 - [PSR-18](https://www.php-fig.org/psr/psr-18/) HTTP Client desteği
 
-#### Farkli Gateway'ler Tek islem akisi
+#### Farklı Gateway'ler Tek İşlem Akışı
 
 * Bir (**3DSecure**, **3DPay**, **3DHost**, **NonSecure**) ödeme modelden
   diğerine geçiş çok az değişiklik gerektirir.
@@ -116,7 +115,7 @@ $ composer require symfony/event-dispatcher mews/pos
 ```
 
 Kütüphane belli bir HTTP Client'ile zorunlu bağımlılığı yoktur.
-PSR-18 HTTP Client standarta uyan herhangi bir kütüphane kullanılabilinir.
+PSR-18 HTTP Client standardına uyan herhangi bir kütüphane kullanılabilir.
 Projenizde zaten kurulu PSR-18 uygulaması varsa otomatik onu kullanır.
 
 Veya hızlı başlangıç için:
@@ -135,7 +134,7 @@ ayarlar dosyasını projenize kopyalayınız.
 $ cp ./vendor/mews/pos/config/pos_production.php ./pos_prod_ayarlar.php
 ```
 
-Test ortamda geliştirecekseniz test ayarları da kopyalanız:
+Test ortamda geliştirecekseniz test ayarları da kopyalayınız:
 
 ```sh
 $ cp ./vendor/mews/pos/config/pos_test.php ./pos_test_ayarlar.php
@@ -158,7 +157,7 @@ _Kütüphanede yer alan `pos_production.php` ve `pos_test.php` ayar dosyaları
 projenizde direk kullanmayınız!
 Yukarda belirtildiği gibi kopyalayarak kullanmanız tavsiye edilir._
 
-### Farkli Banka Sanal Poslarini Eklemek
+### Farklı Banka Sanal Poslarını Eklemek
 
 Projenize kopyaladığınız `./pos_prod_ayarlar.php` dosyasına farklı banka ayarı
 eklemek için alttaki örneği kullanabilirsiniz.
@@ -194,27 +193,27 @@ return [
 ];
 ```
 
-## Ornek Kodlar
+## Örnek Kodlar
 
 Örnekleri `/docs` ve `/examples` dizini içerisinde bulabilirsiniz.
 
 3D ödeme örnek kodlar genel olarak kart bilgilerini website sunucusuna POST
 eder (`index.php` => `form.php`),
 ondan sonra da işlenip gateway'e yönlendiriliyor.
-Bu şekilde farklı bankalar arası implementation degişmemesi sağlanmakta (ortak
+Bu şekilde farklı bankalar arası implementation değişmemesi sağlanmakta (ortak
 kredi kart formu ve aynı işlem akışı).
 Genel olarak kart bilgilerini, website sunucusuna POST yapmadan,
 direk gateway'e yönlendirecek şekilde kullanılabilinir (genelde, banka örnek
 kodları bu şekilde implement edilmiş).
 Fakat
 
-- birden fazla bank seçeneği olunca veya müşteri banka degiştirmek istediğinde
+- birden fazla bank seçeneği olunca veya müşteri banka değiştirmek istediğinde
   kart bilgi formunu ona göre güncellemeniz gerekecek.
 - üstelik YKB POSNet, Vakıf Katılım ve VakıfBank POS kart bilgilerini website
   sunucusu
   tarafından POST edilmesini gerektiriyor.
 
-### Popup Windowda veya Iframe icinde odeme yapma
+### Popup Window'da veya iframe içinde ödeme yapma
 
 Müşteriyi banka sayfasına redirect etmeden **iframe** üzerinden veya **popup
 window**
@@ -232,8 +231,8 @@ ve [/docs'da](./docs/THREED-SECURE-AND-PAY-PAYMENT-IN-MODALBOX-EXAMPLE.md) 3D
 
 ### Session sıfırlanması
 
-Cookie session kullanığınızda, kullanıcı gatewayden geri websitenize
-yönlendirilidiğinde session sıfırlanabilir.
+Cookie session kullandığınızda, kullanıcı gatewayden geri websitenize
+yönlendirildiğinde session sıfırlanabilir.
 Response'da `samesite` değeri set etmeniz
 gerekiyor. [çözüm](https://stackoverflow.com/a/51128675/4896948).
 
@@ -241,9 +240,9 @@ gerekiyor. [çözüm](https://stackoverflow.com/a/51128675/4896948).
 
 - Shared hosting'lerde Cpanel'de gördüğünüz IP'den farklı olarak fiziksel
   sunucun bir tane daha IP'si olur.
-  O IP adres Cpanel'de gözükmez, hosting firmanızdan sorup öğrenmeniz
+  O IP adresi cPanel'de gözükmez, hosting firmanızdan sorup öğrenmeniz
   gerekmekte.
-  Bu hatayı alırsanız hosting firmanın verdiği IP adrese'de banka gateway'i
+  Bu hatayı alırsanız hosting firmanın verdiği IP adresine de banka gateway'i
   tarafından izin verilmesini sağlayın.
 
 ### Debugging
@@ -252,7 +251,7 @@ Kütüphane [PSR-3](https://www.php-fig.org/psr/psr-3/) standarta uygun logger
 uygulamayı destekler.
 Örnekler: https://packagist.org/providers/psr/log-implementation .
 
-Monolog logger kullanım örnegi:
+Monolog logger kullanım örneği:
 
 ```shell
 composer require monolog/monolog
@@ -270,7 +269,7 @@ $pos = \Mews\Pos\Factory\PosFactory::createPosGateway(
 );
 ```
 
-## Genel Kultur
+## Genel Kültür
 
 Ödeme modelleri hakkında bilgi edinmek
 istiyorsanız [bu makaleyi](https://medium.com/p/fa5cd016999c)
@@ -289,9 +288,9 @@ inceleyebilirsiniz.
 - **Ön Provizyon Kapama** - ön provizyon sonucunda bloke edilen miktarın
   çekimini gerçekleştirir.
   Ön otorizasyon yapıldıktan sonra, örneğin 1 hafta sonra, Post Otorizasyon
-  isteği gönderilebilinir.
+  isteği gönderilebilir.
   Bu işlem için kullanıcıdan kredi kart bilgisi _alınmaz_.
-  Onun yerine bazı gateway'ler `orderId` degeri istenir,
+  Onun yerine bazı gateway'ler `orderId` değeri istenir,
   bazıları ise ön provizyon sonucu dönen banka tarafındaki `orderId`'yi ister.
   Satıcı _ön otorizasyon_ isteği iptal etmek isterse de `cancel` isteği
   gönderir.
@@ -315,7 +314,7 @@ inceleyebilirsiniz.
   Genel olarak _miktar_ bilgisi _istenmez_, ancak bazı Gateway'ler ister.
   İşlemin kütüphanedeki karşılığı `PosInterface::TX_TYPE_CANCEL`
 
-## Docker ile examples kodlarin denenmesi
+## Docker ile Örnek Kodların Denenmesi
 
 1. Makinenizde Docker kurulu olması gerekir.
 2. Örnekleri çalıştırmadan önce banka hesap bilgilerini ortam değişkenleri
@@ -339,13 +338,13 @@ http://localhost/ URL projenin `examples` klasörünün içine bakar.
 
 ### Unit testler çalıştırma
 
-Projenin root klasoründe bu satırı çalıştırmanız gerekiyor
+Projenin root klasöründe bu satırı çalıştırmanız gerekiyor
 
 ```sh
 $ composer test
 ```
 
-> Değerli yorum, öneri ve katkılarınızı
+> Değerli yorum, öneri ve katkılarınız için teşekkür ederiz.
 >
 > Sorun bulursanız veya eklenmesi gereken POS sistemi varsa lütfen issue
 > oluşturun.
