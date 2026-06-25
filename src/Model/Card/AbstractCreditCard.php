@@ -40,9 +40,12 @@ abstract class AbstractCreditCard implements CreditCardInterface
         protected ?string $type = null
     ) {
         $number = \preg_replace('/\s+/', '', $number);
+        // @codeCoverageIgnoreStart
         if (null === $number) {
             throw new \LogicException('Kredit numarası formatlanamadı!');
         }
+
+        // @codeCoverageIgnoreEnd
 
         $this->number     = $number;
     }
