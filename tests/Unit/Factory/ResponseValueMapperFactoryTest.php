@@ -15,6 +15,7 @@ use Mews\Pos\DataMapper\Response\ValueMapper\ParamPosResponseValueMapper;
 use Mews\Pos\DataMapper\Response\ValueMapper\PayFlexCPV4PosResponseValueMapper;
 use Mews\Pos\DataMapper\Response\ValueMapper\PayFlexV4PosResponseValueMapper;
 use Mews\Pos\DataMapper\Response\ValueMapper\PayForPosResponseValueMapper;
+use Mews\Pos\DataMapper\Response\ValueMapper\PayTrPosResponseValueMapper;
 use Mews\Pos\DataMapper\Response\ValueMapper\PosNetPosResponseValueMapper;
 use Mews\Pos\DataMapper\Response\ValueMapper\PosNetV1PosResponseValueMapper;
 use Mews\Pos\DataMapper\Response\ValueMapper\ToslaPosResponseValueMapper;
@@ -30,6 +31,7 @@ use Mews\Pos\Gateway\ParamPos;
 use Mews\Pos\Gateway\PayFlexCPV4Pos;
 use Mews\Pos\Gateway\PayFlexV4Pos;
 use Mews\Pos\Gateway\PayForPos;
+use Mews\Pos\Gateway\PayTrPos;
 use Mews\Pos\Gateway\PosNetPos;
 use Mews\Pos\Gateway\PosNetV1Pos;
 use Mews\Pos\Gateway\ToslaPos;
@@ -72,6 +74,7 @@ class ResponseValueMapperFactoryTest extends TestCase
             [PayForPos::class, PayForPosResponseValueMapper::class],
             [PayFlexV4Pos::class, PayFlexV4PosResponseValueMapper::class],
             [PayFlexCPV4Pos::class, PayFlexCPV4PosResponseValueMapper::class],
+            [PayTrPos::class, PayTrPosResponseValueMapper::class],
             [PosNetPos::class, PosNetPosResponseValueMapper::class],
             [PosNetV1Pos::class, PosNetV1PosResponseValueMapper::class],
             [ToslaPos::class, ToslaPosResponseValueMapper::class],

@@ -76,6 +76,14 @@ function createHistoryOrder(string $gatewayClass, array $extraData, string $ip):
         ];
     }
 
+    if (\Mews\Pos\Gateway\PayTrPos::class === $gatewayClass) {
+        return [
+            // Maksimum 3 günlük tarih aralığı
+            'start_date' => $txTime->modify('-1 day'),
+            'end_date'   => $txTime,
+        ];
+    }
+
     return [];
 }
 

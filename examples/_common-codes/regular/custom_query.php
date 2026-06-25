@@ -9,7 +9,7 @@ $transaction = PosInterface::TX_TYPE_CUSTOM_QUERY;
 
 require '../../_templates/_header.php';
 
-[$requestData, $apiUrl] = getCustomRequestData();
+[$requestData, $apiUrl] = getCustomRequestData($pos);
 
 dump($requestData, $apiUrl);
 

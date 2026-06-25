@@ -20,6 +20,7 @@ use Mews\Pos\DataMapper\Response\Mapper\PayForPosResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\PosNetPosResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\PosNetV1PosResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\ResponseDataMapperInterface;
+use Mews\Pos\DataMapper\Response\Mapper\PayTrPosResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\ToslaPosResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\VakifKatilimPosResponseDataMapper;
 use Mews\Pos\DataMapper\Response\ValueFormatter\ResponseValueFormatterInterface;
@@ -50,6 +51,7 @@ class ResponseDataMapperFactory
         PosNetV1PosResponseDataMapper::class,
         ToslaPosResponseDataMapper::class,
         VakifKatilimPosResponseDataMapper::class,
+        PayTrPosResponseDataMapper::class,
     ];
 
     /**

@@ -38,6 +38,7 @@ body:
         - PayFlexCPV4Pos
         - PayFlexV4Pos
         - PayForPos
+        - PayTr
         - PosNetPos
         - PosNetV1Pos
         - ToslaPos

@@ -16,6 +16,7 @@ use Mews\Pos\DataMapper\Response\ValueFormatter\InterPosResponseValueFormatter;
 use Mews\Pos\DataMapper\Response\ValueFormatter\ParamPosResponseValueFormatter;
 use Mews\Pos\DataMapper\Response\ValueFormatter\PosNetPosResponseValueFormatter;
 use Mews\Pos\DataMapper\Response\ValueFormatter\ResponseValueFormatterInterface;
+use Mews\Pos\DataMapper\Response\ValueFormatter\PayTrPosResponseValueFormatter;
 use Mews\Pos\DataMapper\Response\ValueFormatter\ToslaPosResponseValueFormatter;
 use Mews\Pos\PosInterface;
 
@@ -38,6 +39,7 @@ class ResponseValueFormatterFactory
         PosNetPosResponseValueFormatter::class,
         ToslaPosResponseValueFormatter::class,
         BoaPosResponseValueFormatter::class,
+        PayTrPosResponseValueFormatter::class,
     ];
 
     /**

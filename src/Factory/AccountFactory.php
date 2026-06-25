@@ -16,6 +16,7 @@ use Mews\Pos\Model\Account\ParamPosAccount;
 use Mews\Pos\Model\Account\PayFlexPosAccount;
 use Mews\Pos\Model\Account\PayForPosAccount;
 use Mews\Pos\Model\Account\PosNetPosAccount;
+use Mews\Pos\Model\Account\PayTrPosAccount;
 use Mews\Pos\Model\Account\ToslaPosAccount;
 use Mews\Pos\Exception\MissingAccountInfoException;
 use Mews\Pos\PosInterface;
@@ -84,6 +85,19 @@ class AccountFactory
     public static function createToslaPosAccount(string $bank, string $clientId, string $apiUser, string $apiPass): ToslaPosAccount
     {
         return new ToslaPosAccount($bank, $clientId, $apiUser, '', $apiPass);
+    }
+
+    /**
+     * @param non-empty-string $bank         Config key (e.g. 'paytr')
+     * @param non-empty-string $merchantId   merchant_id from the PayTR panel
+     * @param non-empty-string $merchantSalt merchant_salt from the PayTR panel (appended to hash string)
+     * @param non-empty-string $merchantKey  merchant_key from the PayTR panel (HMAC signing key)
+     *
+     * @return PayTrPosAccount
+     */
+    public static function createPayTrPosAccount(string $bank, string $merchantId, string $merchantSalt, string $merchantKey): PayTrPosAccount
+    {
+        return new PayTrPosAccount($bank, $merchantId, $merchantSalt, $merchantKey);
     }
 
     /**

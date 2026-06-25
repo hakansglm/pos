@@ -57,8 +57,10 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
         exit;
     }
     ```
-4. Kullanıcıdan kredi kart bilgileri alma işlemi size bırakılmıştır. Örnegi /examples/_templates/_credit_card_form.php dosyasında bulanilirsiniz. 3DHost ödeme için bu aşamaya gerek yok.
-5. **form.php (3DSecure ve 3DPay odemede kullanıcıdan kredi kart bilgileri alındıktan sonra çalışacak kod)**. Kullanıcı ödeme gateway'ne HTML form ile yölendirilir. Bu alttaki kod ise HTML form için gereken (hidden) alanları hazırlar. Bu form js ile otomatik submit edilerek kullanıcı banka sayfasına yönlendirilir.
+4. Kullanıcıdan kredi kart bilgileri alma işlemi size bırakılmıştır.
+   Örnegi `/examples/_templates/_credit_card_form.php` dosyasında bulanilirsiniz.
+   3DHost ödeme için bu aşamaya gerek yok.
+5. **form.php (3DSecure ve 3DPay odemede kullanıcıdan kredi kart bilgileri alındıktan sonra çalışacak kod)**.
 
     ```php
     <?php
@@ -68,7 +70,7 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
    /**
      * Sipariş bilgileri.
      *
-     * NOT!!! IyzicoPos ve KuveytPos sipariş verileri için ekstra alanlar istemektedir.
+     * NOT!!! IyzicoPos, KuveytPos ve PayTrPos sipariş verileri için ekstra alanlar istemektedir.
      * Ekstra alanlarla ilgili detaylı bilgiyi /examples klasörde bulabilirsiniz.
      */
     $order = [
@@ -240,6 +242,7 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
     <?php elseif ($formData['method'] === 'GET' && $formData['inputs'] === []):
         header('Location: '.$formData['gateway']);
     else: ?>
+    // Kullanıcı ödeme gateway'ne HTML form ile yölendirilir.
     // $formData içeriği HTML forma render ediyoruz ve kullanıcıyı banka gateway'ine yönlendiriyoruz.
     <form method="<?= $formData['method']; ?>" action="<?= $formData['gateway']; ?>"  class="redirect-form" role="form">
         <?php foreach ($formData['inputs'] as $key => $value) : ?>

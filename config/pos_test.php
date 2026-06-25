@@ -57,6 +57,19 @@ return [
                 'gateway_3d_host' => 'https://prepentegrasyon.tosla.com/api/Payment/threeDSecure',
             ],
         ],
+        'paytr'                 => [
+            'name'              => 'PayTR',
+            'class'             => \Mews\Pos\Gateway\PayTrPos::class,
+            'lang'              => \Mews\Pos\PosInterface::LANG_TR,
+            'gateway_configs'   => [
+                'test_mode' => true,
+            ],
+            'gateway_endpoints' => [
+                'payment_api'     => 'https://www.paytr.com',
+                'gateway_3d'      => 'https://www.paytr.com/odeme',
+                'gateway_3d_host' => 'https://www.paytr.com/odeme/guvenli',
+            ],
+        ],
         'yapikredi'             => [
             'name'              => 'Yapıkredi',
             'class'             => \Mews\Pos\Gateway\PosNetPos::class,

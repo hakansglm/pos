@@ -28,6 +28,7 @@ use Mews\Pos\Client\PayForPos3DFormHttpClient;
 use Mews\Pos\Client\PayForPosHttpClient;
 use Mews\Pos\Client\PosNetPosHttpClient;
 use Mews\Pos\Client\PosNetV1PosHttpClient;
+use Mews\Pos\Client\PayTrPosHttpClient;
 use Mews\Pos\Client\ToslaPosHttpClient;
 use Mews\Pos\Client\VakifKatilimPosHttpClient;
 use Mews\Pos\Crypt\CryptInterface;
@@ -63,6 +64,7 @@ class PosHttpClientStrategyFactory
         PosNetV1PosHttpClient::class,
         ToslaPosHttpClient::class,
         VakifKatilimPosHttpClient::class,
+        PayTrPosHttpClient::class,
     ];
 
     /**

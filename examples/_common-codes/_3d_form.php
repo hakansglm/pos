@@ -8,7 +8,6 @@ use Mews\Pos\PosInterface;
  * Bu kod MODEL_3D_SECURE, MODEL_3D_PAY, MODEL_3D_HOST odemeler icin gereken HTML form verisini olusturur.
  * Odeme olmayan (iade, iptal, durum) veya MODEL_NON_SECURE islemlerde kullanilmaz.
  */
-require '../../_templates/_header.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: '.$baseUrl.'index.php');
@@ -171,6 +170,10 @@ if ($pos instanceof \Mews\Pos\Gateway\PosNetPos) {
 // ============================================================================================
 
 $flowType = $_POST['payment_flow_type'] ?? null;
+
+if (!('by_redirection' === $flowType && $formData['inputs'] === [] && $formData['method'] === 'GET')) {
+    require '../../_templates/_header.php';
+}
 ?>
 
 

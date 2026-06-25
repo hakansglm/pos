@@ -12,6 +12,7 @@ use Mews\Pos\DataMapper\Response\ValueFormatter\AssecoPosResponseValueFormatter;
 use Mews\Pos\DataMapper\Response\ValueFormatter\GarantiPosResponseValueFormatter;
 use Mews\Pos\DataMapper\Response\ValueFormatter\InterPosResponseValueFormatter;
 use Mews\Pos\DataMapper\Response\ValueFormatter\ParamPosResponseValueFormatter;
+use Mews\Pos\DataMapper\Response\ValueFormatter\PayTrPosResponseValueFormatter;
 use Mews\Pos\DataMapper\Response\ValueFormatter\PosNetPosResponseValueFormatter;
 use Mews\Pos\DataMapper\Response\ValueFormatter\ToslaPosResponseValueFormatter;
 use Mews\Pos\Factory\ResponseValueFormatterFactory;
@@ -25,6 +26,7 @@ use Mews\Pos\Gateway\ParamPos;
 use Mews\Pos\Gateway\PayFlexCPV4Pos;
 use Mews\Pos\Gateway\PayFlexV4Pos;
 use Mews\Pos\Gateway\PayForPos;
+use Mews\Pos\Gateway\PayTrPos;
 use Mews\Pos\Gateway\PosNetPos;
 use Mews\Pos\Gateway\PosNetV1Pos;
 use Mews\Pos\Gateway\ToslaPos;
@@ -63,6 +65,7 @@ class ResponseValueFormatterFactoryTest extends TestCase
             [PayFlexCPV4Pos::class, BasicResponseValueFormatter::class],
             [PayFlexV4Pos::class, BasicResponseValueFormatter::class],
             [PayForPos::class, BasicResponseValueFormatter::class],
+            [PayTrPos::class, PayTrPosResponseValueFormatter::class],
             [PosNetPos::class, PosNetPosResponseValueFormatter::class],
             [PosNetV1Pos::class, PosNetPosResponseValueFormatter::class],
             [ToslaPos::class, ToslaPosResponseValueFormatter::class],

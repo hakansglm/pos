@@ -10,6 +10,7 @@ use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\GarantiPos;
 use Mews\Pos\Gateway\IyzicoPos;
 use Mews\Pos\Gateway\PayForPos;
+use Mews\Pos\Gateway\PayTrPos;
 use Mews\Pos\Gateway\ToslaPos;
 use Mews\Pos\Gateway\VakifKatilimPos;
 use Mews\Pos\PosInterface;
@@ -53,6 +54,8 @@ trait PaymentTestTrait
             $order = array_merge($order, $this->getIyzicoOrderExtraFields());
         } elseif ($this->pos instanceof \Mews\Pos\Gateway\KuveytPos) {
             $order = array_merge($order, $this->getKuveytPosSpecificOrderFields());
+        } elseif ($this->pos instanceof PayTrPos) {
+            $order = array_merge($order, $this->getPayTrPosSpecificOrderFields());
         }
 
         if ($tekrarlanan) {
@@ -325,6 +328,14 @@ trait PaymentTestTrait
             ];
         }
 
+        if (\Mews\Pos\Gateway\PayTrPos::class === $gatewayClass) {
+            return [
+                // Maksimum 3 günlük tarih aralığı
+                'start_date' => $txTime->modify('-1 day'),
+                'end_date'   => $txTime,
+            ];
+        }
+
         return [];
     }
 
@@ -414,6 +425,20 @@ trait PaymentTestTrait
                     'item_type' => 'VIRTUAL',
                     'price'     => 9.71,
                 ],
+            ],
+        ];
+    }
+
+    private function getPayTrPosSpecificOrderFields(): array
+    {
+        return [
+            'buyer'           => [
+                'email'      => 'test@example.com',
+                'name'       => 'John Doe',
+                'gsm_number' => '05001234567',
+            ],
+            'billing_address' => [
+                'address' => 'Test Sokak No:1 Istanbul',
             ],
         ];
     }

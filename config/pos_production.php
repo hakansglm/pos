@@ -45,6 +45,16 @@ return [
                 'gateway_3d_host' => 'https://entegrasyon.tosla.com/api/Payment/threeDSecure',
             ],
         ],
+        'paytr'                 => [
+            'name'              => 'PayTR',
+            'class'             => \Mews\Pos\Gateway\PayTrPos::class,
+            'lang'              => \Mews\Pos\PosInterface::LANG_TR,
+            'gateway_endpoints' => [
+                'payment_api'     => 'https://www.paytr.com',
+                'gateway_3d'      => 'https://www.paytr.com/odeme',
+                'gateway_3d_host' => 'https://www.paytr.com/odeme/guvenli',
+            ],
+        ],
         'finansbank'            => [
             'name'              => 'QNB Finansbank',
             'class'             => \Mews\Pos\Gateway\AssecoPos::class,

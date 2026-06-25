@@ -7,7 +7,6 @@ use Mews\Pos\PosInterface;
 // ilgili gatewayin payment modele gore configini load ediyoruz
 // ornegin: asseco/3d/_config.php ya da asseco/3d-host/_config.php
 require_once '_config.php';
-require '../../_templates/_header.php';
 
 /**
  * alttaki script
@@ -18,15 +17,30 @@ require '../../_templates/_header.php';
  */
 // 3D odemelerde gatewayden genelde POST istek bekleniyor.
 $requestMethod = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-if ('GET' === $requestMethod && get_class($pos) !== \Mews\Pos\Gateway\PayFlexCPV4Pos::class) {
-    // Hata: Sadece PayFlexCP GET request ile cevaplıyor.
-    header('Location: '.$baseUrl);
-    exit();
+if ('GET' === $requestMethod) { // PayFlexCP ve PayTr GET request ile cevaplıyor.
+   if (get_class($pos) === \Mews\Pos\Gateway\PayTrPos::class) {
+       // PayTr başarılı durumda hiç bir veri göndermiyor.
+       // Yine de ödeme tamamlanmamış oluyor. Bu yüzden alttaki kodlar çalışmamaı gerekiyor.
+       header('Location: '.$baseUrl);
+       exit();
+       // Bildirim URL'a gelecek sonucu beklememiz gerekiyor.
+       // Başarısız durumda ise $_POST verisi gönderir.
+   } elseif (get_class($pos) !== \Mews\Pos\Gateway\PayFlexCPV4Pos::class) {
+       // Diğer gatewaylerde GET istek ile geçersiz olduğu için alttaki kodlar çalışmaması gerekiyor.
+       header('Location: '.$baseUrl);
+       exit();
+   }
 }
 
-$order = $_SESSION['order'] ?? null;
-if (!$order) {
-    throw new Exception('Sipariş bulunamadı, session sıfırlanmış olabilir.');
+if (get_class($pos) !== \Mews\Pos\Gateway\PayTrPos::class) {
+    $order = $_SESSION['order'] ?? null;
+    if (!$order) {
+        throw new Exception('Sipariş bulunamadı, session sıfırlanmış olabilir.');
+    }
+}  else {
+    // PayTR callback URL'a istek gönderdi, sunucular arasında iletişim olduğu için
+    // session yok veya boş.
+    $order = [];
 }
 
 // ============================================================================================
@@ -99,11 +113,19 @@ try {
 } catch (\Exception|\Error $e) {
     dd($e);
 }
-
+if (get_class($pos) === \Mews\Pos\Gateway\PayTrPos::class) {
+    /**
+     * PayTR callback (Bildirim) URL'e response'u gönderdi.
+     * Cevap olarak "OK" göndermemiz gerekiyor.
+     * NOT: PayTR "OK" cevabı alıncaya kadar aynı ödeme işlemi için Bildirim URL birden fazla kez call eder.
+     */
+    echo 'OK';
+    exit;
+}
 if ($pos->isSuccess()) {
     $_SESSION['last_response'] = $response;
 }
-
+require '../../_templates/_header.php';
 require __DIR__.'/_render_payment_response.php';
 ?>
 

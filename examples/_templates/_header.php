@@ -14,11 +14,10 @@
 </head>
 <body>
 <header class="bs-docs-nav navbar navbar-static-top" id="top">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light" id="bs-navbar">
-            <div class="container-fluid">
-                <div class="collapse navbar-collapse"  id="navbarContent">
-                    <div class="w-100 d-lg-flex justify-content-lg-between">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light w-100" id="bs-navbar">
+            <div class="container-fluid flex-column align-items-stretch">
+                <div class="collapse navbar-collapse flex-column w-100" id="navbarRows">
+                    <ul class="navbar-nav w-100 justify-content-evenly mb-2 mb-lg-0 border-bottom pb-2">
                         <li class="nav-item">
                             <a class="nav-link" href="<?= $hostUrl ?>">Main Page</a>
                         </li>
@@ -46,6 +45,8 @@
                         <li class="nav-item">
                             <a class="nav-link <?= $posClass === \Mews\Pos\Gateway\InterPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/interpos/index.php">InterPos (Deniz bank)</a>
                         </li>
+                    </ul>
+                    <ul class="navbar-nav w-100 justify-content-evenly">
                         <li class="nav-item">
                             <a class="nav-link <?= $posClass === \Mews\Pos\Gateway\PayFlexV4Pos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/payflex-mpi-v4/index.php">PayFlex MPI V4 (VakifBank VPOS 7/24)</a>
                         </li>
@@ -67,8 +68,10 @@
                         <li class="nav-item">
                             <a class="nav-link <?= $posClass === \Mews\Pos\Gateway\IyzicoPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/iyzico/index.php">IyziCo</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link <?= $posClass === \Mews\Pos\Gateway\PayTrPos::class ? 'active' : ''; ?>" href="<?= $hostUrl ?>/paytr/index.php">PayTr</a>
+                        </li>
                     </ul>
-                </div>
                 </div>
             </div>
         </nav>

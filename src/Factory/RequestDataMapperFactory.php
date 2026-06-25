@@ -22,6 +22,7 @@ use Mews\Pos\DataMapper\Request\Mapper\PayForPosRequestDataMapper;
 use Mews\Pos\DataMapper\Request\Mapper\PosNetPosRequestDataMapper;
 use Mews\Pos\DataMapper\Request\Mapper\PosNetV1PosRequestDataMapper;
 use Mews\Pos\DataMapper\Request\Mapper\RequestDataMapperInterface;
+use Mews\Pos\DataMapper\Request\Mapper\PayTrPosRequestDataMapper;
 use Mews\Pos\DataMapper\Request\Mapper\ToslaPosRequestDataMapper;
 use Mews\Pos\DataMapper\Request\Mapper\VakifKatilimPosRequestDataMapper;
 use Mews\Pos\DataMapper\Request\ValueFormatter\RequestValueFormatterInterface;
@@ -53,6 +54,7 @@ class RequestDataMapperFactory
         PosNetV1PosRequestDataMapper::class,
         ToslaPosRequestDataMapper::class,
         VakifKatilimPosRequestDataMapper::class,
+        PayTrPosRequestDataMapper::class,
     ];
 
     /**

@@ -17,6 +17,7 @@ use Mews\Pos\Crypt\NullCrypt;
 use Mews\Pos\Crypt\ParamPosCrypt;
 use Mews\Pos\Crypt\PayFlexCPV4Crypt;
 use Mews\Pos\Crypt\PayForPosCrypt;
+use Mews\Pos\Crypt\PayTrPosCrypt;
 use Mews\Pos\Crypt\PosNetPosCrypt;
 use Mews\Pos\Crypt\PosNetV1PosCrypt;
 use Mews\Pos\Crypt\ToslaPosCrypt;
@@ -41,6 +42,7 @@ class CryptFactory
         ParamPosCrypt::class,
         PayFlexCPV4Crypt::class,
         PayForPosCrypt::class,
+        PayTrPosCrypt::class,
         PosNetPosCrypt::class,
         PosNetV1PosCrypt::class,
         ToslaPosCrypt::class,

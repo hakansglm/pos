@@ -20,6 +20,7 @@ use Mews\Pos\DataMapper\Request\ValueFormatter\PayForPosRequestValueFormatter;
 use Mews\Pos\DataMapper\Request\ValueFormatter\PosNetPosRequestValueFormatter;
 use Mews\Pos\DataMapper\Request\ValueFormatter\PosNetV1PosRequestValueFormatter;
 use Mews\Pos\DataMapper\Request\ValueFormatter\RequestValueFormatterInterface;
+use Mews\Pos\DataMapper\Request\ValueFormatter\PayTrPosRequestValueFormatter;
 use Mews\Pos\DataMapper\Request\ValueFormatter\ToslaPosRequestValueFormatter;
 use Mews\Pos\DataMapper\Request\ValueFormatter\VakifKatilimPosRequestValueFormatter;
 use Mews\Pos\PosInterface;
@@ -47,6 +48,7 @@ class RequestValueFormatterFactory
         PosNetV1PosRequestValueFormatter::class,
         PayFlexCPV4PosRequestValueFormatter::class,
         PayFlexV4PosRequestValueFormatter::class,
+        PayTrPosRequestValueFormatter::class,
     ];
 
     /**
