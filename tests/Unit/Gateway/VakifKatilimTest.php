@@ -27,7 +27,6 @@ use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateway\AbstractGateway;
 use Mews\Pos\Gateway\VakifKatilimPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Tests\Unit\DataMapper\Response\Mapper\VakifKatilimPosResponseDataMapperTest;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -592,20 +591,60 @@ class VakifKatilimTest extends TestCase
     {
         return [
             '3d_auth_fail' => [
-                'order'           => VakifKatilimPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail1']['order'],
-                'txType'          => VakifKatilimPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail1']['txType'],
-                'request'         => VakifKatilimPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail1']['threeDResponseData'],
-                'paymentResponse' => VakifKatilimPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail1']['paymentData'],
-                'expected'        => VakifKatilimPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail1']['expectedData'],
+                'order'           => [
+                    'currency' => 'TRY',
+                ],
+                'txType'          => 'pay',
+                'request'         => [
+                    'ResponseCode'    => 'MPIAuthenticationStatusN',
+                    'ResponseMessage' => '(N)Isleminiz gerceklestirelemedi. Kullanicinin 3d islem yapmasi engellendi.',
+                    'MerchantOrderId' => '20240701F2F6',
+                    'HashData'        => 'SVdI+hHXxg8GO0wY0hAcfRWpHyo=',
+                    'MD'              => 'DpOHKpBUNVvU5Ld/FaeM6Q==',
+                ],
+                'paymentResponse' => [],
+                'expected'        => [
+                    'md_error_message' => '(N)Isleminiz gerceklestirelemedi. Kullanicinin 3d islem yapmasi engellendi.',
+                    'error_code'       => 'MPIAuthenticationStatusN',
+                    'error_message'    => null,
+                    'order_id'         => '20240701F2F6',
+                    'proc_return_code' => 'MPIAuthenticationStatusN',
+                    'status'           => 'declined',
+                ],
                 'is3DSuccess'     => false,
                 'isSuccess'       => false,
             ],
             'auth_success' => [
-                'order'           => VakifKatilimPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['order'],
-                'txType'          => VakifKatilimPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['txType'],
-                'request'         => VakifKatilimPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'],
-                'paymentResponse' => VakifKatilimPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['paymentData'],
-                'expected'        => VakifKatilimPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['expectedData'],
+                'order'           => [
+                    'currency' => 'TRY',
+                ],
+                'txType'          => 'pay',
+                'request'         => [
+                    'ResponseCode'    => '00',
+                    'ResponseMessage' => 'Kart doğrulandı.',
+                    'MerchantOrderId' => '2024070152BF',
+                    'OrderId'         => '6373034',
+                    'HashData'        => 'tilHwVYboCx82++WZXg0I81LW6w=',
+                    'MD'              => '/6auNEWM9TvyMZAuoM5Tjw==',
+                ],
+                'paymentResponse' => [
+                    'VPosMessage' => [
+                        'HashData'        => '7tVy86ZXrcFCXLXL61Ayk0NkuBU=',
+                        'MerchantId'      => '1',
+                        'SubMerchantId'   => '0',
+                        'CustomerId'      => '222222',
+                        'MerchantOrderId' => '2024070152BF',
+                    ],
+                    'HashData'    => 'eNscG4h7B+Fx4/k0Dmt89HDP6nU=',
+                ],
+                'expected'        => [
+                    'auth_code'        => '271425',
+                    'ref_ret_num'      => '418312081069',
+                    'remote_order_id'  => '6373034',
+                    'order_id'         => '2024070152BF',
+                    'proc_return_code' => '00',
+                    'status'           => 'approved',
+                ],
                 'is3DSuccess'     => true,
                 'isSuccess'       => true,
             ],
@@ -724,7 +763,7 @@ class VakifKatilimTest extends TestCase
     public static function threeDFormDataBadInputsProvider(): array
     {
         return [
-            '3d_secure_without_card'    => [
+            '3d_secure_without_card'            => [
                 'order'                  => ['id' => '2020110828BC'],
                 'paymentModel'           => PosInterface::MODEL_3D_SECURE,
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
@@ -733,7 +772,7 @@ class VakifKatilimTest extends TestCase
                 'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Bu ödeme modeli için kart bilgileri zorunlu!',
             ],
-            'unsupported_payment_model' => [
+            'unsupported_payment_model'         => [
                 'order'                  => ['id' => '2020110828BC'],
                 'paymentModel'           => PosInterface::MODEL_3D_PAY,
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
@@ -742,7 +781,7 @@ class VakifKatilimTest extends TestCase
                 'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Mews\Pos\Gateway\VakifKatilimPos ödeme altyapıda [pay] işlem tipi [regular, 3d, 3d_host] ödeme model(ler) desteklemektedir. Sağlanan ödeme model: [3d_pay].',
             ],
-            'unsupported_3d_secure_tx'  => [
+            'unsupported_3d_secure_tx'          => [
                 'order'                  => ['id' => '2020110828BC'],
                 'paymentModel'           => PosInterface::MODEL_3D_SECURE,
                 'txType'                 => PosInterface::TX_TYPE_PAY_PRE_AUTH,
@@ -751,7 +790,7 @@ class VakifKatilimTest extends TestCase
                 'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay].',
             ],
-            'unsupported_3d_host_tx'    => [
+            'unsupported_3d_host_tx'            => [
                 'order'                  => ['id' => '2020110828BC'],
                 'paymentModel'           => PosInterface::MODEL_3D_HOST,
                 'txType'                 => PosInterface::TX_TYPE_PAY_PRE_AUTH,
@@ -760,7 +799,7 @@ class VakifKatilimTest extends TestCase
                 'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay].',
             ],
-            'non_payment_tx_type'       => [
+            'non_payment_tx_type'               => [
                 'order'                  => ['id' => '2020110828BC'],
                 'paymentModel'           => PosInterface::MODEL_3D_PAY,
                 'txType'                 => PosInterface::TX_TYPE_STATUS,
@@ -769,7 +808,7 @@ class VakifKatilimTest extends TestCase
                 'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay]',
             ],
-            'post_auth_tx_type'         => [
+            'post_auth_tx_type'                 => [
                 'order'                  => ['id' => '2020110828BC'],
                 'paymentModel'           => PosInterface::MODEL_3D_PAY,
                 'txType'                 => PosInterface::TX_TYPE_PAY_POST_AUTH,
@@ -804,7 +843,7 @@ class VakifKatilimTest extends TestCase
     private function configureClientResponse(
         string              $txType,
         array               $requestData,
-        string|array $decodedResponse,
+        string|array        $decodedResponse,
         array               $order,
         string              $paymentModel,
         ?string             $apiUrl = null,

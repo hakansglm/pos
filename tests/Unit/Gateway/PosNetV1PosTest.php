@@ -27,7 +27,6 @@ use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateway\AbstractGateway;
 use Mews\Pos\Gateway\PosNetV1Pos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Tests\Unit\DataMapper\Response\Mapper\PosNetV1PosResponseDataMapperTest;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -92,14 +91,14 @@ class PosNetV1PosTest extends TestCase
             '10,10,10,10,10,10,10,10'
         );
 
-        $this->requestValueMapper  = new PosNetV1PosRequestValueMapper();
-        $this->requestMapperMock   = $this->createMock(RequestDataMapperInterface::class);
-        $this->responseMapperMock  = $this->createMock(ResponseDataMapperInterface::class);
-        $this->cryptMock           = $this->createMock(CryptInterface::class);
+        $this->requestValueMapper     = new PosNetV1PosRequestValueMapper();
+        $this->requestMapperMock      = $this->createMock(RequestDataMapperInterface::class);
+        $this->responseMapperMock     = $this->createMock(ResponseDataMapperInterface::class);
+        $this->cryptMock              = $this->createMock(CryptInterface::class);
         $this->httpClientStrategyMock = $this->createMock(HttpClientStrategyInterface::class);
-        $this->httpClientMock      = $this->createMock(HttpClientInterface::class);
-        $this->loggerMock          = $this->createMock(LoggerInterface::class);
-        $this->eventDispatcherMock = $this->createMock(EventDispatcherInterface::class);
+        $this->httpClientMock         = $this->createMock(HttpClientInterface::class);
+        $this->loggerMock             = $this->createMock(LoggerInterface::class);
+        $this->eventDispatcherMock    = $this->createMock(EventDispatcherInterface::class);
 
         $this->requestMapperMock->expects(self::any())
             ->method('getCrypt')
@@ -168,13 +167,13 @@ class PosNetV1PosTest extends TestCase
 
     #[DataProvider('make3DPaymentDataProvider')]
     public function testMake3DPayment(
-        array   $order,
-        string  $txType,
-        array $gatewayResponseData,
-        array   $paymentResponse,
-        array   $expectedResponse,
-        bool    $is3DSuccess,
-        bool    $isSuccess
+        array  $order,
+        string $txType,
+        array  $gatewayResponseData,
+        array  $paymentResponse,
+        array  $expectedResponse,
+        bool   $is3DSuccess,
+        bool   $isSuccess
     ): void {
         if ($is3DSuccess) {
             $this->cryptMock->expects(self::once())
@@ -233,13 +232,13 @@ class PosNetV1PosTest extends TestCase
 
     #[DataProvider('make3DPaymentWithoutHashCheckDataProvider')]
     public function testMake3DPaymentWithoutHashCheck(
-        array   $order,
-        string  $txType,
-        array $gatewayResponseData,
-        array   $paymentResponse,
-        array   $expectedResponse,
-        bool    $is3DSuccess,
-        bool    $isSuccess
+        array  $order,
+        string $txType,
+        array  $gatewayResponseData,
+        array  $paymentResponse,
+        array  $expectedResponse,
+        bool   $is3DSuccess,
+        bool   $isSuccess
     ): void {
         $config = $this->config;
         $config += [
@@ -303,9 +302,16 @@ class PosNetV1PosTest extends TestCase
 
     public function testMake3DPaymentHashMismatchException(): void
     {
-        $txType = PosInterface::TX_TYPE_PAY_AUTH;
-        $dataSamples = iterator_to_array(PosNetV1PosResponseDataMapperTest::threeDPaymentDataProvider());
-        $gatewayResponseData        = $dataSamples['3d_auth_success_payment_fail']['threeDResponseData'];
+        $txType              = PosInterface::TX_TYPE_PAY_AUTH;
+        $gatewayResponseData = [
+            'SecureTransactionId' => '1010028947569644',
+            'Mac'                 => 'r21kMm4nMqvJakjq47Jl+3fk2xrFPrDoTJFQGxkgkfk=',
+            'MacParams'           => 'ECI:CAVV:MdStatus:MdErrorMessage:MD:SecureTransactionId',
+            'CurrencyCode'        => '949',
+            'InstalmentCode'      => '0',
+            'VtfCode'             => '',
+            'PointAmount'         => '',
+        ];
 
         $this->cryptMock->expects(self::once())
             ->method('check3DHash')
@@ -558,33 +564,95 @@ class PosNetV1PosTest extends TestCase
 
     public static function make3DPaymentDataProvider(): array
     {
-        $dataSamples = iterator_to_array(PosNetV1PosResponseDataMapperTest::threeDPaymentDataProvider());
-
         return [
             'auth_fail'                    => [
-                'order'           => $dataSamples['3d_auth_fail_1']['order'],
-                'txType'          => $dataSamples['3d_auth_fail_1']['txType'],
-                'request'         => $dataSamples['3d_auth_fail_1']['threeDResponseData'],
-                'paymentResponse' => $dataSamples['3d_auth_fail_1']['paymentData'],
-                'expected'        => $dataSamples['3d_auth_fail_1']['expectedData'],
+                'order'           => [
+                    'id' => '20230622A1C9',
+                ],
+                'txType'          => PosInterface::TX_TYPE_PAY_AUTH,
+                'request'         => [
+                    'CCPrefix'  => '450634',
+                    'TranType'  => 'Sale',
+                    'Mac'       => 'ltpqSazdMf67AjmWF0WQ5pOU78F+kjrfkyz7ex+ZvNg=',
+                    'MacParams' => 'ECI:CAVV:MdStatus:MdErrorMessage:MD:SecureTransactionId',
+                ],
+                'paymentResponse' => [],
+                'expected'        => [
+                    'masked_number'    => '450634',
+                    'md_status'        => '0',
+                    'md_error_message' => 'Not authenticated',
+                    'order_id'         => '20230622A1C9',
+                    'remote_order_id'  => '0000000020230622A1C9',
+                    'status'           => 'declined',
+                ],
                 'is3DSuccess'     => false,
                 'isSuccess'       => false,
             ],
             '3d_auth_success_payment_fail' => [
-                'order'           => $dataSamples['3d_auth_success_payment_fail']['order'],
-                'txType'          => $dataSamples['3d_auth_success_payment_fail']['txType'],
-                'request'         => $dataSamples['3d_auth_success_payment_fail']['threeDResponseData'],
-                'paymentResponse' => $dataSamples['3d_auth_success_payment_fail']['paymentData'],
-                'expected'        => $dataSamples['3d_auth_success_payment_fail']['expectedData'],
+                'order'           => [
+                    'id' => '20230622A1C9',
+                ],
+                'txType'          => PosInterface::TX_TYPE_PAY_AUTH,
+                'request'         => [
+                    'CCPrefix'       => '450634',
+                    'TranType'       => 'Sale',
+                    'Amount'         => '101',
+                    'MdErrorMessage' => 'Y-status/Challenge authentication via ACS: https://certemvacs.bkm.com.tr/acs/creq',
+                    'MdStatus'       => '1',
+                    'Mac'            => 'aw2jry3dZbmDMvIfuyx3sixxY50ysnRhaR3kOXHLJRw=',
+                    'MacParams'      => 'ECI:CAVV:MdStatus:MdErrorMessage:MD:SecureTransactionId',
+                ],
+                'paymentResponse' => [
+                    'ServiceResponseData' => [
+                        'ResponseCode'        => '0148',
+                        'ResponseDescription' => 'INVALID MID TID IP. Hatalı IP:92.38.180.61',
+                    ],
+                ],
+                'expected'        => [
+                    'error_code'       => '0148',
+                    'error_message'    => 'INVALID MID TID IP. Hatalı IP:92.38.180.61',
+                    'order_id'         => '202306226A90',
+                    'remote_order_id'  => '00000000202306226A90',
+                    'proc_return_code' => '0148',
+                    'status'           => 'declined',
+                ],
                 'is3DSuccess'     => true,
                 'isSuccess'       => false,
             ],
             'success'                      => [
-                'order'           => $dataSamples['success1']['order'],
-                'txType'          => $dataSamples['success1']['txType'],
-                'request'         => $dataSamples['success1']['threeDResponseData'],
-                'paymentResponse' => $dataSamples['success1']['paymentData'],
-                'expected'        => $dataSamples['success1']['expectedData'],
+                'order'           => [
+                    'id' => '20230622A1C9',
+                ],
+                'txType'          => PosInterface::TX_TYPE_PAY_AUTH,
+                'request'         => [
+                    'CCPrefix'   => '540061',
+                    'TranType'   => 'Sale',
+                    'Amount'     => '175',
+                    'OrderId'    => 'ALA_0000080603153823',
+                    'MerchantId' => '6700950031',
+                    'Mac'        => 'r21kMm4nMqvJakjq47Jl+3fk2xrFPrDoTJFQGxkgkfk=',
+                    'MacParams'  => 'ECI:CAVV:MdStatus:MdErrorMessage:MD:SecureTransactionId',
+                ],
+                'paymentResponse' => [
+                    'ServiceResponseData' => [
+                        'ResponseCode'        => '00',
+                        'ResponseDescription' => 'Onaylandı',
+                    ],
+                    'AuthCode'            => '449324',
+                    'ReferenceCode'       => '159044932490000231',
+                    'PointDataList'       => [
+                        [
+                            'PointType'     => 'EarnedPoint',
+                            'Point'         => 1000,
+                            'PointTLAmount' => 500,
+                        ],
+                    ],
+
+                ],
+                'expected'        => [
+                    'proc_return_code' => '00',
+                    'status'           => 'approved',
+                ],
                 'is3DSuccess'     => true,
                 'isSuccess'       => true,
             ],
@@ -593,24 +661,69 @@ class PosNetV1PosTest extends TestCase
 
     public static function make3DPaymentWithoutHashCheckDataProvider(): array
     {
-        $dataSamples = iterator_to_array(PosNetV1PosResponseDataMapperTest::threeDPaymentDataProvider());
-
         return [
             '3d_auth_success_payment_fail' => [
-                'order'           => $dataSamples['3d_auth_success_payment_fail']['order'],
-                'txType'          => $dataSamples['3d_auth_success_payment_fail']['txType'],
-                'request'         => $dataSamples['3d_auth_success_payment_fail']['threeDResponseData'],
-                'paymentResponse' => $dataSamples['3d_auth_success_payment_fail']['paymentData'],
-                'expected'        => $dataSamples['3d_auth_success_payment_fail']['expectedData'],
+                'order'           => [
+                    'id' => '20230622A1C9',
+                ],
+                'txType'          => PosInterface::TX_TYPE_PAY_AUTH,
+                'request'         => [
+                    'MdErrorMessage' => 'Y-status/Challenge authentication via ACS: https://certemvacs.bkm.com.tr/acs/creq',
+                    'MdStatus'       => '1',
+                    'Mac'            => 'aw2jry3dZbmDMvIfuyx3sixxY50ysnRhaR3kOXHLJRw=',
+                    'MacParams'      => 'ECI:CAVV:MdStatus:MdErrorMessage:MD:SecureTransactionId',
+                ],
+                'paymentResponse' => [
+                    'ServiceResponseData' => [
+                        'ResponseCode'        => '0148',
+                        'ResponseDescription' => 'INVALID MID TID IP. Hatalı IP:92.38.180.61',
+                    ],
+                ],
+                'expected'        => [
+                    'error_code'       => '0148',
+                    'error_message'    => 'INVALID MID TID IP. Hatalı IP:92.38.180.61',
+                    'order_id'         => '202306226A90',
+                    'remote_order_id'  => '00000000202306226A90',
+                    'proc_return_code' => '0148',
+                    'status'           => 'declined',
+                ],
                 'is3DSuccess'     => true,
                 'isSuccess'       => false,
             ],
             'success'                      => [
-                'order'           => $dataSamples['success1']['order'],
-                'txType'          => $dataSamples['success1']['txType'],
-                'request'         => $dataSamples['success1']['threeDResponseData'],
-                'paymentResponse' => $dataSamples['success1']['paymentData'],
-                'expected'        => $dataSamples['success1']['expectedData'],
+                'order'           => [
+                    'id' => '20230622A1C9',
+                ],
+                'txType'          => PosInterface::TX_TYPE_PAY_AUTH,
+                'request'         => [
+                    'MdErrorMessage'      => 'Authenticated',
+                    'MdStatus'            => '1',
+                    'SecureTransactionId' => '1010028947569644',
+                    'Mac'                 => 'r21kMm4nMqvJakjq47Jl+3fk2xrFPrDoTJFQGxkgkfk=',
+                    'MacParams'           => 'ECI:CAVV:MdStatus:MdErrorMessage:MD:SecureTransactionId',
+                ],
+                'paymentResponse' => [
+                    'ServiceResponseData' => [
+                        'ResponseCode'        => '00',
+                        'ResponseDescription' => 'Onaylandı',
+                    ],
+                    'AuthCode'            => '449324',
+                    'ReferenceCode'       => '159044932490000231',
+                    'PointDataList'       => [
+                        [
+                            'PointType'     => 'EarnedPoint',
+                            'Point'         => 1000,
+                            'PointTLAmount' => 500,
+                        ],
+                    ],
+                ],
+                'expected'        => [
+                    'order_id'         => '80603153823',
+                    'remote_order_id'  => 'ALA_0000080603153823',
+                    'proc_return_code' => '00',
+                    'status'           => 'approved',
+
+                ],
                 'is3DSuccess'     => true,
                 'isSuccess'       => true,
             ],
@@ -621,16 +734,16 @@ class PosNetV1PosTest extends TestCase
     {
         return [
             [
-                'order'        => [
+                'order'  => [
                     'id' => '2020110828BC',
                 ],
-                'txType'       => PosInterface::TX_TYPE_PAY_AUTH,
+                'txType' => PosInterface::TX_TYPE_PAY_AUTH,
             ],
             [
-                'order'        => [
+                'order'  => [
                     'id' => '2020110828BC',
                 ],
-                'txType'       => PosInterface::TX_TYPE_PAY_PRE_AUTH,
+                'txType' => PosInterface::TX_TYPE_PAY_PRE_AUTH,
             ],
         ];
     }

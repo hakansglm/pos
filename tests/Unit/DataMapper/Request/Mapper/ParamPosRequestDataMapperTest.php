@@ -24,7 +24,6 @@ use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\ParamPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Tests\Unit\DataMapper\Response\Mapper\ParamPosResponseDataMapperTest;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -209,12 +208,12 @@ class ParamPosRequestDataMapperTest extends TestCase
 
     #[DataProvider('threeDFormDataProvider')]
     public function testGet3DFormData(
-        array   $order,
-        string  $txType,
-        string  $paymentModel,
-        bool    $withCard,
-        ?string $gatewayURL,
-        array   $extraData,
+        array        $order,
+        string       $txType,
+        string       $paymentModel,
+        bool         $withCard,
+        ?string      $gatewayURL,
+        array        $extraData,
         string|array $expected
     ): void {
         $card = $withCard ? self::$card : null;
@@ -1222,7 +1221,11 @@ class ParamPosRequestDataMapperTest extends TestCase
                 'ip'       => '156.155.154.153',
             ],
             'txType'       => PosInterface::TX_TYPE_PAY_AUTH,
-            'responseData' => ParamPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'],
+            'responseData' => [
+                'md'        => '444676:13FDE30917BF65D853787DB838390849D73151A10FC8C1192AC72660F2464521:3473:##190100000',
+                'orderId'   => '202412292160',
+                'islemGUID' => '8b6868fe-a553-4164-a7cc-528461f21759',
+            ],
             'expected'     => [
                 'soap:Body' => [
                     'TP_WMD_Pay' => [

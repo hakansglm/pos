@@ -27,8 +27,6 @@ use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateway\AbstractGateway;
 use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Tests\Unit\DataMapper\Request\Mapper\AkbankPosRequestDataMapperTest;
-use Mews\Pos\Tests\Unit\DataMapper\Response\Mapper\AkbankPosResponseDataMapperTest;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -205,7 +203,11 @@ class AkbankPosTest extends TestCase
 
     public function testMake3DPayPaymentHashMismatchException(): void
     {
-        $gatewayResponseData = AkbankPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['paymentData'];
+        $gatewayResponseData = [
+            'txnCode'      => '1000',
+            'responseCode' => 'VPS-0000',
+            'orderId'      => '2024041811DA',
+        ];
         $this->cryptMock->expects(self::once())
             ->method('check3DHash')
             ->with($this->account, $gatewayResponseData)
@@ -284,7 +286,11 @@ class AkbankPosTest extends TestCase
 
     public function testMake3DHostPaymentHashMismatchException(): void
     {
-        $gatewayResponseData = AkbankPosResponseDataMapperTest::threeDHostPaymentDataProvider()['success1']['paymentData'];
+        $gatewayResponseData = [
+            'txnCode'      => '1000',
+            'responseCode' => 'VPS-0000',
+            'orderId'      => '2024041898FD',
+        ];
         $this->cryptMock->expects(self::once())
             ->method('check3DHash')
             ->with($this->account, $gatewayResponseData)
@@ -433,7 +439,11 @@ class AkbankPosTest extends TestCase
 
     public function testMake3DPaymentHashMismatchException(): void
     {
-        $gatewayResponseData = AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'];
+        $gatewayResponseData = [
+            'txnCode'      => '3001',
+            'responseCode' => 'VPS-0000',
+            'orderId'      => '20240418BA6C',
+        ];
         $this->cryptMock->expects(self::once())
             ->method('check3DHash')
             ->with($this->account, $gatewayResponseData)
@@ -532,13 +542,11 @@ class AkbankPosTest extends TestCase
 
     #[DataProvider('orderHistoryDataProvider')]
     public function testOrderHistory(
-        array  $order,
-        array  $requestData,
-        string $encodedRequest,
-        string $responseContent,
-        array  $decodedResponse,
-        array  $mappedResponse,
-        bool   $isSuccess
+        array $order,
+        array $requestData,
+        array $decodedResponse,
+        array $mappedResponse,
+        bool  $isSuccess
     ): void {
         $account = $this->pos->getAccount();
         $txType  = PosInterface::TX_TYPE_ORDER_HISTORY;
@@ -811,29 +819,29 @@ class AkbankPosTest extends TestCase
     {
         return [
             'auth_fail'                    => [
-                'order'               => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['order'],
-                'txType'              => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['txType'],
-                'gatewayResponseData' => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['threeDResponseData'],
-                'paymentResponse'     => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['paymentData'],
-                'expected'            => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['expectedData'],
+                'order'               => ['id' => 'order-3d-fail'],
+                'txType'              => 'pay',
+                'gatewayResponseData' => ['orderId' => '20240418D4A6', 'responseCode' => 'VPS-1279'],
+                'paymentResponse'     => [],
+                'expected'            => ['status' => 'declined'],
                 'is3DSuccess'         => false,
                 'isSuccess'           => false,
             ],
             '3d_auth_success_payment_fail' => [
-                'order'               => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['order'],
-                'txType'              => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['txType'],
-                'gatewayResponseData' => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['threeDResponseData'],
-                'paymentResponse'     => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['paymentData'],
-                'expected'            => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['expectedData'],
+                'order'               => ['id' => 'order-3d-pay-fail'],
+                'txType'              => 'pay',
+                'gatewayResponseData' => ['orderId' => '20240420D268', 'responseCode' => 'VPS-0000'],
+                'paymentResponse'     => ['responseCode' => 'VPS-1005'],
+                'expected'            => ['status' => 'declined'],
                 'is3DSuccess'         => true,
                 'isSuccess'           => false,
             ],
             'success'                      => [
-                'order'               => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['order'],
-                'txType'              => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['txType'],
-                'gatewayResponseData' => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'],
-                'paymentResponse'     => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['paymentData'],
-                'expected'            => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['expectedData'],
+                'order'               => ['id' => 'order-3d-success'],
+                'txType'              => 'pay',
+                'gatewayResponseData' => ['orderId' => '20240418BA6C', 'responseCode' => 'VPS-0000'],
+                'paymentResponse'     => ['responseCode' => 'VPS-0000'],
+                'expected'            => ['status' => 'approved'],
                 'is3DSuccess'         => true,
                 'isSuccess'           => true,
             ],
@@ -844,20 +852,20 @@ class AkbankPosTest extends TestCase
     {
         return [
             '3d_auth_success_payment_fail' => [
-                'order'               => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['order'],
-                'txType'              => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['txType'],
-                'gatewayResponseData' => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['threeDResponseData'],
-                'paymentResponse'     => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['paymentData'],
-                'expected'            => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['expectedData'],
+                'order'               => ['id' => 'order-3d-pay-fail-nohash'],
+                'txType'              => 'pay',
+                'gatewayResponseData' => ['orderId' => '20240420D268', 'responseCode' => 'VPS-0000'],
+                'paymentResponse'     => ['responseCode' => 'VPS-1005'],
+                'expected'            => ['status' => 'declined'],
                 'is3DSuccess'         => true,
                 'isSuccess'           => false,
             ],
             'success'                      => [
-                'order'               => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['order'],
-                'txType'              => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['txType'],
-                'gatewayResponseData' => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'],
-                'paymentResponse'     => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['paymentData'],
-                'expected'            => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['expectedData'],
+                'order'               => ['id' => 'order-3d-success-nohash'],
+                'txType'              => 'pay',
+                'gatewayResponseData' => ['orderId' => '20240418BA6C', 'responseCode' => 'VPS-0000'],
+                'paymentResponse'     => ['responseCode' => 'VPS-0000'],
+                'expected'            => ['status' => 'approved'],
                 'is3DSuccess'         => true,
                 'isSuccess'           => true,
             ],
@@ -867,13 +875,21 @@ class AkbankPosTest extends TestCase
     public static function orderHistoryDataProvider(): iterable
     {
         yield [
-            'order'               => AkbankPosRequestDataMapperTest::orderHistoryRequestDataProvider()[0]['order'],
-            'requestData'         => AkbankPosRequestDataMapperTest::orderHistoryRequestDataProvider()[0]['expected'],
-            'encodedRequestData'  => \json_encode(AkbankPosRequestDataMapperTest::orderHistoryRequestDataProvider()[0]['expected'], JSON_THROW_ON_ERROR),
-            'responseData'        => \json_encode(AkbankPosResponseDataMapperTest::orderHistoryDataProvider()['success_only_payment_transaction']['responseData'], JSON_THROW_ON_ERROR),
-            'decodedResponseData' => AkbankPosResponseDataMapperTest::orderHistoryDataProvider()['success_only_payment_transaction']['responseData'],
-            'mappedResponse'      => AkbankPosResponseDataMapperTest::orderHistoryDataProvider()['success_only_payment_transaction']['expectedData'],
-            'isSuccess'           => true,
+            'order'           => [
+                'id' => '2020110828BC',
+            ],
+            'requestData'     => [
+                'txnCode' => '1010',
+                'order'   => ['orderId' => '2020110828BC'],
+            ],
+            'decodedResponse' => [
+                'txnCode'      => '1010',
+                'responseCode' => 'VPS-0000',
+            ],
+            'mappedResponse'  => [
+                'status' => 'approved',
+            ],
+            'isSuccess'       => true,
         ];
     }
 
@@ -941,29 +957,85 @@ class AkbankPosTest extends TestCase
     public static function threeDFormDataProvider(): iterable
     {
         yield '3d_host' => [
-            'order'        => AkbankPosRequestDataMapperTest::threeDFormDataProvider()['3d_host_form_data']['order'],
+            'order'        => [
+                'id'          => '2020110828BC',
+                'amount'      => 10,
+                'ip'          => '127.0.0.1',
+                'installment' => 0,
+                'currency'    => 'TRY',
+                'success_url' => 'http:://localhost/success',
+                'fail_url'    => 'http:://localhost/fail',
+            ],
             'paymentModel' => PosInterface::MODEL_3D_HOST,
             'txType'       => PosInterface::TX_TYPE_PAY_AUTH,
             'isWithCard'   => false,
-            'formData'     => AkbankPosRequestDataMapperTest::threeDFormDataProvider()['3d_host_form_data']['expected'],
+            'formData'     => [
+                'gateway' => 'https://virtualpospaymentgatewaypre.akbank.com/payhosting',
+                'method'  => 'POST',
+                'inputs'  => [
+                    'paymentModel'   => '3D_PAY_HOSTING',
+                    'txnCode'        => '3000',
+                    'merchantSafeId' => '2023090417500272654BD9A49CF07574',
+                    'terminalSafeId' => '2023090417500284633D137A249DBBEB',
+                    'hash'           => 'hash-123',
+                ],
+            ],
             'gateway_url'  => 'https://virtualpospaymentgateway.akbank.com/payhosting',
         ];
 
         yield '3d_pay' => [
-            'order'        => AkbankPosRequestDataMapperTest::threeDFormDataProvider()['3d_pay_form_data']['order'],
+            'order'        => [
+                'id'          => '2020110828BC',
+                'amount'      => 1.1,
+                'ip'          => '127.0.0.1',
+                'installment' => 0,
+                'currency'    => 'TRY',
+                'success_url' => 'http:://localhost/success',
+                'fail_url'    => 'http:://localhost/fail',
+            ],
             'paymentModel' => PosInterface::MODEL_3D_PAY,
             'txType'       => PosInterface::TX_TYPE_PAY_AUTH,
             'isWithCard'   => true,
-            'formData'     => AkbankPosRequestDataMapperTest::threeDFormDataProvider()['3d_pay_form_data']['expected'],
+            'formData'     => [
+                'gateway' => 'https://virtualpospaymentgatewaypre.akbank.com/securepay',
+                'method'  => 'POST',
+                'inputs'  => [
+                    'paymentModel'   => '3D_PAY',
+                    'txnCode'        => '3000',
+                    'merchantSafeId' => '2023090417500272654BD9A49CF07574',
+                    'terminalSafeId' => '2023090417500284633D137A249DBBEB',
+                    'orderId'        => '2020110828BC',
+                    'hash'           => 'hash-123',
+                ],
+            ],
             'gateway_url'  => 'https://virtualpospaymentgateway.akbank.com/securepay',
         ];
 
         yield '3d_secure' => [
-            'order'        => AkbankPosRequestDataMapperTest::threeDFormDataProvider()['3d_form_data']['order'],
+            'order'        => [
+                'id'          => '2020110828BC',
+                'amount'      => 1.1,
+                'ip'          => '127.0.0.1',
+                'installment' => 0,
+                'currency'    => 'TRY',
+                'success_url' => 'http:://localhost/success',
+                'fail_url'    => 'http:://localhost/fail',
+            ],
             'paymentModel' => PosInterface::MODEL_3D_SECURE,
             'txType'       => PosInterface::TX_TYPE_PAY_AUTH,
             'isWithCard'   => true,
-            'formData'     => AkbankPosRequestDataMapperTest::threeDFormDataProvider()['3d_form_data']['expected'],
+            'formData'     => [
+                'gateway' => 'https://virtualpospaymentgatewaypre.akbank.com/securepay',
+                'method'  => 'POST',
+                'inputs'  => [
+                    'paymentModel'   => '3D',
+                    'txnCode'        => '3000',
+                    'merchantSafeId' => '2023090417500272654BD9A49CF07574',
+                    'terminalSafeId' => '2023090417500284633D137A249DBBEB',
+                    'orderId'        => '2020110828BC',
+                    'hash'           => 'hash-123',
+                ],
+            ],
             'gateway_url'  => 'https://virtualpospaymentgateway.akbank.com/securepay',
         ];
     }
@@ -973,17 +1045,17 @@ class AkbankPosTest extends TestCase
     {
         return [
             'auth_fail' => [
-                'order'               => AkbankPosResponseDataMapperTest::threeDPayPaymentDataProvider()['auth_fail']['order'],
-                'txType'              => AkbankPosResponseDataMapperTest::threeDPayPaymentDataProvider()['auth_fail']['txType'],
-                'gatewayResponseData' => AkbankPosResponseDataMapperTest::threeDPayPaymentDataProvider()['auth_fail']['paymentData'],
-                'expected'            => AkbankPosResponseDataMapperTest::threeDPayPaymentDataProvider()['auth_fail']['expectedData'],
+                'order'               => ['id' => 'order-3dpay-fail'],
+                'txType'              => 'pay',
+                'gatewayResponseData' => ['orderId' => '202404180331', 'responseCode' => 'VPS-1279'],
+                'expected'            => ['status' => 'declined'],
                 'isSuccess'           => false,
             ],
             'success'   => [
-                'order'               => AkbankPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['order'],
-                'txType'              => AkbankPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['txType'],
-                'gatewayResponseData' => AkbankPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['paymentData'],
-                'expected'            => AkbankPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['expectedData'],
+                'order'               => ['id' => 'order-3dpay-success'],
+                'txType'              => 'pay',
+                'gatewayResponseData' => ['orderId' => '2024041811DA', 'responseCode' => 'VPS-0000'],
+                'expected'            => ['status' => 'approved'],
                 'isSuccess'           => true,
             ],
         ];
@@ -993,17 +1065,17 @@ class AkbankPosTest extends TestCase
     {
         return [
             'auth_fail' => [
-                'order'               => AkbankPosResponseDataMapperTest::threeDHostPaymentDataProvider()['auth_fail']['order'],
-                'txType'              => AkbankPosResponseDataMapperTest::threeDHostPaymentDataProvider()['auth_fail']['txType'],
-                'gatewayResponseData' => AkbankPosResponseDataMapperTest::threeDHostPaymentDataProvider()['auth_fail']['paymentData'],
-                'expected'            => AkbankPosResponseDataMapperTest::threeDHostPaymentDataProvider()['auth_fail']['expectedData'],
+                'order'               => ['id' => 'order-3dhost-fail'],
+                'txType'              => 'pay',
+                'gatewayResponseData' => ['orderId' => '20240418452F', 'responseCode' => 'VPS-1279'],
+                'expected'            => ['status' => 'declined'],
                 'isSuccess'           => false,
             ],
             'success'   => [
-                'order'               => AkbankPosResponseDataMapperTest::threeDHostPaymentDataProvider()['success1']['order'],
-                'txType'              => AkbankPosResponseDataMapperTest::threeDHostPaymentDataProvider()['success1']['txType'],
-                'gatewayResponseData' => AkbankPosResponseDataMapperTest::threeDHostPaymentDataProvider()['success1']['paymentData'],
-                'expected'            => AkbankPosResponseDataMapperTest::threeDHostPaymentDataProvider()['success1']['expectedData'],
+                'order'               => ['id' => 'order-3dhost-success'],
+                'txType'              => 'pay',
+                'gatewayResponseData' => ['orderId' => '2024041898FD', 'responseCode' => 'VPS-0000'],
+                'expected'            => ['status' => 'approved'],
                 'isSuccess'           => true,
             ],
         ];

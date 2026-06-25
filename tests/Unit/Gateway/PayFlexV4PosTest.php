@@ -28,8 +28,6 @@ use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateway\AbstractGateway;
 use Mews\Pos\Gateway\PayFlexV4Pos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Tests\Unit\DataMapper\Request\Mapper\PayFlexV4PosRequestDataMapperTest;
-use Mews\Pos\Tests\Unit\DataMapper\Response\Mapper\PayFlexV4PosResponseDataMapperTest;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -205,7 +203,19 @@ class PayFlexV4PosTest extends TestCase
      */
     public function testGet3DFormDataSuccess(): void
     {
-        $enrollmentResponse = PayFlexV4PosRequestDataMapperTest::getSampleEnrollmentSuccessResponseDataProvider();
+        $enrollmentResponse = [
+            'MessageErrorCode' => 'code',
+            'ErrorMessage'     => 'some error',
+            'Message'          => [
+                'VERes' => [
+                    'Status'  => 'Y',
+                    'PaReq'   => 'PaReq2',
+                    'TermUrl' => 'TermUrl2',
+                    'MD'      => 'MD3',
+                    'ACSUrl'  => 'http',
+                ],
+            ],
+        ];
         $txType             = PosInterface::TX_TYPE_PAY_AUTH;
         $paymentModel       = PosInterface::MODEL_3D_SECURE;
         $card               = $this->card;
@@ -251,7 +261,19 @@ class PayFlexV4PosTest extends TestCase
      */
     public function testGet3DFormDataSubMerchantSuccess(): void
     {
-        $enrollmentResponse = PayFlexV4PosRequestDataMapperTest::getSampleEnrollmentSuccessResponseDataProvider();
+        $enrollmentResponse = [
+            'MessageErrorCode' => 'code',
+            'ErrorMessage'     => 'some error',
+            'Message'          => [
+                'VERes' => [
+                    'Status'  => 'Y',
+                    'PaReq'   => 'PaReq2',
+                    'TermUrl' => 'TermUrl2',
+                    'MD'      => 'MD3',
+                    'ACSUrl'  => 'http',
+                ],
+            ],
+        ];
         $txType             = PosInterface::TX_TYPE_PAY_AUTH;
         $paymentModel       = PosInterface::MODEL_3D_SECURE;
         $card               = $this->card;
@@ -663,29 +685,76 @@ class PayFlexV4PosTest extends TestCase
     {
         return [
             'auth_fail'                    => [
-                'order'           => PayFlexV4PosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['order'],
-                'txType'          => PayFlexV4PosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['txType'],
-                'request'         => PayFlexV4PosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['threeDResponseData'],
-                'paymentResponse' => PayFlexV4PosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['paymentData'],
-                'expected'        => PayFlexV4PosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['expectedData'],
+                'order'           => [],
+                'txType'          => 'pay',
+                'request'         => [
+                    'MerchantId'    => '000000000111111',
+                    'SubMerchantNo' => '0',
+                    'ErrorMessage'  => 'Üye isyeri IP si sistemde tanimli degil',
+                ],
+                'paymentResponse' => [],
+                'expected'        => [
+                    'md_status'        => 'E',
+                    'md_error_message' => 'Üye isyeri IP si sistemde tanimli degil',
+                    'order_id'         => 'order-id-123',
+                    'status'           => 'declined',
+                    'error_code'       => '1105',
+                    'error_message'    => 'Üye isyeri IP si sistemde tanimli degil',
+                ],
                 'is3DSuccess'     => false,
                 'isSuccess'       => false,
             ],
             '3d_auth_success_payment_fail' => [
-                'order'           => PayFlexV4PosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['order'],
-                'txType'          => PayFlexV4PosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['txType'],
-                'request'         => PayFlexV4PosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['threeDResponseData'],
-                'paymentResponse' => PayFlexV4PosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['paymentData'],
-                'expected'        => PayFlexV4PosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['expectedData'],
+                'order'           => [],
+                'txType'          => 'pre',
+                'request'         => [
+                    'MerchantId'                => '000100000013506',
+                    'VerifyEnrollmentRequestId' => 'ce06048a3e9c0cd1d437803fb38b5ad0',
+                    'Xid'                       => 'ondg8d9t5besgt88sk8h',
+                ],
+                'paymentResponse' => [
+                    'MerchantId'      => '000100000013506',
+                    'TransactionType' => 'Sale',
+                    'TransactionId'   => '202303091489',
+                    'ResultCode'      => '0312',
+                    'ResultDetail'    => 'RED-GEÇERSİZ KART',
+                ],
+                'expected'        => [
+                    'cavv'             => 'ABIBCBgAAAEnAAABAQAAAAAAAAA=',
+                    'md_status'        => 'Y',
+                    'proc_return_code' => '0312',
+                    'eci'              => '05',
+                    'order_id'         => '202303091489',
+                    'status'           => 'declined',
+                    'error_code'       => '0312',
+                    'error_message'    => 'RED-GEÇERSİZ KART',
+                ],
                 'is3DSuccess'     => true,
                 'isSuccess'       => false,
             ],
             'success'                      => [
-                'order'           => PayFlexV4PosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['order'],
-                'txType'          => PayFlexV4PosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['txType'],
-                'request'         => PayFlexV4PosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['threeDResponseData'],
-                'paymentResponse' => PayFlexV4PosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['paymentData'],
-                'expected'        => PayFlexV4PosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['expectedData'],
+                'order'           => [],
+                'txType'          => 'pre',
+                'request'         => [
+                    'MerchantId'                => '000100000013506',
+                    'VerifyEnrollmentRequestId' => 'ce06048a3e9c0cd1d437803fb38b5ad0',
+                    'Xid'                       => 'ondg8d9t5besgt88sk8h',
+                    'SessionInfo'               => 'jpf58sdjj8p9mpb9shurh47v64',
+                    'Status'                    => 'Y',
+                ],
+                'paymentResponse' => [
+                    'MerchantId'      => '000000000111111',
+                    'TerminalNo'      => 'VP999999',
+                    'TransactionType' => 'Sale',
+                    'TransactionId'   => '20230309B838',
+                    'ResultCode'      => '0000',
+                    'ResultDetail'    => 'İŞLEM BAŞARILI',
+                ],
+                'expected'        => [
+                    'cavv'      => 'AAABBBBBBBBBBBBBBBIIIIII=',
+                    'md_status' => 'Y',
+                    'status'    => 'approved',
+                ],
                 'is3DSuccess'     => true,
                 'isSuccess'       => true,
             ],

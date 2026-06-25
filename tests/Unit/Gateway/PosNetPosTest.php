@@ -30,8 +30,6 @@ use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateway\AbstractGateway;
 use Mews\Pos\Gateway\PosNetPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Tests\Unit\DataMapper\Request\Mapper\PosNetPosRequestDataMapperTest;
-use Mews\Pos\Tests\Unit\DataMapper\Response\Mapper\PosNetPosResponseDataMapperTest;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -142,9 +140,32 @@ class PosNetPosTest extends TestCase
         $paymentModel = PosInterface::MODEL_3D_SECURE;
         $requestData  = ['request-data'];
 
-        $responseData = PosNetPosRequestDataMapperTest::threeDFormDataDataProvider()['success1']['enrollment_check_response'];
-        $formData     = PosNetPosRequestDataMapperTest::threeDFormDataDataProvider()['success1']['expected'];
-        $order        = PosNetPosRequestDataMapperTest::threeDFormDataDataProvider()['success1']['order'];
+        $responseData = [
+            'approved'               => '1',
+            'respCode'               => '',
+            'respText'               => '',
+            'oosRequestDataResponse' => [
+                'data1' => 'AEFE78BFC852867FF57078B723E284D1BD52EED8264C6CBD110A1A9EA5EAA7533D1A82EFD614032D686C507738FDCDD2EDD00B22DEFEFE0795DC4674C16C02EBBFEC9DF0F495D5E23BE487A798BF8293C7C1D517D9600C96CBFD8816C9D8F8257442906CB9B10D8F1AABFBBD24AA6FB0E5533CDE67B0D9EA5ED621B91BF6991D5362182302B781241B56E47BAE1E86BC3D5AE7606212126A4E97AFC2',
+                'data2' => '69D04861340091B7014B15158CA3C83413031B406F08B3792A0114C9958E6F0F216966C5EE32EAEEC7158BFF59DFCB77E20CD625',
+                'sign'  => '9998F61E1D0C0FB6EC5203A748124F30',
+            ],
+        ];
+        $formData     = [
+            'gateway' => 'https://setmpos.ykb.com/3DSWebService/YKBPaymentService',
+            'method'  => 'POST',
+            'inputs'  => [
+                'mid'         => '6706598320',
+                'posnetID'    => '27426',
+                'posnetData'  => 'AEFE78BFC852867FF57078B723E284D1BD52EED8264C6CBD110A1A9EA5EAA7533D1A82EFD614032D686C507738FDCDD2EDD00B22DEFEFE0795DC4674C16C02EBBFEC9DF0F495D5E23BE487A798BF8293C7C1D517D9600C96CBFD8816C9D8F8257442906CB9B10D8F1AABFBBD24AA6FB0E5533CDE67B0D9EA5ED621B91BF6991D5362182302B781241B56E47BAE1E86BC3D5AE7606212126A4E97AFC2',
+                'posnetData2' => '69D04861340091B7014B15158CA3C83413031B406F08B3792A0114C9958E6F0F216966C5EE32EAEEC7158BFF59DFCB77E20CD625',
+                'digest'      => '9998F61E1D0C0FB6EC5203A748124F30',
+            ],
+        ];
+        $order        = [
+            'id'          => 'TST_190620093100_024',
+            'amount'      => '1.75',
+            'success_url' => 'https://domain.com/success',
+        ];
 
         $this->requestMapperMock->expects(self::once())
             ->method('create3DFormInitializeRequestData')
@@ -534,7 +555,16 @@ class PosNetPosTest extends TestCase
 
     public function testMake3DPaymentHashMismatchException(): void
     {
-        $gatewayResponseData = PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'];
+        $gatewayResponseData = [
+            'approved'                       => '1',
+            'respCode'                       => '',
+            'respText'                       => '',
+            'oosResolveMerchantDataResponse' => [
+                'mdStatus'       => '1',
+                'mdErrorMessage' => '',
+                'mac'            => 'y0fU6rRA0OvqJ5GN6uMdHVu6Xra7QR1qeT9rN7R1L+o=',
+            ],
+        ];
         $txType              = PosInterface::TX_TYPE_PAY_AUTH;
 
         $this->cryptMock->expects(self::once())
@@ -806,32 +836,87 @@ class PosNetPosTest extends TestCase
 
         return [
             'auth_fail'      => [
-                'order'           => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['auth_fail1']['order'],
-                'txType'          => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['auth_fail1']['txType'],
+                'order'           => [
+                    'id' => '80603153823',
+                ],
+                'txType'          => 'pay',
                 'request'         => $resolveMerchantResponseData,
-                'resolveResponse' => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['auth_fail1']['threeDResponseData'],
-                'paymentResponse' => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['auth_fail1']['paymentData'],
-                'expected'        => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['auth_fail1']['expectedData'],
+                'resolveResponse' => [
+                    'oosResolveMerchantDataResponse' => [
+                        'xid'            => 'YKB_0000080603153823',
+                        'amount'         => '5696',
+                        'currency'       => 'TL',
+                        'mdErrorMessage' => 'None 3D - Secure Transaction',
+                        'mac'            => 'ED7254A3ABC264QOP67MN',
+                    ],
+                ],
+                'paymentResponse' => [],
+                'expected'        => [
+                    'transaction_type'     => 'pay',
+                    'transaction_security' => 'MPI fallback',
+                    'remote_order_id'      => 'YKB_0000080603153823',
+                    'status'               => 'declined',
+                    'amount'               => 56.96,
+                    'currency'             => 'TRY',
+                    'payment_model'        => '3d',
+                ],
                 'is3DSuccess'     => false,
                 'isSuccess'       => false,
             ],
             'fail2-md-empty' => [
-                'order'           => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['fail2-md-empty']['order'],
-                'txType'          => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['fail2-md-empty']['txType'],
+                'order'           => [
+                    'id' => '80603153823',
+                ],
+                'txType'          => 'pay',
                 'request'         => $resolveMerchantResponseData,
-                'resolveResponse' => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['fail2-md-empty']['threeDResponseData'],
-                'paymentResponse' => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['fail2-md-empty']['paymentData'],
-                'expected'        => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['fail2-md-empty']['expectedData'],
+                'resolveResponse' => [
+                    'oosResolveMerchantDataResponse' => [
+                        'xid'            => 'YKB_0000080603153823',
+                        'amount'         => '5696',
+                        'mdErrorMessage' => 'None 3D - Secure Transaction',
+                        'mac'            => 'ED7254A3ABC264QOP67MN',
+                    ],
+                ],
+                'paymentResponse' => [],
+                'expected'        => [
+                    'transaction_id'   => null,
+                    'transaction_type' => 'pay',
+                    'md_error_message' => 'None 3D - Secure Transaction',
+                    'order_id'         => '80603153823',
+                    'remote_order_id'  => 'YKB_0000080603153823',
+                    'proc_return_code' => null,
+                    'status'           => 'declined',
+                ],
                 'is3DSuccess'     => false,
                 'isSuccess'       => false,
             ],
             'success'        => [
-                'order'           => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['order'],
-                'txType'          => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['txType'],
+                'order'           => [
+                    'id' => '80603153823',
+                ],
+                'txType'          => 'pay',
                 'request'         => $resolveMerchantResponseData,
-                'resolveResponse' => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'],
-                'paymentResponse' => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['paymentData'],
-                'expected'        => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['expectedData'],
+                'resolveResponse' => [
+                    'approved'                       => '1',
+                    'respCode'                       => '',
+                    'respText'                       => '',
+                    'oosResolveMerchantDataResponse' => [
+                        'xid'            => 'YKB_0000080603153823',
+                        'mdStatus'       => '1',
+                        'mdErrorMessage' => '',
+                        'mac'            => 'y0fU6rRA0OvqJ5GN6uMdHVu6Xra7QR1qeT9rN7R1L+o=',
+                    ],
+                ],
+                'paymentResponse' => [
+                    'approved' => '1',
+                    'respCode' => '',
+                    'respText' => '00',
+                ],
+                'expected'        => [
+                    'transaction_id'   => null,
+                    'transaction_type' => 'pay',
+                    'status'           => 'approved',
+                ],
                 'is3DSuccess'     => true,
                 'isSuccess'       => true,
             ],
@@ -848,12 +933,38 @@ class PosNetPosTest extends TestCase
 
         return [
             'success' => [
-                'order'           => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['order'],
-                'txType'          => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['txType'],
+                'order'           => [
+                    'id' => '80603153823',
+                ],
+                'txType'          => 'pay',
                 'request'         => $resolveMerchantResponseData,
-                'resolveResponse' => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'],
-                'paymentResponse' => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['paymentData'],
-                'expected'        => PosNetPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['expectedData'],
+                'resolveResponse' => [
+                    'approved'                       => '1',
+                    'respCode'                       => '',
+                    'respText'                       => '',
+                    'oosResolveMerchantDataResponse' => [
+                        'xid'      => 'YKB_0000080603153823',
+                        'amount'   => '5696',
+                        'currency' => 'TL',
+                        'mac'      => 'y0fU6rRA0OvqJ5GN6uMdHVu6Xra7QR1qeT9rN7R1L+o=',
+                    ],
+                ],
+                'paymentResponse' => [
+                    'approved'   => '1',
+                    'respCode'   => '',
+                    'respText'   => '00',
+                    'mac'        => 'DF2323A3BMC782QOP42RT',
+                    'hostlogkey' => '0000000002P0806031',
+                    'authCode'   => '901477',
+                ],
+                'expected'        => [
+                    'transaction_type' => 'pay',
+                    'md_status'        => '1',
+                    'status'           => 'approved',
+                    'amount'           => 56.96,
+                    'currency'         => 'TRY',
+                    'payment_model'    => '3d',
+                ],
                 'is3DSuccess'     => true,
                 'isSuccess'       => true,
             ],

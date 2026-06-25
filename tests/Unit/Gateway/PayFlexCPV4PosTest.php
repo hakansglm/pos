@@ -29,8 +29,6 @@ use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateway\AbstractGateway;
 use Mews\Pos\Gateway\PayFlexCPV4Pos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Tests\Unit\DataMapper\Request\Mapper\PayFlexCPV4PosRequestDataMapperTest;
-use Mews\Pos\Tests\Unit\DataMapper\Response\Mapper\PayFlexCPV4PosResponseDataMapperTest;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -151,7 +149,12 @@ class PayFlexCPV4PosTest extends TestCase
      */
     public function testGet3DFormDataSuccess(): void
     {
-        $enrollmentResponse = PayFlexCPV4PosRequestDataMapperTest::threeDFormDataProvider()->current()['queryParams'];
+        $enrollmentResponse = [
+            'CommonPaymentUrl' => 'https://cptest.vakifbank.com.tr/CommonPayment/SecurePayment',
+            'PaymentToken'     => 'c5e076e7bf234a339c40afc10166c06d',
+            'ErrorCode'        => null,
+            'ResponseMessage'  => null,
+        ];
         $txType             = PosInterface::TX_TYPE_PAY_AUTH;
         $paymentModel       = PosInterface::MODEL_3D_PAY;
         $requestData        = ['request-data'];
@@ -473,26 +476,52 @@ class PayFlexCPV4PosTest extends TestCase
 
     public static function make3DPayPaymentDataProvider(): array
     {
-        $testData = iterator_to_array(
-            PayFlexCPV4PosResponseDataMapperTest::threesDPayResponseDataProvider()
-        );
-
         return [
             'auth_fail' => [
-                'order'           => $testData['fail_response_from_gateway_1']['order'],
+                'order'           => [],
                 'txType'          => PosInterface::TX_TYPE_STATUS,
-                'request'         => $testData['fail_response_from_gateway_1']['bank_response'],
+                'request'         => [
+                    'Rc'            => '2053',
+                    'Message'       => 'VeRes status is E Message : Directory server communication error',
+                    'PaymentToken'  => '68244b7e3dfd4b3ebea1afbe0185b9ed',
+                    'TransactionId' => '0cb6a57715144178a014afbe0185b9ed',
+                    'MaskedPan'     => '49384601****4205',
+                ],
                 'paymentResponse' => [],
-                'expected'        => $testData['fail_response_from_gateway_1']['expectedData'],
+                'expected'        => [
+                    'order_id'         => null,
+                    'transaction_id'   => '0cb6a57715144178a014afbe0185b9ed',
+                    'transaction_type' => 'pay',
+                    'status'           => 'declined',
+                    'error_code'       => '2053',
+                    'error_message'    => 'VeRes status is E Message : Directory server communication error',
+                ],
                 'is3DSuccess'     => false,
                 'isSuccess'       => false,
             ],
             'success'   => [
-                'order'           => $testData['success_response_from_gateway_1']['order'],
+                'order'           => [],
                 'txType'          => PosInterface::TX_TYPE_STATUS,
-                'request'         => $testData['success_response_from_gateway_1']['bank_response'],
-                'paymentResponse' => $testData['success_response_from_gateway_1']['bank_response'],
-                'expected'        => $testData['success_response_from_gateway_1']['expectedData'],
+                'request'         => [
+                    'SuccessUrl'      => 'http://localhost/vakifbank-cp/3d-host/response.php',
+                    'FailUrl'         => 'http://localhost/vakifbank-cp/3d-host/response.php',
+                    'RequestLanguage' => 'tr-TR',
+                    'Extract'         => null,
+                    'CardHoldersName' => 'Jo* Do*',
+                ],
+                'paymentResponse' => [
+                    'SuccessUrl'      => 'http://localhost/vakifbank-cp/3d-host/response.php',
+                    'FailUrl'         => 'http://localhost/vakifbank-cp/3d-host/response.php',
+                    'RequestLanguage' => 'tr-TR',
+                    'Extract'         => null,
+                    'CardHoldersName' => 'Jo* Do*',
+                ],
+                'expected'        => [
+                    'order_id'         => '2023030913ED',
+                    'transaction_id'   => '3ee068d5b5a747ada65dafc0016d5887',
+                    'transaction_type' => 'pay',
+                    'status'           => 'approved',
+                ],
                 'is3DSuccess'     => true,
                 'isSuccess'       => true,
             ],

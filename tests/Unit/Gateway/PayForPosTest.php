@@ -26,7 +26,6 @@ use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateway\AbstractGateway;
 use Mews\Pos\Gateway\PayForPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Tests\Unit\DataMapper\Response\Mapper\PayForPosResponseDataMapperTest;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -193,12 +192,12 @@ class PayForPosTest extends TestCase
 
     public function testGet3DFormDataHtmlFormatWithEventModifiedRequestData(): void
     {
-        $order           = ['id' => '124'];
-        $txType          = PosInterface::TX_TYPE_PAY_AUTH;
-        $paymentModel    = PosInterface::MODEL_3D_SECURE;
-        $requestData     = ['MerchantId' => '085300000009704', 'hash' => 'abc'];
-        $modifiedData    = ['MerchantId' => '085300000009704', 'hash' => 'xyz', 'extra' => '1'];
-        $htmlResponse    = '<html><body>3d-form</body></html>';
+        $order        = ['id' => '124'];
+        $txType       = PosInterface::TX_TYPE_PAY_AUTH;
+        $paymentModel = PosInterface::MODEL_3D_SECURE;
+        $requestData  = ['MerchantId' => '085300000009704', 'hash' => 'abc'];
+        $modifiedData = ['MerchantId' => '085300000009704', 'hash' => 'xyz', 'extra' => '1'];
+        $htmlResponse = '<html><body>3d-form</body></html>';
 
         $this->requestMapperMock->expects(self::once())
             ->method('create3DFormInitializeRequestData')
@@ -421,7 +420,10 @@ class PayForPosTest extends TestCase
     public function testMake3DPaymentHashMismatchException(): void
     {
         $txType              = PosInterface::TX_TYPE_PAY_AUTH;
-        $gatewayResponseData = PayForPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'];
+        $gatewayResponseData = [
+            'RequestGuid'     => '1000000081255931',
+            'TransactionDate' => '31.10.2022 22:34:18',
+        ];
 
         $this->cryptMock->expects(self::once())
             ->method('check3DHash')
@@ -759,29 +761,81 @@ class PayForPosTest extends TestCase
     {
         return [
             'auth_fail'                  => [
-                'order'           => PayForPosResponseDataMapperTest::threeDPaymentDataProvider()['auth_fail1']['order'],
-                'txType'          => PayForPosResponseDataMapperTest::threeDPaymentDataProvider()['auth_fail1']['txType'],
-                'request'         => PayForPosResponseDataMapperTest::threeDPaymentDataProvider()['auth_fail1']['threeDResponseData'],
-                'paymentResponse' => PayForPosResponseDataMapperTest::threeDPaymentDataProvider()['auth_fail1']['paymentData'],
-                'expected'        => PayForPosResponseDataMapperTest::threeDPaymentDataProvider()['auth_fail1']['expectedData'],
+                'order'           => [],
+                'txType'          => 'pre',
+                'request'         => [
+                    'RequestGuid' => '1000000081255934',
+                ],
+                'paymentResponse' => [],
+                'expected'        => [
+                    'order_id'         => '202210317565',
+                    'proc_return_code' => 'V034',
+                    'status'           => 'declined',
+                    'error_code'       => 'V034',
+                    'error_message'    => '3D Kullanıcı Doğrulama Adımı Başarısız',
+                    'md_error_code'    => 'V034',
+                    'md_error_message' => '3D Kullanıcı Doğrulama Adımı Başarısız',
+                ],
                 'is3DSuccess'     => false,
                 'isSuccess'       => false,
             ],
             'order_number_already_exist' => [
-                'order'           => PayForPosResponseDataMapperTest::threeDPaymentDataProvider()['order_number_already_exist']['order'],
-                'txType'          => PayForPosResponseDataMapperTest::threeDPaymentDataProvider()['order_number_already_exist']['txType'],
-                'request'         => PayForPosResponseDataMapperTest::threeDPaymentDataProvider()['order_number_already_exist']['threeDResponseData'],
-                'paymentResponse' => PayForPosResponseDataMapperTest::threeDPaymentDataProvider()['order_number_already_exist']['paymentData'],
-                'expected'        => PayForPosResponseDataMapperTest::threeDPaymentDataProvider()['order_number_already_exist']['expectedData'],
+                'order'           => [],
+                'txType'          => 'pay',
+                'request'         => [
+                    'RequestGuid'     => '0',
+                    'TransactionDate' => '17.03.2024 17:47:28',
+                    'MbrId'           => '5',
+                    'OkUrl'           => 'http://localhost/finansbank-payfor/3d/response.php',
+                    'FailUrl'         => 'http://localhost/finansbank-payfor/3d/response.php',
+                    'ErrMsg'          => 'Verilen sipariş no önceden kullanılmıştır.',
+                    'ProcReturnCode'  => '101310',
+                    'ReturnUrl'       => 'http://localhost/finansbank-payfor/3d/response.php',
+
+                ],
+                'paymentResponse' => [],
+                'expected'        => [
+                    'order_id'         => '202403173F72',
+                    'proc_return_code' => '101310',
+                    'status'           => 'declined',
+                    'error_code'       => '101310',
+                    'error_message'    => 'Verilen sipariş no önceden kullanılmıştır.',
+                    'md_error_code'    => '101310',
+                    'md_error_message' => 'Verilen sipariş no önceden kullanılmıştır.',
+                ],
                 'is3DSuccess'     => false,
                 'isSuccess'       => false,
             ],
             'success'                    => [
-                'order'           => PayForPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['order'],
-                'txType'          => PayForPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['txType'],
-                'request'         => PayForPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'],
-                'paymentResponse' => PayForPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['paymentData'],
-                'expected'        => PayForPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['expectedData'],
+                'order'           => [],
+                'txType'          => 'pre',
+                'request'         => [
+                    'RequestGuid'     => '1000000081255931',
+                    'TransactionDate' => '31.10.2022 22:34:18',
+                    'MbrId'           => '5',
+                    'OkUrl'           => 'http://localhost/finansbank-payfor/3d/response.php',
+                    'FailUrl'         => 'http://localhost/finansbank-payfor/3d/response.php',
+                    'ErrMsg'          => '3D Kullanıcı Doğrulama Adımı Başarılı',
+                    'ProcReturnCode'  => 'V033',
+                    'ReturnUrl'       => 'http://localhost/finansbank-payfor/3d/response.php',
+                ],
+                'paymentResponse' => [
+                    'AuthCode'       => 'S37397',
+                    'HostRefNum'     => '230422098249',
+                    'ProcReturnCode' => '00',
+                    'TransId'        => '20221031CFD0',
+                    'ErrMsg'         => 'Onaylandı',
+                    'CardHolderName' => 'John Doe',
+                ],
+                'expected'        => [
+                    'transaction_id'    => '20221031CFD0',
+                    'transaction_type'  => 'pay',
+                    'status'            => 'approved',
+                    'error_code'        => null,
+                    'error_message'     => null,
+                    'payment_model'     => '3d',
+                    'installment_count' => 0,
+                ],
                 'is3DSuccess'     => true,
                 'isSuccess'       => true,
             ],
@@ -792,11 +846,29 @@ class PayForPosTest extends TestCase
     {
         return [
             'success' => [
-                'order'           => PayForPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['order'],
-                'txType'          => PayForPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['txType'],
-                'request'         => PayForPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'],
-                'paymentResponse' => PayForPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['paymentData'],
-                'expected'        => PayForPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['expectedData'],
+                'order'           => [],
+                'txType'          => 'pre',
+                'request'         => [
+                    'RequestGuid'     => '1000000081255931',
+                    'TransactionDate' => '31.10.2022 22:34:18',
+                    'MbrId'           => '5',
+                    'OkUrl'           => 'http://localhost/finansbank-payfor/3d/response.php',
+                    'FailUrl'         => 'http://localhost/finansbank-payfor/3d/response.php',
+                    'ErrMsg'          => '3D Kullanıcı Doğrulama Adımı Başarılı',
+                ],
+                'paymentResponse' => [
+                    'AuthCode'       => 'S37397',
+                    'HostRefNum'     => '230422098249',
+                    'ProcReturnCode' => '00',
+                    'TransId'        => '20221031CFD0',
+                    'ErrMsg'         => 'Onaylandı',
+                    'CardHolderName' => 'John Doe',
+                ],
+                'expected'        => [
+                    'transaction_id'   => '20221031CFD0',
+                    'transaction_type' => 'pay',
+                    'status'           => 'approved',
+                ],
                 'is3DSuccess'     => true,
                 'isSuccess'       => true,
             ],

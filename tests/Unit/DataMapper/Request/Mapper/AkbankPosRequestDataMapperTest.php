@@ -23,7 +23,6 @@ use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Tests\Unit\DataMapper\Response\Mapper\AkbankPosResponseDataMapperTest;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -263,7 +262,21 @@ class AkbankPosRequestDataMapperTest extends TestCase
             $this->subMerchantAccount,
             $this->order,
             PosInterface::TX_TYPE_PAY_AUTH,
-            AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData']
+            [
+                'txnCode'         => '3001',
+                'responseCode'    => 'VPS-0000',
+                'responseMessage' => 'BAŞARILI',
+                'txnDateTime'     => '2024-04-18T20:15:35.000',
+                'merchantSafeId'  => '2023090417500272654BD9A49CF07574',
+                'terminalSafeId'  => '2023090417500284633D137A249DBBEB',
+                'orderId'         => '20240418BA6C',
+                'secureEcomInd'   => '02',
+                'secureId'        => 'VG8yV2tCRHpTSlpNN2VqcDJRS1k=',
+                'secureData'      => 'kBM8+wZGAAAAAAAAAAAAAAAAAAAA',
+                'secureMd'        => '08A86B192287C69B2C443E7A42B29B5F46436C41DF8E159B4A232BB3D961940F',
+                'hashParams'      => 'txnCode+responseCode+responseMessage+txnDateTime+merchantSafeId+terminalSafeId+orderId+secureId+secureEcomInd+secureData+secureMd',
+                'hash'            => 'bFYReNscRIyo3EQQm18qB9iZEW5eqtx1UBAjwRAoVJuigugPKr4Rjcf4PgBHtrjg1IYFYAz8k3TCFcKWS0b4Xg==',
+            ]
         );
 
         unset($actual['requestDateTime']);
@@ -1063,7 +1076,12 @@ class AkbankPosRequestDataMapperTest extends TestCase
                 'ip'       => '156.155.154.153',
             ],
             'txType'       => PosInterface::TX_TYPE_PAY_AUTH,
-            'responseData' => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'],
+            'responseData' => [
+                'secureEcomInd' => '02',
+                'secureId'      => 'VG8yV2tCRHpTSlpNN2VqcDJRS1k=',
+                'secureData'    => 'kBM8+wZGAAAAAAAAAAAAAAAAAAAA',
+                'secureMd'      => '08A86B192287C69B2C443E7A42B29B5F46436C41DF8E159B4A232BB3D961940F',
+            ],
             'expected'     => [
                 'terminal'          => [
                     'merchantSafeId' => '2023090417500272654BD9A49CF07574',

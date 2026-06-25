@@ -28,8 +28,6 @@ use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateway\AbstractGateway;
 use Mews\Pos\Gateway\ToslaPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Tests\Unit\DataMapper\Request\Mapper\ToslaPosRequestDataMapperTest;
-use Mews\Pos\Tests\Unit\DataMapper\Response\Mapper\ToslaPosResponseDataMapperTest;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -216,7 +214,13 @@ class ToslaPosTest extends TestCase
 
     public function testMake3DPayPaymentHashMismatchException(): void
     {
-        $gatewayResponseData = ToslaPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['paymentData'];
+        $gatewayResponseData = [
+            'ClientId'       => '1000000494',
+            'OrderId'        => '202312034E91',
+            'MdStatus'       => '1',
+            'HashParameters' => 'ClientId,ApiUser,OrderId,MdStatus,BankResponseCode,BankResponseMessage,RequestStatus',
+            'Hash'           => 'CgibjWkLpfx+Cz6cVlbH1ViSW74ouKACVOW0Vrt2SfqPMt+V3hfIx/4LnOgcInFhPci/qcnIMgdN0RptHSmFOg==',
+        ];
         $txType              = PosInterface::TX_TYPE_PAY_AUTH;
 
         $this->responseMapperMock->expects(self::once())
@@ -314,7 +318,13 @@ class ToslaPosTest extends TestCase
 
     public function testMake3DHostPaymentHashMismatchException(): void
     {
-        $gatewayResponseData = ToslaPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['paymentData'];
+        $gatewayResponseData = [
+            'ClientId'       => '1000000494',
+            'OrderId'        => '202312034E91',
+            'MdStatus'       => '1',
+            'HashParameters' => 'ClientId,ApiUser,OrderId,MdStatus,BankResponseCode,BankResponseMessage,RequestStatus',
+            'Hash'           => 'CgibjWkLpfx+Cz6cVlbH1ViSW74ouKACVOW0Vrt2SfqPMt+V3hfIx/4LnOgcInFhPci/qcnIMgdN0RptHSmFOg==',
+        ];
         $txType              = PosInterface::TX_TYPE_PAY_AUTH;
 
         $this->responseMapperMock->expects(self::once())
@@ -347,8 +357,6 @@ class ToslaPosTest extends TestCase
         string $txType,
         bool   $isWithCard,
         array  $requestData,
-        string $encodedRequestData,
-        string $responseData,
         array  $decodedResponseData,
         array  $formData,
         string $gatewayUrl
@@ -433,8 +441,6 @@ class ToslaPosTest extends TestCase
     public function testStatus(
         array  $order,
         array  $requestData,
-        string $encodedRequest,
-        string $responseContent,
         array  $decodedResponse,
         array  $mappedResponse,
         bool   $isSuccess
@@ -473,8 +479,6 @@ class ToslaPosTest extends TestCase
     public function testCancel(
         array  $order,
         array  $requestData,
-        string $encodedRequest,
-        string $responseContent,
         array  $decodedResponse,
         array  $mappedResponse,
         bool   $isSuccess
@@ -510,8 +514,6 @@ class ToslaPosTest extends TestCase
         array  $order,
         string $txType,
         array  $requestData,
-        string $encodedRequest,
-        string $responseContent,
         array  $decodedResponse,
         array  $mappedResponse,
         bool   $isSuccess
@@ -552,8 +554,6 @@ class ToslaPosTest extends TestCase
     public function testOrderHistory(
         array  $order,
         array  $requestData,
-        string $encodedRequest,
-        string $responseContent,
         array  $decodedResponse,
         array  $mappedResponse,
         bool   $isSuccess
@@ -634,54 +634,49 @@ class ToslaPosTest extends TestCase
 
     public static function statusDataProvider(): iterable
     {
-        $statusResponses = iterator_to_array(ToslaPosResponseDataMapperTest::statusResponseDataProvider());
+        $decodedResponse = ['BankResponseCode' => '00', 'OrderId' => '202401199AAA'];
         yield [
-            'order'               => ToslaPosRequestDataMapperTest::statusRequestDataProvider()[0]['order'],
-            'requestData'         => ToslaPosRequestDataMapperTest::statusRequestDataProvider()[0]['expected'],
-            'encodedRequestData'  => \json_encode(ToslaPosRequestDataMapperTest::statusRequestDataProvider()[0]['expected'], JSON_THROW_ON_ERROR),
-            'responseData'        => \json_encode($statusResponses['success_pay']['responseData'], JSON_THROW_ON_ERROR),
-            'decodedResponseData' => $statusResponses['success_pay']['responseData'],
-            'mappedResponse'      => $statusResponses['success_pay']['expectedData'],
+            'order'               => ['id' => 'id-12'],
+            'requestData'         => ['clientId' => '1000000494', 'orderId' => 'id-12'],
+            'decodedResponseData' => $decodedResponse,
+            'mappedResponse'      => ['status' => 'approved'],
             'isSuccess'           => true,
         ];
     }
 
     public static function cancelDataProvider(): iterable
     {
+        $decodedResponse = ['BankResponseCode' => '00', 'OrderId' => '202312058278'];
         yield [
-            'order'               => ToslaPosRequestDataMapperTest::cancelRequestDataProvider()[0]['order'],
-            'requestData'         => ToslaPosRequestDataMapperTest::cancelRequestDataProvider()[0]['expected'],
-            'encodedRequestData'  => \json_encode(ToslaPosRequestDataMapperTest::cancelRequestDataProvider()[0]['expected'], JSON_THROW_ON_ERROR),
-            'responseData'        => \json_encode(ToslaPosResponseDataMapperTest::cancelDataProvider()['success1']['responseData'], JSON_THROW_ON_ERROR),
-            'decodedResponseData' => ToslaPosResponseDataMapperTest::cancelDataProvider()['success1']['responseData'],
-            'mappedResponse'      => ToslaPosResponseDataMapperTest::cancelDataProvider()['success1']['expectedData'],
+            'order'               => ['id' => 'id-12'],
+            'requestData'         => ['clientId' => '1000000494', 'orderId' => 'id-12'],
+            'decodedResponseData' => $decodedResponse,
+            'mappedResponse'      => ['status' => 'approved'],
             'isSuccess'           => true,
         ];
     }
 
     public static function refundDataProvider(): iterable
     {
+        $decodedResponse = ['BankResponseCode' => '00', 'OrderId' => '202312051B4E'];
         yield [
-            'order'               => ToslaPosRequestDataMapperTest::refundRequestDataProvider()[0]['order'],
+            'order'               => ['id' => 'id-12', 'amount' => 1.02],
             'txType'              => PosInterface::TX_TYPE_REFUND,
-            'requestData'         => ToslaPosRequestDataMapperTest::refundRequestDataProvider()[0]['expected'],
-            'encodedRequestData'  => \json_encode(ToslaPosRequestDataMapperTest::refundRequestDataProvider()[0]['expected'], JSON_THROW_ON_ERROR),
-            'responseData'        => \json_encode(ToslaPosResponseDataMapperTest::refundDataProvider()['success1']['responseData'], JSON_THROW_ON_ERROR),
-            'decodedResponseData' => ToslaPosResponseDataMapperTest::refundDataProvider()['success1']['responseData'],
-            'mappedResponse'      => ToslaPosResponseDataMapperTest::refundDataProvider()['success1']['expectedData'],
+            'requestData'         => ['clientId' => '1000000494', 'orderId' => 'id-12', 'amount' => 102],
+            'decodedResponseData' => $decodedResponse,
+            'mappedResponse'      => ['status' => 'approved'],
             'isSuccess'           => true,
         ];
     }
 
     public static function orderHistoryDataProvider(): iterable
     {
+        $decodedResponse = ['Count' => 1, 'Code' => 0, 'Transactions' => [['OrderId' => '20231209C3AE']]];
         yield [
-            'order'               => ToslaPosRequestDataMapperTest::orderHistoryRequestDataProvider()[0]['order'],
-            'requestData'         => ToslaPosRequestDataMapperTest::orderHistoryRequestDataProvider()[0]['expected'],
-            'encodedRequestData'  => \json_encode(ToslaPosRequestDataMapperTest::orderHistoryRequestDataProvider()[0]['expected'], JSON_THROW_ON_ERROR),
-            'responseData'        => \json_encode(ToslaPosResponseDataMapperTest::orderHistoryDataProvider()['success_only_payment_transaction']['responseData'], JSON_THROW_ON_ERROR),
-            'decodedResponseData' => ToslaPosResponseDataMapperTest::orderHistoryDataProvider()['success_only_payment_transaction']['responseData'],
-            'mappedResponse'      => ToslaPosResponseDataMapperTest::orderHistoryDataProvider()['success_only_payment_transaction']['expectedData'],
+            'order'               => ['id' => '2020110828BC'],
+            'requestData'         => ['clientId' => '1000000494', 'orderId' => '2020110828BC'],
+            'decodedResponseData' => $decodedResponse,
+            'mappedResponse'      => ['status' => 'approved'],
             'isSuccess'           => true,
         ];
     }
@@ -689,38 +684,79 @@ class ToslaPosTest extends TestCase
     public static function threeDFormDataProvider(): iterable
     {
         yield '3d_pay' => [
-            'order'               => ToslaPosRequestDataMapperTest::paymentRegisterRequestDataProvider()[0]['order'],
+            'order'               => [
+                'id'          => 'order222',
+                'amount'      => 100.25,
+                'installment' => 0,
+                'currency'    => 'TRY',
+                'success_url' => 'https://domain.com/success',
+                'time_span'   => new \DateTimeImmutable('2023-12-09 21:47:08.000000', new \DateTimeZone('UTC')),
+            ],
             'paymentModel'        => PosInterface::MODEL_3D_PAY,
             'txType'              => PosInterface::TX_TYPE_PAY_AUTH,
             'isWithCard'          => true,
-            'requestData'         => ToslaPosRequestDataMapperTest::paymentRegisterRequestDataProvider()[0]['expected'],
-            'encodedRequestData'  => \json_encode(ToslaPosRequestDataMapperTest::statusRequestDataProvider()[0]['expected'], JSON_THROW_ON_ERROR),
-            'responseData'        => '{"ThreeDSessionId":"PA49E341381C94587AB4CB196DAC10DC02E509578520E4471A3EEE2BB4830AE4F","TransactionId":"2000000000032439","Code":0,"Message":"Ba\u015far\u0131l\u0131"}',
+            'requestData'         => [
+                'clientId'    => '1000000494',
+                'apiUser'     => 'POS_ENT_Test_001',
+                'callbackUrl' => 'https://domain.com/success',
+                'hash'        => '+XGO1qv+6W7nXZwSsYMaRrWXhi+99jffLvExGsFDodYyNadOG7OQKsygzly5ESDoNIS19oD2U+hSkVeT6UTAFA==',
+            ],
             'decodedResponseData' => [
                 'ThreeDSessionId' => 'PA49E341381C94587AB4CB196DAC10DC02E509578520E4471A3EEE2BB4830AE4F',
                 'TransactionId'   => '2000000000032439',
                 'Code'            => 0,
                 'Message'         => 'Başarılı',
             ],
-            'formData'            => ToslaPosRequestDataMapperTest::threeDFormDataProvider()['3d_pay_form_data']['expected'],
+            'formData'            => [
+                'gateway' => 'https://ent.akodepos.com/api/Payment/ProcessCardForm',
+                'method'  => 'POST',
+                'inputs'  => [
+                    'ThreeDSessionId' => 'P6D383818909442128AB50AB1EC7A4B83080874341688447DA74B90150C8857F2',
+                    'CardHolderName'  => 'ahmet',
+                    'CardNo'          => '5555444433332222',
+                    'ExpireDate'      => '01/22',
+                    'Cvv'             => '123',
+                ],
+            ],
             'gateway_url'         => 'https://ent.akodepos.com/api/Payment/ProcessCardForm',
         ];
 
         yield '3d_host' => [
-            'order'               => ToslaPosRequestDataMapperTest::paymentRegisterRequestDataProvider()[0]['order'],
+            'order'               => [
+                'id'          => 'order222',
+                'amount'      => 100.25,
+                'installment' => 0,
+                'currency'    => 'TRY',
+                'success_url' => 'https://domain.com/success',
+                'time_span'   => new \DateTimeImmutable('2023-12-09 21:47:08.000000', new \DateTimeZone('UTC')),
+            ],
             'paymentModel'        => PosInterface::MODEL_3D_HOST,
             'txType'              => PosInterface::TX_TYPE_PAY_AUTH,
             'isWithCard'          => false,
-            'requestData'         => ToslaPosRequestDataMapperTest::paymentRegisterRequestDataProvider()[0]['expected'],
-            'encodedRequestData'  => \json_encode(ToslaPosRequestDataMapperTest::statusRequestDataProvider()[0]['expected'], JSON_THROW_ON_ERROR),
-            'responseData'        => '{"ThreeDSessionId":"PA49E341381C94587AB4CB196DAC10DC02E509578520E4471A3EEE2BB4830AE4F","TransactionId":"2000000000032439","Code":0,"Message":"Ba\u015far\u0131l\u0131"}',
+            'requestData'         => [
+                'clientId'         => '1000000494',
+                'apiUser'          => 'POS_ENT_Test_001',
+                'rnd'              => 'rand',
+                'timeSpan'         => '20231209214708',
+                'hash'             => '+XGO1qv+6W7nXZwSsYMaRrWXhi+99jffLvExGsFDodYyNadOG7OQKsygzly5ESDoNIS19oD2U+hSkVeT6UTAFA==',
+            ],
             'decodedResponseData' => [
                 'ThreeDSessionId' => 'PA49E341381C94587AB4CB196DAC10DC02E509578520E4471A3EEE2BB4830AE4F',
                 'TransactionId'   => '2000000000032439',
                 'Code'            => 0,
                 'Message'         => 'Başarılı',
             ],
-            'formData'            => ToslaPosRequestDataMapperTest::threeDFormDataProvider()['3d_pay_form_data']['expected'],
+            'formData'            => [
+                'gateway' => 'https://ent.akodepos.com/api/Payment/ProcessCardForm',
+                'method'  => 'POST',
+                'inputs'  => [
+                    'ThreeDSessionId' => 'P6D383818909442128AB50AB1EC7A4B83080874341688447DA74B90150C8857F2',
+                    'CardHolderName'  => 'ahmet',
+                    'CardNo'          => '5555444433332222',
+                    'ExpireDate'      => '01/22',
+                    'Cvv'             => '123',
+                ],
+            ],
             'gateway_url'         => 'https://ent.akodepos.com/api/Payment/threeDSecure/PA49E341381C94587AB4CB196DAC10DC02E509578520E4471A3EEE2BB4830AE4F',
         ];
     }
@@ -730,18 +766,49 @@ class ToslaPosTest extends TestCase
     {
         return [
             'auth_fail' => [
-                'order'       => ToslaPosResponseDataMapperTest::threeDPayPaymentDataProvider()['auth_fail']['order'],
-                'txType'      => ToslaPosResponseDataMapperTest::threeDPayPaymentDataProvider()['auth_fail']['txType'],
-                'request'     => ToslaPosResponseDataMapperTest::threeDPayPaymentDataProvider()['auth_fail']['paymentData'],
-                'expected'    => ToslaPosResponseDataMapperTest::threeDPayPaymentDataProvider()['auth_fail']['expectedData'],
+                'order'       => [
+                    'currency' => 'TRY',
+                    'amount'   => 1.01,
+                ],
+                'txType'      => 'pay',
+                'request'     => [
+                    'ClientId'       => '1000000494',
+                    'OrderId'        => '20231203E148',
+                    'MdStatus'       => '0',
+                    'HashParameters' => 'ClientId,ApiUser,OrderId,MdStatus,BankResponseCode,BankResponseMessage,RequestStatus',
+                    'Hash'           => 'C7Vbcr3adDhlWEr9vT9oFHikjrjEiv5DSBORu0YnOATkF/YirOziwouAGk8vqB29oeyPBnlFgBih7bLN9YWweQ==',
+                ],
+                'expected'    => [
+                    'tx_status'        => 'ERROR',
+                    'md_error_message' => null,
+                    'order_id'         => '20231203E148',
+                    'proc_return_code' => 'MD:0',
+                    'status'           => 'declined',
+                ],
                 'is3DSuccess' => false,
                 'isSuccess'   => false,
             ],
             'success'   => [
-                'order'       => ToslaPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['order'],
-                'txType'      => ToslaPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['txType'],
-                'request'     => ToslaPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['paymentData'],
-                'expected'    => ToslaPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['expectedData'],
+                'order'       => [
+                    'currency' => 'TRY',
+                    'amount'   => 1.01,
+                ],
+                'txType'      => 'pay',
+                'request'     => [
+                    'ClientId'       => '1000000494',
+                    'OrderId'        => '202312034E91',
+                    'MdStatus'       => '1',
+                    'HashParameters' => 'ClientId,ApiUser,OrderId,MdStatus,BankResponseCode,BankResponseMessage,RequestStatus',
+                    'Hash'           => 'CgibjWkLpfx+Cz6cVlbH1ViSW74ouKACVOW0Vrt2SfqPMt+V3hfIx/4LnOgcInFhPci/qcnIMgdN0RptHSmFOg==',
+                ],
+                'expected'    => [
+                    'md_status'        => '1',
+                    'tx_status'        => 'PAYMENT_COMPLETED',
+                    'md_error_message' => null,
+                    'order_id'         => '202312034E91',
+                    'proc_return_code' => '00',
+                    'status'           => 'approved',
+                ],
                 'is3DSuccess' => true,
                 'isSuccess'   => true,
             ],
@@ -752,10 +819,26 @@ class ToslaPosTest extends TestCase
     {
         return [
             'success' => [
-                'order'       => ToslaPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['order'],
-                'txType'      => ToslaPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['txType'],
-                'request'     => ToslaPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['paymentData'],
-                'expected'    => ToslaPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['expectedData'],
+                'order'       => [
+                    'currency' => 'TRY',
+                    'amount'   => 1.01,
+                ],
+                'txType'      => 'pay',
+                'request'     => [
+                    'ClientId'       => '1000000494',
+                    'OrderId'        => '202312034E91',
+                    'MdStatus'       => '1',
+                    'HashParameters' => 'ClientId,ApiUser,OrderId,MdStatus,BankResponseCode,BankResponseMessage,RequestStatus',
+                    'Hash'           => 'CgibjWkLpfx+Cz6cVlbH1ViSW74ouKACVOW0Vrt2SfqPMt+V3hfIx/4LnOgcInFhPci/qcnIMgdN0RptHSmFOg==',
+                ],
+                'expected'    => [
+                    'md_status'        => '1',
+                    'tx_status'        => 'PAYMENT_COMPLETED',
+                    'md_error_message' => null,
+                    'order_id'         => '202312034E91',
+                    'proc_return_code' => '00',
+                    'status'           => 'approved',
+                ],
                 'is3DSuccess' => true,
                 'isSuccess'   => true,
             ],

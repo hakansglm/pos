@@ -27,7 +27,6 @@ use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateway\AbstractGateway;
 use Mews\Pos\Gateway\GarantiPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Tests\Unit\DataMapper\Response\Mapper\GarantiPosResponseDataMapperTest;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -340,7 +339,16 @@ class GarantiPosTest extends TestCase
 
     public function testMake3DPaymentHashMismatchException(): void
     {
-        $data = GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['paymentFail1']['threeDResponseData'];
+        $data = [
+            'xid'           => 'RszfrwEYe/8xb7rnrPuh6C9pZSQ=',
+            'md'            => 'G1YfkxEZ8Noemg4MRspO20vEiXaEk51ANsgVc6NOy8kHpgH0Bj2jGdc4n47VV2IxRcLSwiw3+DC4zpyj2qtCo8LA5ACL2pHmusSpDmp+kAJOIQTFpsCfJ53tob4+xTUbctQuxBd4u+Bqs1looyNEeg==',
+            'terminalid'    => '30691298',
+            'oid'           => '20221101295D',
+            'rnd'           => 'Nvx8y+0R3sR5mfDVLtVD',
+            'hash'          => 'K1eaT12s4oPbvQDfA6YIMCfH6HQ=',
+            'hashparams'    => 'clientid:oid:authcode:procreturncode:response:mdstatus:cavv:eci:md:rnd:',
+            'hashparamsval' => '3069129820221101295D1jCm0m+u/0hUfAREHBAMBcfN+pSo=02G1YfkxEZ8Noemg4MRspO20vEiXaEk51ANsgVc6NOy8kHpgH0Bj2jGdc4n47VV2IxRcLSwiw3+DC4zpyj2qtCo8LA5ACL2pHmusSpDmp+kAJOIQTFpsCfJ53tob4+xTUbctQuxBd4u+Bqs1looyNEeg==Nvx8y+0R3sR5mfDVLtVD',
+        ];
 
         $this->cryptMock->expects(self::once())
             ->method('check3DHash')
@@ -658,29 +666,79 @@ class GarantiPosTest extends TestCase
     {
         return [
             '3d_auth_fail_1'               => [
-                'order'               => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail_1']['order'],
-                'txType'              => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail_1']['txType'],
-                'gatewayResponseData' => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail_1']['threeDResponseData'],
-                'paymentResponse'     => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail_1']['paymentData'],
-                'expected'            => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail_1']['expectedData'],
+                'order'               => [],
+                'txType'              => 'pay',
+                'gatewayResponseData' => [
+                    'apiversion'     => '512',
+                    'authcode'       => '',
+                    'cavv'           => '',
+                    'hash'           => 'FD9BF014BFBC3D977B123AE84247CE3F639913644429304C4EE108C0F40212853628CAECAADB798EE73D467F50C3B5D90FE0F3B921EDAA94B6E2EA888F9FE9B7',
+                    'hashparams'     => 'clientid:oid:authcode:procreturncode:response:mdstatus:cavv:eci:md:rnd:',
+                    'hashparamsval'  => '30691298202409078CF30aW5kZXg6MDIYjoYTHmZE91tOHZxS3PEkMcb8vBvm21xQz107TS6WKHVjLlrZP9AMx7KFu8jZRZA3WtZxMUuaUynWLxQGsVrw1vTKIofUQ0dw2P/jVVvPMX/RxI7Bpjvo/pZp3Nmbj2wd1W146UhNNmge7eA+hdrNSHuPp7PmjAihyZEPujAi3Q==6ga2Y3buKZ3ZcJSC7uE6',
+                    'hostmsg'        => '',
+                    'md'             => 'aW5kZXg6MDIYjoYTHmZE91tOHZxS3PEkMcb8vBvm21xQz107TS6WKHVjLlrZP9AMx7KFu8jZRZA3WtZxMUuaUynWLxQGsVrw1vTKIofUQ0dw2P/jVVvPMX/RxI7Bpjvo/pZp3Nmbj2wd1W146UhNNmge7eA+hdrNSHuPp7PmjAihyZEPujAi3Q==',
+                    'mderrormessage' => '',
+                    'secure3dhash'   => '9F3027C22FB3485484144993',
+                ],
+                'paymentResponse'     => [],
+                'expected'            => [
+                    'order_id'       => '202409078CF3',
+                    'transaction_id' => null,
+                    'auth_code'      => null,
+                ],
                 'is3DSuccess'         => false,
                 'isSuccess'           => false,
             ],
             '3d_auth_success_payment_fail' => [
-                'order'               => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['paymentFail1']['order'],
-                'txType'              => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['paymentFail1']['txType'],
-                'gatewayResponseData' => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['paymentFail1']['threeDResponseData'],
-                'paymentResponse'     => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['paymentFail1']['paymentData'],
-                'expected'            => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['paymentFail1']['expectedData'],
+                'order'               => [],
+                'txType'              => 'pay',
+                'gatewayResponseData' => [
+                    'xid'           => 'RszfrwEYe/8xb7rnrPuh6C9pZSQ=',
+                    'md'            => 'G1YfkxEZ8Noemg4MRspO20vEiXaEk51ANsgVc6NOy8kHpgH0Bj2jGdc4n47VV2IxRcLSwiw3+DC4zpyj2qtCo8LA5ACL2pHmusSpDmp+kAJOIQTFpsCfJ53tob4+xTUbctQuxBd4u+Bqs1looyNEeg==',
+                    'rnd'           => 'Nvx8y+0R3sR5mfDVLtVD',
+                    'hash'          => 'K1eaT12s4oPbvQDfA6YIMCfH6HQ=',
+                    'hashparams'    => 'clientid:oid:authcode:procreturncode:response:mdstatus:cavv:eci:md:rnd:',
+                    'hashparamsval' => '3069129820221101295D1jCm0m+u/0hUfAREHBAMBcfN+pSo=02G1YfkxEZ8Noemg4MRspO20vEiXaEk51ANsgVc6NOy8kHpgH0Bj2jGdc4n47VV2IxRcLSwiw3+DC4zpyj2qtCo8LA5ACL2pHmusSpDmp+kAJOIQTFpsCfJ53tob4+xTUbctQuxBd4u+Bqs1looyNEeg==Nvx8y+0R3sR5mfDVLtVD',
+                ],
+                'paymentResponse'     => [
+                    'Mode'     => '',
+                    'Terminal' => [
+                        'ProvUserID' => 'PROVAUT',
+                        'UserID'     => 'PROVAUT',
+                        'ID'         => '30691298',
+                        'MerchantID' => '7000679',
+                    ],
+                ],
+                'expected'            => [
+                    'order_id'       => '20221101295D',
+                    'transaction_id' => '20221101295D',
+                ],
                 'is3DSuccess'         => true,
                 'isSuccess'           => false,
             ],
             'success'                      => [
-                'order'               => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['order'],
-                'txType'              => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['txType'],
-                'gatewayResponseData' => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'],
-                'paymentResponse'     => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['paymentData'],
-                'expected'            => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['expectedData'],
+                'order'               => [],
+                'txType'              => 'pay',
+                'gatewayResponseData' => [
+                    'xid'            => '748ac354-4bfe-4b40-aa12-5ea025b7399b',
+                    'mdstatus'       => '1',
+                    'mderrormessage' => 'Y-status/Challenge authentication via ACS: https://gbemv3dsecure.garanti.com.tr/web/creq',
+                ],
+                'paymentResponse'     => [
+                    'Mode'     => null,
+                    'Terminal' => [
+                        'ProvUserID' => 'PROVAUT',
+                        'UserID'     => 'PROVAUT',
+                        'ID'         => '30691298',
+                        'MerchantID' => '7000679',
+                    ],
+
+                ],
+                'expected'            => [
+                    'order_id'       => '202312238064',
+                    'transaction_id' => '202312238064',
+                    'status'         => 'approved',
+                ],
                 'is3DSuccess'         => true,
                 'isSuccess'           => true,
             ],
@@ -691,20 +749,56 @@ class GarantiPosTest extends TestCase
     {
         return [
             '3d_auth_success_payment_fail' => [
-                'order'               => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['paymentFail1']['order'],
-                'txType'              => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['paymentFail1']['txType'],
-                'gatewayResponseData' => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['paymentFail1']['threeDResponseData'],
-                'paymentResponse'     => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['paymentFail1']['paymentData'],
-                'expected'            => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['paymentFail1']['expectedData'],
+                'order'               => [],
+                'txType'              => 'pay',
+                'gatewayResponseData' => [
+                    'xid'            => 'RszfrwEYe/8xb7rnrPuh6C9pZSQ=',
+                    'mdstatus'       => '1',
+                    'mderrormessage' => 'Authenticated',
+                ],
+                'paymentResponse'     => [
+                    'Mode'     => '',
+                    'Terminal' => [
+                        'ProvUserID' => 'PROVAUT',
+                        'UserID'     => 'PROVAUT',
+                        'ID'         => '30691298',
+                        'MerchantID' => '7000679',
+                    ],
+                ],
+                'expected'            => [
+                    'order_id'       => '20221101295D',
+                    'transaction_id' => '20221101295D',
+                    'auth_code'      => null,
+                    'status'         => 'declined',
+                ],
                 'is3DSuccess'         => true,
                 'isSuccess'           => false,
             ],
             'success'                      => [
-                'order'               => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['order'],
-                'txType'              => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['txType'],
-                'gatewayResponseData' => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'],
-                'paymentResponse'     => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['paymentData'],
-                'expected'            => GarantiPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['expectedData'],
+                'order'               => [],
+                'txType'              => 'pay',
+                'gatewayResponseData' => [
+                    'xid'            => '748ac354-4bfe-4b40-aa12-5ea025b7399b',
+                    'mdstatus'       => '1',
+                    'mderrormessage' => 'Y-status/Challenge authentication via ACS: https://gbemv3dsecure.garanti.com.tr/web/creq',
+                    'txnstatus'      => null,
+                ],
+                'paymentResponse'     => [
+                    'Mode'     => null,
+                    'Terminal' => [
+                        'ProvUserID' => 'PROVAUT',
+                        'UserID'     => 'PROVAUT',
+                        'ID'         => '30691298',
+                        'MerchantID' => '7000679',
+                    ],
+                ],
+                'expected'            => [
+                    'order_id'       => '202312238064',
+                    'transaction_id' => '202312238064',
+                    'md_status'      => '1',
+                    'status'         => 'approved',
+
+                ],
                 'is3DSuccess'         => true,
                 'isSuccess'           => true,
             ],
@@ -787,7 +881,7 @@ class GarantiPosTest extends TestCase
     public static function threeDFormDataBadInputsProvider(): array
     {
         return [
-            '3d_secure_without_card' => [
+            '3d_secure_without_card'  => [
                 'order'                  => ['id' => '2020110828BC'],
                 'paymentModel'           => PosInterface::MODEL_3D_SECURE,
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
@@ -796,7 +890,7 @@ class GarantiPosTest extends TestCase
                 'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Bu ödeme modeli için kart bilgileri zorunlu!',
             ],
-            '3d_pay_without_card'    => [
+            '3d_pay_without_card'     => [
                 'order'                  => ['id' => '2020110828BC'],
                 'paymentModel'           => PosInterface::MODEL_3D_PAY,
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
@@ -805,7 +899,7 @@ class GarantiPosTest extends TestCase
                 'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Bu ödeme modeli için kart bilgileri zorunlu!',
             ],
-            'non_payment_tx_type'    => [
+            'non_payment_tx_type'     => [
                 'order'                  => ['id' => '2020110828BC'],
                 'paymentModel'           => PosInterface::MODEL_3D_PAY,
                 'txType'                 => PosInterface::TX_TYPE_STATUS,
@@ -814,7 +908,7 @@ class GarantiPosTest extends TestCase
                 'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay, pre]',
             ],
-            'post_auth_tx_type'      => [
+            'post_auth_tx_type'       => [
                 'order'                  => ['id' => '2020110828BC'],
                 'paymentModel'           => PosInterface::MODEL_3D_PAY,
                 'txType'                 => PosInterface::TX_TYPE_PAY_POST_AUTH,

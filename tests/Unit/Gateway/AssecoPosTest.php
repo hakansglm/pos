@@ -26,7 +26,6 @@ use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateway\AbstractGateway;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Tests\Unit\DataMapper\Response\Mapper\AssecoPosResponseDataMapperTest;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -196,7 +195,15 @@ class AssecoPosTest extends TestCase
             ->method('check3DHash')
             ->willReturn(true);
 
-        $testData            = AssecoPosResponseDataMapperTest::threeDHostPaymentDataProvider()['success1'];
+        $testData            = [
+            'order'        => ['id' => 'order-3dhost-assecopos'],
+            'txType'       => 'pay',
+            'paymentData'  => [
+                'oid'      => '202210305DCF',
+                'mdStatus' => '1',
+            ],
+            'expectedData' => ['status' => 'approved'],
+        ];
         $gatewayResponseData = $testData['paymentData'];
         $order               = $testData['order'];
         $txType              = $testData['txType'];
@@ -231,7 +238,15 @@ class AssecoPosTest extends TestCase
         $this->cryptMock->expects(self::never())
             ->method('check3DHash');
 
-        $testData            = AssecoPosResponseDataMapperTest::threeDHostPaymentDataProvider()['success1'];
+        $testData            = [
+            'order'        => ['id' => 'order-3dhost-nohash'],
+            'txType'       => 'pay',
+            'paymentData'  => [
+                'oid'      => '202210305DCF',
+                'mdStatus' => '1',
+            ],
+            'expectedData' => ['status' => 'approved'],
+        ];
         $gatewayResponseData = $testData['paymentData'];
         $order               = $testData['order'];
         $txType              = $testData['txType'];
@@ -250,7 +265,10 @@ class AssecoPosTest extends TestCase
     public function testMake3DHostPaymentHashMismatchException(): void
     {
         $txType = PosInterface::TX_TYPE_PAY_PRE_AUTH;
-        $data   = AssecoPosResponseDataMapperTest::threeDHostPaymentDataProvider()['success1']['paymentData'];
+        $data   = [
+            'oid'      => '202210305DCF',
+            'mdStatus' => '1',
+        ];
 
         $this->cryptMock->expects(self::once())
             ->method('check3DHash')
@@ -273,7 +291,12 @@ class AssecoPosTest extends TestCase
             ->method('check3DHash')
             ->willReturn(true);
 
-        $testData            = AssecoPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1'];
+        $testData            = [
+            'order'        => ['currency' => 'TRY', 'amount' => 1.01],
+            'txType'       => 'pay',
+            'paymentData'  => ['oid' => '2022103030CB', 'mdStatus' => '1'],
+            'expectedData' => ['status' => 'approved'],
+        ];
         $gatewayResponseData = $testData['paymentData'];
         $order               = $testData['order'];
         $txType              = $testData['txType'];
@@ -308,7 +331,12 @@ class AssecoPosTest extends TestCase
         $this->cryptMock->expects(self::never())
             ->method('check3DHash');
 
-        $testData            = AssecoPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1'];
+        $testData            = [
+            'order'        => ['currency' => 'TRY', 'amount' => 1.01],
+            'txType'       => 'pay',
+            'paymentData'  => ['oid' => '2022103030CB', 'mdStatus' => '1'],
+            'expectedData' => ['status' => 'approved'],
+        ];
         $gatewayResponseData = $testData['paymentData'];
         $order               = $testData['order'];
         $txType              = $testData['txType'];
@@ -326,7 +354,7 @@ class AssecoPosTest extends TestCase
 
     public function testMake3DPayPaymentHashMismatchException(): void
     {
-        $data   = AssecoPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['paymentData'];
+        $data   = ['oid' => '2022103030CB', 'mdStatus' => '1'];
         $txType = PosInterface::TX_TYPE_PAY_PRE_AUTH;
 
         $this->cryptMock->expects(self::once())
@@ -620,7 +648,7 @@ class AssecoPosTest extends TestCase
 
     public function testMake3DPaymentHashMismatchException(): void
     {
-        $data = AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['threeDResponseData'];
+        $data = ['oid' => '20221030FE4C', 'mdStatus' => '1'];
 
         $this->cryptMock->expects(self::once())
             ->method('check3DHash')
@@ -753,29 +781,29 @@ class AssecoPosTest extends TestCase
     {
         return [
             'auth_fail'                    => [
-                'order'               => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['order'],
-                'txType'              => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['txType'],
-                'gatewayResponseData' => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['threeDResponseData'],
-                'paymentResponse'     => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['paymentData'],
-                'expected'            => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['expectedData'],
+                'order'               => ['currency' => 'TRY', 'amount' => 1.01],
+                'txType'              => 'pay',
+                'gatewayResponseData' => ['oid' => '2022103076E7', 'mdStatus' => '0'],
+                'paymentResponse'     => [],
+                'expected'            => ['status' => 'declined'],
                 'is3DSuccess'         => false,
                 'isSuccess'           => false,
             ],
             '3d_auth_success_payment_fail' => [
-                'order'               => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['order'],
-                'txType'              => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['txType'],
-                'gatewayResponseData' => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['threeDResponseData'],
-                'paymentResponse'     => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['paymentData'],
-                'expected'            => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['expectedData'],
+                'order'               => ['currency' => 'TRY', 'amount' => 1.01],
+                'txType'              => 'pay',
+                'gatewayResponseData' => ['oid' => '20221030FE4C', 'mdStatus' => '1'],
+                'paymentResponse'     => ['ProcReturnCode' => '99'],
+                'expected'            => ['status' => 'declined'],
                 'is3DSuccess'         => true,
                 'isSuccess'           => false,
             ],
             'success'                      => [
-                'order'               => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['order'],
-                'txType'              => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['txType'],
-                'gatewayResponseData' => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'],
-                'paymentResponse'     => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['paymentData'],
-                'expected'            => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['expectedData'],
+                'order'               => ['currency' => 'TRY', 'amount' => 1.01],
+                'txType'              => 'pay',
+                'gatewayResponseData' => ['oid' => '202210304547', 'mdStatus' => '1'],
+                'paymentResponse'     => ['ProcReturnCode' => '00'],
+                'expected'            => ['status' => 'approved'],
                 'is3DSuccess'         => true,
                 'isSuccess'           => true,
             ],
@@ -786,20 +814,20 @@ class AssecoPosTest extends TestCase
     {
         return [
             '3d_auth_success_payment_fail' => [
-                'order'               => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['order'],
-                'txType'              => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['txType'],
-                'gatewayResponseData' => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['threeDResponseData'],
-                'paymentResponse'     => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['paymentData'],
-                'expected'            => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['expectedData'],
+                'order'               => ['currency' => 'TRY', 'amount' => 1.01],
+                'txType'              => 'pay',
+                'gatewayResponseData' => ['oid' => '20221030FE4C', 'mdStatus' => '1'],
+                'paymentResponse'     => ['ProcReturnCode' => '99'],
+                'expected'            => ['status' => 'declined'],
                 'is3DSuccess'         => true,
                 'isSuccess'           => false,
             ],
             'success'                      => [
-                'order'               => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['order'],
-                'txType'              => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['txType'],
-                'gatewayResponseData' => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'],
-                'paymentResponse'     => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['paymentData'],
-                'expected'            => AssecoPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['expectedData'],
+                'order'               => ['currency' => 'TRY', 'amount' => 1.01],
+                'txType'              => 'pay',
+                'gatewayResponseData' => ['oid' => '202210304547', 'mdStatus' => '1'],
+                'paymentResponse'     => ['ProcReturnCode' => '00'],
+                'expected'            => ['status' => 'approved'],
                 'is3DSuccess'         => true,
                 'isSuccess'           => true,
             ],
@@ -810,13 +838,13 @@ class AssecoPosTest extends TestCase
     {
         return [
             'fail_1'    => [
-                'bank_response' => AssecoPosResponseDataMapperTest::cancelTestDataProvider()['fail_order_not_found_1']['responseData'],
-                'expected_data' => AssecoPosResponseDataMapperTest::cancelTestDataProvider()['fail_order_not_found_1']['expectedData'],
+                'bank_response' => ['ProcReturnCode' => '99'],
+                'expected_data' => ['status' => 'declined'],
                 'isSuccess'     => false,
             ],
             'success_1' => [
-                'bank_response' => AssecoPosResponseDataMapperTest::cancelTestDataProvider()['success1']['responseData'],
-                'expected_data' => AssecoPosResponseDataMapperTest::cancelTestDataProvider()['success1']['expectedData'],
+                'bank_response' => ['ProcReturnCode' => '00'],
+                'expected_data' => ['status' => 'approved'],
                 'isSuccess'     => true,
             ],
         ];
@@ -826,8 +854,8 @@ class AssecoPosTest extends TestCase
     {
         return [
             'fail_1' => [
-                'bank_response' => AssecoPosResponseDataMapperTest::refundTestDataProvider()['fail1']['responseData'],
-                'expected_data' => AssecoPosResponseDataMapperTest::refundTestDataProvider()['fail1']['expectedData'],
+                'bank_response' => ['ProcReturnCode' => '99'],
+                'expected_data' => ['status' => 'declined'],
                 'isSuccess'     => false,
             ],
         ];
@@ -836,13 +864,13 @@ class AssecoPosTest extends TestCase
     public static function statusDataProvider(): iterable
     {
         yield [
-            'bank_response' => AssecoPosResponseDataMapperTest::statusTestDataProvider()['fail1']['responseData'],
-            'expected_data' => AssecoPosResponseDataMapperTest::statusTestDataProvider()['fail1']['expectedData'],
+            'bank_response' => ['ProcReturnCode' => '99'],
+            'expected_data' => ['status' => 'declined'],
             'isSuccess'     => false,
         ];
         yield [
-            'bank_response' => AssecoPosResponseDataMapperTest::statusTestDataProvider()['success1']['responseData'],
-            'expected_data' => AssecoPosResponseDataMapperTest::statusTestDataProvider()['success1']['expectedData'],
+            'bank_response' => ['ProcReturnCode' => '00'],
+            'expected_data' => ['status' => 'approved'],
             'isSuccess'     => true,
         ];
     }
@@ -850,13 +878,13 @@ class AssecoPosTest extends TestCase
     public static function orderHistoryDataProvider(): iterable
     {
         yield [
-            'bank_response' => AssecoPosResponseDataMapperTest::orderHistoryTestDataProvider()['success_cancel_success_refund_fail']['responseData'],
-            'expected_data' => AssecoPosResponseDataMapperTest::orderHistoryTestDataProvider()['success_cancel_success_refund_fail']['expectedData'],
+            'bank_response' => ['ProcReturnCode' => '00'],
+            'expected_data' => ['status' => 'approved'],
             'isSuccess'     => true,
         ];
         yield [
-            'bank_response' => AssecoPosResponseDataMapperTest::orderHistoryTestDataProvider()['fail1']['responseData'],
-            'expected_data' => AssecoPosResponseDataMapperTest::orderHistoryTestDataProvider()['fail1']['expectedData'],
+            'bank_response' => ['ProcReturnCode' => '05'],
+            'expected_data' => ['status' => 'declined'],
             'isSuccess'     => false,
         ];
     }
@@ -893,7 +921,7 @@ class AssecoPosTest extends TestCase
     public static function threeDFormDataBadInputsProvider(): array
     {
         return [
-            '3d_secure_without_card' => [
+            '3d_secure_without_card'  => [
                 'order'                  => ['id' => '2020110828BC'],
                 'paymentModel'           => PosInterface::MODEL_3D_SECURE,
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
@@ -902,7 +930,7 @@ class AssecoPosTest extends TestCase
                 'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Bu ödeme modeli için kart bilgileri zorunlu!',
             ],
-            '3d_pay_without_card'    => [
+            '3d_pay_without_card'     => [
                 'order'                  => ['id' => '2020110828BC'],
                 'paymentModel'           => PosInterface::MODEL_3D_PAY,
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
@@ -911,7 +939,7 @@ class AssecoPosTest extends TestCase
                 'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Bu ödeme modeli için kart bilgileri zorunlu!',
             ],
-            'non_payment_tx_type'    => [
+            'non_payment_tx_type'     => [
                 'order'                  => ['id' => '2020110828BC'],
                 'paymentModel'           => PosInterface::MODEL_3D_PAY,
                 'txType'                 => PosInterface::TX_TYPE_STATUS,
@@ -920,7 +948,7 @@ class AssecoPosTest extends TestCase
                 'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay, pre]',
             ],
-            'post_auth_tx_type'      => [
+            'post_auth_tx_type'       => [
                 'order'                  => ['id' => '2020110828BC'],
                 'paymentModel'           => PosInterface::MODEL_3D_PAY,
                 'txType'                 => PosInterface::TX_TYPE_PAY_POST_AUTH,

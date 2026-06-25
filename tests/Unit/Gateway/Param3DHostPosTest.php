@@ -28,8 +28,6 @@ use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateway\AbstractGateway;
 use Mews\Pos\Gateway\Param3DHostPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Tests\Unit\DataMapper\Request\Mapper\Param3DHostPosRequestDataMapperTest;
-use Mews\Pos\Tests\Unit\DataMapper\Response\Mapper\ParamPosResponseDataMapperTest;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -127,10 +125,8 @@ class Param3DHostPosTest extends TestCase
         string  $txType,
         array   $requestData,
         ?string $gatewayUrl,
-        string  $encodedRequestData,
-        string  $responseData,
         array   $decodedResponseData,
-        $formData
+        array   $formData
     ): void {
         $paymentModel = PosInterface::MODEL_3D_HOST;
         $this->requestMapperMock->expects(self::once())
@@ -200,7 +196,10 @@ class Param3DHostPosTest extends TestCase
     public function testMake3DHostPaymentHashMismatchException(): void
     {
         $txType              = PosInterface::TX_TYPE_PAY_AUTH;
-        $gatewayResponseData = ParamPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['paymentData'];
+        $gatewayResponseData = [
+            'TURKPOS_RETVAL_Islem_GUID'        => '77f11031-cce8-4131-bf95-142303732608',
+            'TURKPOS_RETVAL_SanalPOS_Islem_ID' => '6021847062',
+        ];
 
         $this->cryptMock->expects(self::once())
             ->method('check3DHash')
@@ -214,7 +213,11 @@ class Param3DHostPosTest extends TestCase
 
     public function testMake3DHostPayment(): void
     {
-        $gatewayResponseData = ParamPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['paymentData'];
+        $gatewayResponseData = [
+            'TURKPOS_RETVAL_Hash'              => 'LOpkL9J8vne8E2j0A0HKOhUWGhI=',
+            'TURKPOS_RETVAL_Islem_GUID'        => '77f11031-cce8-4131-bf95-142303732608',
+            'TURKPOS_RETVAL_SanalPOS_Islem_ID' => '6021847062',
+        ];
 
         $this->cryptMock->expects(self::once())
             ->method('check3DHash')
@@ -254,7 +257,11 @@ class Param3DHostPosTest extends TestCase
         $this->cryptMock->expects(self::never())
             ->method('check3DHash');
 
-        $gatewayResponseData = ParamPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['paymentData'];
+        $gatewayResponseData = [
+            'TURKPOS_RETVAL_Hash'              => 'LOpkL9J8vne8E2j0A0HKOhUWGhI=',
+            'TURKPOS_RETVAL_Islem_GUID'        => '77f11031-cce8-4131-bf95-142303732608',
+            'TURKPOS_RETVAL_SanalPOS_Islem_ID' => '6021847062',
+        ];
 
         $order  = ['id' => '123'];
         $txType = PosInterface::TX_TYPE_PAY_AUTH;
@@ -347,14 +354,22 @@ class Param3DHostPosTest extends TestCase
     public static function threeDFormDataProvider(): iterable
     {
         yield '3d_host' => [
-            'order'               => Param3DHostPosRequestDataMapperTest::threeDFormDataProvider()['3d_host_form_data']['order'],
+            'order'               => [],
             'txType'              => PosInterface::TX_TYPE_PAY_AUTH,
             'requestData'         => ['request-data'],
             'gateway_url'         => 'https://test-pos.param.com.tr/default.aspx',
-            'encodedRequestData'  => '<encoded-request-data>',
-            'responseData'        => '<response-data>',
-            'decodedResponseData' => Param3DHostPosRequestDataMapperTest::threeDFormDataProvider()['3d_host_form_data']['extra_data'],
-            'formData'            => Param3DHostPosRequestDataMapperTest::threeDFormDataProvider()['3d_host_form_data']['expected'],
+            'decodedResponseData' => [
+                'TO_Pre_Encrypting_OOSResponse' => [
+                    'TO_Pre_Encrypting_OOSResult' => 'JHnDLmT5yierHIqsHNRU2SR7HLxOpi8o7Eb/oVSiIf35v+Z1uzteqid4wop8SAuykWNFElYyAxGWcIGvTxmhSljuLTcJ3xDMkS3O0jUboNpl5ad6roy/92lDftpV535KmpbxMxStRa+qGT7Tk4BdEIf+Jobr2o1Yl1+ZakWZ+parsTgnodyWl432Hsv2FUNLhuU7H6folMwleaZFPYdFZ+bO1T95opw5pnDWcFkrIuPfAmVRg4cg+al22FQSN/58AXxWBb8jEPrqn+/ojZ+WqncGvw+NB/Mtv9iCDuF+SNQqRig2dRILzWYwcvNxzj/OxcYuNuvO8wYI/iF1kNBBNtaExIunWZyj1tntGeb7UUaDmHD4LmSMUMpgZGugRfUpxm8WL/EE+PnUkLXE7SOG3g==',
+                ],
+            ],
+            'formData'            => [
+                'gateway' => 'https://test-pos.param.com.tr/to.ws/Service_Odeme.asmx',
+                'method'  => 'GET',
+                'inputs'  => [
+                    's' => 'JHnDLmT5yierHIqsHNRU2SR7HLxOpi8o7Eb/oVSiIf35v+Z1uzteqid4wop8SAuykWNFElYyAxGWcIGvTxmhSljuLTcJ3xDMkS3O0jUboNpl5ad6roy/92lDftpV535KmpbxMxStRa+qGT7Tk4BdEIf+Jobr2o1Yl1+ZakWZ+parsTgnodyWl432Hsv2FUNLhuU7H6folMwleaZFPYdFZ+bO1T95opw5pnDWcFkrIuPfAmVRg4cg+al22FQSN/58AXxWBb8jEPrqn+/ojZ+WqncGvw+NB/Mtv9iCDuF+SNQqRig2dRILzWYwcvNxzj/OxcYuNuvO8wYI/iF1kNBBNtaExIunWZyj1tntGeb7UUaDmHD4LmSMUMpgZGugRfUpxm8WL/EE+PnUkLXE7SOG3g==',
+                ],
+            ],
         ];
     }
 

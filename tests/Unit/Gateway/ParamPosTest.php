@@ -30,8 +30,6 @@ use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateway\AbstractGateway;
 use Mews\Pos\Gateway\ParamPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Tests\Unit\DataMapper\Request\Mapper\ParamPosRequestDataMapperTest;
-use Mews\Pos\Tests\Unit\DataMapper\Response\Mapper\ParamPosResponseDataMapperTest;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -141,8 +139,6 @@ class ParamPosTest extends TestCase
         bool    $isWithCard,
         array   $requestData,
         ?string $gatewayUrl,
-        string  $encodedRequestData,
-        string  $responseData,
         array   $decodedResponseData,
         $formData
     ): void {
@@ -184,8 +180,6 @@ class ParamPosTest extends TestCase
         string $paymentModel,
         string $txType,
         array  $requestData,
-        string $encodedRequestData,
-        string $responseData,
         array  $decodedResponseData
     ): void {
         $this->requestMapperMock->expects(self::once())
@@ -397,7 +391,10 @@ class ParamPosTest extends TestCase
 
     public function testMake3DPaymentHashMismatchException(): void
     {
-        $data = ParamPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'];
+        $data = [
+            'md'        => '444676:13FDE30917BF65D853787DB838390849D73151A10FC8C1192AC72660F2464521:3473:##190100000',
+            'islemHash' => 'jF0PD92E+dM394Z1h5qm4SB6pPo=',
+        ];
 
         $this->cryptMock->expects(self::once())
             ->method('check3DHash')
@@ -486,7 +483,11 @@ class ParamPosTest extends TestCase
 
     public function testMake3DPayPaymentHashMismatchException(): void
     {
-        $gatewayResponseData = ParamPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['paymentData'];
+        $gatewayResponseData = [
+            'TURKPOS_RETVAL_Hash'              => 'LOpkL9J8vne8E2j0A0HKOhUWGhI=',
+            'TURKPOS_RETVAL_Islem_GUID'        => '77f11031-cce8-4131-bf95-142303732608',
+            'TURKPOS_RETVAL_SanalPOS_Islem_ID' => '6021847062',
+        ];
         $this->cryptMock->expects(self::once())
             ->method('check3DHash')
             ->with($this->account, $gatewayResponseData)
@@ -744,29 +745,89 @@ class ParamPosTest extends TestCase
     {
         return [
             'auth_fail'                    => [
-                'order'               => ParamPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['order'],
-                'txType'              => ParamPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['txType'],
-                'gatewayResponseData' => ParamPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['threeDResponseData'],
-                'paymentResponse'     => ParamPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['paymentData'],
-                'expected'            => ParamPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_fail']['expectedData'],
+                'order'               => [
+                    'currency' => 'TRY',
+                    'amount'   => 1.01,
+                ],
+                'txType'              => 'pay',
+                'gatewayResponseData' => [
+                    'md'                => '444676:84E83D96A7CEC3A5815D49EB7F64D2709D1BC30425D578D118B9819A81749FB8:4429:##190100000',
+                    'mdStatus'          => '0',
+                    'orderId'           => '20241229C152',
+                    'transactionAmount' => '1000,01',
+                    'islemGUID'         => 'c1ee369b-ec27-4ab6-8c27-2e15e62793d3',
+                    'islemHash'         => 'N1/W7/GcbuT3UVwVM9Q5C/rmoKg=',
+                    'bankResult'        => 'N-status/Challenge authentication via ACS: https://3ds-acs.test.modirum.com/mdpayacs/wkwLCHgiNwZCiVZp/creq;token=338863271.17354  0',
+                    'dc'                => null,
+                    'dcURL'             => 'https://test-dmz.param.com.tr/turkpos.ws/service_turkpos_test.asmx',
+                ],
+                'paymentResponse'     => [],
+                'expected'            => [
+                    'amount'        => 1000.01,
+                    'order_id'      => '20241229C152',
+                    'payment_model' => '3d',
+                    'status'        => 'declined',
+                ],
                 'is3DSuccess'         => false,
                 'isSuccess'           => false,
             ],
             '3d_auth_success_payment_fail' => [
-                'order'               => ParamPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['order'],
-                'txType'              => ParamPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['txType'],
-                'gatewayResponseData' => ParamPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['threeDResponseData'],
-                'paymentResponse'     => ParamPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['paymentData'],
-                'expected'            => ParamPosResponseDataMapperTest::threeDPaymentDataProvider()['3d_auth_success_payment_fail']['expectedData'],
+                'order'               => [
+                    'currency' => 'TRY',
+                    'amount'   => 1.01,
+                ],
+                'txType'              => 'pay',
+                'gatewayResponseData' => [
+                    'md'       => '444676:B1748AA7FF30A96AADFECC19670A3038C1419A842DD221D2408708A84FE9D811:4011:##190100000',
+                    'mdStatus' => '1',
+
+                ],
+                'paymentResponse'     => [
+                    'TP_WMD_PayResponse' => [
+                        'TP_WMD_PayResult' => [
+                            'Sonuc'          => '-100',
+                            'Sonuc_Ack'      => 'Hesap bulunamadı.',
+                            'Bank_Sonuc_Kod' => '-1',
+                            'Komisyon_Oran'  => '0',
+                        ],
+                    ],
+                ],
+                'expected'            => [
+                    'amount'        => 10.01,
+                    'error_message' => 'Hesap bulunamadı.',
+                    'status'        => 'declined',
+                ],
                 'is3DSuccess'         => false,
                 'isSuccess'           => false,
             ],
             'success'                      => [
-                'order'               => ParamPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['order'],
-                'txType'              => ParamPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['txType'],
-                'gatewayResponseData' => ParamPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'],
-                'paymentResponse'     => ParamPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['paymentData'],
-                'expected'            => ParamPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['expectedData'],
+                'order'               => [
+                    'currency' => 'TRY',
+                    'amount'   => 1.01,
+                ],
+                'txType'              => 'pay',
+                'gatewayResponseData' => [
+                    'md'       => '444676:13FDE30917BF65D853787DB838390849D73151A10FC8C1192AC72660F2464521:3473:##190100000',
+                    'mdStatus' => '1',
+                    'dcURL'    => 'https://test-dmz.param.com.tr/turkpos.ws/service_turkpos_test.asmx',
+                ],
+                'paymentResponse'     => [
+                    'TP_WMD_PayResponse' => [
+                        'TP_WMD_PayResult' => [
+                            'Sonuc' => '1',
+
+                        ],
+                    ],
+                ],
+                'expected'            => [
+                    'amount'           => 10.01,
+                    'md_status'        => '1',
+                    'order_id'         => '202412292160',
+                    'payment_model'    => '3d',
+                    'proc_return_code' => 1,
+                    'ref_ret_num'      => '436419200463',
+                    'status'           => 'approved',
+                ],
                 'is3DSuccess'         => true,
                 'isSuccess'           => true,
             ],
@@ -777,10 +838,23 @@ class ParamPosTest extends TestCase
     {
         return [
             'success_foreign_currency' => [
-                'order'               => ParamPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success_foreign_currency']['order'],
-                'txType'              => ParamPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success_foreign_currency']['txType'],
-                'gatewayResponseData' => ParamPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success_foreign_currency']['paymentData'],
-                'expected'            => ParamPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success_foreign_currency']['expectedData'],
+                'order'               => [
+                    'currency'    => 'EUR',
+                    'amount'      => 1.01,
+                    'installment' => 0,
+                ],
+                'txType'              => 'pay',
+                'gatewayResponseData' => [
+                    'TURKPOS_RETVAL_Islem_ID'          => '25B4E0BAAD1F3FC05D46F5B4',
+                    'TURKPOS_RETVAL_Sonuc'             => '1',
+                    'TURKPOS_RETVAL_Hash'              => 'LrFgOcE6S8HzNF4tzvtORAh3C20=',
+                    'TURKPOS_RETVAL_Islem_GUID'        => '597b2fc9-df6d-40d7-861a-c4f5d0e94ed3',
+                    'TURKPOS_RETVAL_SanalPOS_Islem_ID' => '6021842602',
+                ],
+                'expected'            => [
+                    'amount' => 10.01,
+                    'status' => 'approved',
+                ],
                 'isSuccess'           => true,
             ],
         ];
@@ -926,12 +1000,26 @@ class ParamPosTest extends TestCase
     public static function threeDFormDataFailResponseProvider(): iterable
     {
         yield 'bad_request' => [
-            'order'               => ParamPosRequestDataMapperTest::paymentRegisterRequestDataProvider()[0]['order'],
+            'order'               => [
+                'id'          => 'order222',
+                'amount'      => 1000.25,
+                'installment' => 0,
+                'currency'    => 'TRY',
+                'ip'          => '127.0.0.1',
+                'success_url' => 'https://domain.com/success',
+                'fail_url'    => 'https://domain.com/fail',
+            ],
             'paymentModel'        => PosInterface::MODEL_3D_SECURE,
             'txType'              => PosInterface::TX_TYPE_PAY_AUTH,
-            'requestData'         => ParamPosRequestDataMapperTest::paymentRegisterRequestDataProvider()[0]['expected'],
-            'encodedRequestData'  => 'encoded-request-data',
-            'responseData'        => \file_get_contents(__DIR__.'/../test_data/parampos/3d_form_response_success.xml'),
+            'requestData'         => [
+                'soap:Body' => [
+                    'TP_WMD_UCD' => [
+                        '@xmlns'     => 'https://turkpos.com.tr/',
+                        'Islem_ID'   => 'rand',
+                        'Islem_Hash' => 'jsLYSB3lJ81leFgDLw4D8PbXURs=',
+                    ],
+                ],
+            ],
             'decodedResponseData' => [
                 "soap:Fault" => [
                     "faultcode"   => "soap:Client",
@@ -942,12 +1030,26 @@ class ParamPosTest extends TestCase
         ];
 
         yield 'order_already_exist' => [
-            'order'               => ParamPosRequestDataMapperTest::paymentRegisterRequestDataProvider()[0]['order'],
+            'order'               => [
+                'id'          => 'order222',
+                'amount'      => 1000.25,
+                'installment' => 0,
+                'currency'    => 'TRY',
+                'ip'          => '127.0.0.1',
+                'success_url' => 'https://domain.com/success',
+                'fail_url'    => 'https://domain.com/fail',
+            ],
             'paymentModel'        => PosInterface::MODEL_3D_SECURE,
             'txType'              => PosInterface::TX_TYPE_PAY_AUTH,
-            'requestData'         => ParamPosRequestDataMapperTest::paymentRegisterRequestDataProvider()[0]['expected'],
-            'encodedRequestData'  => 'encoded-request-data',
-            'responseData'        => \file_get_contents(__DIR__.'/../test_data/parampos/3d_form_response_success.xml'),
+            'requestData'         => [
+                'soap:Body' => [
+                    'TP_WMD_UCD' => [
+                        '@xmlns'     => 'https://turkpos.com.tr/',
+                        'Islem_ID'   => 'rand',
+                        'Islem_Hash' => 'jsLYSB3lJ81leFgDLw4D8PbXURs=',
+                    ],
+                ],
+            ],
             'decodedResponseData' => [
                 "TP_WMD_UCDResponse" => [
                     "TP_WMD_UCDResult" => [
@@ -961,12 +1063,26 @@ class ParamPosTest extends TestCase
         ];
 
         yield 'hash_error' => [
-            'order'               => ParamPosRequestDataMapperTest::paymentRegisterRequestDataProvider()[0]['order'],
+            'order'               => [
+                'id'          => 'order222',
+                'amount'      => 1000.25,
+                'installment' => 0,
+                'currency'    => 'TRY',
+                'ip'          => '127.0.0.1',
+                'success_url' => 'https://domain.com/success',
+                'fail_url'    => 'https://domain.com/fail',
+            ],
             'paymentModel'        => PosInterface::MODEL_3D_SECURE,
             'txType'              => PosInterface::TX_TYPE_PAY_AUTH,
-            'requestData'         => ParamPosRequestDataMapperTest::paymentRegisterRequestDataProvider()[0]['expected'],
-            'encodedRequestData'  => 'encoded-request-data',
-            'responseData'        => '<response-data>',
+            'requestData'         => [
+                'soap:Body' => [
+                    'TP_WMD_UCD' => [
+                        '@xmlns'     => 'https://turkpos.com.tr/',
+                        'Islem_ID'   => 'rand',
+                        'Islem_Hash' => 'jsLYSB3lJ81leFgDLw4D8PbXURs=',
+                    ],
+                ],
+            ],
             'decodedResponseData' => [
                 'TP_WMD_UCDResponse' => [
                     'TP_WMD_UCDResult' => [
@@ -983,14 +1099,28 @@ class ParamPosTest extends TestCase
     public static function threeDFormDataProvider(): iterable
     {
         yield '3d_secure' => [
-            'order'               => ParamPosRequestDataMapperTest::paymentRegisterRequestDataProvider()[0]['order'],
+            'order'               => [
+                'id'          => 'order222',
+                'amount'      => 1000.25,
+                'installment' => 0,
+                'currency'    => 'TRY',
+                'ip'          => '127.0.0.1',
+                'success_url' => 'https://domain.com/success',
+                'fail_url'    => 'https://domain.com/fail',
+            ],
             'paymentModel'        => PosInterface::MODEL_3D_SECURE,
             'txType'              => PosInterface::TX_TYPE_PAY_AUTH,
             'isWithCard'          => true,
-            'requestData'         => ParamPosRequestDataMapperTest::paymentRegisterRequestDataProvider()[0]['expected'],
+            'requestData'         => [
+                'soap:Body' => [
+                    'TP_WMD_UCD' => [
+                        '@xmlns'     => 'https://turkpos.com.tr/',
+                        'Islem_ID'   => 'rand',
+                        'Islem_Hash' => 'jsLYSB3lJ81leFgDLw4D8PbXURs=',
+                    ],
+                ],
+            ],
             'gateway_url'         => null,
-            'encodedRequestData'  => 'encoded-request-data',
-            'responseData'        => \file_get_contents(__DIR__.'/../test_data/parampos/3d_form_response_success.xml'),
             'decodedResponseData' => [
                 'TP_WMD_UCDResponse' => [
                     'TP_WMD_UCDResult' => [
@@ -1009,16 +1139,34 @@ class ParamPosTest extends TestCase
         ];
 
         yield '3d_pay' => [
-            'order'               => ParamPosRequestDataMapperTest::threeDFormDataProvider()['3d_pay']['order'],
+            'order'               => [
+                'currency' => 'TRY',
+            ],
             'paymentModel'        => PosInterface::MODEL_3D_PAY,
             'txType'              => PosInterface::TX_TYPE_PAY_AUTH,
             'isWithCard'          => true,
             'requestData'         => ['request-data'],
             'gateway_url'         => null,
-            'encodedRequestData'  => '<encoded-request-data>',
-            'responseData'        => '<response-data>',
-            'decodedResponseData' => ParamPosRequestDataMapperTest::threeDFormDataProvider()['3d_pay']['extra_data'],
-            'formData'            => ParamPosRequestDataMapperTest::threeDFormDataProvider()['3d_pay']['expected'],
+            'decodedResponseData' => [
+                'Pos_OdemeResponse' => [
+                    'Pos_OdemeResult' => [
+                        'Islem_ID'        => '6021847071',
+                        'UCD_URL'         => 'https://test-pos.param.com.tr/3D_Secure/AkilliKart_3DPay_PFO.aspx?rURL=TURKPOS_3D_TRAN&SID=f2771b35-f5fd-434a-a1be-ba4eea554146',
+                        'Sonuc'           => '1',
+                        'Sonuc_Str'       => 'İşlem Başarılı',
+                        'Banka_Sonuc_Kod' => '-1',
+                        'Komisyon_Oran'   => '1.01',
+                    ],
+                ],
+            ],
+            'formData'            => [
+                'gateway' => 'https://test-pos.param.com.tr/3D_Secure/AkilliKart_3DPay_PFO.aspx',
+                'method'  => 'GET',
+                'inputs'  => [
+                    'rURL' => 'TURKPOS_3D_TRAN',
+                    'SID'  => 'f2771b35-f5fd-434a-a1be-ba4eea554146',
+                ],
+            ],
         ];
     }
 
@@ -1026,17 +1174,47 @@ class ParamPosTest extends TestCase
     {
         return [
             'auth_fail' => [
-                'order'               => ParamPosResponseDataMapperTest::threeDPayPaymentDataProvider()['auth_fail']['order'],
-                'txType'              => ParamPosResponseDataMapperTest::threeDPayPaymentDataProvider()['auth_fail']['txType'],
-                'gatewayResponseData' => ParamPosResponseDataMapperTest::threeDPayPaymentDataProvider()['auth_fail']['paymentData'],
-                'expected'            => ParamPosResponseDataMapperTest::threeDPayPaymentDataProvider()['auth_fail']['expectedData'],
+                'order'               => [
+                    'currency'    => 'TRY',
+                    'amount'      => 1.01,
+                    'installment' => 0,
+                ],
+                'txType'              => 'pay',
+                'gatewayResponseData' => [
+                    'TURKPOS_RETVAL_Islem_ID'  => 'FF0591BD887935E481743533',
+                    'TURKPOS_RETVAL_Sonuc'     => '-1',
+                    'TURKPOS_RETVAL_Sonuc_Str' => '3D Dogrulamasi Basarisiz. [3D Hatasi: N-status/Challenge authentication via ACS: https://3ds-acs.test.modirum.com/mdpayacs/I-yRFxWEcBOCtERD/creq;token=340262061.17373]',
+
+                ],
+                'expected'            => [
+                    'error_code'    => -1,
+                    'error_message' => '3D Dogrulamasi Basarisiz. [3D Hatasi: N-status/Challenge authentication via ACS: https://3ds-acs.test.modirum.com/mdpayacs/I-yRFxWEcBOCtERD/creq;token=340262061.17373]',
+                    'status'        => 'declined',
+                ],
                 'isSuccess'           => false,
             ],
             'success'   => [
-                'order'               => ParamPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['order'],
-                'txType'              => ParamPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['txType'],
-                'gatewayResponseData' => ParamPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['paymentData'],
-                'expected'            => ParamPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['expectedData'],
+                'order'               => [
+                    'currency'    => 'TRY',
+                    'amount'      => 1.01,
+                    'installment' => 0,
+                ],
+                'txType'              => 'pay',
+                'gatewayResponseData' => [
+                    'TURKPOS_RETVAL_Islem_ID'  => '1944A39AD0AEA92E173D665B',
+                    'TURKPOS_RETVAL_Sonuc'     => '1',
+                    'TURKPOS_RETVAL_Sonuc_Str' => 'Odeme Islemi Basarili',
+                    'TURKPOS_RETVAL_GUID'      => '0c13d406-873b-403b-9c09-a5766840d98c',
+
+                ],
+                'expected'            => [
+                    'transaction_id'   => null,
+                    'transaction_type' => 'pay',
+                    'masked_number'    => '581877******2285',
+                    'order_id'         => '20250119BACB',
+                    'proc_return_code' => 1,
+                    'status'           => 'approved',
+                ],
                 'isSuccess'           => true,
             ],
         ];

@@ -26,7 +26,6 @@ use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateway\AbstractGateway;
 use Mews\Pos\Gateway\InterPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Tests\Unit\DataMapper\Response\Mapper\InterPosResponseDataMapperTest;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -605,11 +604,25 @@ class InterPosTest extends TestCase
     {
         return [
             '3d_fail' => [
-                'order'           => InterPosResponseDataMapperTest::threeDPaymentDataProvider()['authFail1']['order'],
-                'txType'          => InterPosResponseDataMapperTest::threeDPaymentDataProvider()['authFail1']['txType'],
-                'request'         => InterPosResponseDataMapperTest::threeDPaymentDataProvider()['authFail1']['threeDResponseData'],
-                'paymentResponse' => InterPosResponseDataMapperTest::threeDPaymentDataProvider()['authFail1']['paymentData'],
-                'expected'        => InterPosResponseDataMapperTest::threeDPaymentDataProvider()['authFail1']['expectedData'],
+                'order'           => [],
+                'txType'          => 'pay',
+                'request'         => [
+                        'Version' => null,
+                        'OkUrl' => 'http:\\/\\/localhost\\/interpos\\/3d\\/response.php',
+                        'FailUrl' => 'http:\\/\\/localhost\\/interpos\\/3d\\/response.php',
+                        '3DStatus' => '0',
+                        'HASH' => '423AWRAXl0VlEbQjpmAfntT5e3E=',
+                        'HASHPARAMS' => 'Version:PurchAmount:Exponent:Currency:OkUrl:FailUrl:MD:OrderId:ProcReturnCode:Response:mdStatus:',
+                        'HASHPARAMSVAL' => '1,01949http:\\/\\/localhost\\/interpos\\/3d\\/response.phphttp:\\/\\/localhost\\/interpos\\/3d\\/response.php20221225E1DF810',
+                    ],
+                'paymentResponse' => [],
+                'expected'        => [
+                        'order_id' => '20221225E1DF',
+                        'proc_return_code' => '81',
+                        'status' => 'declined',
+                        'error_code' => 'B810002',
+                        'error_message' => 'Terminal Aktif Degil',
+                    ],
                 'check_hash'      => false,
                 'is3DSuccess'     => false,
                 'isSuccess'       => false,
