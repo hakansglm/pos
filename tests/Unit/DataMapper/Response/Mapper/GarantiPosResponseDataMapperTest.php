@@ -6,6 +6,10 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\Mapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use DateTimeImmutable;
+use Generator;
+use DateTimeZone;
 use Mews\Pos\DataMapper\Response\Mapper\AbstractResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\GarantiPosResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\ResponseDataMapperInterface;
@@ -86,12 +90,10 @@ class GarantiPosResponseDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider paymentTestDataProvider
-     */
+    #[DataProvider('paymentTestDataProvider')]
     public function testMapPaymentResponse(array $order, string $txType, array $responseData, array $expectedData): void
     {
-        if ($expectedData['transaction_time'] instanceof \DateTimeImmutable) {
+        if ($expectedData['transaction_time'] instanceof DateTimeImmutable) {
             $this->responseValueFormatter->expects($this->once())
                 ->method('formatDateTime')
                 ->with($responseData['Transaction']['ProvDate'] ?? 'now', $txType)
@@ -110,12 +112,10 @@ class GarantiPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider threeDPaymentDataProvider
-     */
+    #[DataProvider('threeDPaymentDataProvider')]
     public function testMap3DPaymentData(array $order, string $txType, array $threeDResponseData, array $paymentResponse, array $expectedData): void
     {
-        if ($expectedData['transaction_time'] instanceof \DateTimeImmutable) {
+        if ($expectedData['transaction_time'] instanceof DateTimeImmutable) {
             $this->responseValueFormatter->expects($this->once())
                 ->method('formatDateTime')
                 ->with($paymentResponse['Transaction']['ProvDate'] ?? 'now', $txType)
@@ -176,9 +176,7 @@ class GarantiPosResponseDataMapperTest extends TestCase
         $this->responseDataMapper->map3DHostResponseData([], PosInterface::TX_TYPE_PAY_AUTH, []);
     }
 
-    /**
-     * @dataProvider threeDPayPaymentDataProvider
-     */
+    #[DataProvider('threeDPayPaymentDataProvider')]
     public function testMap3DPayResponseData(array $order, string $txType, array $responseData, array $expectedData): void
     {
         $this->responseValueMapper->expects($this->once())
@@ -225,9 +223,7 @@ class GarantiPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider statusTestDataProvider
-     */
+    #[DataProvider('statusTestDataProvider')]
     public function testMapStatusResponse(array $responseData, array $expectedData): void
     {
         $txType = PosInterface::TX_TYPE_STATUS;
@@ -310,9 +306,8 @@ class GarantiPosResponseDataMapperTest extends TestCase
 
     /**
      * Doing integration test because of the iteration, sorting and conditional statements it is difficult to mock values.
-     *
-     * @dataProvider orderHistoryTestDataProvider
      */
+    #[DataProvider('orderHistoryTestDataProvider')]
     public function testOrderMapHistoryResponse(array $responseData, array $expectedData): void
     {
         $responseDataMapper = new GarantiPosResponseDataMapper(
@@ -351,9 +346,7 @@ class GarantiPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider historyTestDataProvider
-     */
+    #[DataProvider('historyTestDataProvider')]
     public function testMapHistoryResponse(array $responseData, array $expectedData): void
     {
         $responseDataMapper = new GarantiPosResponseDataMapper(
@@ -396,9 +389,7 @@ class GarantiPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider refundTestDataProvider
-     */
+    #[DataProvider('refundTestDataProvider')]
     public function testMapRefundResponse(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapRefundResponse($responseData);
@@ -411,9 +402,7 @@ class GarantiPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider cancelTestDataProvider
-     */
+    #[DataProvider('cancelTestDataProvider')]
     public function testMapCancelResponse(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapCancelResponse($responseData);
@@ -492,7 +481,7 @@ class GarantiPosResponseDataMapperTest extends TestCase
                     'error_code'        => null,
                     'error_message'     => null,
                     'installment_count' => null,
-                    'transaction_time'  => new \DateTimeImmutable('2022-11-01 13:14:19'),
+                    'transaction_time'  => new DateTimeImmutable('2022-11-01 13:14:19'),
                 ],
             ],
             'fail_1'   => [
@@ -990,7 +979,7 @@ class GarantiPosResponseDataMapperTest extends TestCase
                     'transaction_type'     => 'pay',
                     'payment_model'        => '3d',
                     'installment_count'    => 0,
-                    'transaction_time'     => new \DateTimeImmutable('2023-12-23 19:24:30'),
+                    'transaction_time'     => new DateTimeImmutable('2023-12-23 19:24:30'),
                 ],
             ],
             'success_with_installment'   => [
@@ -1107,7 +1096,7 @@ class GarantiPosResponseDataMapperTest extends TestCase
                     'transaction_security' => 'Full 3D Secure',
                     'transaction_type'     => 'pay',
                     'tx_status'            => 'Y',
-                    'transaction_time'     => new \DateTimeImmutable('2024-03-10 14:05:08'),
+                    'transaction_time'     => new DateTimeImmutable('2024-03-10 14:05:08'),
                 ],
             ],
         ];
@@ -1188,7 +1177,7 @@ class GarantiPosResponseDataMapperTest extends TestCase
                     'transaction_type'     => 'pay',
                     'payment_model'        => '3d_pay',
                     'installment_count'    => 2,
-                    'transaction_time'     => new \DateTimeImmutable(),
+                    'transaction_time'     => new DateTimeImmutable(),
                 ],
             ],
             'authFail'     => [
@@ -1403,8 +1392,8 @@ class GarantiPosResponseDataMapperTest extends TestCase
                     'auth_code'         => '304919',
                     'proc_return_code'  => '00',
                     'transaction_id'    => null,
-                    'transaction_time'  => new \DateTimeImmutable('2023-01-07 21:27:59.253'),
-                    'capture_time'      => new \DateTimeImmutable('2023-01-07 21:27:59.271'),
+                    'transaction_time'  => new DateTimeImmutable('2023-01-07 21:27:59.253'),
+                    'capture_time'      => new DateTimeImmutable('2023-01-07 21:27:59.271'),
                     'error_message'     => null,
                     'ref_ret_num'       => '300708704369',
                     'order_status'      => 'APPROVED',
@@ -1499,7 +1488,7 @@ class GarantiPosResponseDataMapperTest extends TestCase
                     'auth_code'         => '257762',
                     'proc_return_code'  => '00',
                     'transaction_id'    => null,
-                    'transaction_time'  => new \DateTimeImmutable('2024-01-06 23:10:06.029'),
+                    'transaction_time'  => new DateTimeImmutable('2024-01-06 23:10:06.029'),
                     'capture_time'      => null,
                     'error_message'     => null,
                     'ref_ret_num'       => '400609699313',
@@ -1818,8 +1807,8 @@ class GarantiPosResponseDataMapperTest extends TestCase
                             'auth_code'        => '826886',
                             'proc_return_code' => '00',
                             'transaction_id'   => null,
-                            'transaction_time' => new \DateTimeImmutable('20240107T000000'),
-                            'capture_time'     => new \DateTimeImmutable('20240107T000000'),
+                            'transaction_time' => new DateTimeImmutable('20240107T000000'),
+                            'capture_time'     => new DateTimeImmutable('20240107T000000'),
                             'error_message'    => null,
                             'ref_ret_num'      => '400709699645',
                             'order_status'     => null,
@@ -1934,8 +1923,8 @@ class GarantiPosResponseDataMapperTest extends TestCase
                             'auth_code'        => '304919',
                             'proc_return_code' => '00',
                             'transaction_id'   => null,
-                            'transaction_time' => new \DateTimeImmutable('20221101T000000'),
-                            'capture_time'     => new \DateTimeImmutable('20221101T000000'),
+                            'transaction_time' => new DateTimeImmutable('20221101T000000'),
+                            'capture_time'     => new DateTimeImmutable('20221101T000000'),
                             'error_message'    => null,
                             'ref_ret_num'      => '230508300896',
                             'order_status'     => null,
@@ -2027,22 +2016,22 @@ class GarantiPosResponseDataMapperTest extends TestCase
         ];
     }
 
-    public static function historyTestDataProvider(): \Generator
+    public static function historyTestDataProvider(): Generator
     {
         $dateRangeHistoryExpected = \json_decode(\file_get_contents(__DIR__.'/../../../test_data/garanti/history/daily_range_history_expected.json'), true);
 
         foreach ($dateRangeHistoryExpected['transactions'] as &$item) {
             if (null !== $item['transaction_time']) {
-                $item['transaction_time'] = new \DateTimeImmutable(
+                $item['transaction_time'] = new DateTimeImmutable(
                     $item['transaction_time']['date'],
-                    new \DateTimeZone($item['transaction_time']['timezone'])
+                    new DateTimeZone($item['transaction_time']['timezone'])
                 );
             }
 
             if (null !== $item['capture_time']) {
-                $item['capture_time'] = new \DateTimeImmutable(
+                $item['capture_time'] = new DateTimeImmutable(
                     $item['capture_time']['date'],
-                    new \DateTimeZone($item['capture_time']['timezone'])
+                    new DateTimeZone($item['capture_time']['timezone'])
                 );
             }
         }
@@ -2147,8 +2136,8 @@ class GarantiPosResponseDataMapperTest extends TestCase
                         'auth_code'         => '304919',
                         'proc_return_code'  => '00',
                         'transaction_id'    => null,
-                        'transaction_time'  => new \DateTimeImmutable('2024-06-03 16:06:29'),
-                        'capture_time'      => new \DateTimeImmutable('2024-06-03 16:06:29'),
+                        'transaction_time'  => new DateTimeImmutable('2024-06-03 16:06:29'),
+                        'capture_time'      => new DateTimeImmutable('2024-06-03 16:06:29'),
                         'error_message'     => null,
                         'ref_ret_num'       => '415501677066',
                         'order_status'      => 'PAYMENT_COMPLETED',

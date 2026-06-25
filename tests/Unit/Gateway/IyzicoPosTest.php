@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\Gateway;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use LogicException;
+use RuntimeException;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\HttpClientStrategyInterface;
 use Mews\Pos\DataMapper\Response\Mapper\ResponseDataMapperInterface;
@@ -131,9 +134,7 @@ class IyzicoPosTest extends TestCase
         $this->assertFalse($this->pos->isTestMode());
     }
 
-    /**
-     * @dataProvider isSuccessDataProvider
-     */
+    #[DataProvider('isSuccessDataProvider')]
     public function testIsSuccess(array $mappedResponse, bool $expected): void
     {
         $txType      = PosInterface::TX_TYPE_PAY_AUTH;
@@ -161,9 +162,7 @@ class IyzicoPosTest extends TestCase
         $this->assertSame($expected, $this->pos->isSuccess());
     }
 
-    /**
-     * @dataProvider get3DGatewayURLDataProvider
-     */
+    #[DataProvider('get3DGatewayURLDataProvider')]
     public function testGet3DGatewayURL(array $endpoints, ?string $paymentModel, string $expected): void
     {
         $pos    = $this->createGateway(['name' => 'Iyzico', 'class' => IyzicoPos::class, 'gateway_endpoints' => $endpoints]);
@@ -196,7 +195,7 @@ class IyzicoPosTest extends TestCase
 
     public function testPaymentMissingCardThrows(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->pos->payment(PosInterface::MODEL_NON_SECURE, $this->order, PosInterface::TX_TYPE_PAY_AUTH);
     }
 
@@ -297,7 +296,7 @@ class IyzicoPosTest extends TestCase
             $this->account
         );
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('3D init failed');
 
         $this->pos->get3DFormData(
@@ -592,9 +591,7 @@ class IyzicoPosTest extends TestCase
         $this->assertSame($expectedResponse, $result);
     }
 
-    /**
-     * @dataProvider nonSecurePaymentDataProvider
-     */
+    #[DataProvider('nonSecurePaymentDataProvider')]
     public function testMakeRegularPayment(array $order, string $txType): void
     {
         $requestData     = ['non-secure-request'];

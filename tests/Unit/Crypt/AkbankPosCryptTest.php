@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
+use LogicException;
 use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\AkbankPosCrypt;
 use Mews\Pos\Model\Account\AbstractPosAccount;
@@ -17,6 +18,7 @@ use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\PosInterface;
 use Mews\Pos\Tests\Unit\DataMapper\Response\Mapper\AkbankPosResponseDataMapperTest;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -65,9 +67,7 @@ class AkbankPosCryptTest extends TestCase
         $this->crypt->createHash($this->account, []);
     }
 
-    /**
-     * @dataProvider hashStringDataProvider
-     */
+    #[DataProvider('hashStringDataProvider')]
     public function testHashString(string $str, string $expected): void
     {
         $actual = $this->crypt->hashString($str, $this->account->getStoreKey());
@@ -76,22 +76,18 @@ class AkbankPosCryptTest extends TestCase
 
     public function testHashStringException(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->crypt->hashString('abc');
     }
 
-    /**
-     * @dataProvider create3DHashDataProvider
-     */
+    #[DataProvider('create3DHashDataProvider')]
     public function testCreate3DHash(array $requestData, string $expected): void
     {
         $actual = $this->crypt->create3DHash($this->account, $requestData);
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider threeDHashCheckDataProvider
-     */
+    #[DataProvider('threeDHashCheckDataProvider')]
     public function testCheck3DHash(bool $expected, array $responseData): void
     {
         $this->assertSame($expected, $this->crypt->check3DHash($this->account, $responseData));
@@ -103,7 +99,7 @@ class AkbankPosCryptTest extends TestCase
     public function testCheck3DHashException(): void
     {
         $account = $this->createMock(AbstractPosAccount::class);
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->crypt->check3DHash($account, []);
     }
 

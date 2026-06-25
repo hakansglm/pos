@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueFormatter;
 
+use DateTime;
+use InvalidArgumentException;
 use Mews\Pos\DataMapper\Request\ValueFormatter\PayFlexV4PosRequestValueFormatter;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\PayFlexV4Pos;
@@ -55,8 +57,8 @@ class PayFlexV4PosRequestValueFormatterTest extends TestCase
     #[TestWith([''])]
     public function testFormatCreditCardExpDateUnSupportedField(string $fieldName): void
     {
-        $expDate = new \DateTime('2024-04-14T16:45:30.000');
-        $this->expectException(\InvalidArgumentException::class);
+        $expDate = new DateTime('2024-04-14T16:45:30.000');
+        $this->expectException(InvalidArgumentException::class);
         $this->formatter->formatCardExpDate($expDate, $fieldName);
     }
 
@@ -64,14 +66,14 @@ class PayFlexV4PosRequestValueFormatterTest extends TestCase
     #[TestWith(['Expiry', '202404'])]
     public function testFormatCreditCardExpDate(string $fieldName, string $expected): void
     {
-        $expDate = new \DateTime('2024-04-14T16:45:30.000');
+        $expDate = new DateTime('2024-04-14T16:45:30.000');
         $actual = $this->formatter->formatCardExpDate($expDate, $fieldName);
         $this->assertSame($expected, $actual);
     }
 
     public function testFormatDateTime(): void
     {
-        $dateTime = new \DateTime('2024-04-14T16:45:30.000');
+        $dateTime = new DateTime('2024-04-14T16:45:30.000');
         $actual = $this->formatter->formatDateTime($dateTime);
         $this->assertSame('20240414', $actual);
     }

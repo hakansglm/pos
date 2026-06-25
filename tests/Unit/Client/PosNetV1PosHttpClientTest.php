@@ -6,6 +6,10 @@
 
 namespace Mews\Pos\Tests\Unit\Client;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use InvalidArgumentException;
+use RuntimeException;
+use Generator;
 use Mews\Pos\Client\AbstractHttpClient;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\PosNetV1PosHttpClient;
@@ -77,9 +81,7 @@ class PosNetV1PosHttpClientTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider getApiUrlDataProvider
-     */
+    #[DataProvider('getApiUrlDataProvider')]
     public function testGetApiUrl(string $txType, string $paymentModel, string $apiUri, string $expected): void
     {
         $this->requestValueMapper->expects($this->once())
@@ -94,7 +96,7 @@ class PosNetV1PosHttpClientTest extends TestCase
 
     public function testGetApiUrlException(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->client->getApiURL();
     }
 
@@ -104,9 +106,7 @@ class PosNetV1PosHttpClientTest extends TestCase
         $this->assertFalse($this->client::supports(PosNetPos::class, HttpClientInterface::API_NAME_PAYMENT_API));
     }
 
-    /**
-     * @dataProvider supportsTxDataProvider
-     */
+    #[DataProvider('supportsTxDataProvider')]
     public function testSupportsTx(string $txType, string $paymentModel): void
     {
         $this->requestValueMapper->expects($this->once())
@@ -125,9 +125,7 @@ class PosNetV1PosHttpClientTest extends TestCase
         $this->assertTrue($this->client->supportsTx(PosInterface::TX_TYPE_CUSTOM_QUERY, PosInterface::MODEL_NON_SECURE));
     }
 
-    /**
-     * @dataProvider supportsTxWithUnsupportedTxDataProvider
-     */
+    #[DataProvider('supportsTxWithUnsupportedTxDataProvider')]
     public function testSupportsTxWithUnsupportedTx(string $txType, string $paymentModel): void
     {
         $this->requestValueMapper->expects($this->once())
@@ -166,9 +164,7 @@ class PosNetV1PosHttpClientTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider requestDataProvider
-     */
+    #[DataProvider('requestDataProvider')]
     public function testRequest(
         string $txType,
         string $paymentModel,
@@ -236,7 +232,7 @@ class PosNetV1PosHttpClientTest extends TestCase
             ->with($request)
             ->willReturn($response);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('İstek Başarısız!');
 
         $this->client->request(
@@ -317,7 +313,7 @@ class PosNetV1PosHttpClientTest extends TestCase
         ];
     }
 
-    public static function requestDataProvider(): \Generator
+    public static function requestDataProvider(): Generator
     {
         yield [
             'txType'             => PosInterface::TX_TYPE_PAY_AUTH,

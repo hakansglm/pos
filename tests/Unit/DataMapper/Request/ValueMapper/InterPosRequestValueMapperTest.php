@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueMapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use LogicException;
 use Mews\Pos\DataMapper\Request\ValueMapper\AbstractRequestValueMapper;
 use Mews\Pos\DataMapper\Request\ValueMapper\InterPosRequestValueMapper;
 use Mews\Pos\Model\Card\CreditCardInterface;
@@ -38,9 +40,7 @@ class InterPosRequestValueMapperTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider mapTxTypeDataProvider
-     */
+    #[DataProvider('mapTxTypeDataProvider')]
     public function testMapTxType(string $txType, string $expected): void
     {
         $actual = $this->valueMapper->mapTxType($txType);
@@ -54,9 +54,7 @@ class InterPosRequestValueMapperTest extends TestCase
         $this->valueMapper->mapTxType($txType);
     }
 
-    /**
-     * @dataProvider mapSecureTypeDataProvider
-     */
+    #[DataProvider('mapSecureTypeDataProvider')]
     public function testMapSecureType(string $paymentModel, string $expected): void
     {
         $mappedSecureType = $this->valueMapper->mapSecureType($paymentModel);
@@ -65,7 +63,7 @@ class InterPosRequestValueMapperTest extends TestCase
 
     public function testMapRecurringFrequency(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->valueMapper->mapRecurringFrequency('DAY');
     }
 
@@ -82,9 +80,7 @@ class InterPosRequestValueMapperTest extends TestCase
         $this->assertSame('978', $this->valueMapper->mapCurrency(PosInterface::CURRENCY_EUR));
     }
 
-    /**
-     * @dataProvider mapCardTypeDataProvider
-     */
+    #[DataProvider('mapCardTypeDataProvider')]
     public function testMapCardType(string $cardType, string $expected): void
     {
         $this->assertSame($expected, $this->valueMapper->mapCardType($cardType));

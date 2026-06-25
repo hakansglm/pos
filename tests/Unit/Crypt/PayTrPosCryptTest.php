@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
+use InvalidArgumentException;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use LogicException;
 use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\PayTrPosCrypt;
 use Mews\Pos\Factory\AccountFactory;
@@ -128,17 +131,17 @@ class PayTrPosCryptTest extends TestCase
 
     public function testHashFromParamsEmptyHashParamsValueThrows(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('hashParamsValue cannot be empty');
         $this->crypt->hashFromParams($this->account, [], '', ':');
     }
 
     public function testHashFromParamsNullStoreKeyThrows(): void
     {
-        $accountMock = $this->createMock(\Mews\Pos\Model\Account\AbstractPosAccount::class);
+        $accountMock = $this->createMock(AbstractPosAccount::class);
         $accountMock->method('getStoreKey')->willReturn(null);
 
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Account storeKey eksik!');
         $this->crypt->hashFromParams($accountMock, ['merchant_id' => '123'], 'merchant_id', ':');
     }

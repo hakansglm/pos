@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Client;
 
+use InvalidArgumentException;
 use Mews\Pos\Client\GenericPosHttpClientStrategy;
 use Mews\Pos\Client\HttpClientInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -39,7 +40,7 @@ class GenericPosHttpClientStrategyTest extends TestCase
             'payment_api' => $client1,
         ]);
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('No HTTP client configured for transaction type: pay_auth');
 
         $strategy->getClient('pay_auth', 'non_secure');

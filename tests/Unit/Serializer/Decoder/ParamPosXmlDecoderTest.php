@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\Serializer\Decoder;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use Generator;
 use Mews\Pos\Serializer\Decoder\ParamPosXmlDecoder;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -22,9 +24,7 @@ class ParamPosXmlDecoderTest extends TestCase
         $this->decoder = new ParamPosXmlDecoder();
     }
 
-    /**
-     * @dataProvider decodeDataProvider
-     */
+    #[DataProvider('decodeDataProvider')]
     public function testDecode(string $data, array $expected): void
     {
         $result = $this->decoder->decode($data);
@@ -37,7 +37,7 @@ class ParamPosXmlDecoderTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
-    public static function decodeDataProvider(): \Generator
+    public static function decodeDataProvider(): Generator
     {
         yield '3d_form_success' => [
             'input'    => \file_get_contents(__DIR__ . '/../../test_data/parampos/3d_form_response_success.xml'),

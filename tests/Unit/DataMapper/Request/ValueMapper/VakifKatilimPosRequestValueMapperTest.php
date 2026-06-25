@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueMapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use LogicException;
 use Mews\Pos\DataMapper\Request\ValueMapper\AbstractRequestValueMapper;
 use Mews\Pos\DataMapper\Request\ValueMapper\VakifKatilimPosRequestValueMapper;
 use Mews\Pos\Model\Card\CreditCardInterface;
@@ -43,9 +45,7 @@ class VakifKatilimPosRequestValueMapperTest extends TestCase
         $this->valueMapper->mapTxType(PosInterface::TX_TYPE_PAY_AUTH);
     }
 
-    /**
-     * @dataProvider mapSecureTypeDataProvider
-     */
+    #[DataProvider('mapSecureTypeDataProvider')]
     public function testMapSecureType(string $paymentModel, string $expected): void
     {
         $mappedSecureType = $this->valueMapper->mapSecureType($paymentModel);
@@ -54,13 +54,13 @@ class VakifKatilimPosRequestValueMapperTest extends TestCase
 
     public function testMapRecurringFrequency(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->valueMapper->mapRecurringFrequency('DAY');
     }
 
     public function testMapLang(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->valueMapper->mapLang(PosInterface::LANG_TR);
     }
 
@@ -105,7 +105,7 @@ class VakifKatilimPosRequestValueMapperTest extends TestCase
 
     public function testMapCardType(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->valueMapper->mapCardType(CreditCardInterface::CARD_TYPE_VISA);
     }
 

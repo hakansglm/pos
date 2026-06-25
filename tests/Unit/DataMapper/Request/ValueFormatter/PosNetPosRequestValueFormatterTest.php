@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueFormatter;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use InvalidArgumentException;
+use DateTime;
 use Mews\Pos\DataMapper\Request\ValueFormatter\PosNetPosRequestValueFormatter;
 use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Gateway\AssecoPos;
@@ -53,9 +56,7 @@ class PosNetPosRequestValueFormatterTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider formatOrderIdDataProvider
-     */
+    #[DataProvider('formatOrderIdDataProvider')]
     public function testFormatOrderId(string $orderId, ?string $txType, ?string $orderPaymentModel, string $expected): void
     {
         $actual = $this->formatter->formatOrderId($orderId, $txType, $orderPaymentModel);
@@ -64,7 +65,7 @@ class PosNetPosRequestValueFormatterTest extends TestCase
 
     public function testFormatOrderIdFail(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->formatter->formatOrderId('1234567890123456789AB');
     }
 
@@ -72,14 +73,14 @@ class PosNetPosRequestValueFormatterTest extends TestCase
     #[TestWith(['', '2404'])]
     public function testFormatCreditCardExpDate(string $fieldName, string $expected): void
     {
-        $expDate = new \DateTime('2024-04-14T16:45:30.000');
+        $expDate = new DateTime('2024-04-14T16:45:30.000');
         $actual = $this->formatter->formatCardExpDate($expDate, $fieldName);
         $this->assertSame($expected, $actual);
     }
 
     public function testFormatDateTime(): void
     {
-        $dateTime = new \DateTime('2024-04-14T16:45:30.000');
+        $dateTime = new DateTime('2024-04-14T16:45:30.000');
         $this->expectException(NotImplementedException::class);
         $this->formatter->formatDateTime($dateTime);
     }

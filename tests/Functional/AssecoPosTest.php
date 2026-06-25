@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Functional;
 
+use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Event\Before3DFormHashCalculatedEvent;
 use Mews\Pos\Event\RequestDataPreparedEvent;
@@ -34,7 +35,7 @@ class AssecoPosTest extends TestCase
 
         $config = require __DIR__.'/../../config/pos_test.php';
 
-        $account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
+        $account = AccountFactory::createAssecoPosAccount(
             'payten_v3_hash',
             (string) getenv('ASSECO_CLIENT_ID'),
             (string) getenv('ASSECO_USERNAME'),

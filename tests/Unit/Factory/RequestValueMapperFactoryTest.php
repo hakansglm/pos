@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\Factory;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use DomainException;
+use stdClass;
 use Mews\Pos\DataMapper\Request\ValueMapper\AkbankPosRequestValueMapper;
 use Mews\Pos\DataMapper\Request\ValueMapper\AssecoPosRequestValueMapper;
 use Mews\Pos\DataMapper\Request\ValueMapper\GarantiPosRequestValueMapper;
@@ -40,9 +43,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(RequestValueMapperFactory::class)]
 class RequestValueMapperFactoryTest extends TestCase
 {
-    /**
-     * @dataProvider gatewayClassDataProvider
-     */
+    #[DataProvider('gatewayClassDataProvider')]
     public function testCreateForGateway(string $gatewayClass, string $expectedFormatterClass): void
     {
         $this->assertInstanceOf(
@@ -53,8 +54,8 @@ class RequestValueMapperFactoryTest extends TestCase
 
     public function testCreateForGatewayInvalidGateway(): void
     {
-        $this->expectException(\DomainException::class);
-        RequestValueMapperFactory::createForGateway(\stdClass::class);
+        $this->expectException(DomainException::class);
+        RequestValueMapperFactory::createForGateway(stdClass::class);
     }
 
     public static function gatewayClassDataProvider(): array

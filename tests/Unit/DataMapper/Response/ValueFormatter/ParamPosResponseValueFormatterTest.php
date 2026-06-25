@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\ValueFormatter;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Mews\Pos\DataMapper\Response\ValueFormatter\ParamPosResponseValueFormatter;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\Param3DHostPos;
@@ -36,18 +37,14 @@ class ParamPosResponseValueFormatterTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider formatAmountProvider
-     */
+    #[DataProvider('formatAmountProvider')]
     public function testFormatAmount(string $amount, string $txType, float $expected): void
     {
         $actual = $this->formatter->formatAmount($amount, $txType);
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider formatInstallmentProvider
-     */
+    #[DataProvider('formatInstallmentProvider')]
     public function testFormatInstallment(?string $installment, string $txType, int $expected): void
     {
         $actual = $this->formatter->formatInstallment($installment, $txType);
@@ -75,9 +72,7 @@ class ParamPosResponseValueFormatterTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider formatDateTimeProvider
-     */
+    #[DataProvider('formatDateTimeProvider')]
     public function testFormatDateTime(string $dateTime, string $expected): void
     {
         $actual = $this->formatter->formatDateTime($dateTime, '');

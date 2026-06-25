@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\Mapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use Mews\Pos\Exception\NotImplementedException;
+use Generator;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\Request\Mapper\AbstractRequestDataMapper;
 use Mews\Pos\DataMapper\Request\Mapper\AssecoPosRequestDataMapper;
@@ -83,9 +86,7 @@ class AssecoPosRequestDataMapperTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider threeDFormDataProvider
-     */
+    #[DataProvider('threeDFormDataProvider')]
     public function testGet3DFormData(
         array  $order,
         string $gatewayURL,
@@ -224,9 +225,7 @@ class AssecoPosRequestDataMapperTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider postAuthRequestDataProvider
-     */
+    #[DataProvider('postAuthRequestDataProvider')]
     public function testCreateNonSecurePostAuthPaymentRequestData(array $order, array $expected): void
     {
         $actual = $this->requestDataMapper->createNonSecurePostAuthPaymentRequestData($this->account, $order);
@@ -234,9 +233,7 @@ class AssecoPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider nonSecurePaymentRequestDataDataProvider
-     */
+    #[DataProvider('nonSecurePaymentRequestDataDataProvider')]
     public function testCreateNonSecurePaymentRequestData(array $order, CreditCardInterface $card, string $txType, array $expectedData): void
     {
         $actual = $this->requestDataMapper->createNonSecurePaymentRequestData(
@@ -249,9 +246,7 @@ class AssecoPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    /**
-     * @dataProvider createCancelRequestDataProvider
-     */
+    #[DataProvider('createCancelRequestDataProvider')]
     public function testCreateCancelRequestData(array $order, array $expected): void
     {
         $actual = $this->requestDataMapper->createCancelRequestData($this->account, $order);
@@ -259,9 +254,7 @@ class AssecoPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider orderHistoryRequestDataProvider
-     */
+    #[DataProvider('orderHistoryRequestDataProvider')]
     public function testCreateOrderHistoryRequestData(array $order, array $expected): void
     {
         $actual = $this->requestDataMapper->createOrderHistoryRequestData($this->account, $order);
@@ -270,22 +263,18 @@ class AssecoPosRequestDataMapperTest extends TestCase
 
     public function testCreateHistoryRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->requestDataMapper->createHistoryRequestData($this->account);
     }
 
-    /**
-     * @dataProvider threeDPaymentRequestDataDataProvider
-     */
+    #[DataProvider('threeDPaymentRequestDataDataProvider')]
     public function testCreate3DPaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, array $responseData, array $expected): void
     {
         $actual = $this->requestDataMapper->create3DPaymentRequestData($posAccount, $order, $txType, $responseData);
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider statusRequestDataProvider
-     */
+    #[DataProvider('statusRequestDataProvider')]
     public function testCreateStatusRequestData(array $order, array $expected): void
     {
         $actualData = $this->requestDataMapper->createStatusRequestData($this->account, $order);
@@ -293,9 +282,7 @@ class AssecoPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actualData);
     }
 
-    /**
-     * @dataProvider refundRequestDataProvider
-     */
+    #[DataProvider('refundRequestDataProvider')]
     public function testCreateRefundRequestData(array $order, string $txType, array $expectedData): void
     {
         $actual = $this->requestDataMapper->createRefundRequestData($this->account, $order, $txType);
@@ -305,9 +292,7 @@ class AssecoPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    /**
-     * @dataProvider createCustomQueryRequestDataDataProvider
-     */
+    #[DataProvider('createCustomQueryRequestDataDataProvider')]
     public function testCreateCustomQueryRequestData(array $requestData, array $expectedData): void
     {
         $actual = $this->requestDataMapper->createCustomQueryRequestData($this->account, $requestData);
@@ -317,7 +302,7 @@ class AssecoPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    public static function createCustomQueryRequestDataDataProvider(): \Generator
+    public static function createCustomQueryRequestDataDataProvider(): Generator
     {
         yield 'without_account_data' => [
             'request_data' => [
@@ -367,7 +352,7 @@ class AssecoPosRequestDataMapperTest extends TestCase
         ];
     }
 
-    public static function threeDPaymentRequestDataDataProvider(): \Generator
+    public static function threeDPaymentRequestDataDataProvider(): Generator
     {
         $account = AccountFactory::createAssecoPosAccount(
             'akbank',

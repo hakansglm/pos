@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\Client;
 
+use RuntimeException;
+use Generator;
 use Mews\Pos\Client\AbstractHttpClient;
 use Mews\Pos\Client\AssecoPosHttpClient;
 use Mews\Pos\Client\HttpClientInterface;
@@ -16,6 +18,7 @@ use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -75,9 +78,7 @@ class AssecoPosHttpClientTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider getApiUrlDataProvider
-     */
+    #[DataProvider('getApiUrlDataProvider')]
     public function testGetApiUrl(string $txType, string $paymentModel, string $expected): void
     {
         $actual = $this->client->getApiURL($txType, $paymentModel);
@@ -96,9 +97,7 @@ class AssecoPosHttpClientTest extends TestCase
         $this->assertTrue($this->client->supportsTx(PosInterface::TX_TYPE_PAY_AUTH, PosInterface::MODEL_3D_SECURE));
     }
 
-    /**
-     * @dataProvider requestDataProvider
-     */
+    #[DataProvider('requestDataProvider')]
     public function testRequest(
         string $txType,
         string $paymentModel,
@@ -159,7 +158,7 @@ class AssecoPosHttpClientTest extends TestCase
             ->willReturn($response);
 
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->client->request(
             $txType,
             $paymentModel,
@@ -193,7 +192,7 @@ class AssecoPosHttpClientTest extends TestCase
             ->with($request)
             ->willReturn($response);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('İstek Başarısız!');
 
         $this->client->request(
@@ -235,7 +234,7 @@ class AssecoPosHttpClientTest extends TestCase
         ];
     }
 
-    public static function requestDataProvider(): \Generator
+    public static function requestDataProvider(): Generator
     {
         yield [
             'txType'         => PosInterface::TX_TYPE_PAY_AUTH,

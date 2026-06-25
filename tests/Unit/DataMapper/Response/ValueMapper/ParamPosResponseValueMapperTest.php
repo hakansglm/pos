@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\ValueMapper;
 
+use LogicException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Mews\Pos\DataMapper\Response\ValueMapper\AbstractResponseValueMapper;
 use Mews\Pos\DataMapper\Response\ValueMapper\ParamPosResponseValueMapper;
 use Mews\Pos\Gateway\AssecoPos;
@@ -40,13 +42,11 @@ class ParamPosResponseValueMapperTest extends TestCase
 
     public function testMapTxType(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->mapper->mapTxType('Auth');
     }
 
-    /**
-     * @dataProvider mapOrderStatusDataProvider
-     */
+    #[DataProvider('mapOrderStatusDataProvider')]
     public function testMapOrderStatus(
         string $orderStatus,
         ?string $preAuthStatus,
@@ -59,9 +59,7 @@ class ParamPosResponseValueMapperTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider mapCurrencyDataProvider
-     */
+    #[DataProvider('mapCurrencyDataProvider')]
     public function testMapCurrency(string $currency, string $txType, ?string $expected): void
     {
         $this->assertSame(
@@ -70,9 +68,7 @@ class ParamPosResponseValueMapperTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider mapSecureTypeDataProvider
-     */
+    #[DataProvider('mapSecureTypeDataProvider')]
     public function testMapSecureType(string $secureType, string $txType, ?string $expected): void
     {
         $this->assertSame($expected, $this->mapper->mapSecureType($secureType, $txType));

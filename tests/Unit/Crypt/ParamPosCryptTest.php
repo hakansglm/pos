@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
+use LogicException;
 use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\ParamPosCrypt;
 use Mews\Pos\Model\Account\AbstractPosAccount;
@@ -16,6 +17,7 @@ use Mews\Pos\Gateway\Param3DHostPos;
 use Mews\Pos\Gateway\ParamPos;
 use Mews\Pos\Tests\Unit\DataMapper\Request\Mapper\ParamPosRequestDataMapperTest;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -57,9 +59,7 @@ class ParamPosCryptTest extends TestCase
         $this->crypt->create3DHash($this->account, []);
     }
 
-    /**
-     * @dataProvider threeDHashCheckDataProvider
-     */
+    #[DataProvider('threeDHashCheckDataProvider')]
     public function testCheck3DHash(array $responseData): void
     {
         $this->account->expects($this->any())
@@ -82,19 +82,15 @@ class ParamPosCryptTest extends TestCase
         $this->assertFalse($this->crypt->check3DHash($this->account, $responseData));
     }
 
-    /**
-     * @dataProvider threeDHashCheckDataProvider
-     */
+    #[DataProvider('threeDHashCheckDataProvider')]
     public function testCheck3DHashException(array $responseData): void
     {
         $account = $this->createMock(AbstractPosAccount::class);
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->crypt->check3DHash($account, $responseData);
     }
 
-    /**
-     * @dataProvider hashCreateDataProvider
-     */
+    #[DataProvider('hashCreateDataProvider')]
     public function testCreateHash(array $requestData, string $expected): void
     {
         $actual = $this->crypt->createHash($this->account, $requestData);

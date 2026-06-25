@@ -80,6 +80,7 @@
         "phpstan": "php -d memory_limit=256M ./vendor/bin/phpstan",
         "baseline": "./vendor/bin/phpstan --generate-baseline",
         "rector": "./vendor/bin/rector",
+        "rector-tests": "./vendor/bin/rector --config rector-tests.php --clear-cache",
         "cs-fix": "./vendor/bin/php-cs-fixer fix",
         "cs-check": "./vendor/bin/php-cs-fixer fix --dry-run --diff",
         "do-checks": [

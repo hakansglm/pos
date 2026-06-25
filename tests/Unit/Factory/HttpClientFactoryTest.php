@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Factory;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Mews\Pos\Client\AkbankPosHttpClient;
 use Mews\Pos\Client\AssecoPosHttpClient;
 use Mews\Pos\Client\GarantiPosHttpClient;
@@ -37,9 +38,7 @@ use Psr\Log\LoggerInterface;
 #[CoversClass(PosHttpClientFactory::class)]
 class HttpClientFactoryTest extends TestCase
 {
-    /**
-     * @dataProvider createForGatewayDataProvider
-     */
+    #[DataProvider('createForGatewayDataProvider')]
     public function testCreateForGateway(string $clientClass, string $cryptClass = CryptInterface::class): void
     {
         $client = PosHttpClientFactory::create(

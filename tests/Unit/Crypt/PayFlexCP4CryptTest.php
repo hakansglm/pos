@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\PayFlexCPV4Crypt;
 use Mews\Pos\Model\Account\PayFlexPosAccount;
@@ -58,9 +59,7 @@ class PayFlexCP4CryptTest extends TestCase
         $this->crypt->create3DHash($this->account, []);
     }
 
-    /**
-     * @dataProvider hashCreateDataProvider
-     */
+    #[DataProvider('hashCreateDataProvider')]
     public function testCreateHash(array $requestData, string $expected): void
     {
         $actual = $this->crypt->createHash($this->account, $requestData);

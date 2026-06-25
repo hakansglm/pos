@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Functional;
 
+use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Factory\AccountFactory;
@@ -24,10 +25,10 @@ class AkbankPosTest extends TestCase
 
     private EventDispatcher $eventDispatcher;
 
-    /** @var \Mews\Pos\Gateway\AkbankPos */
+    /** @var AkbankPos */
     private PosInterface $pos;
 
-    /** @var \Mews\Pos\Gateway\AkbankPos */
+    /** @var AkbankPos */
     private PosInterface $recurringPos;
 
     protected function setUp(): void

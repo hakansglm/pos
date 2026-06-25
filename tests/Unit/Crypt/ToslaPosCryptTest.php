@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
+use LogicException;
 use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\ToslaPosCrypt;
 use Mews\Pos\Model\Account\AbstractPosAccount;
@@ -15,6 +16,7 @@ use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\ToslaPos;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -70,9 +72,7 @@ class ToslaPosCryptTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider threeDHashCheckDataProvider
-     */
+    #[DataProvider('threeDHashCheckDataProvider')]
     public function testCheck3DHash(array $responseData): void
     {
         $this->assertTrue($this->crypt->check3DHash($this->account, $responseData));
@@ -84,7 +84,7 @@ class ToslaPosCryptTest extends TestCase
     public function testCheck3DHashException(): void
     {
         $account = $this->createMock(AbstractPosAccount::class);
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->crypt->check3DHash($account, []);
     }
 

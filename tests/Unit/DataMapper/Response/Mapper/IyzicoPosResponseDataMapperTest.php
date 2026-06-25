@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\Mapper;
 
+use DateTimeImmutable;
+use Generator;
+use DateTimeZone;
 use Mews\Pos\DataMapper\Response\Mapper\AbstractResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\IyzicoPosResponseDataMapper;
 use Mews\Pos\Exception\NotImplementedException;
@@ -15,6 +18,7 @@ use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Gateway\IyzicoPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -66,9 +70,7 @@ class IyzicoPosResponseDataMapperTest extends TestCase
         $this->assertSame($expected, $this->responseDataMapper->extractMdStatus($responseData));
     }
 
-    /**
-     * @dataProvider paymentTestDataProvider
-     */
+    #[DataProvider('paymentTestDataProvider')]
     public function testMapPaymentResponse(string $txType, array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapPaymentResponse($responseData, $txType, []);
@@ -84,9 +86,7 @@ class IyzicoPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider threeDPaymentDataProvider
-     */
+    #[DataProvider('threeDPaymentDataProvider')]
     public function testMap3DPaymentData(
         string  $txType,
         array   $raw3DAuthData,
@@ -124,9 +124,7 @@ class IyzicoPosResponseDataMapperTest extends TestCase
         $this->responseDataMapper->map3DPayResponseData([], PosInterface::TX_TYPE_PAY_AUTH, []);
     }
 
-    /**
-     * @dataProvider threeDHostPaymentDataProvider
-     */
+    #[DataProvider('threeDHostPaymentDataProvider')]
     public function testMap3DHostResponseData(
         string $txType,
         array  $raw3DAuthData,
@@ -145,9 +143,7 @@ class IyzicoPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider cancelTestDataProvider
-     */
+    #[DataProvider('cancelTestDataProvider')]
     public function testMapCancelResponse(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapCancelResponse($responseData);
@@ -161,9 +157,7 @@ class IyzicoPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider refundTestDataProvider
-     */
+    #[DataProvider('refundTestDataProvider')]
     public function testMapRefundResponse(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapRefundResponse($responseData);
@@ -177,9 +171,7 @@ class IyzicoPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider statusTestDataProvider
-     */
+    #[DataProvider('statusTestDataProvider')]
     public function testMapStatusResponse(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapStatusResponse($responseData);
@@ -193,9 +185,7 @@ class IyzicoPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider orderHistoryTestDataProvider
-     */
+    #[DataProvider('orderHistoryTestDataProvider')]
     public function testMapOrderHistoryResponse(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapOrderHistoryResponse($responseData);
@@ -210,8 +200,8 @@ class IyzicoPosResponseDataMapperTest extends TestCase
                     continue;
                 }
 
-                if ($expectedData['transactions'][$i][$timeField] instanceof \DateTimeImmutable) {
-                    $this->assertInstanceOf(\DateTimeImmutable::class, $actualData['transactions'][$i][$timeField], $timeField);
+                if ($expectedData['transactions'][$i][$timeField] instanceof DateTimeImmutable) {
+                    $this->assertInstanceOf(DateTimeImmutable::class, $actualData['transactions'][$i][$timeField], $timeField);
                     $this->assertEquals($expectedData['transactions'][$i][$timeField], $actualData['transactions'][$i][$timeField]);
                 } else {
                     $this->assertSame($expectedData['transactions'][$i][$timeField], $actualData['transactions'][$i][$timeField]);
@@ -226,9 +216,7 @@ class IyzicoPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider historyTestDataProvider
-     */
+    #[DataProvider('historyTestDataProvider')]
     public function testMapHistoryResponse(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapHistoryResponse($responseData);
@@ -252,7 +240,7 @@ class IyzicoPosResponseDataMapperTest extends TestCase
 
     // ==================== Data Providers ====================
 
-    public static function paymentTestDataProvider(): \Generator
+    public static function paymentTestDataProvider(): Generator
     {
         yield 'non_secure_pay_auth_success' => [
             PosInterface::TX_TYPE_PAY_AUTH,
@@ -281,7 +269,7 @@ class IyzicoPosResponseDataMapperTest extends TestCase
                 'batch_num'         => null,
                 'order_id'          => '20260611F399',
                 'transaction_id'    => null,
-                'transaction_time'  => new \DateTimeImmutable('2026-06-11 20:29:32', new \DateTimeZone('UTC')),
+                'transaction_time'  => new DateTimeImmutable('2026-06-11 20:29:32', new DateTimeZone('UTC')),
                 'proc_return_code'  => 'failure',
                 'status'            => 'declined',
                 'error_code'        => '5062',
@@ -323,7 +311,7 @@ class IyzicoPosResponseDataMapperTest extends TestCase
                 'batch_num'         => null,
                 'order_id'          => '202606118557',
                 'transaction_id'    => '35790641',
-                'transaction_time'  => new \DateTimeImmutable('2026-06-11 20:29:38', new \DateTimeZone('UTC')),
+                'transaction_time'  => new DateTimeImmutable('2026-06-11 20:29:38', new DateTimeZone('UTC')),
                 'proc_return_code'  => 'failure',
                 'status'            => 'declined',
                 'error_code'        => '5082',
@@ -332,7 +320,7 @@ class IyzicoPosResponseDataMapperTest extends TestCase
         ];
     }
 
-    public static function threeDPaymentDataProvider(): \Generator
+    public static function threeDPaymentDataProvider(): Generator
     {
         $paymentSuccess = self::loadJson('payment/non_secure_pay_auth_success.json');
         $expectedBase   = self::loadExpected('payment/non_secure_pay_auth_success_expected.json');
@@ -404,7 +392,7 @@ class IyzicoPosResponseDataMapperTest extends TestCase
         ];
     }
 
-    public static function threeDHostPaymentDataProvider(): \Generator
+    public static function threeDHostPaymentDataProvider(): Generator
     {
         $paymentSuccess = self::loadJson('payment/non_secure_pay_auth_success.json');
         $expectedBase   = self::loadExpected('payment/non_secure_pay_auth_success_expected.json');
@@ -446,7 +434,7 @@ class IyzicoPosResponseDataMapperTest extends TestCase
         ];
     }
 
-    public static function cancelTestDataProvider(): \Generator
+    public static function cancelTestDataProvider(): Generator
     {
         yield 'cancel_success' => [
             self::loadJson('cancel/cancel_success.json'),
@@ -490,7 +478,7 @@ class IyzicoPosResponseDataMapperTest extends TestCase
         ];
     }
 
-    public static function refundTestDataProvider(): \Generator
+    public static function refundTestDataProvider(): Generator
     {
         yield 'refund_success' => [
             self::loadJson('refund/refund_success.json'),
@@ -522,7 +510,7 @@ class IyzicoPosResponseDataMapperTest extends TestCase
         ];
     }
 
-    public static function statusTestDataProvider(): \Generator
+    public static function statusTestDataProvider(): Generator
     {
         yield 'status_success' => [
             self::loadJson('status/status_success.json'),
@@ -621,7 +609,7 @@ class IyzicoPosResponseDataMapperTest extends TestCase
         ];
     }
 
-    public static function orderHistoryTestDataProvider(): \Generator
+    public static function orderHistoryTestDataProvider(): Generator
     {
         yield 'order_history_success' => [
             self::loadJson('order_history/order_history_success.json'),
@@ -720,7 +708,7 @@ class IyzicoPosResponseDataMapperTest extends TestCase
         ];
     }
 
-    public static function historyTestDataProvider(): \Generator
+    public static function historyTestDataProvider(): Generator
     {
         yield 'history_success' => [
             self::loadJson('history/history_success.json'),
@@ -865,9 +853,9 @@ class IyzicoPosResponseDataMapperTest extends TestCase
         return $data;
     }
 
-    private static function arrayToDateTime(array $dtArray): \DateTimeImmutable
+    private static function arrayToDateTime(array $dtArray): DateTimeImmutable
     {
-        return new \DateTimeImmutable($dtArray['date'], new \DateTimeZone($dtArray['timezone']));
+        return new DateTimeImmutable($dtArray['date'], new DateTimeZone($dtArray['timezone']));
     }
 
     private function assertTransactionTime(array &$expectedData, array &$actualData): void
@@ -876,8 +864,8 @@ class IyzicoPosResponseDataMapperTest extends TestCase
             return;
         }
 
-        if ($expectedData['transaction_time'] instanceof \DateTimeImmutable) {
-            $this->assertInstanceOf(\DateTimeImmutable::class, $actualData['transaction_time']);
+        if ($expectedData['transaction_time'] instanceof DateTimeImmutable) {
+            $this->assertInstanceOf(DateTimeImmutable::class, $actualData['transaction_time']);
             $this->assertEquals($expectedData['transaction_time'], $actualData['transaction_time']);
         } else {
             $this->assertSame($expectedData['transaction_time'], $actualData['transaction_time']);

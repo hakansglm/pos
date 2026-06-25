@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\Mapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use Mews\Pos\Exception\NotImplementedException;
+use Generator;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\Request\Mapper\AbstractRequestDataMapper;
 use Mews\Pos\DataMapper\Request\Mapper\PayFlexCPV4PosRequestDataMapper;
@@ -78,9 +81,7 @@ class PayFlexCPV4PosRequestDataMapperTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider create3DPaymentStatusRequestDataProvider
-     */
+    #[DataProvider('create3DPaymentStatusRequestDataProvider')]
     public function testCreate3DPaymentStatusRequestData(AbstractPosAccount $posAccount, array $postData, array $expectedData): void
     {
         $actual = $this->requestDataMapper->create3DPaymentStatusRequestData(
@@ -90,9 +91,7 @@ class PayFlexCPV4PosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    /**
-     * @dataProvider registerDataProvider
-     */
+    #[DataProvider('registerDataProvider')]
     public function testCreate3DEnrollmentCheckData(AbstractPosAccount $posAccount, array $order, string $txType, ?CreditCard $creditCard, array $expectedData): void
     {
         $hashCalculationData = $expectedData;
@@ -113,9 +112,7 @@ class PayFlexCPV4PosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    /**
-     * @dataProvider threeDFormDataProvider
-     */
+    #[DataProvider('threeDFormDataProvider')]
     public function testCreate3DFormData(array $queryParams, array $expected): void
     {
         $this->dispatcher->expects(self::never())
@@ -136,7 +133,7 @@ class PayFlexCPV4PosRequestDataMapperTest extends TestCase
 
     public function testCreate3DPaymentRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->requestDataMapper->create3DPaymentRequestData(
             $this->account,
             [],
@@ -147,25 +144,25 @@ class PayFlexCPV4PosRequestDataMapperTest extends TestCase
 
     public function testCreateStatusRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->requestDataMapper->createStatusRequestData($this->account, []);
     }
 
     public function testCreateCancelRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->requestDataMapper->createCancelRequestData($this->account, []);
     }
 
     public function testCreateRefundRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->requestDataMapper->createRefundRequestData($this->account, [], PosInterface::TX_TYPE_REFUND);
     }
 
     public function testCreateNonSecurePaymentRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $card = $this->createMock(CreditCardInterface::class);
         $this->requestDataMapper->createNonSecurePaymentRequestData(
             $this->account,
@@ -177,7 +174,7 @@ class PayFlexCPV4PosRequestDataMapperTest extends TestCase
 
     public function testCreateNonSecurePostAuthPaymentRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->requestDataMapper->createNonSecurePostAuthPaymentRequestData(
             $this->account,
             [],
@@ -186,19 +183,17 @@ class PayFlexCPV4PosRequestDataMapperTest extends TestCase
 
     public function testCreateHistoryRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->requestDataMapper->createHistoryRequestData($this->account);
     }
 
     public function testCreateOrderHistoryRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->requestDataMapper->createOrderHistoryRequestData($this->account, []);
     }
 
-    /**
-     * @dataProvider createCustomQueryRequestDataDataProvider
-     */
+    #[DataProvider('createCustomQueryRequestDataDataProvider')]
     public function testCreateCustomQueryRequestData(array $requestData, array $expectedData): void
     {
         $actual = $this->requestDataMapper->createCustomQueryRequestData($this->account, $requestData);
@@ -208,7 +203,7 @@ class PayFlexCPV4PosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    public static function createCustomQueryRequestDataDataProvider(): \Generator
+    public static function createCustomQueryRequestDataDataProvider(): Generator
     {
         yield 'without_account_data_bin_inquiry' => [
             'request_data' => [

@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueFormatter;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use DateTimeImmutable;
+use InvalidArgumentException;
 use Mews\Pos\DataMapper\Request\ValueFormatter\IyzicoPosRequestValueFormatter;
 use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Gateway\IyzicoPos;
@@ -47,12 +50,10 @@ class IyzicoPosRequestValueFormatterTest extends TestCase
         $this->assertSame($expected, $this->formatter->formatAmount($amount));
     }
 
-    /**
-     * @dataProvider formatCardExpDateDataProvider
-     */
+    #[DataProvider('formatCardExpDateDataProvider')]
     public function testFormatCardExpDate(string $fieldName, string $expected): void
     {
-        $expDate = new \DateTimeImmutable('2024-04-01');
+        $expDate = new DateTimeImmutable('2024-04-01');
         $actual  = $this->formatter->formatCardExpDate($expDate, $fieldName);
 
         $this->assertSame($expected, $actual);
@@ -60,16 +61,16 @@ class IyzicoPosRequestValueFormatterTest extends TestCase
 
     public function testFormatCardExpDateUnsupportedField(): void
     {
-        $expDate = new \DateTimeImmutable('2024-04-01');
+        $expDate = new DateTimeImmutable('2024-04-01');
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->formatter->formatCardExpDate($expDate, 'unsupportedField');
     }
 
     #[TestWith(['someField', '2024-06-15'])]
     public function testFormatDateTime(string $fieldName, string $expected): void
     {
-        $dateTime = new \DateTimeImmutable('2024-06-15');
+        $dateTime = new DateTimeImmutable('2024-06-15');
         $this->assertSame($expected, $this->formatter->formatDateTime($dateTime, $fieldName));
     }
 

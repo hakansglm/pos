@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Serializer\Decoder;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Mews\Pos\Serializer\Decoder\JsonDecoder;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -22,9 +23,7 @@ class JsonDecoderTest extends TestCase
         $this->decoder = new JsonDecoder();
     }
 
-    /**
-     * @dataProvider decodeDataProvider
-     */
+    #[DataProvider('decodeDataProvider')]
     public function testDecode(string $data, array $expected): void
     {
         $actual = $this->decoder->decode($data);

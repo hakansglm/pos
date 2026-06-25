@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\Factory;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use DomainException;
+use stdClass;
 use Mews\Pos\DataMapper\Response\ValueMapper\AkbankPosResponseValueMapper;
 use Mews\Pos\DataMapper\Response\ValueMapper\KuveytPosResponseValueMapper;
 use Mews\Pos\DataMapper\Response\ValueMapper\AssecoPosResponseValueMapper;
@@ -42,9 +45,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(ResponseValueMapperFactory::class)]
 class ResponseValueMapperFactoryTest extends TestCase
 {
-    /**
-     * @dataProvider gatewayClassDataProvider
-     */
+    #[DataProvider('gatewayClassDataProvider')]
     public function testCreateForGateway(
         string $gatewayClass,
         string $expectedMapperClass
@@ -57,8 +58,8 @@ class ResponseValueMapperFactoryTest extends TestCase
 
     public function testCreateForGatewayInvalidGateway(): void
     {
-        $this->expectException(\DomainException::class);
-        ResponseValueMapperFactory::createForGateway(\stdClass::class);
+        $this->expectException(DomainException::class);
+        ResponseValueMapperFactory::createForGateway(stdClass::class);
     }
 
     public static function gatewayClassDataProvider(): array

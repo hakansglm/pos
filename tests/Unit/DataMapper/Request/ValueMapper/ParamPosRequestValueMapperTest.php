@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueMapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use LogicException;
+use InvalidArgumentException;
 use Mews\Pos\DataMapper\Request\ValueMapper\AbstractRequestValueMapper;
 use Mews\Pos\DataMapper\Request\ValueMapper\ParamPosRequestValueMapper;
 use Mews\Pos\Exception\UnsupportedTransactionTypeException;
@@ -39,27 +42,21 @@ class ParamPosRequestValueMapperTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider mapTxTypeDataProvider
-     */
+    #[DataProvider('mapTxTypeDataProvider')]
     public function testMapTxType(string $txType, string $paymentModel, ?array $order, string $expected): void
     {
         $actual = $this->valueMapper->mapTxType($txType, $paymentModel, $order);
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider mapTxTypeUnsupportedDataProvider
-     */
+    #[DataProvider('mapTxTypeUnsupportedDataProvider')]
     public function testMapTxTypeException(string $txType, ?string $paymentModel, string $exceptionClass): void
     {
         $this->expectException($exceptionClass);
         $this->valueMapper->mapTxType($txType, $paymentModel);
     }
 
-    /**
-     * @dataProvider mapSecureTypeDataProvider
-     */
+    #[DataProvider('mapSecureTypeDataProvider')]
     public function testMapSecureType(string $paymentModel, string $expected): void
     {
         $mappedSecureType = $this->valueMapper->mapSecureType($paymentModel);
@@ -68,13 +65,13 @@ class ParamPosRequestValueMapperTest extends TestCase
 
     public function testMapRecurringFrequency(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->valueMapper->mapRecurringFrequency('DAY');
     }
 
     public function testMapLang(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->valueMapper->mapLang(PosInterface::LANG_TR);
     }
 
@@ -154,7 +151,7 @@ class ParamPosRequestValueMapperTest extends TestCase
     {
         return [
             ['3000', null, UnsupportedTransactionTypeException::class],
-            [PosInterface::TX_TYPE_PAY_AUTH, null, \InvalidArgumentException::class],
+            [PosInterface::TX_TYPE_PAY_AUTH, null, InvalidArgumentException::class],
         ];
     }
 }

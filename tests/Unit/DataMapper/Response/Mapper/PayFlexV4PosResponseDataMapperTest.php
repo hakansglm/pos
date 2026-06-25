@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\Mapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use DateTimeImmutable;
 use Mews\Pos\DataMapper\Response\Mapper\AbstractResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\PayFlexV4PosResponseDataMapper;
 use Mews\Pos\DataMapper\Response\ValueFormatter\ResponseValueFormatterInterface;
@@ -81,9 +83,7 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider threeDPaymentDataProvider
-     */
+    #[DataProvider('threeDPaymentDataProvider')]
     public function testMap3DPaymentData(array $order, string $txType, array $threeDResponseData, array $paymentResponse, array $expectedData): void
     {
         if (isset($paymentResponse['TLAmount'])) {
@@ -107,11 +107,11 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
                 ->willReturn($expectedData['payment_model']);
         }
 
-        if ($expectedData['transaction_time'] instanceof \DateTimeImmutable) {
+        if ($expectedData['transaction_time'] instanceof DateTimeImmutable) {
             $this->responseValueFormatter->expects($this->once())
                 ->method('formatDateTime')
                 ->with(
-                    strlen($paymentResponse['HostDate']) === 10
+                    strlen((string) $paymentResponse['HostDate']) === 10
                         ? date('Y').$paymentResponse['HostDate']
                         : $paymentResponse['HostDate'],
                     $txType
@@ -152,9 +152,7 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider paymentDataProvider
-     */
+    #[DataProvider('paymentDataProvider')]
     public function testMapPaymentResponse(string $txType, array $responseData, array $expectedData): void
     {
         if (isset($responseData['TLAmount'])) {
@@ -178,11 +176,11 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
                 ->willReturn($expectedData['payment_model']);
         }
 
-        if ($expectedData['transaction_time'] instanceof \DateTimeImmutable) {
+        if ($expectedData['transaction_time'] instanceof DateTimeImmutable) {
             $this->responseValueFormatter->expects($this->once())
                 ->method('formatDateTime')
                 ->with(
-                    strlen($responseData['HostDate']) === 10
+                    strlen((string) $responseData['HostDate']) === 10
                         ? date('Y').$responseData['HostDate']
                         : $responseData['HostDate'],
                     $txType
@@ -209,9 +207,7 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider cancelDataProvider
-     */
+    #[DataProvider('cancelDataProvider')]
     public function testMapCancelResponse(array $paymentResponse, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapCancelResponse($paymentResponse);
@@ -224,9 +220,7 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider refundDataProvider
-     */
+    #[DataProvider('refundDataProvider')]
     public function testMapRefundResponse(array $paymentResponse, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapRefundResponse($paymentResponse);
@@ -239,9 +233,7 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider statusTestDataProvider
-     */
+    #[DataProvider('statusTestDataProvider')]
     public function testMapStatusResponse(array $responseData, array $expectedData): void
     {
         $txType = PosInterface::TX_TYPE_STATUS;
@@ -546,7 +538,7 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
             'expectedData' => [
                 'transaction_id'    => '9972767117b3400eb2acafc0018643df',
                 'transaction_type'  => 'pay',
-                'transaction_time'  => new \DateTimeImmutable('2023-03-09 23:40:54'),
+                'transaction_time'  => new DateTimeImmutable('2023-03-09 23:40:54'),
                 'auth_code'         => '961451',
                 'ref_ret_num'       => '9972767117b3400eb2acafc0018643df',
                 'batch_num'         => '300',
@@ -596,7 +588,7 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
             'expectedData' => [
                 'transaction_id'    => '9972767117b3400eb2acafc0018643df',
                 'transaction_type'  => 'pay',
-                'transaction_time'  => new \DateTimeImmutable(date('Y').'-03-09 23:40:54'),
+                'transaction_time'  => new DateTimeImmutable(date('Y').'-03-09 23:40:54'),
                 'auth_code'         => '961451',
                 'ref_ret_num'       => '9972767117b3400eb2acafc0018643df',
                 'batch_num'         => '300',
@@ -847,7 +839,7 @@ class PayFlexV4PosResponseDataMapperTest extends TestCase
                     'md_error_message'     => null,
                     'transaction_id'       => '20230309B838',
                     'transaction_type'     => 'pay',
-                    'transaction_time'     => new \DateTimeImmutable('2022-04-04 12:34:56'),
+                    'transaction_time'     => new DateTimeImmutable('2022-04-04 12:34:56'),
                     'transaction_security' => null,
                     'ref_ret_num'          => '20230309B838',
                     'batch_num'            => '1',

@@ -6,6 +6,10 @@
 
 namespace Mews\Pos\Tests\Unit\Client;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
+use InvalidArgumentException;
+use Generator;
 use Mews\Pos\Client\AbstractHttpClient;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\ToslaPosHttpClient;
@@ -77,9 +81,7 @@ class ToslaPosHttpClientTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider getApiUrlDataProvider
-     */
+    #[DataProvider('getApiUrlDataProvider')]
     public function testGetApiUrl(string $txType, string $paymentModel, string $expected): void
     {
         $actual = $this->client->getApiURL($txType, $paymentModel);
@@ -87,9 +89,7 @@ class ToslaPosHttpClientTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider getApiUrlExceptionDataProvider
-     */
+    #[DataProvider('getApiUrlExceptionDataProvider')]
     public function testGetApiUrlException(?string $txType, ?string $paymentModel, string $exceptionClass): void
     {
         $this->expectException($exceptionClass);
@@ -102,9 +102,7 @@ class ToslaPosHttpClientTest extends TestCase
         $this->assertFalse($this->client::supports(PosNetPos::class, HttpClientInterface::API_NAME_PAYMENT_API));
     }
 
-    /**
-     * @dataProvider supportsTxDataProvider
-     */
+    #[DataProvider('supportsTxDataProvider')]
     public function testSupportsTx(string $txType, string $paymentModel, bool $expected): void
     {
         $this->assertSame($expected, $this->client->supportsTx($txType, $paymentModel));
@@ -119,9 +117,7 @@ class ToslaPosHttpClientTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider requestDataProvider
-     */
+    #[DataProvider('requestDataProvider')]
     public function testRequest(
         string $txType,
         string $paymentModel,
@@ -228,7 +224,7 @@ class ToslaPosHttpClientTest extends TestCase
             ->with($request)
             ->willReturn($response);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('İstek Başarısız!');
 
         $this->client->request(
@@ -364,22 +360,22 @@ class ToslaPosHttpClientTest extends TestCase
             [
                 'txType'          => null,
                 'paymentModel'    => null,
-                'exception_class' => \InvalidArgumentException::class,
+                'exception_class' => InvalidArgumentException::class,
             ],
             [
                 'txType'          => PosInterface::TX_TYPE_PAY_AUTH,
                 'paymentModel'    => null,
-                'exception_class' => \InvalidArgumentException::class,
+                'exception_class' => InvalidArgumentException::class,
             ],
             [
                 'txType'          => null,
                 'paymentModel'    => PosInterface::MODEL_3D_PAY,
-                'exception_class' => \InvalidArgumentException::class,
+                'exception_class' => InvalidArgumentException::class,
             ],
         ];
     }
 
-    public static function requestDataProvider(): \Generator
+    public static function requestDataProvider(): Generator
     {
         yield [
             'txType'             => PosInterface::TX_TYPE_PAY_AUTH,

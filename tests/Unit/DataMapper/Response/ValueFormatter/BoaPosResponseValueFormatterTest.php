@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\ValueFormatter;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Mews\Pos\DataMapper\Response\ValueFormatter\BoaPosResponseValueFormatter;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\KuveytPos;
@@ -36,9 +37,7 @@ class BoaPosResponseValueFormatterTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider formatAmountProvider
-     */
+    #[DataProvider('formatAmountProvider')]
     public function testFormatAmount(string $amount, string $txType, float $expected): void
     {
         $actual = $this->formatter->formatAmount($amount, $txType);

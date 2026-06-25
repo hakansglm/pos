@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueMapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Mews\Pos\DataMapper\Request\ValueMapper\AbstractRequestValueMapper;
 use Mews\Pos\DataMapper\Request\ValueMapper\AssecoPosRequestValueMapper;
 use Mews\Pos\Exception\UnsupportedTransactionTypeException;
@@ -37,9 +38,7 @@ class AssecoPosRequestValueMapperTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider mapTxTypeDataProvider
-     */
+    #[DataProvider('mapTxTypeDataProvider')]
     public function testMapTxType(string $txType, string $expected): void
     {
         $actual = $this->valueMapper->mapTxType($txType);
@@ -53,9 +52,7 @@ class AssecoPosRequestValueMapperTest extends TestCase
         $this->valueMapper->mapTxType($txType);
     }
 
-    /**
-     * @dataProvider mapSecureTypeDataProvider
-     */
+    #[DataProvider('mapSecureTypeDataProvider')]
     public function testMapSecureType(string $paymentModel, string $expected): void
     {
         $mappedSecureType = $this->valueMapper->mapSecureType($paymentModel);

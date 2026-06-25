@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\Serializer\Decoder;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
+use Generator;
 use Mews\Pos\Serializer\Decoder\XmlDecoder;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -23,9 +26,7 @@ class XmlDecoderTest extends TestCase
         $this->decoder = new XmlDecoder();
     }
 
-    /**
-     * @dataProvider decodeDataProvider
-     */
+    #[DataProvider('decodeDataProvider')]
     public function testDecode(string $data, array $expected): void
     {
         $actual = $this->decoder->decode($data);
@@ -33,9 +34,7 @@ class XmlDecoderTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider decodeBadDataProvider
-     */
+    #[DataProvider('decodeBadDataProvider')]
     public function testDecodeEmptyStringThrowsNotEncodableValueException(string $input, string $expectedExceptionClass): void
     {
         $this->expectException($expectedExceptionClass);
@@ -60,12 +59,12 @@ class XmlDecoderTest extends TestCase
     </body>
 </html>
 HTML,
-                'expectedExceptionClass' => \RuntimeException::class,
+                'expectedExceptionClass' => RuntimeException::class,
             ],
         ];
     }
 
-    public static function decodeDataProvider(): \Generator
+    public static function decodeDataProvider(): Generator
     {
         yield 'garanti_style_response' => [
             'input'    => '<?xml version="1.0" encoding="UTF-8"?>

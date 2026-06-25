@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\Mapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use DateTimeImmutable;
 use Mews\Pos\DataMapper\Response\Mapper\AbstractResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\PosNetPosResponseDataMapper;
 use Mews\Pos\DataMapper\Response\ValueFormatter\ResponseValueFormatterInterface;
@@ -83,9 +85,7 @@ class PosNetPosResponseDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider paymentTestDataProvider
-     */
+    #[DataProvider('paymentTestDataProvider')]
     public function testMapPaymentResponse(array $order, string $txType, array $responseData, array $expectedData): void
     {
         if (isset($expectedData['transaction_time'])) {
@@ -107,9 +107,7 @@ class PosNetPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider threeDPaymentDataProvider
-     */
+    #[DataProvider('threeDPaymentDataProvider')]
     public function testMap3DPaymentData(array $order, string $txType, array $threeDResponseData, array $paymentResponse, array $expectedData): void
     {
         if (isset($threeDResponseData['oosResolveMerchantDataResponse'])) {
@@ -154,9 +152,7 @@ class PosNetPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider statusTestDataProvider
-     */
+    #[DataProvider('statusTestDataProvider')]
     public function testMapStatusResponse(array $responseData, array $expectedData): void
     {
         if (isset($responseData['transactions']['transaction'])) {
@@ -194,9 +190,7 @@ class PosNetPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider refundTestDataProvider
-     */
+    #[DataProvider('refundTestDataProvider')]
     public function testMapRefundResponse(array $responseData, array $expectedData): void
     {
         if (isset($responseData['state'])) {
@@ -273,7 +267,7 @@ class PosNetPosResponseDataMapperTest extends TestCase
                         'order_id'          => '202312171800ABC',
                         'transaction_id'    => null,
                         'transaction_type'  => 'pay',
-                        'transaction_time'  => new \DateTimeImmutable(),
+                        'transaction_time'  => new DateTimeImmutable(),
                         'installment_count' => 0,
                         'currency'          => 'TRY',
                         'amount'            => 1.01,
@@ -406,7 +400,7 @@ class PosNetPosResponseDataMapperTest extends TestCase
                 'expectedData'       => [
                     'transaction_id'       => null,
                     'transaction_type'     => 'pay',
-                    'transaction_time'     => new \DateTimeImmutable(),
+                    'transaction_time'     => new DateTimeImmutable(),
                     'transaction_security' => 'Full 3D Secure',
                     'md_status'            => '1',
                     'md_error_message'     => null,
@@ -566,7 +560,7 @@ class PosNetPosResponseDataMapperTest extends TestCase
                     'auth_code'         => '504289',
                     'transaction_id'    => null,
                     'ref_ret_num'       => '021450428990000191',
-                    'transaction_time'  => new \DateTimeImmutable('2019-10-10 11:21:14.281'),
+                    'transaction_time'  => new DateTimeImmutable('2019-10-10 11:21:14.281'),
                     'transaction_type'  => 'pay',
                     'proc_return_code'  => '1',
                     'status'            => 'approved',

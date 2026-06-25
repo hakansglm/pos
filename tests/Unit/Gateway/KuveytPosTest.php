@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\Gateway;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use LogicException;
+use Exception;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\HttpClientStrategyInterface;
 use Mews\Pos\Crypt\CryptInterface;
@@ -71,7 +74,7 @@ class KuveytPosTest extends TestCase
     /**
      * @return void
      *
-     * @throws \Exception
+     * @throws Exception
      */
     protected function setUp(): void
     {
@@ -188,9 +191,7 @@ class KuveytPosTest extends TestCase
         $this->assertSame($response, $result);
     }
 
-    /**
-     * @dataProvider threeDFormDataBadInputsProvider
-     */
+    #[DataProvider('threeDFormDataBadInputsProvider')]
     public function testGet3DFormDataWithBadInputs(
         array   $order,
         string  $paymentModel,
@@ -209,9 +210,7 @@ class KuveytPosTest extends TestCase
         $this->pos->get3DFormData($order, $paymentModel, $txType, $card, $createWithoutCard, $formFormat);
     }
 
-    /**
-     * @dataProvider make3DPaymentDataProvider
-     */
+    #[DataProvider('make3DPaymentDataProvider')]
     public function testMake3DPayment(
         array  $order,
         string $txType,
@@ -292,13 +291,11 @@ class KuveytPosTest extends TestCase
         $this->requestMapperMock->expects(self::never())
             ->method('create3DPaymentRequestData');
 
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->pos->payment(PosInterface::MODEL_3D_SECURE, [], $txType, null, ['abc']);
     }
 
-    /**
-     * @dataProvider makeRegularPaymentDataProvider
-     */
+    #[DataProvider('makeRegularPaymentDataProvider')]
     public function testMakeRegularPayment(array $order, string $txType): void
     {
         $account     = $this->pos->getAccount();
@@ -333,9 +330,7 @@ class KuveytPosTest extends TestCase
         $this->pos->payment(PosInterface::MODEL_NON_SECURE, [], PosInterface::TX_TYPE_PAY_POST_AUTH);
     }
 
-    /**
-     * @dataProvider statusDataProvider
-     */
+    #[DataProvider('statusDataProvider')]
     public function testStatus(array $bankResponse, array $expectedData, bool $isSuccess): void
     {
         $account     = $this->pos->getAccount();
@@ -367,9 +362,7 @@ class KuveytPosTest extends TestCase
         $this->assertSame($isSuccess, $this->pos->isSuccess());
     }
 
-    /**
-     * @dataProvider cancelDataProvider
-     */
+    #[DataProvider('cancelDataProvider')]
     public function testCancel(array $bankResponse, array $expectedData, bool $isSuccess): void
     {
         $account     = $this->pos->getAccount();
@@ -401,9 +394,7 @@ class KuveytPosTest extends TestCase
         $this->assertSame($isSuccess, $this->pos->isSuccess());
     }
 
-    /**
-     * @dataProvider refundDataProvider
-     */
+    #[DataProvider('refundDataProvider')]
     public function testRefund(array $bankResponse, array $expectedData, bool $isSuccess): void
     {
         $account     = $this->pos->getAccount();
@@ -526,7 +517,7 @@ class KuveytPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
                 'isWithCard'             => false,
                 'create_without_card'    => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Bu ödeme modeli için kart bilgileri zorunlu!',
             ],
             'unsupported_payment_model' => [
@@ -535,7 +526,7 @@ class KuveytPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
                 'isWithCard'             => false,
                 'create_without_card'    => true,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Mews\Pos\Gateway\KuveytPos ödeme altyapıda [pay] işlem tipi [regular, 3d] ödeme model(ler) desteklemektedir. Sağlanan ödeme model: [3d_host].',
             ],
             'unsupported_tx'            => [
@@ -544,7 +535,7 @@ class KuveytPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_PRE_AUTH,
                 'isWithCard'             => false,
                 'create_without_card'    => true,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay]',
             ],
             'non_payment_tx_type'       => [
@@ -553,7 +544,7 @@ class KuveytPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_STATUS,
                 'isWithCard'             => false,
                 'create_with_card'       => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay]',
             ],
             'post_auth_tx_type'         => [
@@ -562,7 +553,7 @@ class KuveytPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_POST_AUTH,
                 'isWithCard'             => true,
                 'create_with_card'       => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay]',
             ],
             'unsupported_form_format'   => [
@@ -671,7 +662,7 @@ class KuveytPosTest extends TestCase
                     }
                 )
             ))
-            ->willReturnCallback(function () use (&$updatedRequestDataPreparedEvent): ?\Mews\Pos\Event\RequestDataPreparedEvent {
+            ->willReturnCallback(function () use (&$updatedRequestDataPreparedEvent): ?RequestDataPreparedEvent {
                 $updatedRequestData                                        = $updatedRequestDataPreparedEvent->getRequestData();
                 $updatedRequestData['test-update-request-data-with-event'] = true;
                 $updatedRequestDataPreparedEvent->setRequestData($updatedRequestData);

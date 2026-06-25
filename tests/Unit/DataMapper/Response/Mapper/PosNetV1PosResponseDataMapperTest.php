@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\Mapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use DateTimeImmutable;
+use Generator;
 use Mews\Pos\DataMapper\Response\Mapper\AbstractResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\PosNetV1PosResponseDataMapper;
 use Mews\Pos\DataMapper\Response\ValueFormatter\ResponseValueFormatterInterface;
@@ -83,9 +86,7 @@ class PosNetV1PosResponseDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider paymentTestDataProvider
-     */
+    #[DataProvider('paymentTestDataProvider')]
     public function testMapPaymentResponse(array $order, string $txType, array $responseData, array $expectedData): void
     {
         if (isset($expectedData['transaction_time'])) {
@@ -107,9 +108,7 @@ class PosNetV1PosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider threeDPaymentDataProvider
-     */
+    #[DataProvider('threeDPaymentDataProvider')]
     public function testMap3DPaymentData(array $order, string $txType, array $threeDResponseData, array $paymentResponse, array $expectedData): void
     {
         $this->responseValueMapper->expects($this->once())
@@ -166,9 +165,7 @@ class PosNetV1PosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider mapStatusResponseDataProvider
-     */
+    #[DataProvider('mapStatusResponseDataProvider')]
     public function testMapStatusResponse(array $responseData, array $expectedData): void
     {
         $rawTx = null;
@@ -221,9 +218,7 @@ class PosNetV1PosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider mapCancelResponseDataProvider
-     */
+    #[DataProvider('mapCancelResponseDataProvider')]
     public function testMapCancelResponse(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapCancelResponse($responseData);
@@ -236,9 +231,7 @@ class PosNetV1PosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider mapRefundResponseDataProvider
-     */
+    #[DataProvider('mapRefundResponseDataProvider')]
     public function testMapRefundResponse(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapRefundResponse($responseData);
@@ -392,7 +385,7 @@ class PosNetV1PosResponseDataMapperTest extends TestCase
             ],
             'expectedData' => [
                 'transaction_id'    => null,
-                'transaction_time'  => new \DateTimeImmutable(),
+                'transaction_time'  => new DateTimeImmutable(),
                 'transaction_type'  => 'pay',
                 'payment_model'     => 'regular',
                 'order_id'          => '202312171800ABC',
@@ -411,7 +404,7 @@ class PosNetV1PosResponseDataMapperTest extends TestCase
     }
 
 
-    public static function threeDPaymentDataProvider(): \Generator
+    public static function threeDPaymentDataProvider(): Generator
     {
         yield '3d_auth_fail_1' => [
             'order'              => [
@@ -556,7 +549,7 @@ class PosNetV1PosResponseDataMapperTest extends TestCase
             'expectedData'       => [
                 'transaction_id'       => null,
                 'transaction_type'     => 'pay',
-                'transaction_time'     => new \DateTimeImmutable(),
+                'transaction_time'     => new DateTimeImmutable(),
                 'transaction_security' => 'Full 3D Secure',
                 'masked_number'        => '540061',
                 'md_status'            => '1',
@@ -687,7 +680,7 @@ class PosNetV1PosResponseDataMapperTest extends TestCase
 
     public static function mapStatusResponseDataProvider(): iterable
     {
-        $txTime = new \DateTimeImmutable('2019-11-0813:58:37.909');
+        $txTime = new DateTimeImmutable('2019-11-0813:58:37.909');
 
         yield 'success_refunded' => [
             'response' => [

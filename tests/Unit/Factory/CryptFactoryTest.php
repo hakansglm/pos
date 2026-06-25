@@ -6,6 +6,33 @@
 
 namespace Mews\Pos\Tests\Unit\Factory;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use Mews\Pos\Gateway\AkbankPos;
+use Mews\Pos\Crypt\AkbankPosCrypt;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Crypt\AssecoPosCrypt;
+use Mews\Pos\Gateway\GarantiPos;
+use Mews\Pos\Crypt\GarantiPosCrypt;
+use Mews\Pos\Gateway\InterPos;
+use Mews\Pos\Crypt\InterPosCrypt;
+use Mews\Pos\Gateway\KuveytPos;
+use Mews\Pos\Crypt\KuveytPosCrypt;
+use Mews\Pos\Gateway\ParamPos;
+use Mews\Pos\Crypt\ParamPosCrypt;
+use Mews\Pos\Gateway\PayFlexV4Pos;
+use Mews\Pos\Crypt\NullCrypt;
+use Mews\Pos\Gateway\PayFlexCPV4Pos;
+use Mews\Pos\Crypt\PayFlexCPV4Crypt;
+use Mews\Pos\Gateway\PayForPos;
+use Mews\Pos\Crypt\PayForPosCrypt;
+use Mews\Pos\Gateway\PosNetPos;
+use Mews\Pos\Crypt\PosNetPosCrypt;
+use Mews\Pos\Gateway\PosNetV1Pos;
+use Mews\Pos\Crypt\PosNetV1PosCrypt;
+use Mews\Pos\Gateway\ToslaPos;
+use Mews\Pos\Crypt\ToslaPosCrypt;
+use Mews\Pos\Gateway\VakifKatilimPos;
+use stdClass;
 use Mews\Pos\Factory\CryptFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -14,9 +41,7 @@ use Psr\Log\LoggerInterface;
 #[CoversClass(CryptFactory::class)]
 class CryptFactoryTest extends TestCase
 {
-    /**
-     * @dataProvider createForGatewayDataProvider
-     */
+    #[DataProvider('createForGatewayDataProvider')]
     public function testCreateForGateway(string $gatewayClass, string $cryptClass): void
     {
         $logger = $this->createMock(LoggerInterface::class);
@@ -27,20 +52,20 @@ class CryptFactoryTest extends TestCase
     public static function createForGatewayDataProvider(): array
     {
         return [
-            [\Mews\Pos\Gateway\AkbankPos::class, \Mews\Pos\Crypt\AkbankPosCrypt::class],
-            [\Mews\Pos\Gateway\AssecoPos::class, \Mews\Pos\Crypt\AssecoPosCrypt::class],
-            [\Mews\Pos\Gateway\GarantiPos::class, \Mews\Pos\Crypt\GarantiPosCrypt::class],
-            [\Mews\Pos\Gateway\InterPos::class, \Mews\Pos\Crypt\InterPosCrypt::class],
-            [\Mews\Pos\Gateway\KuveytPos::class, \Mews\Pos\Crypt\KuveytPosCrypt::class],
-            [\Mews\Pos\Gateway\ParamPos::class, \Mews\Pos\Crypt\ParamPosCrypt::class],
-            [\Mews\Pos\Gateway\PayFlexV4Pos::class, \Mews\Pos\Crypt\NullCrypt::class],
-            [\Mews\Pos\Gateway\PayFlexCPV4Pos::class, \Mews\Pos\Crypt\PayFlexCPV4Crypt::class],
-            [\Mews\Pos\Gateway\PayForPos::class, \Mews\Pos\Crypt\PayForPosCrypt::class],
-            [\Mews\Pos\Gateway\PosNetPos::class, \Mews\Pos\Crypt\PosNetPosCrypt::class],
-            [\Mews\Pos\Gateway\PosNetV1Pos::class, \Mews\Pos\Crypt\PosNetV1PosCrypt::class],
-            [\Mews\Pos\Gateway\ToslaPos::class, \Mews\Pos\Crypt\ToslaPosCrypt::class],
-            [\Mews\Pos\Gateway\VakifKatilimPos::class, \Mews\Pos\Crypt\KuveytPosCrypt::class],
-            [\stdClass::class, \Mews\Pos\Crypt\NullCrypt::class],
+            [AkbankPos::class, AkbankPosCrypt::class],
+            [AssecoPos::class, AssecoPosCrypt::class],
+            [GarantiPos::class, GarantiPosCrypt::class],
+            [InterPos::class, InterPosCrypt::class],
+            [KuveytPos::class, KuveytPosCrypt::class],
+            [ParamPos::class, ParamPosCrypt::class],
+            [PayFlexV4Pos::class, NullCrypt::class],
+            [PayFlexCPV4Pos::class, PayFlexCPV4Crypt::class],
+            [PayForPos::class, PayForPosCrypt::class],
+            [PosNetPos::class, PosNetPosCrypt::class],
+            [PosNetV1Pos::class, PosNetV1PosCrypt::class],
+            [ToslaPos::class, ToslaPosCrypt::class],
+            [VakifKatilimPos::class, KuveytPosCrypt::class],
+            [stdClass::class, NullCrypt::class],
         ];
     }
 }

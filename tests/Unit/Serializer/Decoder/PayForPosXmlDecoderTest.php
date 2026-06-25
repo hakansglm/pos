@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\Serializer\Decoder;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use Generator;
 use Mews\Pos\Serializer\Decoder\PayForPosXmlDecoder;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -22,9 +24,7 @@ class PayForPosXmlDecoderTest extends TestCase
         $this->decoder = new PayForPosXmlDecoder();
     }
 
-    /**
-     * @dataProvider decodeDataProvider
-     */
+    #[DataProvider('decodeDataProvider')]
     public function testDecode(string $data, array $expected): void
     {
         $actual = $this->decoder->decode($data);
@@ -32,7 +32,7 @@ class PayForPosXmlDecoderTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public static function decodeDataProvider(): \Generator
+    public static function decodeDataProvider(): Generator
     {
         yield 'standard_response' => [
             'input'    => '<?xml version="1.0" encoding="utf-8"?>

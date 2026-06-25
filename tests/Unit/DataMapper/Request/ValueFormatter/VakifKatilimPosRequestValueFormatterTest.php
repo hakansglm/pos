@@ -6,6 +6,10 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueFormatter;
 
+use DateTime;
+use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
+use DateTimeInterface;
 use Mews\Pos\DataMapper\Request\ValueFormatter\VakifKatilimPosRequestValueFormatter;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\VakifKatilimPos;
@@ -55,7 +59,7 @@ class VakifKatilimPosRequestValueFormatterTest extends TestCase
     #[TestWith(['CardExpireDateYear', '24'])]
     public function testFormatCreditCardExpDate(string $fieldName, string $expected): void
     {
-        $expDate = new \DateTime('2024-04-14T16:45:30.000');
+        $expDate = new DateTime('2024-04-14T16:45:30.000');
         $actual  = $this->formatter->formatCardExpDate($expDate, $fieldName);
         $this->assertSame($expected, $actual);
     }
@@ -64,15 +68,13 @@ class VakifKatilimPosRequestValueFormatterTest extends TestCase
     #[TestWith([''])]
     public function testFormatCreditCardExpDateUnSupportedField(string $fieldName): void
     {
-        $expDate = new \DateTime('2024-04-14T16:45:30.000');
-        $this->expectException(\InvalidArgumentException::class);
+        $expDate = new DateTime('2024-04-14T16:45:30.000');
+        $this->expectException(InvalidArgumentException::class);
         $this->formatter->formatCardExpDate($expDate, $fieldName);
     }
 
-    /**
-     * @dataProvider formatDateTimeDataProvider
-     */
-    public function testFormatDateTime(\DateTimeInterface $dateTime, ?string $fieldName, ?string $txType, string $expected): void
+    #[DataProvider('formatDateTimeDataProvider')]
+    public function testFormatDateTime(DateTimeInterface $dateTime, ?string $fieldName, ?string $txType, string $expected): void
     {
         $actual = $this->formatter->formatDateTime($dateTime, $fieldName);
         $this->assertSame($expected, $actual);
@@ -83,8 +85,8 @@ class VakifKatilimPosRequestValueFormatterTest extends TestCase
     #[TestWith([''])]
     public function testFormatDateTimeUnsupportedField(?string $fieldName): void
     {
-        $dateTime = new \DateTime('2024-04-14T16:45:30.000');
-        $this->expectException(\InvalidArgumentException::class);
+        $dateTime = new DateTime('2024-04-14T16:45:30.000');
+        $this->expectException(InvalidArgumentException::class);
         $this->formatter->formatDateTime($dateTime, $fieldName);
     }
 
@@ -93,13 +95,13 @@ class VakifKatilimPosRequestValueFormatterTest extends TestCase
     {
         return [
             [
-                new \DateTime('2024-04-14T16:45:30.000'),
+                new DateTime('2024-04-14T16:45:30.000'),
                 'StartDate',
                 PosInterface::TX_TYPE_HISTORY,
                 '2024-04-14',
             ],
             [
-                new \DateTime('2024-04-14T16:45:30.000'),
+                new DateTime('2024-04-14T16:45:30.000'),
                 'EndDate',
                 PosInterface::TX_TYPE_HISTORY,
                 '2024-04-14',

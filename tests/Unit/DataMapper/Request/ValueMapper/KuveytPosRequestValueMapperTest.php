@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueMapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use LogicException;
 use Mews\Pos\DataMapper\Request\ValueMapper\AbstractRequestValueMapper;
 use Mews\Pos\DataMapper\Request\ValueMapper\KuveytPosRequestValueMapper;
 use Mews\Pos\Model\Card\CreditCardInterface;
@@ -38,9 +40,7 @@ class KuveytPosRequestValueMapperTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider mapTxTypeDataProvider
-     */
+    #[DataProvider('mapTxTypeDataProvider')]
     public function testMapTxType(string $txType, string $expected): void
     {
         $actual = $this->valueMapper->mapTxType($txType);
@@ -54,9 +54,7 @@ class KuveytPosRequestValueMapperTest extends TestCase
         $this->valueMapper->mapTxType($txType);
     }
 
-    /**
-     * @dataProvider mapSecureTypeDataProvider
-     */
+    #[DataProvider('mapSecureTypeDataProvider')]
     public function testMapSecureType(string $paymentModel, string $expected): void
     {
         $mappedSecureType = $this->valueMapper->mapSecureType($paymentModel);
@@ -65,13 +63,13 @@ class KuveytPosRequestValueMapperTest extends TestCase
 
     public function testMapRecurringFrequency(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->valueMapper->mapRecurringFrequency('DAY');
     }
 
     public function testMapLang(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->valueMapper->mapLang(PosInterface::LANG_TR);
     }
 
@@ -114,9 +112,7 @@ class KuveytPosRequestValueMapperTest extends TestCase
         $this->assertCount(3, $this->valueMapper->getCardTypeMappings());
     }
 
-    /**
-     * @dataProvider mapCardTypeDataProvider
-     */
+    #[DataProvider('mapCardTypeDataProvider')]
     public function testMapCardType(string $cardType, string $expected): void
     {
         $this->assertSame($expected, $this->valueMapper->mapCardType($cardType));

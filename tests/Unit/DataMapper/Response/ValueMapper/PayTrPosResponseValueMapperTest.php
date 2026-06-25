@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\ValueMapper;
 
+use LogicException;
 use Mews\Pos\DataMapper\Response\ValueMapper\AbstractResponseValueMapper;
 use Mews\Pos\DataMapper\Response\ValueMapper\PayTrPosResponseValueMapper;
 use Mews\Pos\Gateway\AkbankPos;
@@ -47,13 +48,13 @@ class PayTrPosResponseValueMapperTest extends TestCase
 
     public function testMapSecureType(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->mapper->mapSecureType('3D');
     }
 
     public function testMapOrderStatus(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->mapper->mapOrderStatus('1');
     }
 

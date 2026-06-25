@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\Gateway;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use LogicException;
 use Exception;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\HttpClientStrategyInterface;
@@ -239,9 +241,7 @@ class PayFlexCPV4PosTest extends TestCase
         $this->pos->get3DFormData($order, $paymentModel, $txType, $card);
     }
 
-    /**
-     * @dataProvider threeDFormDataBadInputsProvider
-     */
+    #[DataProvider('threeDFormDataBadInputsProvider')]
     public function testGet3DFormDataWithBadInputs(
         array   $order,
         string  $paymentModel,
@@ -266,9 +266,7 @@ class PayFlexCPV4PosTest extends TestCase
         $this->pos->payment(PosInterface::MODEL_3D_SECURE, [], $txType, null, ['abc']);
     }
 
-    /**
-     * @dataProvider make3DPayPaymentDataProvider
-     */
+    #[DataProvider('make3DPayPaymentDataProvider')]
     public function testMake3DPayPayment(
         array  $order,
         string $txType,
@@ -327,9 +325,7 @@ class PayFlexCPV4PosTest extends TestCase
         $this->assertSame($isSuccess, $this->pos->isSuccess());
     }
 
-    /**
-     * @dataProvider make3DPayPaymentDataProvider
-     */
+    #[DataProvider('make3DPayPaymentDataProvider')]
     public function testMake3DHostPayment(
         array  $order,
         string $txType,
@@ -430,9 +426,7 @@ class PayFlexCPV4PosTest extends TestCase
         $this->pos->orderHistory([]);
     }
 
-    /**
-     * @dataProvider customQueryRequestDataProvider
-     */
+    #[DataProvider('customQueryRequestDataProvider')]
     public function testCustomQueryRequest(array $requestData, ?string $apiUrl): void
     {
         $account = $this->pos->getAccount();
@@ -514,7 +508,7 @@ class PayFlexCPV4PosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
                 'isWithCard'             => false,
                 'create_without_card'    => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
             ],
             'unsupported_payment_model' => [
                 'order'                  => ['id' => '2020110828BC'],
@@ -522,7 +516,7 @@ class PayFlexCPV4PosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
                 'isWithCard'             => false,
                 'create_without_card'    => true,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
             ],
             'unsupported_form_format'   => [
                 'order'                  => ['id' => '2020110828BC'],
@@ -582,7 +576,7 @@ class PayFlexCPV4PosTest extends TestCase
                     }
                 )
             ))
-            ->willReturnCallback(function () use (&$updatedRequestDataPreparedEvent): ?\Mews\Pos\Event\RequestDataPreparedEvent {
+            ->willReturnCallback(function () use (&$updatedRequestDataPreparedEvent): ?RequestDataPreparedEvent {
                 $updatedRequestData                                        = $updatedRequestDataPreparedEvent->getRequestData();
                 $updatedRequestData['test-update-request-data-with-event'] = true;
                 $updatedRequestDataPreparedEvent->setRequestData($updatedRequestData);

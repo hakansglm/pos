@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\ValueMapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Mews\Pos\DataMapper\Response\ValueMapper\AbstractResponseValueMapper;
 use Mews\Pos\DataMapper\Response\ValueMapper\GarantiPosResponseValueMapper;
 use Mews\Pos\Gateway\AssecoPos;
@@ -35,17 +36,13 @@ class GarantiPosResponseValueMapperTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider mapTxTypeDataProvider
-     */
+    #[DataProvider('mapTxTypeDataProvider')]
     public function testMapTxType(string $txType, ?string $expected): void
     {
         $this->assertSame($expected, $this->mapper->mapTxType($txType));
     }
 
-    /**
-     * @dataProvider mapOrderStatusDataProvider
-     */
+    #[DataProvider('mapOrderStatusDataProvider')]
     public function testMapOrderStatus(
         string $orderStatus,
         ?string $requestTxType,
@@ -58,17 +55,13 @@ class GarantiPosResponseValueMapperTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider mapCurrencyDataProvider
-     */
+    #[DataProvider('mapCurrencyDataProvider')]
     public function testMapCurrency(string $currency, string $txType, ?string $expected): void
     {
         $this->assertSame($expected, $this->mapper->mapCurrency($currency, $txType));
     }
 
-    /**
-     * @dataProvider mapSecureTypeDataProvider
-     */
+    #[DataProvider('mapSecureTypeDataProvider')]
     public function testMapSecureType(string $secureType, string $txType, ?string $expected): void
     {
         $this->assertSame($expected, $this->mapper->mapSecureType($secureType, $txType));

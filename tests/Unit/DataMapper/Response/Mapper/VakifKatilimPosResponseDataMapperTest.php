@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\Mapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use DateTimeImmutable;
 use Mews\Pos\DataMapper\Response\Mapper\AbstractResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\VakifKatilimPosResponseDataMapper;
 use Mews\Pos\DataMapper\Response\ValueFormatter\ResponseValueFormatterInterface;
@@ -84,9 +86,7 @@ class VakifKatilimPosResponseDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider paymentTestDataProvider
-     */
+    #[DataProvider('paymentTestDataProvider')]
     public function testMapPaymentResponse(string $txType, array $responseData, array $expectedData): void
     {
         if ($this->responseDataMapper::TX_APPROVED === $expectedData['status']) {
@@ -130,9 +130,7 @@ class VakifKatilimPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider threeDPaymentDataProvider
-     */
+    #[DataProvider('threeDPaymentDataProvider')]
     public function testMap3DPaymentData(array $order, string $txType, array $threeDResponseData, array $paymentResponse, array $expectedData): void
     {
         if ($threeDResponseData['ResponseCode'] === '00') {
@@ -191,9 +189,7 @@ class VakifKatilimPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider threeDHostPaymentDataProvider
-     */
+    #[DataProvider('threeDHostPaymentDataProvider')]
     public function testMap3DHostResponseData(array $order, string $txType, array $responseData, array $expectedData): void
     {
         if (isset($expectedData['transaction_time'])) {
@@ -221,9 +217,7 @@ class VakifKatilimPosResponseDataMapperTest extends TestCase
         $this->responseDataMapper->map3DPayResponseData([], PosInterface::TX_TYPE_PAY_AUTH, []);
     }
 
-    /**
-     * @dataProvider refundTestDataProvider
-     */
+    #[DataProvider('refundTestDataProvider')]
     public function testMapRefundResponse(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapRefundResponse($responseData);
@@ -236,9 +230,7 @@ class VakifKatilimPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider cancelTestDataProvider
-     */
+    #[DataProvider('cancelTestDataProvider')]
     public function testMapCancelResponse(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapCancelResponse($responseData);
@@ -251,9 +243,7 @@ class VakifKatilimPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider statusTestDataProvider
-     */
+    #[DataProvider('statusTestDataProvider')]
     public function testMapStatusResponse(array $responseData, array $expectedData): void
     {
         $txType = PosInterface::TX_TYPE_STATUS;
@@ -342,9 +332,8 @@ class VakifKatilimPosResponseDataMapperTest extends TestCase
 
     /**
      * Doing integration test because of the iteration, sorting and conditional statements it is difficult to mock values.
-     *
-     * @dataProvider historyTestDataProvider
      */
+    #[DataProvider('historyTestDataProvider')]
     public function testMapHistoryResponse(array $responseData, array $expectedData): void
     {
         $responseDataMapper = new VakifKatilimPosResponseDataMapper(
@@ -418,9 +407,7 @@ class VakifKatilimPosResponseDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider orderHistoryTestDataProvider
-     */
+    #[DataProvider('orderHistoryTestDataProvider')]
     public function testMapOrderHistoryResponse(array $responseData, array $expectedData): void
     {
         $responseDataMapper = new VakifKatilimPosResponseDataMapper(
@@ -573,7 +560,7 @@ class VakifKatilimPosResponseDataMapperTest extends TestCase
                 'remote_order_id'   => '4480',
                 'transaction_id'    => '005554',
                 'transaction_type'  => 'pay',
-                'transaction_time'  => new \DateTimeImmutable(),
+                'transaction_time'  => new DateTimeImmutable(),
                 'currency'          => 'TRY',
                 'amount'            => 1.0,
                 'payment_model'     => 'regular',
@@ -710,7 +697,7 @@ class VakifKatilimPosResponseDataMapperTest extends TestCase
                     'md_error_message'     => null,
                     'transaction_id'       => '434824',
                     'transaction_type'     => 'pay',
-                    'transaction_time'     => new \DateTimeImmutable('2024-07-01T12:49:44.4281161'),
+                    'transaction_time'     => new DateTimeImmutable('2024-07-01T12:49:44.4281161'),
                     'auth_code'            => '271425',
                     'ref_ret_num'          => '418312081069',
                     'batch_num'            => '0',
@@ -905,7 +892,7 @@ class VakifKatilimPosResponseDataMapperTest extends TestCase
                 'status'            => 'approved',
                 'transaction_id'    => '014127',
                 'transaction_type'  => null,
-                'transaction_time'  => new \DateTimeImmutable('2020-12-24T09:21:41.55'),
+                'transaction_time'  => new DateTimeImmutable('2020-12-24T09:21:41.55'),
                 'capture_time'      => null,
                 'refund_time'       => null,
                 'cancel_time'       => null,
@@ -979,7 +966,7 @@ class VakifKatilimPosResponseDataMapperTest extends TestCase
                 'status'            => 'approved',
                 'transaction_id'    => '435384',
                 'transaction_type'  => null,
-                'transaction_time'  => new \DateTimeImmutable('2024-07-01T15:03:06.963'),
+                'transaction_time'  => new DateTimeImmutable('2024-07-01T15:03:06.963'),
                 'capture_time'      => null,
                 'refund_time'       => null,
                 'cancel_time'       => null,
@@ -1446,7 +1433,7 @@ class VakifKatilimPosResponseDataMapperTest extends TestCase
                             'auth_code'         => '831168',
                             'proc_return_code'  => '00',
                             'transaction_id'    => '014143',
-                            'transaction_time'  => new \DateTimeImmutable('2020-12-25T08:41:40.947'),
+                            'transaction_time'  => new DateTimeImmutable('2020-12-25T08:41:40.947'),
                             'capture_time'      => null,
                             'error_message'     => null,
                             'ref_ret_num'       => '036008014143',
@@ -1468,7 +1455,7 @@ class VakifKatilimPosResponseDataMapperTest extends TestCase
                             'auth_code'        => null,
                             'proc_return_code' => '05',
                             'transaction_id'   => '012246',
-                            'transaction_time' => new \DateTimeImmutable('2020-12-25T12:13:35.74'),
+                            'transaction_time' => new DateTimeImmutable('2020-12-25T12:13:35.74'),
                             'capture_time'     => null,
                             'error_message'    => 'Hata Kodu5',
                             'ref_ret_num'      => '03611114146',
@@ -1662,8 +1649,8 @@ class VakifKatilimPosResponseDataMapperTest extends TestCase
                             'status'            => 'approved',
                             'transaction_id'    => '435438',
                             'transaction_type'  => null,
-                            'transaction_time'  => new \DateTimeImmutable('2024-07-01T15:21:28.123'),
-                            'capture_time'      => new \DateTimeImmutable('2024-07-01T15:21:28.123'),
+                            'transaction_time'  => new DateTimeImmutable('2024-07-01T15:21:28.123'),
+                            'capture_time'      => new DateTimeImmutable('2024-07-01T15:21:28.123'),
                         ],
                         [
                             'auth_code'         => '520366',
@@ -1682,8 +1669,8 @@ class VakifKatilimPosResponseDataMapperTest extends TestCase
                             'status'            => 'approved',
                             'transaction_id'    => '435440',
                             'transaction_type'  => null,
-                            'transaction_time'  => new \DateTimeImmutable('2024-07-01T15:22:24.463'),
-                            'cancel_time'       => new \DateTimeImmutable('2024-07-01T15:22:24.463'),
+                            'transaction_time'  => new DateTimeImmutable('2024-07-01T15:22:24.463'),
+                            'cancel_time'       => new DateTimeImmutable('2024-07-01T15:22:24.463'),
                             'capture_time'      => null,
                         ],
                     ],
@@ -1726,7 +1713,7 @@ class VakifKatilimPosResponseDataMapperTest extends TestCase
                     'remote_order_id'      => 'o-123',
                     'status'               => 'approved',
                     'transaction_id'       => '005554',
-                    'transaction_time'     => new \DateTimeImmutable(),
+                    'transaction_time'     => new DateTimeImmutable(),
                     'transaction_type'     => 'pay',
                     'transaction_security' => null,
                 ],

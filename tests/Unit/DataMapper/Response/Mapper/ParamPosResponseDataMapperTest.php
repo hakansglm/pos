@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\Mapper;
 
+use DateTimeImmutable;
 use Mews\Pos\DataMapper\Response\Mapper\AbstractResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\ParamPosResponseDataMapper;
 use Mews\Pos\DataMapper\Response\ValueFormatter\ParamPosResponseValueFormatter;
@@ -16,6 +17,7 @@ use Mews\Pos\Gateway\Param3DHostPos;
 use Mews\Pos\Gateway\ParamPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -85,13 +87,11 @@ class ParamPosResponseDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider paymentTestDataProvider
-     */
+    #[DataProvider('paymentTestDataProvider')]
     public function testMapPaymentResponse(array $order, string $txType, array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapPaymentResponse($responseData, $txType, $order);
-        if ($expectedData['transaction_time'] instanceof \DateTimeImmutable && $actualData['transaction_time'] instanceof \DateTimeImmutable) {
+        if ($expectedData['transaction_time'] instanceof DateTimeImmutable && $actualData['transaction_time'] instanceof DateTimeImmutable) {
             $this->assertSame($expectedData['transaction_time']->format('Ymd'), $actualData['transaction_time']->format('Ymd'));
         } else {
             $this->assertEquals($expectedData['transaction_time'], $actualData['transaction_time']);
@@ -109,9 +109,7 @@ class ParamPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider threeDPaymentDataProvider
-     */
+    #[DataProvider('threeDPaymentDataProvider')]
     public function testMap3DPaymentData(array $order, string $txType, array $threeDResponseData, array $paymentResponse, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->map3DPaymentData(
@@ -141,14 +139,12 @@ class ParamPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider threeDPayPaymentDataProvider
-     */
+    #[DataProvider('threeDPayPaymentDataProvider')]
     public function testMap3DPayResponseData(array $order, string $txType, array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->map3DPayResponseData($responseData, $txType, $order);
 
-        if ($expectedData['transaction_time'] instanceof \DateTimeImmutable && $actualData['transaction_time'] instanceof \DateTimeImmutable) {
+        if ($expectedData['transaction_time'] instanceof DateTimeImmutable && $actualData['transaction_time'] instanceof DateTimeImmutable) {
             $this->assertSame($expectedData['transaction_time']->format('Ymd'), $actualData['transaction_time']->format('Ymd'));
         } else {
             $this->assertEquals($expectedData['transaction_time'], $actualData['transaction_time']);
@@ -167,13 +163,11 @@ class ParamPosResponseDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider threeDHostPaymentDataProvider
-     */
+    #[DataProvider('threeDHostPaymentDataProvider')]
     public function testMap3DHostResponseData(array $order, string $txType, array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->map3DHostResponseData($responseData, $txType, $order);
-        if ($expectedData['transaction_time'] instanceof \DateTimeImmutable && $actualData['transaction_time'] instanceof \DateTimeImmutable) {
+        if ($expectedData['transaction_time'] instanceof DateTimeImmutable && $actualData['transaction_time'] instanceof DateTimeImmutable) {
             $this->assertSame($expectedData['transaction_time']->format('Ymd'), $actualData['transaction_time']->format('Ymd'));
         } else {
             $this->assertEquals($expectedData['transaction_time'], $actualData['transaction_time']);
@@ -191,9 +185,7 @@ class ParamPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider statusTestDataProvider
-     */
+    #[DataProvider('statusTestDataProvider')]
     public function testMapStatusResponse(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapStatusResponse($responseData);
@@ -218,9 +210,7 @@ class ParamPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider refundTestDataProvider
-     */
+    #[DataProvider('refundTestDataProvider')]
     public function testMapRefundResponse(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapRefundResponse($responseData);
@@ -233,9 +223,7 @@ class ParamPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider cancelTestDataProvider
-     */
+    #[DataProvider('cancelTestDataProvider')]
     public function testMapCancelResponse(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapCancelResponse($responseData);
@@ -254,9 +242,7 @@ class ParamPosResponseDataMapperTest extends TestCase
         $this->responseDataMapper->mapOrderHistoryResponse([]);
     }
 
-    /**
-     * @dataProvider historyTestDataProviderFail
-     */
+    #[DataProvider('historyTestDataProviderFail')]
     public function testMapHistoryResponseFail(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapHistoryResponse($responseData);
@@ -274,9 +260,7 @@ class ParamPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider historyTestDataProviderSuccess
-     */
+    #[DataProvider('historyTestDataProviderSuccess')]
     public function testMapHistoryResponseSuccess(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapHistoryResponse($responseData);
@@ -335,7 +319,7 @@ class ParamPosResponseDataMapperTest extends TestCase
                 'status'            => 'approved',
                 'transaction_id'    => null,
                 'transaction_type'  => 'pay',
-                'transaction_time'  => new \DateTimeImmutable(),
+                'transaction_time'  => new DateTimeImmutable(),
             ],
         ];
         yield 'success1' => [
@@ -392,7 +376,7 @@ class ParamPosResponseDataMapperTest extends TestCase
                 'status'            => 'approved',
                 'transaction_id'    => '25004OjqB07040101',
                 'transaction_type'  => 'pay',
-                'transaction_time'  => new \DateTimeImmutable(),
+                'transaction_time'  => new DateTimeImmutable(),
             ],
         ];
         yield 'success_pre_payment' => [
@@ -434,7 +418,7 @@ class ParamPosResponseDataMapperTest extends TestCase
                 'status'            => 'approved',
                 'transaction_id'    => '21292RsEI18157',
                 'transaction_type'  => 'pre',
-                'transaction_time'  => new \DateTimeImmutable(),
+                'transaction_time'  => new DateTimeImmutable(),
             ],
         ];
         yield 'success_post_payment' => [
@@ -475,7 +459,7 @@ class ParamPosResponseDataMapperTest extends TestCase
                 'status'            => 'approved',
                 'transaction_id'    => '25005RvnD11226',
                 'transaction_type'  => 'post',
-                'transaction_time'  => new \DateTimeImmutable(),
+                'transaction_time'  => new DateTimeImmutable(),
             ],
         ];
         yield 'fail_try_again' => [
@@ -582,7 +566,7 @@ class ParamPosResponseDataMapperTest extends TestCase
                     'transaction_id'       => '24364TKkF16602',
                     'transaction_security' => null,
                     'transaction_type'     => 'pay',
-                    'transaction_time'     => new \DateTimeImmutable(),
+                    'transaction_time'     => new DateTimeImmutable(),
                 ],
             ],
             '3d_auth_fail'                           => [
@@ -755,7 +739,7 @@ class ParamPosResponseDataMapperTest extends TestCase
                 ],
                 'expectedData' => [
                     'transaction_id'       => null,
-                    'transaction_time'     => new \DateTimeImmutable('19.01.2025 17:29:32'),
+                    'transaction_time'     => new DateTimeImmutable('19.01.2025 17:29:32'),
                     'transaction_type'     => 'pay',
                     'masked_number'        => '581877******2285',
                     'auth_code'            => null,
@@ -897,8 +881,8 @@ class ParamPosResponseDataMapperTest extends TestCase
                 'status'            => 'approved',
                 'error_code'        => null,
                 'capture'           => true,
-                'transaction_time'  => new \DateTimeImmutable('05.01.2025 13:14:32'),
-                'capture_time'      => new \DateTimeImmutable('05.01.2025 13:14:32'),
+                'transaction_time'  => new DateTimeImmutable('05.01.2025 13:14:32'),
+                'capture_time'      => new DateTimeImmutable('05.01.2025 13:14:32'),
                 'cancel_time'       => null,
                 'refund_amount'     => null,
                 'refund_time'       => null,
@@ -925,8 +909,8 @@ class ParamPosResponseDataMapperTest extends TestCase
                 'status'            => 'approved',
                 'error_code'        => null,
                 'capture'           => true,
-                'transaction_time'  => new \DateTimeImmutable('05.01.2025 13:14:32'),
-                'capture_time'      => new \DateTimeImmutable('05.01.2025 13:14:32'),
+                'transaction_time'  => new DateTimeImmutable('05.01.2025 13:14:32'),
+                'capture_time'      => new DateTimeImmutable('05.01.2025 13:14:32'),
                 'cancel_time'       => null,
                 'refund_amount'     => null,
                 'refund_time'       => null,
@@ -953,9 +937,9 @@ class ParamPosResponseDataMapperTest extends TestCase
                 'status'            => 'approved',
                 'error_code'        => null,
                 'capture'           => true,
-                'transaction_time'  => new \DateTimeImmutable('12.01.2025 20:25:38'),
-                'capture_time'      => new \DateTimeImmutable('12.01.2025 20:25:38'),
-                'cancel_time'       => new \DateTimeImmutable('12.01.2025 20:25:38'),
+                'transaction_time'  => new DateTimeImmutable('12.01.2025 20:25:38'),
+                'capture_time'      => new DateTimeImmutable('12.01.2025 20:25:38'),
+                'cancel_time'       => new DateTimeImmutable('12.01.2025 20:25:38'),
                 'refund_amount'     => null,
                 'refund_time'       => null,
                 'installment_count' => null,
@@ -981,7 +965,7 @@ class ParamPosResponseDataMapperTest extends TestCase
                 'status'            => 'approved',
                 'error_code'        => null,
                 'capture'           => false,
-                'transaction_time'  => new \DateTimeImmutable('05.01.2025 16:14:18'),
+                'transaction_time'  => new DateTimeImmutable('05.01.2025 16:14:18'),
                 'capture_time'      => null,
                 'cancel_time'       => null,
                 'refund_amount'     => null,
@@ -1009,7 +993,7 @@ class ParamPosResponseDataMapperTest extends TestCase
                 'status'            => 'approved',
                 'error_code'        => null,
                 'capture'           => false,
-                'transaction_time'  => new \DateTimeImmutable('05.01.2025 18:12:03'),
+                'transaction_time'  => new DateTimeImmutable('05.01.2025 18:12:03'),
                 'capture_time'      => null,
                 'cancel_time'       => null,
                 'refund_amount'     => null,
@@ -1037,9 +1021,9 @@ class ParamPosResponseDataMapperTest extends TestCase
                 'status'            => 'approved',
                 'error_code'        => null,
                 'capture'           => false,
-                'transaction_time'  => new \DateTimeImmutable('05.01.2025 18:39:33'),
+                'transaction_time'  => new DateTimeImmutable('05.01.2025 18:39:33'),
                 'capture_time'      => null,
-                'cancel_time'       => new \DateTimeImmutable('05.01.2025 18:39:33'),
+                'cancel_time'       => new DateTimeImmutable('05.01.2025 18:39:33'),
                 'refund_amount'     => null,
                 'refund_time'       => null,
                 'installment_count' => null,
@@ -1305,7 +1289,7 @@ class ParamPosResponseDataMapperTest extends TestCase
                 ],
                 'expectedData' => [
                     'transaction_id'       => null,
-                    'transaction_time'     => new \DateTimeImmutable('19.01.2025 17:29:32'),
+                    'transaction_time'     => new DateTimeImmutable('19.01.2025 17:29:32'),
                     'transaction_type'     => 'pay',
                     'masked_number'        => '581877******2285',
                     'auth_code'            => null,
@@ -1367,7 +1351,7 @@ class ParamPosResponseDataMapperTest extends TestCase
                     'status'               => 'approved',
                     'transaction_id'       => null,
                     'transaction_type'     => 'pay',
-                    'transaction_time'     => new \DateTimeImmutable('5.01.2025 14:52:20'),
+                    'transaction_time'     => new DateTimeImmutable('5.01.2025 14:52:20'),
                     'md_error_message'     => null,
                     'md_status'            => null,
                     'transaction_security' => null,

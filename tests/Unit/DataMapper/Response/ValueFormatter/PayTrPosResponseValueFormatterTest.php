@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\ValueFormatter;
 
+use DateTimeImmutable;
 use Mews\Pos\DataMapper\Response\ValueFormatter\AbstractResponseValueFormatter;
 use Mews\Pos\DataMapper\Response\ValueFormatter\PayTrPosResponseValueFormatter;
 use Mews\Pos\Gateway\AkbankPos;
@@ -46,7 +47,7 @@ class PayTrPosResponseValueFormatterTest extends TestCase
     }
 
     #[DataProvider('formatDateTimeDataProvider')]
-    public function testFormatDateTime(string $dateTime, \DateTimeImmutable $expected): void
+    public function testFormatDateTime(string $dateTime, DateTimeImmutable $expected): void
     {
         $this->assertEquals($expected, $this->formatter->formatDateTime($dateTime, PosInterface::TX_TYPE_STATUS));
     }
@@ -81,8 +82,8 @@ class PayTrPosResponseValueFormatterTest extends TestCase
     public static function formatDateTimeDataProvider(): array
     {
         return [
-            ['23.06.2026',          new \DateTimeImmutable('23.06.2026')],
-            ['2026-06-23 14:30:00', new \DateTimeImmutable('2026-06-23 14:30:00')],
+            ['23.06.2026',          new DateTimeImmutable('23.06.2026')],
+            ['2026-06-23 14:30:00', new DateTimeImmutable('2026-06-23 14:30:00')],
         ];
     }
 }

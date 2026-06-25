@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\Client;
 
+use InvalidArgumentException;
+use Generator;
 use Mews\Pos\Client\AbstractHttpClient;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\PayTrPosHttpClient;
@@ -90,7 +92,7 @@ class PayTrPosHttpClientTest extends TestCase
         $this->assertSame($expected, $this->client->getApiURL($txType));
     }
 
-    #[TestWith([null, \InvalidArgumentException::class, 'Transaction type is required to generate PayTR API URL'])]
+    #[TestWith([null, InvalidArgumentException::class, 'Transaction type is required to generate PayTR API URL'])]
     #[TestWith([PosInterface::TX_TYPE_CANCEL, UnsupportedTransactionTypeException::class, 'Unsupported transaction type!'])]
     public function testGetApiUrlNullThrows(?string $txType, string $expectedExceptionClass, string $expectedExpMsg): void
     {
@@ -173,7 +175,7 @@ class PayTrPosHttpClientTest extends TestCase
         ];
     }
 
-    public static function requestDataProvider(): \Generator
+    public static function requestDataProvider(): Generator
     {
         yield 'payment' => [
             'txType'             => PosInterface::TX_TYPE_PAY_AUTH,

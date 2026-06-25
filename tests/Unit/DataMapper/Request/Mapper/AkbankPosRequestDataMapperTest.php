@@ -6,6 +6,10 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\Mapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use Mews\Pos\Exception\NotImplementedException;
+use Generator;
+use DateTimeImmutable;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\Request\Mapper\AbstractRequestDataMapper;
 use Mews\Pos\DataMapper\Request\Mapper\AkbankPosRequestDataMapper;
@@ -100,9 +104,7 @@ class AkbankPosRequestDataMapperTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider threeDFormDataProvider
-     */
+    #[DataProvider('threeDFormDataProvider')]
     public function testGet3DFormData(array $order, string $txType, string $paymentModel, bool $withCard, string $gatewayURL, array $expected): void
     {
         $card = $withCard ? $this->card : null;
@@ -199,9 +201,7 @@ class AkbankPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider create3DPaymentRequestDataDataProvider
-     */
+    #[DataProvider('create3DPaymentRequestDataDataProvider')]
     public function testCreate3DPaymentRequestData(array $order, string $txType, array $responseData, array $expected): void
     {
         $this->crypt->expects(self::once())
@@ -215,7 +215,7 @@ class AkbankPosRequestDataMapperTest extends TestCase
             $responseData
         );
         $this->assertArrayHasKey('requestDateTime', $actual);
-        $this->assertSame(23, \strlen($actual['requestDateTime']));
+        $this->assertSame(23, \strlen((string) $actual['requestDateTime']));
         unset($actual['requestDateTime']);
 
         $this->assertSame($expected, $actual);
@@ -270,9 +270,7 @@ class AkbankPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider nonSecurePaymentRequestDataProvider
-     */
+    #[DataProvider('nonSecurePaymentRequestDataProvider')]
     public function testCreateNonSecurePaymentRequestData(array $order, string $txType, array $expectedData): void
     {
         $this->crypt->expects(self::once())
@@ -286,7 +284,7 @@ class AkbankPosRequestDataMapperTest extends TestCase
             $this->card
         );
 
-        $this->assertSame(23, \strlen($actualData['requestDateTime']));
+        $this->assertSame(23, \strlen((string) $actualData['requestDateTime']));
         unset($actualData['requestDateTime']);
 
         ksort($expectedData);
@@ -296,9 +294,7 @@ class AkbankPosRequestDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider nonSecurePaymentPostRequestDataProvider
-     */
+    #[DataProvider('nonSecurePaymentPostRequestDataProvider')]
     public function testCreateNonSecurePostAuthPaymentRequestData(array $order, array $expectedData): void
     {
         $this->crypt->expects(self::once())
@@ -306,7 +302,7 @@ class AkbankPosRequestDataMapperTest extends TestCase
             ->willReturn($expectedData['randomNumber']);
 
         $actualData = $this->requestDataMapper->createNonSecurePostAuthPaymentRequestData($this->account, $order);
-        $this->assertSame(23, \strlen($actualData['requestDateTime']));
+        $this->assertSame(23, \strlen((string) $actualData['requestDateTime']));
         unset($actualData['requestDateTime']);
 
         ksort($expectedData);
@@ -315,9 +311,7 @@ class AkbankPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider cancelRequestDataProvider
-     */
+    #[DataProvider('cancelRequestDataProvider')]
     public function testCreateCancelRequestData(array $order, array $expectedData): void
     {
         $this->crypt->expects(self::once())
@@ -325,7 +319,7 @@ class AkbankPosRequestDataMapperTest extends TestCase
             ->willReturn($expectedData['randomNumber']);
 
         $actualData = $this->requestDataMapper->createCancelRequestData($this->account, $order);
-        $this->assertSame(23, \strlen($actualData['requestDateTime']));
+        $this->assertSame(23, \strlen((string) $actualData['requestDateTime']));
         unset($actualData['requestDateTime']);
 
         ksort($expectedData);
@@ -334,9 +328,7 @@ class AkbankPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider refundRequestDataProvider
-     */
+    #[DataProvider('refundRequestDataProvider')]
     public function testCreateRefundRequestData(array $order, string $txType, array $expectedData): void
     {
         $this->crypt->expects(self::once())
@@ -344,7 +336,7 @@ class AkbankPosRequestDataMapperTest extends TestCase
             ->willReturn($expectedData['randomNumber']);
 
         $actualData = $this->requestDataMapper->createRefundRequestData($this->account, $order, $txType);
-        $this->assertSame(23, \strlen($actualData['requestDateTime']));
+        $this->assertSame(23, \strlen((string) $actualData['requestDateTime']));
         unset($actualData['requestDateTime']);
 
         ksort($expectedData);
@@ -353,9 +345,7 @@ class AkbankPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider orderHistoryRequestDataProvider
-     */
+    #[DataProvider('orderHistoryRequestDataProvider')]
     public function testCreateOrderHistoryRequestData(array $order, array $expected): void
     {
         $this->crypt->expects(self::once())
@@ -363,15 +353,13 @@ class AkbankPosRequestDataMapperTest extends TestCase
             ->willReturn($expected['randomNumber']);
 
         $actualData = $this->requestDataMapper->createOrderHistoryRequestData($this->account, $order);
-        $this->assertSame(23, \strlen($actualData['requestDateTime']));
+        $this->assertSame(23, \strlen((string) $actualData['requestDateTime']));
         unset($actualData['requestDateTime']);
 
         $this->assertSame($expected, $actualData);
     }
 
-    /**
-     * @dataProvider historyRequestDataProvider
-     */
+    #[DataProvider('historyRequestDataProvider')]
     public function testCreateHistoryRequestData(array $data, array $expected): void
     {
         $this->crypt->expects(self::once())
@@ -386,13 +374,11 @@ class AkbankPosRequestDataMapperTest extends TestCase
 
     public function testCreateStatusRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->requestDataMapper->createStatusRequestData($this->account, []);
     }
 
-    /**
-     * @dataProvider createCustomQueryRequestDataDataProvider
-     */
+    #[DataProvider('createCustomQueryRequestDataDataProvider')]
     public function testCreateCustomQueryRequestData(array $requestData, array $expectedData): void
     {
         $this->crypt->expects(self::once())
@@ -400,7 +386,7 @@ class AkbankPosRequestDataMapperTest extends TestCase
             ->willReturn($expectedData['randomNumber']);
 
         $actual = $this->requestDataMapper->createCustomQueryRequestData($this->account, $requestData);
-        $this->assertSame(23, \strlen($actual['requestDateTime']));
+        $this->assertSame(23, \strlen((string) $actual['requestDateTime']));
         unset($actual['requestDateTime']);
 
         \ksort($actual);
@@ -408,7 +394,7 @@ class AkbankPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    public static function createCustomQueryRequestDataDataProvider(): \Generator
+    public static function createCustomQueryRequestDataDataProvider(): Generator
     {
         yield 'without_account_data_link_creation_request' => [
             'request_data' => [
@@ -524,8 +510,8 @@ class AkbankPosRequestDataMapperTest extends TestCase
             ],
             'with_date_range'   => [
                 'order'    => [
-                    'start_date' => new \DateTimeImmutable('2024-04-13 13:00:00'),
-                    'end_date'   => new \DateTimeImmutable('2024-04-14 13:00:00'),
+                    'start_date' => new DateTimeImmutable('2024-04-13 13:00:00'),
+                    'end_date'   => new DateTimeImmutable('2024-04-14 13:00:00'),
                 ],
                 'expected' => [
                     'terminal'     => [
@@ -1067,7 +1053,7 @@ class AkbankPosRequestDataMapperTest extends TestCase
         ];
     }
 
-    public static function create3DPaymentRequestDataDataProvider(): \Generator
+    public static function create3DPaymentRequestDataDataProvider(): Generator
     {
         yield [
             'order'        => [

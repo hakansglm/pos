@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueMapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use LogicException;
 use Mews\Pos\DataMapper\Request\ValueMapper\AbstractRequestValueMapper;
 use Mews\Pos\DataMapper\Request\ValueMapper\IyzicoPosRequestValueMapper;
 use Mews\Pos\Gateway\AkbankPos;
@@ -32,9 +34,7 @@ class IyzicoPosRequestValueMapperTest extends TestCase
         $this->assertFalse($this->valueMapper::supports(AkbankPos::class));
     }
 
-    /**
-     * @dataProvider mapCurrencyDataProvider
-     */
+    #[DataProvider('mapCurrencyDataProvider')]
     public function testMapCurrency(string $currency, string $expected): void
     {
         $this->assertSame($expected, $this->valueMapper->mapCurrency($currency));
@@ -69,7 +69,7 @@ class IyzicoPosRequestValueMapperTest extends TestCase
 
     public function testMapSecureTypeThrows(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->valueMapper->mapSecureType(PosInterface::MODEL_3D_SECURE);
     }
 
@@ -80,7 +80,7 @@ class IyzicoPosRequestValueMapperTest extends TestCase
 
     public function testMapRecurringFrequencyThrows(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->valueMapper->mapRecurringFrequency('MONTH');
     }
 
@@ -91,7 +91,7 @@ class IyzicoPosRequestValueMapperTest extends TestCase
 
     public function testMapCardTypeThrows(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->valueMapper->mapCardType('VISA');
     }
 

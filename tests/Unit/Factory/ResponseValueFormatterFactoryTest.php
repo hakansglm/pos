@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\Factory;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use DomainException;
+use stdClass;
 use Mews\Pos\DataMapper\Response\ValueFormatter\BasicResponseValueFormatter;
 use Mews\Pos\DataMapper\Response\ValueFormatter\BoaPosResponseValueFormatter;
 use Mews\Pos\DataMapper\Response\ValueFormatter\AssecoPosResponseValueFormatter;
@@ -37,9 +40,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(ResponseValueFormatterFactory::class)]
 class ResponseValueFormatterFactoryTest extends TestCase
 {
-    /**
-     * @dataProvider createForGatewayProvider
-     */
+    #[DataProvider('createForGatewayProvider')]
     public function testCreateForGateway(string $gatewayClass, string $expectedFormatterClass): void
     {
         $formatter = ResponseValueFormatterFactory::createForGateway($gatewayClass);
@@ -48,8 +49,8 @@ class ResponseValueFormatterFactoryTest extends TestCase
 
     public function testCreateForGatewayInvalidGateway(): void
     {
-        $this->expectException(\DomainException::class);
-        ResponseValueFormatterFactory::createForGateway(\stdClass::class);
+        $this->expectException(DomainException::class);
+        ResponseValueFormatterFactory::createForGateway(stdClass::class);
     }
 
     public static function createForGatewayProvider(): array

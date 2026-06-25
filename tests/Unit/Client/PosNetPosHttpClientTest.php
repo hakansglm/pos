@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\Client;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
+use Generator;
 use Mews\Pos\Client\AbstractHttpClient;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\PosNetPosHttpClient;
@@ -75,9 +78,7 @@ class PosNetPosHttpClientTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider getApiUrlDataProvider
-     */
+    #[DataProvider('getApiUrlDataProvider')]
     public function testGetApiUrl(string $txType, string $paymentModel, string $expected): void
     {
         $actual = $this->client->getApiURL($txType, $paymentModel);
@@ -96,9 +97,7 @@ class PosNetPosHttpClientTest extends TestCase
         $this->assertTrue($this->client->supportsTx(PosInterface::TX_TYPE_PAY_AUTH, PosInterface::MODEL_3D_SECURE));
     }
 
-    /**
-     * @dataProvider requestDataProvider
-     */
+    #[DataProvider('requestDataProvider')]
     public function testRequest(
         string $txType,
         string $paymentModel,
@@ -167,7 +166,7 @@ class PosNetPosHttpClientTest extends TestCase
             ->with($request)
             ->willReturn($response);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('İstek Başarısız!');
 
         $this->client->request(
@@ -205,7 +204,7 @@ class PosNetPosHttpClientTest extends TestCase
             ->method('sendRequest')
             ->willReturn($response);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->client->request($txType, $paymentModel, $requestData, $order);
     }
 
@@ -235,7 +234,7 @@ class PosNetPosHttpClientTest extends TestCase
         ];
     }
 
-    public static function requestDataProvider(): \Generator
+    public static function requestDataProvider(): Generator
     {
         yield [
             'txType'             => PosInterface::TX_TYPE_PAY_AUTH,

@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\Serializer\Encoder;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use Generator;
 use Mews\Pos\Serializer\EncodedData;
 use Mews\Pos\Serializer\Encoder\ParamPosXmlEncoder;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -23,9 +25,7 @@ class ParamPosXmlEncoderTest extends TestCase
         $this->encoder = new ParamPosXmlEncoder();
     }
 
-    /**
-     * @dataProvider encodeDataProvider
-     */
+    #[DataProvider('encodeDataProvider')]
     public function testEncode(array $data, string $expectedData): void
     {
         $result = $this->encoder->encode($data);
@@ -34,7 +34,7 @@ class ParamPosXmlEncoderTest extends TestCase
         $this->assertSame(EncodedData::FORMAT_XML, $result->getFormat());
     }
 
-    public static function encodeDataProvider(): \Generator
+    public static function encodeDataProvider(): Generator
     {
         yield 'test_3d_payment' => [
             'input'         => [

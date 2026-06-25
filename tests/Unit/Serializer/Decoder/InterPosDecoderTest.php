@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Serializer\Decoder;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Mews\Pos\Serializer\Decoder\InterPosDecoder;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -23,9 +24,7 @@ class InterPosDecoderTest extends TestCase
         $this->decoder = new InterPosDecoder();
     }
 
-    /**
-     * @dataProvider decodeDataProvider
-     */
+    #[DataProvider('decodeDataProvider')]
     public function testDecode(string $data, array $expected): void
     {
         $actual = $this->decoder->decode($data);

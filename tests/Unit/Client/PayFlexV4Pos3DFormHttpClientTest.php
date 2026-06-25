@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\Client;
 
+use RuntimeException;
+use Generator;
 use Mews\Pos\Client\AbstractHttpClient;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\PayFlexV4Pos3DFormHttpClient;
@@ -16,6 +18,7 @@ use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Gateway\PayFlexV4Pos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -90,9 +93,7 @@ class PayFlexV4Pos3DFormHttpClientTest extends TestCase
         $this->assertTrue($this->client->supportsTx(PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, PosInterface::MODEL_3D_SECURE));
     }
 
-    /**
-     * @dataProvider getApiUrlDataProvider
-     */
+    #[DataProvider('getApiUrlDataProvider')]
     public function testGetApiUrl(string $txType, string $paymentModel, string $expected): void
     {
         $actual = $this->client->getApiURL($txType, $paymentModel);
@@ -100,9 +101,7 @@ class PayFlexV4Pos3DFormHttpClientTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider requestDataProvider
-     */
+    #[DataProvider('requestDataProvider')]
     public function testRequest(
         string $txType,
         string $paymentModel,
@@ -169,7 +168,7 @@ class PayFlexV4Pos3DFormHttpClientTest extends TestCase
             ->willReturn($response);
 
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->client->request(
             $txType,
             $paymentModel,
@@ -204,7 +203,7 @@ class PayFlexV4Pos3DFormHttpClientTest extends TestCase
             ->with($request)
             ->willReturn($response);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('İstek Başarısız!');
 
         $this->client->request(
@@ -226,7 +225,7 @@ class PayFlexV4Pos3DFormHttpClientTest extends TestCase
         ];
     }
 
-    public static function requestDataProvider(): \Generator
+    public static function requestDataProvider(): Generator
     {
         yield [
             'txType'             => PosInterface::TX_TYPE_PAY_AUTH,

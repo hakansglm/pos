@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\Gateway;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use LogicException;
+use DateTimeImmutable;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\HttpClientStrategyInterface;
 use Mews\Pos\Crypt\CryptInterface;
@@ -178,9 +181,7 @@ class GarantiPosTest extends TestCase
         $this->assertSame(['formData'], $actual);
     }
 
-    /**
-     * @dataProvider threeDFormDataBadInputsProvider
-     */
+    #[DataProvider('threeDFormDataBadInputsProvider')]
     public function testGet3DFormDataWithBadInputs(
         array   $order,
         string  $paymentModel,
@@ -199,9 +200,7 @@ class GarantiPosTest extends TestCase
         $this->pos->get3DFormData($order, $paymentModel, $txType, $card, $createWithoutCard, $formFormat);
     }
 
-    /**
-     * @dataProvider make3DPaymentDataProvider
-     */
+    #[DataProvider('make3DPaymentDataProvider')]
     public function testMake3DPayment(
         array  $order,
         string $txType,
@@ -268,9 +267,7 @@ class GarantiPosTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider make3DPaymentWithoutHashCheckDataProvider
-     */
+    #[DataProvider('make3DPaymentWithoutHashCheckDataProvider')]
     public function testMake3DPaymentWithoutHashCheck(
         array  $order,
         string $txType,
@@ -396,9 +393,7 @@ class GarantiPosTest extends TestCase
         $this->assertTrue($pos->isSuccess());
     }
 
-    /**
-     * @dataProvider makeRegularPaymentDataProvider
-     */
+    #[DataProvider('makeRegularPaymentDataProvider')]
     public function testMakeRegularPayment(array $order, string $txType): void
     {
         $account     = $this->pos->getAccount();
@@ -429,9 +424,7 @@ class GarantiPosTest extends TestCase
         $this->pos->payment(PosInterface::MODEL_NON_SECURE, $order, $txType, $card);
     }
 
-    /**
-     * @dataProvider makeRegularPostAuthPaymentDataProvider
-     */
+    #[DataProvider('makeRegularPostAuthPaymentDataProvider')]
     public function testMakeRegularPostAuthPayment(array $order): void
     {
         $account     = $this->pos->getAccount();
@@ -461,9 +454,7 @@ class GarantiPosTest extends TestCase
         $this->pos->payment(PosInterface::MODEL_NON_SECURE, $order, $txType);
     }
 
-    /**
-     * @dataProvider statusRequestDataProvider
-     */
+    #[DataProvider('statusRequestDataProvider')]
     public function testStatusRequest(array $order): void
     {
         $account     = $this->pos->getAccount();
@@ -494,9 +485,7 @@ class GarantiPosTest extends TestCase
         $this->pos->status($order);
     }
 
-    /**
-     * @dataProvider cancelRequestDataProvider
-     */
+    #[DataProvider('cancelRequestDataProvider')]
     public function testCancelRequest(array $order): void
     {
         $account     = $this->pos->getAccount();
@@ -527,9 +516,7 @@ class GarantiPosTest extends TestCase
         $this->pos->cancel($order);
     }
 
-    /**
-     * @dataProvider refundRequestDataProvider
-     */
+    #[DataProvider('refundRequestDataProvider')]
     public function testRefundRequest(array $order): void
     {
         $account     = $this->pos->getAccount();
@@ -560,9 +547,7 @@ class GarantiPosTest extends TestCase
         $this->pos->refund($order);
     }
 
-    /**
-     * @dataProvider historyRequestDataProvider
-     */
+    #[DataProvider('historyRequestDataProvider')]
     public function testHistoryRequest(array $order): void
     {
         $account     = $this->pos->getAccount();
@@ -593,9 +578,7 @@ class GarantiPosTest extends TestCase
         $this->pos->history($order);
     }
 
-    /**
-     * @dataProvider orderHistoryRequestDataProvider
-     */
+    #[DataProvider('orderHistoryRequestDataProvider')]
     public function testOrderHistoryRequest(array $order): void
     {
         $account     = $this->pos->getAccount();
@@ -626,9 +609,7 @@ class GarantiPosTest extends TestCase
         $this->pos->orderHistory($order);
     }
 
-    /**
-     * @dataProvider customQueryRequestDataProvider
-     */
+    #[DataProvider('customQueryRequestDataProvider')]
     public function testCustomQueryRequest(array $requestData, ?string $apiUrl): void
     {
         $account = $this->pos->getAccount();
@@ -812,7 +793,7 @@ class GarantiPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
                 'isWithCard'             => false,
                 'create_with_card'       => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Bu ödeme modeli için kart bilgileri zorunlu!',
             ],
             '3d_pay_without_card'    => [
@@ -821,7 +802,7 @@ class GarantiPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
                 'isWithCard'             => false,
                 'create_with_card'       => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Bu ödeme modeli için kart bilgileri zorunlu!',
             ],
             'non_payment_tx_type'    => [
@@ -830,7 +811,7 @@ class GarantiPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_STATUS,
                 'isWithCard'             => true,
                 'create_with_card'       => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay, pre]',
             ],
             'post_auth_tx_type'      => [
@@ -839,7 +820,7 @@ class GarantiPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_POST_AUTH,
                 'isWithCard'             => true,
                 'create_with_card'       => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay, pre]',
             ],
             'unsupported_form_format' => [
@@ -862,8 +843,8 @@ class GarantiPosTest extends TestCase
             [
                 'order' => [
                     'ip'         => '127.0.0.1',
-                    'start_date' => new \DateTimeImmutable(),
-                    'end_date'   => new \DateTimeImmutable(),
+                    'start_date' => new DateTimeImmutable(),
+                    'end_date'   => new DateTimeImmutable(),
                 ],
             ],
         ];
@@ -926,7 +907,7 @@ class GarantiPosTest extends TestCase
                     }
                 )
             ))
-            ->willReturnCallback(function () use (&$updatedRequestDataPreparedEvent): ?\Mews\Pos\Event\RequestDataPreparedEvent {
+            ->willReturnCallback(function () use (&$updatedRequestDataPreparedEvent): ?RequestDataPreparedEvent {
                 $updatedRequestData                                        = $updatedRequestDataPreparedEvent->getRequestData();
                 $updatedRequestData['test-update-request-data-with-event'] = true;
                 $updatedRequestDataPreparedEvent->setRequestData($updatedRequestData);

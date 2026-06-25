@@ -15,6 +15,7 @@ use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\PayForPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -53,9 +54,7 @@ class PayForPosCryptTest extends TestCase
         $this->assertFalse($supports);
     }
 
-    /**
-     * @dataProvider threeDHashCreateDataProvider
-     */
+    #[DataProvider('threeDHashCreateDataProvider')]
     public function testCreate3DHash(array $requestData, string $expected): void
     {
         $actual = $this->crypt->create3DHash($this->account, $requestData);
@@ -63,9 +62,7 @@ class PayForPosCryptTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider threeDHashCheckDataProvider
-     */
+    #[DataProvider('threeDHashCheckDataProvider')]
     public function testCheck3DHash(bool $expected, array $responseData): void
     {
         $this->assertSame($expected, $this->crypt->check3DHash($this->account, $responseData));

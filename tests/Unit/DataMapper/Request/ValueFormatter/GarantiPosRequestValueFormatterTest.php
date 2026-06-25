@@ -6,6 +6,10 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueFormatter;
 
+use DateTime;
+use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
+use DateTimeInterface;
 use Mews\Pos\DataMapper\Request\ValueFormatter\GarantiPosRequestValueFormatter;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\GarantiPos;
@@ -55,8 +59,8 @@ class GarantiPosRequestValueFormatterTest extends TestCase
     #[TestWith([''])]
     public function testFormatCreditCardExpDateUnSupportedField(string $fieldName): void
     {
-        $expDate = new \DateTime('2024-04-14T16:45:30.000');
-        $this->expectException(\InvalidArgumentException::class);
+        $expDate = new DateTime('2024-04-14T16:45:30.000');
+        $this->expectException(InvalidArgumentException::class);
         $this->formatter->formatCardExpDate($expDate, $fieldName);
     }
 
@@ -65,15 +69,13 @@ class GarantiPosRequestValueFormatterTest extends TestCase
     #[TestWith(['ExpireDate', '0424'])]
     public function testFormatCreditCardExpDate(string $fieldName, string $expected): void
     {
-        $expDate = new \DateTime('2024-04-14T16:45:30.000');
+        $expDate = new DateTime('2024-04-14T16:45:30.000');
         $actual  = $this->formatter->formatCardExpDate($expDate, $fieldName);
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider formatDateTimeDataProvider
-     */
-    public function testFormatDateTime(\DateTimeInterface $dateTime, ?string $fieldName, ?string $txType, string $expected): void
+    #[DataProvider('formatDateTimeDataProvider')]
+    public function testFormatDateTime(DateTimeInterface $dateTime, ?string $fieldName, ?string $txType, string $expected): void
     {
         $actual = $this->formatter->formatDateTime($dateTime, $fieldName, $txType);
         $this->assertSame($expected, $actual);
@@ -81,7 +83,7 @@ class GarantiPosRequestValueFormatterTest extends TestCase
 
     public static function formatDateTimeDataProvider(): array
     {
-        $dateTime = new \DateTime('2024-04-14T16:45:30.000');
+        $dateTime = new DateTime('2024-04-14T16:45:30.000');
 
         return [
             'StartDate_with_history_txType_uses_datetime_format' => [

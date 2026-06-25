@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Gateway;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Exception;
 use LogicException;
 use Mews\Pos\Client\HttpClientInterface;
@@ -152,9 +153,8 @@ class PayFlexV4PosTest extends TestCase
 
     /**
      * @return void
-     *
-     * @dataProvider enrollmentFailResponseDataProvider
      */
+    #[DataProvider('enrollmentFailResponseDataProvider')]
     public function testGet3DFormDataEnrollmentFail(array $response): void
     {
         $txType      = PosInterface::TX_TYPE_PAY_AUTH;
@@ -180,9 +180,7 @@ class PayFlexV4PosTest extends TestCase
         $this->pos->get3DFormData($order, PosInterface::MODEL_3D_SECURE, $txType, $this->card);
     }
 
-    /**
-     * @dataProvider threeDFormDataBadInputsProvider
-     */
+    #[DataProvider('threeDFormDataBadInputsProvider')]
     public function testGet3DFormDataWithBadInputs(
         array   $order,
         string  $paymentModel,
@@ -291,9 +289,7 @@ class PayFlexV4PosTest extends TestCase
         $this->assertSame(['3d-form-data'], $result);
     }
 
-    /**
-     * @dataProvider make3DPaymentDataProvider
-     */
+    #[DataProvider('make3DPaymentDataProvider')]
     public function testMake3DPayment(
         array  $order,
         string $txType,
@@ -372,9 +368,7 @@ class PayFlexV4PosTest extends TestCase
         $this->pos->payment(PosInterface::MODEL_3D_PAY, [], $txType, null, ['abc']);
     }
 
-    /**
-     * @dataProvider makeRegularPaymentDataProvider
-     */
+    #[DataProvider('makeRegularPaymentDataProvider')]
     public function testMakeRegularPayment(array $order, string $txType): void
     {
         $account     = $this->pos->getAccount();
@@ -404,9 +398,7 @@ class PayFlexV4PosTest extends TestCase
         $this->pos->payment(PosInterface::MODEL_NON_SECURE, $order, $txType, $card);
     }
 
-    /**
-     * @dataProvider makeRegularPostAuthPaymentDataProvider
-     */
+    #[DataProvider('makeRegularPostAuthPaymentDataProvider')]
     public function testMakeRegularPostAuthPayment(array $order): void
     {
         $account     = $this->pos->getAccount();
@@ -437,9 +429,7 @@ class PayFlexV4PosTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider statusRequestDataProvider
-     */
+    #[DataProvider('statusRequestDataProvider')]
     public function testStatusRequest(array $order): void
     {
         $account     = $this->pos->getAccount();
@@ -470,9 +460,7 @@ class PayFlexV4PosTest extends TestCase
         $this->pos->status($order);
     }
 
-    /**
-     * @dataProvider cancelRequestDataProvider
-     */
+    #[DataProvider('cancelRequestDataProvider')]
     public function testCancelRequest(array $order): void
     {
         $account     = $this->pos->getAccount();
@@ -503,9 +491,7 @@ class PayFlexV4PosTest extends TestCase
         $this->pos->cancel($order);
     }
 
-    /**
-     * @dataProvider refundRequestDataProvider
-     */
+    #[DataProvider('refundRequestDataProvider')]
     public function testRefundRequest(array $order): void
     {
         $account     = $this->pos->getAccount();
@@ -548,9 +534,7 @@ class PayFlexV4PosTest extends TestCase
         $this->pos->orderHistory([]);
     }
 
-    /**
-     * @dataProvider customQueryRequestDataProvider
-     */
+    #[DataProvider('customQueryRequestDataProvider')]
     public function testCustomQueryRequest(array $requestData, ?string $apiUrl): void
     {
         $account = $this->pos->getAccount();

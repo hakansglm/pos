@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueMapper;
 
+use LogicException;
 use Mews\Pos\DataMapper\Request\ValueMapper\AbstractRequestValueMapper;
 use Mews\Pos\DataMapper\Request\ValueMapper\PayTrPosRequestValueMapper;
 use Mews\Pos\Exception\UnsupportedTransactionTypeException;
@@ -80,7 +81,7 @@ class PayTrPosRequestValueMapperTest extends TestCase
 
     public function testMapSecureTypeThrows(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->valueMapper->mapSecureType(PosInterface::MODEL_3D_SECURE);
     }
 
@@ -91,7 +92,7 @@ class PayTrPosRequestValueMapperTest extends TestCase
 
     public function testMapRecurringFrequencyThrows(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->valueMapper->mapRecurringFrequency('MONTH');
     }
 
@@ -102,7 +103,7 @@ class PayTrPosRequestValueMapperTest extends TestCase
 
     public function testMapCardTypeThrows(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->valueMapper->mapCardType('VISA');
     }
 }

@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueMapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use LogicException;
 use Mews\Pos\DataMapper\Request\ValueMapper\AbstractRequestValueMapper;
 use Mews\Pos\DataMapper\Request\ValueMapper\PosNetV1PosRequestValueMapper;
 use Mews\Pos\Exception\UnsupportedTransactionTypeException;
@@ -37,9 +39,7 @@ class PosNetV1PosRequestValueMapperTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider mapTxTypeDataProvider
-     */
+    #[DataProvider('mapTxTypeDataProvider')]
     public function testMapTxType(string $txType, string $expected): void
     {
         $actual = $this->valueMapper->mapTxType($txType);
@@ -55,13 +55,13 @@ class PosNetV1PosRequestValueMapperTest extends TestCase
 
     public function testMapSecureType(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->valueMapper->mapSecureType(PosInterface::MODEL_3D_SECURE);
     }
 
     public function testMapRecurringFrequency(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->valueMapper->mapRecurringFrequency('DAY');
     }
 

@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueFormatter;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use DateTime;
+use InvalidArgumentException;
 use Mews\Pos\DataMapper\Request\ValueFormatter\ParamPosRequestValueFormatter;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\Param3DHostPos;
@@ -46,9 +49,7 @@ class ParamPosRequestValueFormatterTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider formatAmountDataProvider
-     */
+    #[DataProvider('formatAmountDataProvider')]
     public function testFormatAmount(float $amount, string $txType, string $expected): void
     {
         $actual = $this->formatter->formatAmount($amount, $txType);
@@ -59,7 +60,7 @@ class ParamPosRequestValueFormatterTest extends TestCase
     #[TestWith(['KK_SK_Ay', '04'])]
     public function testFormatCreditCardExpDate(string $fieldName, string $expected): void
     {
-        $expDate = new \DateTime('2024-04-14T16:45:30.000');
+        $expDate = new DateTime('2024-04-14T16:45:30.000');
         $actual = $this->formatter->formatCardExpDate($expDate, $fieldName);
         $this->assertSame($expected, $actual);
     }
@@ -68,14 +69,14 @@ class ParamPosRequestValueFormatterTest extends TestCase
     #[TestWith([''])]
     public function testFormatCreditCardExpDateUnSupportedField(string $fieldName): void
     {
-        $expDate = new \DateTime('2024-04-14T16:45:30.000');
-        $this->expectException(\InvalidArgumentException::class);
+        $expDate = new DateTime('2024-04-14T16:45:30.000');
+        $this->expectException(InvalidArgumentException::class);
         $this->formatter->formatCardExpDate($expDate, $fieldName);
     }
 
     public function testFormatDateTime(): void
     {
-        $dateTime = new \DateTime('2024-04-14T16:45:30.000');
+        $dateTime = new DateTime('2024-04-14T16:45:30.000');
         $actual = $this->formatter->formatDateTime($dateTime);
         $this->assertSame('14.04.2024 16:45:30', $actual);
     }

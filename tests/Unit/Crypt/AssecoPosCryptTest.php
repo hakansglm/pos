@@ -54,9 +54,7 @@ class AssecoPosCryptTest extends TestCase
         $this->assertFalse($supports);
     }
 
-    /**
-     * @dataProvider threeDHashCheckDataProvider
-     */
+    #[DataProvider('threeDHashCheckDataProvider')]
     public function testCheck3DHash(array $responseData): void
     {
         $this->assertTrue($this->crypt->check3DHash($this->account, $responseData));

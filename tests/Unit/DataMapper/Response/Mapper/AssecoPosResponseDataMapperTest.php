@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\Mapper;
 
+use DateTimeImmutable;
 use Mews\Pos\DataMapper\Response\Mapper\AbstractResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\AssecoPosResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\ResponseDataMapperInterface;
@@ -18,6 +19,7 @@ use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -86,12 +88,10 @@ class AssecoPosResponseDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider paymentTestDataProvider
-     */
+    #[DataProvider('paymentTestDataProvider')]
     public function testMapPaymentResponse(array $order, string $txType, array $responseData, array $expectedData): void
     {
-        if ($expectedData['transaction_time'] instanceof \DateTimeImmutable) {
+        if ($expectedData['transaction_time'] instanceof DateTimeImmutable) {
             $this->responseValueFormatter->expects($this->once())
                 ->method('formatDateTime')
                 ->with($responseData['Extra']['TRXDATE'], $txType)
@@ -113,9 +113,7 @@ class AssecoPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider threeDPaymentDataProvider
-     */
+    #[DataProvider('threeDPaymentDataProvider')]
     public function testMap3DPaymentData(array $order, string $txType, array $threeDResponseData, array $paymentResponse, array $expectedData): void
     {
         $this->responseValueFormatter->expects($this->once())
@@ -138,7 +136,7 @@ class AssecoPosResponseDataMapperTest extends TestCase
             ->with($threeDResponseData['storetype'], $txType)
             ->willReturn($expectedData['payment_model']);
 
-        if ($expectedData['transaction_time'] instanceof \DateTimeImmutable) {
+        if ($expectedData['transaction_time'] instanceof DateTimeImmutable) {
             $this->responseValueFormatter->expects($this->once())
                 ->method('formatDateTime')
                 ->with($paymentResponse['Extra']['TRXDATE'], $txType)
@@ -168,9 +166,7 @@ class AssecoPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider threeDPayPaymentDataProvider
-     */
+    #[DataProvider('threeDPayPaymentDataProvider')]
     public function testMap3DPayResponseData(array $order, string $txType, array $responseData, array $expectedData): void
     {
         $this->responseValueFormatter->expects($this->once())
@@ -193,7 +189,7 @@ class AssecoPosResponseDataMapperTest extends TestCase
             ->with($responseData['storetype'], $txType)
             ->willReturn($expectedData['payment_model']);
 
-        if ($expectedData['transaction_time'] instanceof \DateTimeImmutable) {
+        if ($expectedData['transaction_time'] instanceof DateTimeImmutable) {
             $this->responseValueFormatter->expects($this->once())
                 ->method('formatDateTime')
                 ->with($responseData['EXTRA_TRXDATE'], $txType)
@@ -212,9 +208,7 @@ class AssecoPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider threeDHostPaymentDataProvider
-     */
+    #[DataProvider('threeDHostPaymentDataProvider')]
     public function testMap3DHostResponseData(array $order, string $txType, array $responseData, array $expectedData): void
     {
         $this->responseValueFormatter->expects($this->once())
@@ -256,9 +250,7 @@ class AssecoPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider statusTestDataProvider
-     */
+    #[DataProvider('statusTestDataProvider')]
     public function testMapStatusResponse(array $responseData, array $expectedData): void
     {
         if (ResponseDataMapperInterface::TX_APPROVED === $expectedData['status']) {
@@ -346,9 +338,8 @@ class AssecoPosResponseDataMapperTest extends TestCase
 
     /**
      * Doing integration test because of the iteration, and conditional statements it is difficult to mock values.
-     *
-     * @dataProvider statusRecurringOrderTestDataProvider
      */
+    #[DataProvider('statusRecurringOrderTestDataProvider')]
     public function testMapStatusResponseRecurringOrder(array $responseData, array $expectedData): void
     {
         $responseDataMapper = new AssecoPosResponseDataMapper(
@@ -381,9 +372,7 @@ class AssecoPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider refundTestDataProvider
-     */
+    #[DataProvider('refundTestDataProvider')]
     public function testMapRefundResponse(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapRefundResponse($responseData);
@@ -396,9 +385,7 @@ class AssecoPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider cancelTestDataProvider
-     */
+    #[DataProvider('cancelTestDataProvider')]
     public function testMapCancelResponse(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapCancelResponse($responseData);
@@ -413,9 +400,8 @@ class AssecoPosResponseDataMapperTest extends TestCase
 
     /**
      * Doing integration test because of the iteration, sorting and conditional statements it is difficult to mock values.
-     *
-     * @dataProvider orderHistoryTestDataProvider
      */
+    #[DataProvider('orderHistoryTestDataProvider')]
     public function testMapOrderHistoryResponse(array $responseData, array $expectedData): void
     {
         $responseDataMapper = new AssecoPosResponseDataMapper(
@@ -497,7 +483,7 @@ class AssecoPosResponseDataMapperTest extends TestCase
             'expectedData' => [
                 'transaction_id'    => '22302V8rE11732',
                 'transaction_type'  => 'pay',
-                'transaction_time'  => new \DateTimeImmutable('2022-10-29 21:58:43'),
+                'transaction_time'  => new DateTimeImmutable('2022-10-29 21:58:43'),
                 'payment_model'     => 'regular',
                 'order_id'          => '202210293885',
                 'group_id'          => '202210293885',
@@ -545,7 +531,7 @@ class AssecoPosResponseDataMapperTest extends TestCase
             'expectedData' => [
                 'transaction_id'    => '22302V8rE11732',
                 'transaction_type'  => 'pay',
-                'transaction_time'  => new \DateTimeImmutable('2022-10-29 21:58:43'),
+                'transaction_time'  => new DateTimeImmutable('2022-10-29 21:58:43'),
                 'payment_model'     => 'regular',
                 'order_id'          => '202210293885',
                 'group_id'          => '202210293885',
@@ -637,7 +623,7 @@ class AssecoPosResponseDataMapperTest extends TestCase
             'expectedData' => [
                 'transaction_id'    => '22303Md4C19254',
                 'transaction_type'  => 'pay',
-                'transaction_time'  => new \DateTimeImmutable('2022-10-30 12:29:53'),
+                'transaction_time'  => new DateTimeImmutable('2022-10-30 12:29:53'),
                 'payment_model'     => 'regular',
                 'order_id'          => '20221030FAC5',
                 'group_id'          => '20221030FAC5',
@@ -1052,7 +1038,7 @@ class AssecoPosResponseDataMapperTest extends TestCase
                 'expectedData'       => [
                     'transaction_id'       => '22303LzpJ16296',
                     'transaction_type'     => 'pay',
-                    'transaction_time'     => new \DateTimeImmutable('2022-10-30 11:51:41'),
+                    'transaction_time'     => new DateTimeImmutable('2022-10-30 11:51:41'),
                     'transaction_security' => 'Full 3D Secure',
                     'md_status'            => '1',
                     'masked_number'        => '4355 08** **** 4358',
@@ -1155,7 +1141,7 @@ class AssecoPosResponseDataMapperTest extends TestCase
                 'expectedData' => [
                     'transaction_id'       => '22303LWsA14386',
                     'transaction_type'     => 'pay',
-                    'transaction_time'     => new \DateTimeImmutable('2022-10-30 11:22:43'),
+                    'transaction_time'     => new DateTimeImmutable('2022-10-30 11:22:43'),
                     'transaction_security' => 'Full 3D Secure',
                     'md_status'            => '1',
                     'masked_number'        => '4355 08** **** 4358',
@@ -1329,7 +1315,7 @@ class AssecoPosResponseDataMapperTest extends TestCase
                 'expectedData' => [
                     'transaction_id'       => null,
                     'transaction_type'     => 'pay',
-                    'transaction_time'     => new \DateTimeImmutable(),
+                    'transaction_time'     => new DateTimeImmutable(),
                     'transaction_security' => 'Full 3D Secure',
                     'auth_code'            => null,
                     'ref_ret_num'          => null,
@@ -1499,7 +1485,7 @@ class AssecoPosResponseDataMapperTest extends TestCase
                     'status'            => 'approved',
                     'error_code'        => null,
                     'capture'           => false,
-                    'transaction_time'  => new \DateTimeImmutable('2022-10-30 12:29:53.773'),
+                    'transaction_time'  => new DateTimeImmutable('2022-10-30 12:29:53.773'),
                     'capture_time'      => null,
                     'cancel_time'       => null,
                     'refund_amount'     => null,
@@ -1588,8 +1574,8 @@ class AssecoPosResponseDataMapperTest extends TestCase
                     'proc_return_code'  => '00',
                     'ref_ret_num'       => '400300744233',
                     'status'            => 'approved',
-                    'transaction_time'  => new \DateTimeImmutable('2024-01-03 21:37:57.259'),
-                    'capture_time'      => new \DateTimeImmutable('2024-01-03 21:37:57.259'),
+                    'transaction_time'  => new DateTimeImmutable('2024-01-03 21:37:57.259'),
+                    'capture_time'      => new DateTimeImmutable('2024-01-03 21:37:57.259'),
                     'transaction_id'    => '24003Vl7F13152',
                     'transaction_type'  => 'pay',
                     'cancel_time'       => null,
@@ -1643,7 +1629,7 @@ class AssecoPosResponseDataMapperTest extends TestCase
                     'proc_return_code'  => '00',
                     'ref_ret_num'       => '400300744234',
                     'status'            => 'approved',
-                    'transaction_time'  => new \DateTimeImmutable('2024-01-03 21:42:35.902'),
+                    'transaction_time'  => new DateTimeImmutable('2024-01-03 21:42:35.902'),
                     'capture_time'      => null,
                     'transaction_id'    => '24003VqkA14152',
                     'transaction_type'  => 'pay',
@@ -1699,11 +1685,11 @@ class AssecoPosResponseDataMapperTest extends TestCase
                     'proc_return_code'  => '00',
                     'ref_ret_num'       => '400300744237',
                     'status'            => 'approved',
-                    'transaction_time'  => new \DateTimeImmutable('2024-01-03 21:49:42.929'),
-                    'capture_time'      => new \DateTimeImmutable('2024-01-03 21:49:42.929'),
+                    'transaction_time'  => new DateTimeImmutable('2024-01-03 21:49:42.929'),
+                    'capture_time'      => new DateTimeImmutable('2024-01-03 21:49:42.929'),
                     'transaction_id'    => '24003VxrB15662',
                     'transaction_type'  => 'pay',
-                    'cancel_time'       => new \DateTimeImmutable('2024-01-03 21:49:44.301'),
+                    'cancel_time'       => new DateTimeImmutable('2024-01-03 21:49:44.301'),
                     'refund_amount'     => null,
                     'refund_time'       => null,
                     'installment_count' => null,
@@ -1754,8 +1740,8 @@ class AssecoPosResponseDataMapperTest extends TestCase
                     'proc_return_code'  => '00',
                     'ref_ret_num'       => '402800747548',
                     'status'            => 'approved',
-                    'transaction_time'  => new \DateTimeImmutable('2024-01-28 19:58:49.382'),
-                    'capture_time'      => new \DateTimeImmutable('2024-01-28 19:58:49.382'),
+                    'transaction_time'  => new DateTimeImmutable('2024-01-28 19:58:49.382'),
+                    'capture_time'      => new DateTimeImmutable('2024-01-28 19:58:49.382'),
                     'transaction_id'    => '24028T8xG11980',
                     'transaction_type'  => 'refund',
                     'cancel_time'       => null,
@@ -1826,8 +1812,8 @@ class AssecoPosResponseDataMapperTest extends TestCase
                             'proc_return_code' => '00',
                             'ref_ret_num'      => '230300671790',
                             'status'           => 'approved',
-                            'transaction_time' => new \DateTimeImmutable('2022-10-30 14:58:03.449'),
-                            'capture_time'     => new \DateTimeImmutable('2022-10-30 14:58:03.449'),
+                            'transaction_time' => new DateTimeImmutable('2022-10-30 14:58:03.449'),
+                            'capture_time'     => new DateTimeImmutable('2022-10-30 14:58:03.449'),
                             'transaction_id'   => '22303O8EB19253',
                             'transaction_type' => 'pay',
                         ],
@@ -2145,7 +2131,7 @@ class AssecoPosResponseDataMapperTest extends TestCase
                             'error_code'       => null,
                             'capture'          => true,
                             'currency'         => null,
-                            'transaction_time' => new \DateTimeImmutable('2024-01-02 21:52:59.261'),
+                            'transaction_time' => new DateTimeImmutable('2024-01-02 21:52:59.261'),
                             'capture_time'     => null,
                             'masked_number'    => null,
                         ],
@@ -2161,7 +2147,7 @@ class AssecoPosResponseDataMapperTest extends TestCase
                             'capture_amount'   => 1.0,
                             'status'           => 'declined',
                             'error_code'       => null,
-                            'transaction_time' => new \DateTimeImmutable('2024-01-02 21:53:02.486'),
+                            'transaction_time' => new DateTimeImmutable('2024-01-02 21:53:02.486'),
                             'capture_time'     => null,
                             'masked_number'    => null,
                             'capture'          => false,
@@ -2207,7 +2193,7 @@ class AssecoPosResponseDataMapperTest extends TestCase
                             'error_code'       => null,
                             'capture'          => true,
                             'currency'         => null,
-                            'transaction_time' => new \DateTimeImmutable('2024-01-02 21:47:28.785'),
+                            'transaction_time' => new DateTimeImmutable('2024-01-02 21:47:28.785'),
                             'capture_time'     => null,
                             'masked_number'    => null,
                         ],
@@ -2250,7 +2236,7 @@ class AssecoPosResponseDataMapperTest extends TestCase
                             'error_code'       => null,
                             'capture'          => true,
                             'currency'         => null,
-                            'transaction_time' => new \DateTimeImmutable('2024-01-01 22:15:27.511'),
+                            'transaction_time' => new DateTimeImmutable('2024-01-01 22:15:27.511'),
                             'capture_time'     => null,
                             'masked_number'    => null,
                         ],
@@ -2293,7 +2279,7 @@ class AssecoPosResponseDataMapperTest extends TestCase
                             'error_code'       => null,
                             'capture'          => false,
                             'currency'         => null,
-                            'transaction_time' => new \DateTimeImmutable('2024-01-01 22:28:30.716'),
+                            'transaction_time' => new DateTimeImmutable('2024-01-01 22:28:30.716'),
                             'capture_time'     => null,
                             'masked_number'    => null,
                         ],
@@ -2336,7 +2322,7 @@ class AssecoPosResponseDataMapperTest extends TestCase
                             'error_code'       => null,
                             'capture'          => true,
                             'currency'         => null,
-                            'transaction_time' => new \DateTimeImmutable('2024-01-01 22:37:53.396'),
+                            'transaction_time' => new DateTimeImmutable('2024-01-01 22:37:53.396'),
                             'capture_time'     => null,
                             'masked_number'    => null,
                         ],

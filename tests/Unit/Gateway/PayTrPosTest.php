@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\Gateway;
 
+use RuntimeException;
+use DateTimeImmutable;
+use LogicException;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\HttpClientStrategyInterface;
 use Mews\Pos\Crypt\CryptInterface;
@@ -380,7 +383,7 @@ class PayTrPosTest extends TestCase
 
         $this->requestMapperMock->expects(self::never())->method('create3DFormData');
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage($expectedExceptionMsg);
 
         $this->pos->get3DFormData($order, $paymentModel, $orderTxType, null, true);
@@ -515,7 +518,7 @@ class PayTrPosTest extends TestCase
 
     public function testHistoryRequest(): void
     {
-        $order       = ['start_date' => new \DateTimeImmutable('2026-06-01'), 'end_date' => new \DateTimeImmutable('2026-06-03')];
+        $order       = ['start_date' => new DateTimeImmutable('2026-06-01'), 'end_date' => new DateTimeImmutable('2026-06-03')];
         $txType      = PosInterface::TX_TYPE_HISTORY;
         $requestData = ['merchant_id' => '123456', 'start_date' => '2026-06-01 00:00:00'];
 
@@ -595,7 +598,7 @@ class PayTrPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
                 'isWithCard'             => true,
                 'createWithoutCard'      => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Kart bilgileri ile form verisi oluşturmak icin [3d_host] ödeme modeli kullanmayınız!',
             ],
             '3d_pay_without_card' => [
@@ -604,7 +607,7 @@ class PayTrPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
                 'isWithCard'             => false,
                 'createWithoutCard'      => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Bu ödeme modeli için kart bilgileri zorunlu!',
             ],
             'unsupported_model'   => [
@@ -613,7 +616,7 @@ class PayTrPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
                 'isWithCard'             => true,
                 'createWithoutCard'      => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Mews\Pos\Gateway\PayTrPos ödeme altyapıda',
             ],
             'non_payment_tx_type' => [
@@ -622,7 +625,7 @@ class PayTrPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_STATUS,
                 'isWithCard'             => false,
                 'createWithoutCard'      => true,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri:',
             ],
         ];

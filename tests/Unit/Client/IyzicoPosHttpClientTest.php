@@ -6,6 +6,11 @@
 
 namespace Mews\Pos\Tests\Unit\Client;
 
+use InvalidArgumentException;
+use LogicException;
+use Mews\Pos\Crypt\CryptInterface;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use RuntimeException;
 use Mews\Pos\Client\AbstractHttpClient;
 use Mews\Pos\Client\AbstractIyzicoPosHttpClient;
 use Mews\Pos\Client\HttpClientInterface;
@@ -19,6 +24,7 @@ use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Gateway\IyzicoPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -84,17 +90,13 @@ class IyzicoPosHttpClientTest extends TestCase
         $this->assertFalse($this->client::supports(AkbankPos::class, HttpClientInterface::API_NAME_PAYMENT_API));
     }
 
-    /**
-     * @dataProvider supportsTxDataProvider
-     */
+    #[DataProvider('supportsTxDataProvider')]
     public function testSupportsTx(string $txType, bool $expected): void
     {
         $this->assertSame($expected, $this->client->supportsTx($txType, PosInterface::MODEL_NON_SECURE));
     }
 
-    /**
-     * @dataProvider getApiUrlDataProvider
-     */
+    #[DataProvider('getApiUrlDataProvider')]
     public function testGetApiUrl(string $txType, ?string $paymentModel, ?string $orderTxType, string $expected): void
     {
         $actual = $this->client->getApiURL($txType, $paymentModel, $orderTxType);
@@ -102,20 +104,18 @@ class IyzicoPosHttpClientTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider getApiUrlThrowsDataProvider
-     */
+    #[DataProvider('getApiUrlThrowsDataProvider')]
     public function testGetApiUrlThrows(?string $txType, ?string $paymentModel, ?string $orderTxType): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->client->getApiURL($txType, $paymentModel, $orderTxType);
     }
 
     public function testConstructorRejectsNonIyzicoCrypt(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
 
-        $wrongCrypt = $this->createMock(\Mews\Pos\Crypt\CryptInterface::class);
+        $wrongCrypt = $this->createMock(CryptInterface::class);
 
         PosHttpClientFactory::create(
             IyzicoPosHttpClient::class,
@@ -179,9 +179,9 @@ class IyzicoPosHttpClientTest extends TestCase
         $this->requestFactory->expects(self::never())
             ->method('createRequest');
 
-        $wrongAccount = $this->createMock(\Mews\Pos\Model\Account\AbstractPosAccount::class);
+        $wrongAccount = $this->createMock(AbstractPosAccount::class);
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->client->request($txType, $paymentModel, ['data' => 'x'], [], null, $wrongAccount);
     }
 
@@ -252,7 +252,7 @@ class IyzicoPosHttpClientTest extends TestCase
             ->method('sendRequest')
             ->willReturn($this->prepareHttpResponse('Internal Server Error', 500));
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->client->request($txType, $paymentModel, $requestData, [], $apiUrl, $this->account);
     }
 
@@ -289,7 +289,7 @@ class IyzicoPosHttpClientTest extends TestCase
             ->method('sendRequest')
             ->willReturn($response);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Invalid card');
 
         $this->client->request($txType, $paymentModel, $requestData, [], $apiUrl, $this->account);

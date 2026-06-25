@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\Serializer\Decoder;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use Generator;
 use Mews\Pos\Serializer\Decoder\KuveytPosSoapApiXmlDecoder;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -22,9 +24,7 @@ class KuveytPosSoapApiXmlDecoderTest extends TestCase
         $this->decoder = new KuveytPosSoapApiXmlDecoder();
     }
 
-    /**
-     * @dataProvider decodeDataProvider
-     */
+    #[DataProvider('decodeDataProvider')]
     public function testDecode(string $data, array $expected): void
     {
         $actual = $this->decoder->decode($data);
@@ -32,7 +32,7 @@ class KuveytPosSoapApiXmlDecoderTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public static function decodeDataProvider(): \Generator
+    public static function decodeDataProvider(): Generator
     {
         yield 'test_cancel' => [
             'input'    => '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><SaleReversalResponse xmlns="http://boa.net/BOA.Integration.VirtualPos/Service"><SaleReversalResult><Results><Result><ErrorMessage>İptal işlemi satışla aynı gün yapılmalıdır. Geçmiş tarihli işlem için iade yapınız.</ErrorMessage><ErrorCode>InvalidRequestError</ErrorCode><IsFriendly>true</IsFriendly><Severity>BusinessError</Severity></Result></Results><Success>false</Success><Value><IsEnrolled>false</IsEnrolled><IsVirtual>false</IsVirtual><ResponseCode>DbLayerError</ResponseCode><OrderId>0</OrderId><TransactionTime>0001-01-01T00:00:00</TransactionTime><MerchantId xsi:nil="true"/><BusinessKey>0</BusinessKey></Value></SaleReversalResult></SaleReversalResponse></s:Body></s:Envelope>',

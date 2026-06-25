@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\Mapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
+use InvalidArgumentException;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\Request\Mapper\AbstractRequestDataMapper;
 use Mews\Pos\DataMapper\Request\Mapper\Param3DHostPosRequestDataMapper;
@@ -78,13 +81,11 @@ class Param3DHostPosRequestDataMapperTest extends TestCase
 
     public function testCreateNonSecurePostAuthPaymentRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->requestDataMapper->createNonSecurePostAuthPaymentRequestData($this->account, []);
     }
 
-    /**
-     * @dataProvider paymentRegisterRequestDataProvider
-     */
+    #[DataProvider('paymentRegisterRequestDataProvider')]
     public function testCreate3DFormInitializeRequestData(array $order, string $txType, string $soapAction, array $expected): void
     {
         $soapBody = $expected['soap:Body'];
@@ -131,9 +132,7 @@ class Param3DHostPosRequestDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider threeDFormDataProvider
-     */
+    #[DataProvider('threeDFormDataProvider')]
     public function testGet3DFormData(
         array   $order,
         string  $txType,
@@ -163,9 +162,7 @@ class Param3DHostPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider threeDFormDataProviderFail
-     */
+    #[DataProvider('threeDFormDataProviderFail')]
     public function testGet3DFormDataFail(
         array   $order,
         string  $txType,
@@ -352,7 +349,7 @@ class Param3DHostPosRequestDataMapperTest extends TestCase
                         'TO_Pre_Encrypting_OOSResult' => 'SOAP Güvenlik Hatası.192.168.190.2',
                     ],
                 ],
-                'expected_exception' => \RuntimeException::class,
+                'expected_exception' => RuntimeException::class,
             ],
             'non_3d_host_form_data'       => [
                 'order'              => [],
@@ -364,7 +361,7 @@ class Param3DHostPosRequestDataMapperTest extends TestCase
                         'TO_Pre_Encrypting_OOSResult' => 'SOAP Güvenlik Hatası.192.168.190.2',
                     ],
                 ],
-                'expected_exception' => \InvalidArgumentException::class,
+                'expected_exception' => InvalidArgumentException::class,
             ],
             '3d_host_without_gateway_url' => [
                 'order'              => [],
@@ -376,7 +373,7 @@ class Param3DHostPosRequestDataMapperTest extends TestCase
                         'TO_Pre_Encrypting_OOSResult' => 'SOAP Güvenlik Hatası.192.168.190.2',
                     ],
                 ],
-                'expected_exception' => \InvalidArgumentException::class,
+                'expected_exception' => InvalidArgumentException::class,
             ],
         ];
     }

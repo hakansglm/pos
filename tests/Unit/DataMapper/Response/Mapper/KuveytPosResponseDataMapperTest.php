@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\Mapper;
 
+use DateTimeImmutable;
+use Generator;
 use Mews\Pos\DataMapper\Response\Mapper\AbstractResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\KuveytPosResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\ResponseDataMapperInterface;
@@ -16,6 +18,7 @@ use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Gateway\KuveytPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -81,9 +84,7 @@ class KuveytPosResponseDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider paymentTestDataProvider
-     */
+    #[DataProvider('paymentTestDataProvider')]
     public function testMapPaymentResponse(string $txType, array $responseData, array $expectedData): void
     {
         if (isset($responseData['VPosMessage'])) {
@@ -124,9 +125,7 @@ class KuveytPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider refundTestDataProvider
-     */
+    #[DataProvider('refundTestDataProvider')]
     public function testMapRefundResponse(array $responseData, array $expectedData): void
     {
         $txType         = PosInterface::TX_TYPE_REFUND;
@@ -151,9 +150,7 @@ class KuveytPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider cancelTestDataProvider
-     */
+    #[DataProvider('cancelTestDataProvider')]
     public function testMapCancelResponse(array $responseData, array $expectedData): void
     {
         $txType = PosInterface::TX_TYPE_CANCEL;
@@ -176,9 +173,7 @@ class KuveytPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider statusTestDataProvider
-     */
+    #[DataProvider('statusTestDataProvider')]
     public function testMapStatusResponse(array $responseData, array $expectedData): void
     {
         if ($expectedData['status'] === ResponseDataMapperInterface::TX_APPROVED) {
@@ -240,9 +235,7 @@ class KuveytPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider threeDPaymentDataProvider
-     */
+    #[DataProvider('threeDPaymentDataProvider')]
     public function testMap3DPaymentData(array $order, string $txType, array $threeDResponseData, array $paymentResponse, array $expectedData): void
     {
         if (isset($threeDResponseData['VPosMessage']['TransactionType'])) {
@@ -447,7 +440,7 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 'order_id'          => '660723214',
                 'transaction_id'    => '005554',
                 'transaction_type'  => 'pay',
-                'transaction_time'  => new \DateTimeImmutable(),
+                'transaction_time'  => new DateTimeImmutable(),
                 'currency'          => 'TRY',
                 'amount'            => 1.0,
                 'payment_model'     => 'regular',
@@ -803,7 +796,7 @@ class KuveytPosResponseDataMapperTest extends TestCase
                     'md_error_message'     => null,
                     'transaction_id'       => '005554',
                     'transaction_type'     => 'pay',
-                    'transaction_time'     => new \DateTimeImmutable(),
+                    'transaction_time'     => new DateTimeImmutable(),
                     'auth_code'            => '896626',
                     'ref_ret_num'          => '904115005554',
                     'batch_num'            => '1906',
@@ -997,7 +990,7 @@ class KuveytPosResponseDataMapperTest extends TestCase
                     'md_error_message'     => null,
                     'transaction_id'       => '539222',
                     'transaction_type'     => 'pay',
-                    'transaction_time'     => new \DateTimeImmutable(),
+                    'transaction_time'     => new DateTimeImmutable(),
                     'auth_code'            => '050560',
                     'ref_ret_num'          => '411219539222',
                     'batch_num'            => '545',
@@ -1017,7 +1010,7 @@ class KuveytPosResponseDataMapperTest extends TestCase
         ];
     }
 
-    public static function statusTestDataProvider(): \Generator
+    public static function statusTestDataProvider(): Generator
     {
         yield 'fail1' => [
             'responseData' => [
@@ -1137,8 +1130,8 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 'capture'           => true,
                 'remote_order_id'   => '114293600',
                 'currency'          => PosInterface::CURRENCY_TRY,
-                'capture_time'      => new \DateTimeImmutable('2023-07-08T23:45:35.283'),
-                'transaction_time'  => new \DateTimeImmutable('2023-07-08T23:45:15.797'),
+                'capture_time'      => new DateTimeImmutable('2023-07-08T23:45:35.283'),
+                'transaction_time'  => new DateTimeImmutable('2023-07-08T23:45:15.797'),
                 'cancel_time'       => null,
                 'refund_amount'     => null,
                 'refund_time'       => null,
@@ -1273,8 +1266,8 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 'status'            => 'approved',
                 'transaction_id'    => '539768',
                 'transaction_type'  => null,
-                'transaction_time'  => new \DateTimeImmutable('2024-04-24T16:03:42.07'),
-                'capture_time'      => new \DateTimeImmutable('2024-04-24T16:04:12.373'),
+                'transaction_time'  => new DateTimeImmutable('2024-04-24T16:03:42.07'),
+                'capture_time'      => new DateTimeImmutable('2024-04-24T16:04:12.373'),
                 'refund_time'       => null,
                 'cancel_time'       => null,
             ],
@@ -1365,10 +1358,10 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 'status'            => 'approved',
                 'transaction_id'    => '539768',
                 'transaction_type'  => null,
-                'transaction_time'  => new \DateTimeImmutable('2024-04-24T16:03:42.07'),
+                'transaction_time'  => new DateTimeImmutable('2024-04-24T16:03:42.07'),
                 'capture_time'      => null,
                 'refund_time'       => null,
-                'cancel_time'       => new \DateTimeImmutable('2024-04-24T16:09:27.067'),
+                'cancel_time'       => new DateTimeImmutable('2024-04-24T16:09:27.067'),
             ],
         ];
         yield 'tdv2_success_tx_pay_then_refund' => [
@@ -1457,15 +1450,15 @@ class KuveytPosResponseDataMapperTest extends TestCase
                 'status'            => 'approved',
                 'transaction_id'    => '539788',
                 'transaction_type'  => null,
-                'transaction_time'  => new \DateTimeImmutable('2024-04-24T16:33:44.01'),
+                'transaction_time'  => new DateTimeImmutable('2024-04-24T16:33:44.01'),
                 'capture_time'      => null,
-                'refund_time'       => new \DateTimeImmutable('2024-04-26T10:59:49.443'),
+                'refund_time'       => new DateTimeImmutable('2024-04-26T10:59:49.443'),
                 'cancel_time'       => null,
             ],
         ];
     }
 
-    public static function cancelTestDataProvider(): \Generator
+    public static function cancelTestDataProvider(): Generator
     {
         yield 'success1' => [
             'responseData' => [
@@ -1617,7 +1610,7 @@ class KuveytPosResponseDataMapperTest extends TestCase
         ];
     }
 
-    public static function refundTestDataProvider(): \Generator
+    public static function refundTestDataProvider(): Generator
     {
         yield 'fail1' => [
             'responseData' => [

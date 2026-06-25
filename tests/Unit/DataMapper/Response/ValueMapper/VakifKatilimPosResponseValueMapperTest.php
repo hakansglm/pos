@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\ValueMapper;
 
+use LogicException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Mews\Pos\DataMapper\Response\ValueMapper\AbstractResponseValueMapper;
 use Mews\Pos\DataMapper\Response\ValueMapper\VakifKatilimPosResponseValueMapper;
 use Mews\Pos\Gateway\AssecoPos;
@@ -41,29 +43,23 @@ class VakifKatilimPosResponseValueMapperTest extends TestCase
 
     public function testMapTxType(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->mapper->mapTxType('Sale');
     }
 
-    /**
-     * @dataProvider mapOrderStatusDataProvider
-     */
+    #[DataProvider('mapOrderStatusDataProvider')]
     public function testMapOrderStatus(int|string $orderStatus, string|int $expected): void
     {
         $this->assertSame($expected, $this->mapper->mapOrderStatus($orderStatus));
     }
 
-    /**
-     * @dataProvider mapCurrencyDataProvider
-     */
+    #[DataProvider('mapCurrencyDataProvider')]
     public function testMapCurrency(string $currency, string $txType, ?string $expected): void
     {
         $this->assertSame($expected, $this->mapper->mapCurrency($currency, $txType));
     }
 
-    /**
-     * @dataProvider mapSecureTypeDataProvider
-     */
+    #[DataProvider('mapSecureTypeDataProvider')]
     public function testMapSecureType(string $secureType, string $txType, ?string $expected): void
     {
         $this->assertSame($expected, $this->mapper->mapSecureType($secureType, $txType));

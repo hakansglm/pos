@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\Mapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use DateTimeImmutable;
 use Mews\Pos\DataMapper\Response\Mapper\AbstractResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\PayForPosResponseDataMapper;
 use Mews\Pos\DataMapper\Response\ValueFormatter\ResponseValueFormatterInterface;
@@ -85,9 +87,7 @@ class PayForPosResponseDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider paymentTestDataProvider
-     */
+    #[DataProvider('paymentTestDataProvider')]
     public function testMapPaymentResponse(array $order, string $txType, array $responseData, array $expectedData): void
     {
         if (isset($expectedData['transaction_time'])) {
@@ -109,9 +109,7 @@ class PayForPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider threeDPaymentDataProvider
-     */
+    #[DataProvider('threeDPaymentDataProvider')]
     public function testMap3DPaymentData(array $order, string $txType, array $threeDResponseData, array $paymentResponse, array $expectedData): void
     {
         $this->responseValueMapper->expects($this->once())
@@ -169,9 +167,7 @@ class PayForPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider threeDPayPaymentDataProvider
-     */
+    #[DataProvider('threeDPayPaymentDataProvider')]
     public function testMap3DPayResponseData(array $order, string $txType, array $responseData, array $expectedData): void
     {
         $this->responseValueMapper->expects($this->once())
@@ -218,9 +214,7 @@ class PayForPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider threeDHostPaymentDataProvider
-     */
+    #[DataProvider('threeDHostPaymentDataProvider')]
     public function testMap3DHostResponseData(array $order, string $txType, array $responseData, array $expectedData): void
     {
         $this->responseValueMapper->expects($this->once())
@@ -267,9 +261,7 @@ class PayForPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider statusTestDataProvider
-     */
+    #[DataProvider('statusTestDataProvider')]
     public function testMapStatusResponse(array $responseData, array $expectedData): void
     {
         $txType = PosInterface::TX_TYPE_STATUS;
@@ -332,9 +324,8 @@ class PayForPosResponseDataMapperTest extends TestCase
 
     /**
      * Doing integration test because of the iteration, sorting and conditional statements it is difficult to mock values.
-     *
-     * @dataProvider orderHistoryTestDataProvider
      */
+    #[DataProvider('orderHistoryTestDataProvider')]
     public function testMapOrderHistoryResponse(array $responseData, array $expectedData): void
     {
         $responseDataMapper = new PayForPosResponseDataMapper(
@@ -373,9 +364,7 @@ class PayForPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider historyTestDataProvider
-     */
+    #[DataProvider('historyTestDataProvider')]
     public function testMapHistoryResponse(array $responseData, array $expectedData): void
     {
         $responseDataMapper = new PayForPosResponseDataMapper(
@@ -414,9 +403,7 @@ class PayForPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider refundTestDataProvider
-     */
+    #[DataProvider('refundTestDataProvider')]
     public function testMapRefundResponse(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapRefundResponse($responseData);
@@ -429,9 +416,7 @@ class PayForPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider cancelTestDataProvider
-     */
+    #[DataProvider('cancelTestDataProvider')]
     public function testMapCancelResponse(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapCancelResponse($responseData);
@@ -464,7 +449,7 @@ class PayForPosResponseDataMapperTest extends TestCase
                 'expectedData' => [
                     'transaction_id'    => '202210313C0D',
                     'transaction_type'  => 'pay',
-                    'transaction_time'  => new \DateTimeImmutable(),
+                    'transaction_time'  => new DateTimeImmutable(),
                     'payment_model'     => 'regular',
                     'order_id'          => '202210313C0D',
                     'currency'          => 'TRY',
@@ -986,7 +971,7 @@ class PayForPosResponseDataMapperTest extends TestCase
                 'expectedData'       => [
                     'transaction_id'       => '20221031CFD0',
                     'transaction_type'     => 'pay',
-                    'transaction_time'     => new \DateTimeImmutable('2022-10-31 22:34:18'),
+                    'transaction_time'     => new DateTimeImmutable('2022-10-31 22:34:18'),
                     'transaction_security' => null,
                     'masked_number'        => '415565******6111',
                     'amount'               => 1.01,
@@ -1142,7 +1127,7 @@ class PayForPosResponseDataMapperTest extends TestCase
                 'expectedData' => [
                     'transaction_id'       => null,
                     'transaction_type'     => 'pay',
-                    'transaction_time'     => new \DateTimeImmutable('2022-10-31 22:56:43'),
+                    'transaction_time'     => new DateTimeImmutable('2022-10-31 22:56:43'),
                     'transaction_security' => null,
                     'auth_code'            => 'S86797',
                     'ref_ret_num'          => '230422100150',
@@ -1447,7 +1432,7 @@ class PayForPosResponseDataMapperTest extends TestCase
                 'expectedData' => [
                     'transaction_id'       => null,
                     'transaction_type'     => 'pay',
-                    'transaction_time'     => new \DateTimeImmutable('2022-10-31 23:06:37'),
+                    'transaction_time'     => new DateTimeImmutable('2022-10-31 23:06:37'),
                     'transaction_security' => null,
                     'auth_code'            => 'S28031',
                     'ref_ret_num'          => '230423100695',
@@ -1624,7 +1609,7 @@ class PayForPosResponseDataMapperTest extends TestCase
 
     public static function statusTestDataProvider(): iterable
     {
-        $success1CaptureTime = new \DateTimeImmutable('31.10.2022 23:13:21');
+        $success1CaptureTime = new DateTimeImmutable('31.10.2022 23:13:21');
 
         yield 'success1' => [
             'responseData' => [
@@ -1920,7 +1905,7 @@ class PayForPosResponseDataMapperTest extends TestCase
                 'capture_amount'    => null,
                 'first_amount'      => 2.01,
                 'transaction_id'    => null,
-                'transaction_time'  => new \DateTimeImmutable('19.01.2024 22:07:49'),
+                'transaction_time'  => new DateTimeImmutable('19.01.2024 22:07:49'),
                 'cancel_time'       => null,
                 'refund_amount'     => null,
                 'refund_time'       => null,
@@ -1928,7 +1913,7 @@ class PayForPosResponseDataMapperTest extends TestCase
             ],
         ];
 
-        $successPrePayAndPostDateTime = new \DateTimeImmutable('19.01.2024 22:13:39');
+        $successPrePayAndPostDateTime = new DateTimeImmutable('19.01.2024 22:13:39');
         yield 'success_pre_pay_and_post_pay' => [
             'responseData' => [
                 'RequestGuid'                    => '1000000094938529',
@@ -2082,8 +2067,8 @@ class PayForPosResponseDataMapperTest extends TestCase
             ],
         ];
 
-        $successPayThenCancelDateTime       = new \DateTimeImmutable('19.01.2024 21:34:05');
-        $successPayThenCancelCancelDateTime = new \DateTimeImmutable('20240119T213405');
+        $successPayThenCancelDateTime       = new DateTimeImmutable('19.01.2024 21:34:05');
+        $successPayThenCancelCancelDateTime = new DateTimeImmutable('20240119T213405');
 
         yield 'success_pay_then_cancel' => [
             'responseData' => [
@@ -2381,8 +2366,8 @@ class PayForPosResponseDataMapperTest extends TestCase
                 'capture_amount'    => null,
                 'first_amount'      => 1.01,
                 'transaction_id'    => null,
-                'transaction_time'  => new \DateTimeImmutable('19.01.2024 21:47:43'),
-                'cancel_time'       => new \DateTimeImmutable('20240119T214744'),
+                'transaction_time'  => new DateTimeImmutable('19.01.2024 21:47:43'),
+                'cancel_time'       => new DateTimeImmutable('20240119T214744'),
                 'refund_amount'     => null,
                 'refund_time'       => null,
                 'installment_count' => 3,
@@ -2629,7 +2614,7 @@ class PayForPosResponseDataMapperTest extends TestCase
                             'auth_code'        => 'S65465',
                             'proc_return_code' => '00',
                             'transaction_id'   => null,
-                            'transaction_time' => new \DateTimeImmutable('2024-01-21T17:39:02'),
+                            'transaction_time' => new DateTimeImmutable('2024-01-21T17:39:02'),
                             'capture_time'     => null,
                             'error_message'    => null,
                             'ref_ret_num'      => null,
@@ -2647,8 +2632,8 @@ class PayForPosResponseDataMapperTest extends TestCase
                             'auth_code'        => 'S75952',
                             'proc_return_code' => '00',
                             'transaction_id'   => null,
-                            'transaction_time' => new \DateTimeImmutable('2024-01-21T17:39:06'),
-                            'capture_time'     => new \DateTimeImmutable('2024-01-21T17:39:06'),
+                            'transaction_time' => new DateTimeImmutable('2024-01-21T17:39:06'),
+                            'capture_time'     => new DateTimeImmutable('2024-01-21T17:39:06'),
                             'error_message'    => null,
                             'ref_ret_num'      => null,
                             'order_status'     => 'PAYMENT_COMPLETED',
@@ -2665,7 +2650,7 @@ class PayForPosResponseDataMapperTest extends TestCase
                             'auth_code'        => 'S10420',
                             'proc_return_code' => '00',
                             'transaction_id'   => null,
-                            'transaction_time' => new \DateTimeImmutable('2024-01-21T17:39:16'),
+                            'transaction_time' => new DateTimeImmutable('2024-01-21T17:39:16'),
                             'capture_time'     => null,
                             'error_message'    => null,
                             'ref_ret_num'      => null,
@@ -2696,8 +2681,8 @@ class PayForPosResponseDataMapperTest extends TestCase
                             'auth_code'        => 'S90726',
                             'proc_return_code' => '00',
                             'transaction_id'   => null,
-                            'transaction_time' => new \DateTimeImmutable('2024-01-21T21:40:47'),
-                            'capture_time'     => new \DateTimeImmutable('2024-01-21T21:40:47'),
+                            'transaction_time' => new DateTimeImmutable('2024-01-21T21:40:47'),
+                            'capture_time'     => new DateTimeImmutable('2024-01-21T21:40:47'),
                             'error_message'    => null,
                             'ref_ret_num'      => null,
                             'order_status'     => 'PAYMENT_COMPLETED',
@@ -2727,7 +2712,7 @@ class PayForPosResponseDataMapperTest extends TestCase
                             'auth_code'        => 'S95711',
                             'proc_return_code' => '00',
                             'transaction_id'   => null,
-                            'transaction_time' => new \DateTimeImmutable('2024-01-21T21:59:31'),
+                            'transaction_time' => new DateTimeImmutable('2024-01-21T21:59:31'),
                             'capture_time'     => null,
                             'error_message'    => null,
                             'ref_ret_num'      => null,
@@ -2758,8 +2743,8 @@ class PayForPosResponseDataMapperTest extends TestCase
                             'auth_code'        => 'S83066',
                             'proc_return_code' => '00',
                             'transaction_id'   => null,
-                            'transaction_time' => new \DateTimeImmutable('2024-01-21T22:14:23'),
-                            'capture_time'     => new \DateTimeImmutable('2024-01-21T22:14:23'),
+                            'transaction_time' => new DateTimeImmutable('2024-01-21T22:14:23'),
+                            'capture_time'     => new DateTimeImmutable('2024-01-21T22:14:23'),
                             'error_message'    => null,
                             'ref_ret_num'      => null,
                             'order_status'     => 'PAYMENT_COMPLETED',
@@ -2862,8 +2847,8 @@ class PayForPosResponseDataMapperTest extends TestCase
                             'auth_code'        => 'S70708',
                             'proc_return_code' => '00',
                             'transaction_id'   => null,
-                            'transaction_time' => new \DateTimeImmutable('2024-03-14T21:40:18'),
-                            'capture_time'     => new \DateTimeImmutable('2024-03-14T21:40:18'),
+                            'transaction_time' => new DateTimeImmutable('2024-03-14T21:40:18'),
+                            'capture_time'     => new DateTimeImmutable('2024-03-14T21:40:18'),
                             'error_message'    => null,
                             'ref_ret_num'      => null,
                             'order_status'     => 'PAYMENT_COMPLETED',

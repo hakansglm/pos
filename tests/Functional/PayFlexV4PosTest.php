@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Functional;
 
+use Mews\Pos\Gateway\PayFlexV4Pos;
 use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Factory\AccountFactory;
@@ -24,7 +25,7 @@ class PayFlexV4PosTest extends TestCase
 
     private EventDispatcher $eventDispatcher;
 
-    /** @var \Mews\Pos\Gateway\PayFlexV4Pos */
+    /** @var PayFlexV4Pos */
     private PosInterface $pos;
 
     protected function setUp(): void

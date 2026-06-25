@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\ValueFormatter;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use DateTimeImmutable;
+use DateTimeZone;
 use Mews\Pos\DataMapper\Response\ValueFormatter\AbstractResponseValueFormatter;
 use Mews\Pos\DataMapper\Response\ValueFormatter\IyzicoPosResponseValueFormatter;
 use Mews\Pos\Gateway\AkbankPos;
@@ -35,27 +38,21 @@ class IyzicoPosResponseValueFormatterTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider formatDateTimeDataProvider
-     */
-    public function testFormatDateTime(string $dateTime, string $txType, \DateTimeImmutable $expected): void
+    #[DataProvider('formatDateTimeDataProvider')]
+    public function testFormatDateTime(string $dateTime, string $txType, DateTimeImmutable $expected): void
     {
         $actual = $this->formatter->formatDateTime($dateTime, $txType);
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @dataProvider formatInstallmentDataProvider
-     */
+    #[DataProvider('formatInstallmentDataProvider')]
     public function testFormatInstallment(?string $installment, int $expected): void
     {
         $actual = $this->formatter->formatInstallment($installment, PosInterface::TX_TYPE_PAY_AUTH);
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider formatAmountDataProvider
-     */
+    #[DataProvider('formatAmountDataProvider')]
     public function testFormatAmount(string $amount, float $expected): void
     {
         $actual = $this->formatter->formatAmount($amount, PosInterface::TX_TYPE_PAY_AUTH);
@@ -68,22 +65,22 @@ class IyzicoPosResponseValueFormatterTest extends TestCase
             'tx_type_history_iso_string'       => [
                 '2026-06-11 23:17:51',
                 PosInterface::TX_TYPE_HISTORY,
-                new \DateTimeImmutable('2026-06-11 23:17:51'),
+                new DateTimeImmutable('2026-06-11 23:17:51'),
             ],
             'tx_type_order_history_iso_string' => [
                 '2026-06-11 23:29:31',
                 PosInterface::TX_TYPE_ORDER_HISTORY,
-                new \DateTimeImmutable('2026-06-11 23:29:31'),
+                new DateTimeImmutable('2026-06-11 23:29:31'),
             ],
             'tx_type_pay_auth_epoch_ms'        => [
                 '1781209772355',
                 PosInterface::TX_TYPE_PAY_AUTH,
-                (new \DateTimeImmutable('@1781209772'))->setTimezone(new \DateTimeZone('UTC')),
+                (new DateTimeImmutable('@1781209772'))->setTimezone(new DateTimeZone('UTC')),
             ],
             'tx_type_status_epoch_ms'          => [
                 '1781209772000',
                 PosInterface::TX_TYPE_STATUS,
-                (new \DateTimeImmutable('@1781209772'))->setTimezone(new \DateTimeZone('UTC')),
+                (new DateTimeImmutable('@1781209772'))->setTimezone(new DateTimeZone('UTC')),
             ],
         ];
     }

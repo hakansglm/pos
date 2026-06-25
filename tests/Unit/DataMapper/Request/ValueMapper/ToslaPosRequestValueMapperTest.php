@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueMapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use LogicException;
 use Mews\Pos\DataMapper\Request\ValueMapper\AbstractRequestValueMapper;
 use Mews\Pos\DataMapper\Request\ValueMapper\ToslaPosRequestValueMapper;
 use Mews\Pos\Exception\UnsupportedTransactionTypeException;
@@ -37,9 +39,7 @@ class ToslaPosRequestValueMapperTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider mapTxTypeDataProvider
-     */
+    #[DataProvider('mapTxTypeDataProvider')]
     public function testMapTxType(string $txType, string $paymentModel, string $expected): void
     {
         $actual = $this->valueMapper->mapTxType($txType, $paymentModel);
@@ -55,19 +55,19 @@ class ToslaPosRequestValueMapperTest extends TestCase
 
     public function testMapSecureType(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->valueMapper->mapSecureType(PosInterface::MODEL_3D_SECURE);
     }
 
     public function testMapRecurringFrequency(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->valueMapper->mapRecurringFrequency('DAY');
     }
 
     public function testMapLang(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->valueMapper->mapLang(PosInterface::LANG_TR);
     }
 

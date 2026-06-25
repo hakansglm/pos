@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
+use LogicException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\PosNetPosCrypt;
 use Mews\Pos\Model\Account\AbstractPosAccount;
@@ -63,13 +65,11 @@ class PosNetPosCryptTest extends TestCase
     public function testCreateHashException(): void
     {
         $account = $this->createMock(AbstractPosAccount::class);
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->crypt->createHash($account, []);
     }
 
-    /**
-     * @dataProvider hashCreateDataProvider
-     */
+    #[DataProvider('hashCreateDataProvider')]
     public function testCreateHash(array $requestData, array $order, string $expected): void
     {
         $actual = $this->crypt->createHash($this->account, $requestData, $order);
@@ -80,13 +80,11 @@ class PosNetPosCryptTest extends TestCase
     public function testCheck3DHashException(): void
     {
         $account = $this->createMock(AbstractPosAccount::class);
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->crypt->check3DHash($account, []);
     }
 
-    /**
-     * @dataProvider threeDHashCheckDataProvider
-     */
+    #[DataProvider('threeDHashCheckDataProvider')]
     public function testCheck3DHash(bool $expected, array $responseData): void
     {
         $this->assertSame($expected, $this->crypt->check3DHash($this->account, $responseData));

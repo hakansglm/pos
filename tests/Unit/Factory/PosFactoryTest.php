@@ -6,6 +6,27 @@
 
 namespace Mews\Pos\Tests\Unit\Factory;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
+use Mews\Pos\Gateway\AkbankPos;
+use Generator;
+use stdClass;
+use InvalidArgumentException;
+use DomainException;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\GarantiPos;
+use Mews\Pos\Gateway\InterPos;
+use Mews\Pos\Gateway\KuveytPos;
+use Mews\Pos\Gateway\Param3DHostPos;
+use Mews\Pos\Gateway\ParamPos;
+use Mews\Pos\Gateway\PayFlexCPV4Pos;
+use Mews\Pos\Gateway\PayFlexV4Pos;
+use Mews\Pos\Gateway\PayForPos;
+use Mews\Pos\Gateway\PosNetPos;
+use Mews\Pos\Gateway\PosNetV1Pos;
+use Mews\Pos\Gateway\ToslaPos;
+use Mews\Pos\Gateway\VakifKatilimPos;
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Exception\BankClassNullException;
 use Mews\Pos\Exception\BankNotFoundException;
@@ -17,9 +38,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(PosFactory::class)]
 class PosFactoryTest extends TestCase
 {
-    /**
-     * @dataProvider createPosGatewayDataProvider
-     */
+    #[DataProvider('createPosGatewayDataProvider')]
     public function testCreatePosGateway(array $config, string $configKey, bool $cardTypeMapping, string $expectedGatewayClass): void
     {
         $account = $this->createMock(AbstractPosAccount::class);
@@ -27,8 +46,8 @@ class PosFactoryTest extends TestCase
             ->method('getBankName')
             ->willReturn($configKey);
 
-        $eventDispatcher = $this->createMock(\Psr\EventDispatcher\EventDispatcherInterface::class);
-        $logger          = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
+        $logger          = $this->createMock(LoggerInterface::class);
 
         $gateway = PosFactory::createPosGateway(
             $account,
@@ -51,7 +70,7 @@ class PosFactoryTest extends TestCase
 
     public function testCreatePosGatewayWithOnlyRequiredParameters(): void
     {
-        $gatewayClass = \Mews\Pos\Gateway\AkbankPos::class;
+        $gatewayClass = AkbankPos::class;
         $config       = [
             'banks' => [
                 'akbank' => [
@@ -70,7 +89,7 @@ class PosFactoryTest extends TestCase
             ->method('getBankName')
             ->willReturn('akbank');
 
-        $eventDispatcher = $this->createMock(\Psr\EventDispatcher\EventDispatcherInterface::class);
+        $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
 
         $gateway = PosFactory::createPosGateway(
             $account,
@@ -80,9 +99,7 @@ class PosFactoryTest extends TestCase
         $this->assertInstanceOf($gatewayClass, $gateway);
     }
 
-    /**
-     * @dataProvider createPosGatewayDataExceptionProvider
-     */
+    #[DataProvider('createPosGatewayDataExceptionProvider')]
     public function testCreatePosGatewayFail(array $config, string $configKey, string $expectedExceptionClass): void
     {
         $account = $this->createMock(AbstractPosAccount::class);
@@ -90,7 +107,7 @@ class PosFactoryTest extends TestCase
             ->method('getBankName')
             ->willReturn($configKey);
 
-        $eventDispatcher = $this->createMock(\Psr\EventDispatcher\EventDispatcherInterface::class);
+        $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
 
         $this->expectException($expectedExceptionClass);
         PosFactory::createPosGateway(
@@ -100,7 +117,7 @@ class PosFactoryTest extends TestCase
         );
     }
 
-    public static function createPosGatewayDataExceptionProvider(): \Generator
+    public static function createPosGatewayDataExceptionProvider(): Generator
     {
         yield 'missing_gateway_class_in_config' => [
             'config'                   => [
@@ -124,7 +141,7 @@ class PosFactoryTest extends TestCase
                 'banks' => [
                     'akbank' => [
                         'name'              => 'Akbank',
-                        'class'             => \stdClass::class,
+                        'class'             => stdClass::class,
                         'gateway_endpoints' => [
                             'payment_api'     => 'https://apipre.akbank.com/api/v1/payment/virtualpos',
                             'gateway_3d'      => 'https://virtualpospaymentgatewaypre.akbank.com/securepay',
@@ -134,7 +151,7 @@ class PosFactoryTest extends TestCase
                 ],
             ],
             'config_key'               => 'akbank',
-            'expected_exception_class' => \InvalidArgumentException::class,
+            'expected_exception_class' => InvalidArgumentException::class,
         ];
 
         yield 'serializer_not_found' => [
@@ -142,14 +159,14 @@ class PosFactoryTest extends TestCase
                 'banks' => [
                     'akbank' => [
                         'name'              => 'Akbank',
-                        'class'             => \Mews\Pos\Gateway\AkbankPos::class,
+                        'class'             => AkbankPos::class,
                         'gateway_endpoints' => [
                         ],
                     ],
                 ],
             ],
             'config_key'               => 'akbank',
-            'expected_exception_class' => \DomainException::class,
+            'expected_exception_class' => DomainException::class,
         ];
 
         yield 'bank_not_found' => [
@@ -157,7 +174,7 @@ class PosFactoryTest extends TestCase
                 'banks' => [
                     'akbank' => [
                         'name'              => 'Akbank',
-                        'class'             => \Mews\Pos\Gateway\AkbankPos::class,
+                        'class'             => AkbankPos::class,
                         'gateway_endpoints' => [
                         ],
                     ],
@@ -168,23 +185,23 @@ class PosFactoryTest extends TestCase
         ];
     }
 
-    public static function createPosGatewayDataProvider(): \Generator
+    public static function createPosGatewayDataProvider(): Generator
     {
         $gatewayClasses = [
-            \Mews\Pos\Gateway\AkbankPos::class        => false,
-            \Mews\Pos\Gateway\AssecoPos::class        => false,
-            \Mews\Pos\Gateway\GarantiPos::class      => false,
-            \Mews\Pos\Gateway\InterPos::class        => true,
-            \Mews\Pos\Gateway\KuveytPos::class       => true,
-            \Mews\Pos\Gateway\Param3DHostPos::class  => false,
-            \Mews\Pos\Gateway\ParamPos::class        => false,
-            \Mews\Pos\Gateway\PayFlexCPV4Pos::class  => true,
-            \Mews\Pos\Gateway\PayFlexV4Pos::class    => true,
-            \Mews\Pos\Gateway\PayForPos::class       => false,
-            \Mews\Pos\Gateway\PosNetPos::class       => false,
-            \Mews\Pos\Gateway\PosNetV1Pos::class     => false,
-            \Mews\Pos\Gateway\ToslaPos::class        => false,
-            \Mews\Pos\Gateway\VakifKatilimPos::class => false,
+            AkbankPos::class        => false,
+            AssecoPos::class        => false,
+            GarantiPos::class      => false,
+            InterPos::class        => true,
+            KuveytPos::class       => true,
+            Param3DHostPos::class  => false,
+            ParamPos::class        => false,
+            PayFlexCPV4Pos::class  => true,
+            PayFlexV4Pos::class    => true,
+            PayForPos::class       => false,
+            PosNetPos::class       => false,
+            PosNetV1Pos::class     => false,
+            ToslaPos::class        => false,
+            VakifKatilimPos::class => false,
         ];
 
         foreach ($gatewayClasses as $gatewayClass => $cardTypeMapping) {

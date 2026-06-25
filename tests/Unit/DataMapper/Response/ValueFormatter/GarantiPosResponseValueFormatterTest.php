@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\ValueFormatter;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Mews\Pos\DataMapper\Response\ValueFormatter\GarantiPosResponseValueFormatter;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\GarantiPos;
@@ -33,18 +34,14 @@ class GarantiPosResponseValueFormatterTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider formatAmountProvider
-     */
+    #[DataProvider('formatAmountProvider')]
     public function testFormatAmount(string $amount, string $txType, float $expected): void
     {
         $actual = $this->formatter->formatAmount($amount, $txType);
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider formatInstallmentProvider
-     */
+    #[DataProvider('formatInstallmentProvider')]
     public function testFormatInstallment(?string $installment, string $txType, int $expected): void
     {
         $actual = $this->formatter->formatInstallment($installment, $txType);

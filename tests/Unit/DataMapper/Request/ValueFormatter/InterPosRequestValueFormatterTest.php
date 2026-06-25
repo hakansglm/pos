@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueFormatter;
 
+use DateTime;
 use Mews\Pos\DataMapper\Request\ValueFormatter\InterPosRequestValueFormatter;
 use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Gateway\AssecoPos;
@@ -55,14 +56,14 @@ class InterPosRequestValueFormatterTest extends TestCase
     #[TestWith(['Expiry', '0424'])]
     public function testFormatCreditCardExpDate(string $fieldName, string $expected): void
     {
-        $expDate = new \DateTime('2024-04-14T16:45:30.000');
+        $expDate = new DateTime('2024-04-14T16:45:30.000');
         $actual  = $this->formatter->formatCardExpDate($expDate, $fieldName);
         $this->assertSame($expected, $actual);
     }
 
     public function testFormatDateTime(): void
     {
-        $dateTime = new \DateTime('2024-04-14T16:45:30.000');
+        $dateTime = new DateTime('2024-04-14T16:45:30.000');
         $this->expectException(NotImplementedException::class);
         $this->formatter->formatDateTime($dateTime);
     }

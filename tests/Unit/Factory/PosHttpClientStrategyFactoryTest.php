@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\Factory;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use DomainException;
 use Mews\Pos\Client\GenericPosHttpClientStrategy;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Crypt\CryptInterface;
@@ -32,9 +34,7 @@ use Psr\Log\LoggerInterface;
 #[CoversClass(PosHttpClientStrategyFactory::class)]
 class PosHttpClientStrategyFactoryTest extends TestCase
 {
-    /**
-     * @dataProvider createForGatewayDataProvider
-     */
+    #[DataProvider('createForGatewayDataProvider')]
     public function testCreateForGateway(string $gatewayClass, array $expectedClients): void
     {
         $crypt              = $this->createMock(CryptInterface::class);
@@ -80,7 +80,7 @@ class PosHttpClientStrategyFactoryTest extends TestCase
         $requestValueMapper = $this->createMock(RequestValueMapperInterface::class);
         $logger             = $this->createMock(LoggerInterface::class);
 
-        $this->expectException(\DomainException::class);
+        $this->expectException(DomainException::class);
         $this->expectExceptionMessage('Client not found for the gateway UnsupportedGateway');
 
         PosHttpClientStrategyFactory::createForGateway(

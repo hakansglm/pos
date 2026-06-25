@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\Mapper;
 
+use InvalidArgumentException;
+use DateTimeImmutable;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\Request\Mapper\AbstractRequestDataMapper;
 use Mews\Pos\DataMapper\Request\Mapper\PayTrPosRequestDataMapper;
@@ -97,9 +99,7 @@ class PayTrPosRequestDataMapperTest extends TestCase
         $this->assertSame($testMode, $this->requestDataMapper->isTestMode());
     }
 
-    /**
-     * @dataProvider create3DFormInitializeRequestDataProvider
-     */
+    #[DataProvider('create3DFormInitializeRequestDataProvider')]
     public function testCreate3DFormInitializeRequestData(
         bool  $testMode,
         array $order,
@@ -125,9 +125,7 @@ class PayTrPosRequestDataMapperTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider createNonSecurePaymentRequestDataProvider
-     */
+    #[DataProvider('createNonSecurePaymentRequestDataProvider')]
     public function testCreateNonSecurePaymentRequestData(array $order, array $expectedWithoutToken): void
     {
         $this->cryptMock->expects(self::once())
@@ -213,9 +211,7 @@ class PayTrPosRequestDataMapperTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider createRefundRequestDataProvider
-     */
+    #[DataProvider('createRefundRequestDataProvider')]
     public function testCreateRefundRequestData(array $order, array $expectedWithoutToken): void
     {
         $this->cryptMock->expects(self::once())
@@ -356,7 +352,7 @@ class PayTrPosRequestDataMapperTest extends TestCase
 
     public function testCreate3DFormDataForPayModelWithNullCardThrows(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->requestDataMapper->create3DFormData(
             $this->account,
             ['id' => 'order-1', 'amount' => 1.0, 'ip' => '127.0.0.1', 'buyer' => [], 'billing_address' => []],
@@ -539,8 +535,8 @@ class PayTrPosRequestDataMapperTest extends TestCase
 
     public static function createHistoryRequestDataProvider(): array
     {
-        $startDate = new \DateTimeImmutable('2026-06-01 00:00:00');
-        $endDate   = new \DateTimeImmutable('2026-06-03 23:59:59');
+        $startDate = new DateTimeImmutable('2026-06-01 00:00:00');
+        $endDate   = new DateTimeImmutable('2026-06-03 23:59:59');
 
         return [
             'production_mode' => [

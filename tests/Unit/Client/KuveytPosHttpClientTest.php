@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\Client;
 
+use RuntimeException;
+use Generator;
+use InvalidArgumentException;
 use Mews\Pos\Client\AbstractHttpClient;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\KuveytPosHttpClient;
@@ -17,6 +20,7 @@ use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Gateway\KuveytPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -83,9 +87,7 @@ class KuveytPosHttpClientTest extends TestCase
         $this->assertTrue($this->client::supports(KuveytPos::class, HttpClientInterface::API_NAME_PAYMENT_API));
     }
 
-    /**
-     * @dataProvider supportsTxDataProvider
-     */
+    #[DataProvider('supportsTxDataProvider')]
     public function testSupportsTx(string $txType, string $paymentModel, bool $expected): void
     {
         $this->assertSame($expected, $this->client->supportsTx($txType, $paymentModel));
@@ -101,9 +103,7 @@ class KuveytPosHttpClientTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getApiUrlDataProvider
-     */
+    #[DataProvider('getApiUrlDataProvider')]
     public function testGetApiUrl(string $txType, string $paymentModel, string $expected): void
     {
         $actual = $this->client->getApiURL($txType, $paymentModel);
@@ -111,9 +111,7 @@ class KuveytPosHttpClientTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider getApiUrlDataFailProvider
-     */
+    #[DataProvider('getApiUrlDataFailProvider')]
     public function testGetApiUrlUnsupportedTxType(?string $txType, ?string $paymentModel, string $expectedException): void
     {
         $this->expectException($expectedException);
@@ -156,9 +154,7 @@ class KuveytPosHttpClientTest extends TestCase
         $this->assertSame($responseContent, $actual);
     }
 
-    /**
-     * @dataProvider requestDataProvider
-     */
+    #[DataProvider('requestDataProvider')]
     public function testRequest(
         string $txType,
         string $paymentModel,
@@ -227,7 +223,7 @@ class KuveytPosHttpClientTest extends TestCase
             ->method('sendRequest')
             ->willReturn($response);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->client->request(
             $txType,
             $paymentModel,
@@ -265,7 +261,7 @@ class KuveytPosHttpClientTest extends TestCase
             ->with($request)
             ->willReturn($response);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('İstek Başarısız!');
 
         $this->client->request(
@@ -290,7 +286,7 @@ class KuveytPosHttpClientTest extends TestCase
         );
     }
 
-    public static function requestDataProvider(): \Generator
+    public static function requestDataProvider(): Generator
     {
         yield [
             'txType'             => PosInterface::TX_TYPE_PAY_AUTH,
@@ -341,17 +337,17 @@ class KuveytPosHttpClientTest extends TestCase
             [
                 'txType'          => null,
                 'paymentModel'    => null,
-                'exception_class' => \InvalidArgumentException::class,
+                'exception_class' => InvalidArgumentException::class,
             ],
             [
                 'txType'          => PosInterface::TX_TYPE_PAY_AUTH,
                 'paymentModel'    => null,
-                'exception_class' => \InvalidArgumentException::class,
+                'exception_class' => InvalidArgumentException::class,
             ],
             [
                 'txType'          => null,
                 'paymentModel'    => PosInterface::MODEL_3D_PAY,
-                'exception_class' => \InvalidArgumentException::class,
+                'exception_class' => InvalidArgumentException::class,
             ],
         ];
     }

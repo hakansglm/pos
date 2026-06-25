@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\Mapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use DateTimeImmutable;
+use Generator;
 use Mews\Pos\DataMapper\Response\Mapper\AbstractResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\ToslaPosResponseDataMapper;
 use Mews\Pos\DataMapper\Response\ValueFormatter\ResponseValueFormatterInterface;
@@ -85,9 +88,7 @@ class ToslaPosResponseDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider paymentDataProvider
-     */
+    #[DataProvider('paymentDataProvider')]
     public function testMapPaymentResponse(array $order, string $txType, array $responseData, array $expectedData): void
     {
         if (isset($expectedData['transaction_time'])) {
@@ -110,9 +111,7 @@ class ToslaPosResponseDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider threeDPayPaymentDataProvider
-     */
+    #[DataProvider('threeDPayPaymentDataProvider')]
     public function testMap3DPayResponseData(array $order, string $txType, array $responseData, array $expectedData): void
     {
         $this->responseValueMapper->expects($this->once())
@@ -139,9 +138,7 @@ class ToslaPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider threeDHostPaymentDataProvider
-     */
+    #[DataProvider('threeDHostPaymentDataProvider')]
     public function testMap3DHostResponseData(array $order, string $txType, array $responseData, array $expectedData): void
     {
         $this->responseValueMapper->expects($this->once())
@@ -168,9 +165,7 @@ class ToslaPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider statusResponseDataProvider
-     */
+    #[DataProvider('statusResponseDataProvider')]
     public function testMapStatusResponse(array $responseData, array $expectedData): void
     {
         $txType = PosInterface::TX_TYPE_STATUS;
@@ -232,9 +227,7 @@ class ToslaPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider refundDataProvider
-     */
+    #[DataProvider('refundDataProvider')]
     public function testMapRefundResponse(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapRefundResponse($responseData);
@@ -247,9 +240,7 @@ class ToslaPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider cancelDataProvider
-     */
+    #[DataProvider('cancelDataProvider')]
     public function testMapCancelResponse(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapCancelResponse($responseData);
@@ -264,9 +255,8 @@ class ToslaPosResponseDataMapperTest extends TestCase
 
     /**
      * Doing integration test because of the iteration, sorting and conditional statements it is difficult to mock values.
-     *
-     * @dataProvider orderHistoryDataProvider
      */
+    #[DataProvider('orderHistoryDataProvider')]
     public function testMapOrderHistoryResponse(array $responseData, array $expectedData): void
     {
         $responseDataMapper = new ToslaPosResponseDataMapper(
@@ -345,7 +335,7 @@ class ToslaPosResponseDataMapperTest extends TestCase
                 'payment_model'     => 'regular',
                 'transaction_id'    => '2000000000032562',
                 'transaction_type'  => 'pay',
-                'transaction_time'  => new \DateTimeImmutable(),
+                'transaction_time'  => new DateTimeImmutable(),
                 'auth_code'         => null,
                 'order_id'          => '202312053421',
                 'currency'          => 'TRY',
@@ -379,7 +369,7 @@ class ToslaPosResponseDataMapperTest extends TestCase
                 'payment_model'     => 'regular',
                 'transaction_id'    => '2000000000032560',
                 'transaction_type'  => 'pay',
-                'transaction_time'  => new \DateTimeImmutable(),
+                'transaction_time'  => new DateTimeImmutable(),
                 'auth_code'         => null,
                 'order_id'          => '202312053F93',
                 'currency'          => 'TRY',
@@ -486,7 +476,7 @@ class ToslaPosResponseDataMapperTest extends TestCase
                 ],
                 'expectedData' => [
                     'transaction_id'       => null,
-                    'transaction_time'     => new \DateTimeImmutable(),
+                    'transaction_time'     => new DateTimeImmutable(),
                     'transaction_type'     => 'pay',
                     'transaction_security' => 'Full 3D Secure',
                     'auth_code'            => null,
@@ -572,7 +562,7 @@ class ToslaPosResponseDataMapperTest extends TestCase
                 'expectedData' => [
                     'transaction_id'       => null,
                     'transaction_type'     => 'pay',
-                    'transaction_time'     => new \DateTimeImmutable(),
+                    'transaction_time'     => new DateTimeImmutable(),
                     'transaction_security' => 'Full 3D Secure',
                     'auth_code'            => null,
                     'ref_ret_num'          => null,
@@ -594,9 +584,9 @@ class ToslaPosResponseDataMapperTest extends TestCase
         ];
     }
 
-    public static function statusResponseDataProvider(): \Generator
+    public static function statusResponseDataProvider(): Generator
     {
-        $txTime = new \DateTimeImmutable('20240120005007');
+        $txTime = new DateTimeImmutable('20240120005007');
         yield 'success_pay' => [
             'responseData' => [
                 'TransactionType'          => 1,
@@ -653,7 +643,7 @@ class ToslaPosResponseDataMapperTest extends TestCase
             ],
         ];
 
-        $txTime = new \DateTimeImmutable('20231205224003');
+        $txTime = new DateTimeImmutable('20231205224003');
         yield 'success_pre_pay_then_cancel' => [
             'responseData' => [
                 'TransactionType'          => 2,
@@ -746,7 +736,7 @@ class ToslaPosResponseDataMapperTest extends TestCase
                 'auth_code'         => null,
                 'proc_return_code'  => null,
                 'transaction_id'    => null,
-                'transaction_time'  => new \DateTimeImmutable('20231204002334'),
+                'transaction_time'  => new DateTimeImmutable('20231204002334'),
                 'error_message'     => null,
                 'ref_ret_num'       => null,
                 'masked_number'     => null,
@@ -766,7 +756,7 @@ class ToslaPosResponseDataMapperTest extends TestCase
             ],
         ];
 
-        $txTime = new \DateTimeImmutable('20240119230959');
+        $txTime = new DateTimeImmutable('20240119230959');
         yield 'success_pre_auth' => [
             'responseData' => [
                 'TransactionType'          => 2,
@@ -823,7 +813,7 @@ class ToslaPosResponseDataMapperTest extends TestCase
             ],
         ];
 
-        $txTime = new \DateTimeImmutable('20231210132528');
+        $txTime = new DateTimeImmutable('20231210132528');
         yield 'success_pre_auth_then_post_auth' => [
             'responseData' => [
                 'TransactionType'          => 2,
@@ -880,7 +870,7 @@ class ToslaPosResponseDataMapperTest extends TestCase
             ],
         ];
 
-        $txTime = new \DateTimeImmutable('20240120005901');
+        $txTime = new DateTimeImmutable('20240120005901');
         yield 'success_pay_and_partial_refund' => [
             'responseData' => [
                 'TransactionType'          => 1,
@@ -1029,7 +1019,7 @@ class ToslaPosResponseDataMapperTest extends TestCase
                 'auth_code'         => null,
                 'proc_return_code'  => 'MD:0',
                 'transaction_id'    => null,
-                'transaction_time'  => new \DateTimeImmutable('20240119231357'),
+                'transaction_time'  => new DateTimeImmutable('20240119231357'),
                 'error_message'     => null,
                 'ref_ret_num'       => null,
                 'masked_number'     => '41595600****7732',
@@ -1279,8 +1269,8 @@ class ToslaPosResponseDataMapperTest extends TestCase
                             'auth_code'        => null,
                             'proc_return_code' => '00',
                             'transaction_id'   => '2000000000032596',
-                            'transaction_time' => new \DateTimeImmutable('2023-12-09 15:45:31'),
-                            'capture_time'     => new \DateTimeImmutable('2023-12-09 15:45:31'),
+                            'transaction_time' => new DateTimeImmutable('2023-12-09 15:45:31'),
+                            'capture_time'     => new DateTimeImmutable('2023-12-09 15:45:31'),
                             'error_message'    => null,
                             'ref_ret_num'      => null,
                             'masked_number'    => '41595600****7732',
@@ -1377,8 +1367,8 @@ class ToslaPosResponseDataMapperTest extends TestCase
                             'auth_code'        => null,
                             'proc_return_code' => '00',
                             'transaction_id'   => '2000000000032596',
-                            'transaction_time' => new \DateTimeImmutable('2023-12-09 15:45:31'),
-                            'capture_time'     => new \DateTimeImmutable('2023-12-09 15:45:31'),
+                            'transaction_time' => new DateTimeImmutable('2023-12-09 15:45:31'),
+                            'capture_time'     => new DateTimeImmutable('2023-12-09 15:45:31'),
                             'error_message'    => null,
                             'ref_ret_num'      => null,
                             'masked_number'    => '41595600****7732',
@@ -1396,7 +1386,7 @@ class ToslaPosResponseDataMapperTest extends TestCase
                             'auth_code'        => null,
                             'proc_return_code' => '00',
                             'transaction_id'   => 2000000000032597,
-                            'transaction_time' => new \DateTimeImmutable('20231209154644'),
+                            'transaction_time' => new DateTimeImmutable('20231209154644'),
                             'capture_time'     => null,
                             'error_message'    => null,
                             'ref_ret_num'      => null,

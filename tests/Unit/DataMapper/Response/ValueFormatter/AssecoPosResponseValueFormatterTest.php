@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\ValueFormatter;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Mews\Pos\DataMapper\Response\ValueFormatter\AssecoPosResponseValueFormatter;
 use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Gateway\AssecoPos;
@@ -33,9 +34,7 @@ class AssecoPosResponseValueFormatterTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider formatAmountProvider
-     */
+    #[DataProvider('formatAmountProvider')]
     public function testFormatAmount(string $amount, string $txType, float $expected): void
     {
         $actual = $this->formatter->formatAmount($amount, $txType);

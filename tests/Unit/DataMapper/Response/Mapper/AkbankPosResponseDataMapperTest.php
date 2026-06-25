@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\Mapper;
 
+use DateTimeImmutable;
+use Mews\Pos\Exception\NotImplementedException;
+use Generator;
 use Mews\Pos\DataMapper\Response\Mapper\AbstractResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\AkbankPosResponseDataMapper;
 use Mews\Pos\DataMapper\Response\ValueFormatter\ResponseValueFormatterInterface;
@@ -16,6 +19,7 @@ use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -78,12 +82,10 @@ class AkbankPosResponseDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider paymentDataProvider
-     */
+    #[DataProvider('paymentDataProvider')]
     public function testMapPaymentResponse(array $order, string $txType, array $responseData, array $expectedData): void
     {
-        if ($expectedData['transaction_time'] instanceof \DateTimeImmutable) {
+        if ($expectedData['transaction_time'] instanceof DateTimeImmutable) {
             $this->responseValueFormatter->expects($this->once())
                 ->method('formatDateTime')
                 ->with($responseData['txnDateTime'], $txType)
@@ -107,12 +109,10 @@ class AkbankPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider threeDPaymentDataProvider
-     */
+    #[DataProvider('threeDPaymentDataProvider')]
     public function testMap3DPaymentData(array $order, string $txType, array $threeDResponseData, array $responseData, array $expectedData): void
     {
-        if ($expectedData['transaction_time'] instanceof \DateTimeImmutable) {
+        if ($expectedData['transaction_time'] instanceof DateTimeImmutable) {
             $this->responseValueFormatter->expects($this->once())
                 ->method('formatDateTime')
                 ->with($responseData['txnDateTime'], $txType)
@@ -133,7 +133,7 @@ class AkbankPosResponseDataMapperTest extends TestCase
             $order
         );
 
-        if ($expectedData['transaction_time'] instanceof \DateTimeImmutable) {
+        if ($expectedData['transaction_time'] instanceof DateTimeImmutable) {
             $this->assertSame($expectedData['transaction_time'], $actualData['transaction_time']);
         }
 
@@ -153,12 +153,10 @@ class AkbankPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider threeDPayPaymentDataProvider
-     */
+    #[DataProvider('threeDPayPaymentDataProvider')]
     public function testMap3DPayResponseData(array $order, string $txType, array $responseData, array $expectedData): void
     {
-        if ($expectedData['transaction_time'] instanceof \DateTimeImmutable) {
+        if ($expectedData['transaction_time'] instanceof DateTimeImmutable) {
             $this->responseValueFormatter->expects($this->once())
                 ->method('formatDateTime')
                 ->with($responseData['txnDateTime'], $txType)
@@ -171,7 +169,7 @@ class AkbankPosResponseDataMapperTest extends TestCase
 
         $actualData = $this->responseDataMapper->map3DPayResponseData($responseData, $txType, $order);
 
-        if ($expectedData['transaction_time'] instanceof \DateTimeImmutable) {
+        if ($expectedData['transaction_time'] instanceof DateTimeImmutable) {
             $this->assertSame($expectedData['transaction_time'], $actualData['transaction_time']);
         }
 
@@ -185,12 +183,10 @@ class AkbankPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider threeDHostPaymentDataProvider
-     */
+    #[DataProvider('threeDHostPaymentDataProvider')]
     public function testMap3DHostResponseData(array $order, string $txType, array $responseData, array $expectedData): void
     {
-        if ($expectedData['transaction_time'] instanceof \DateTimeImmutable) {
+        if ($expectedData['transaction_time'] instanceof DateTimeImmutable) {
             $this->responseValueFormatter->expects($this->once())
                 ->method('formatDateTime')
                 ->with($responseData['txnDateTime'], $txType)
@@ -203,7 +199,7 @@ class AkbankPosResponseDataMapperTest extends TestCase
 
         $actualData = $this->responseDataMapper->map3DHostResponseData($responseData, $txType, $order);
 
-        if ($expectedData['transaction_time'] instanceof \DateTimeImmutable) {
+        if ($expectedData['transaction_time'] instanceof DateTimeImmutable) {
             $this->assertSame($expectedData['transaction_time'], $actualData['transaction_time']);
         }
 
@@ -217,9 +213,7 @@ class AkbankPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider refundDataProvider
-     */
+    #[DataProvider('refundDataProvider')]
     public function testMapRefundResponse(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapRefundResponse($responseData);
@@ -234,9 +228,7 @@ class AkbankPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider cancelDataProvider
-     */
+    #[DataProvider('cancelDataProvider')]
     public function testMapCancelResponse(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapCancelResponse($responseData);
@@ -253,9 +245,8 @@ class AkbankPosResponseDataMapperTest extends TestCase
 
     /**
      * Doing integration test because of the iteration, sorting and conditional statements it is difficult to mock values.
-     *
-     * @dataProvider orderHistoryDataProvider
      */
+    #[DataProvider('orderHistoryDataProvider')]
     public function testMapOrderHistoryResponse(array $responseData, array $expectedData): void
     {
         $responseDataMapper = new AkbankPosResponseDataMapper(
@@ -305,13 +296,11 @@ class AkbankPosResponseDataMapperTest extends TestCase
 
     public function testMapStatusResponse(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->responseDataMapper->mapStatusResponse([]);
     }
 
-    /**
-     * @dataProvider historyDataProvider
-     */
+    #[DataProvider('historyDataProvider')]
     public function testMapHistoryResponse(array $response, int $expectedTxCount): void
     {
         $actual = $this->responseDataMapper->mapHistoryResponse($response);
@@ -363,7 +352,7 @@ class AkbankPosResponseDataMapperTest extends TestCase
                 'payment_model'     => 'regular',
                 'transaction_id'    => null,
                 'transaction_type'  => 'pay',
-                'transaction_time'  => new \DateTimeImmutable('2022-03-01T09:29:23'),
+                'transaction_time'  => new DateTimeImmutable('2022-03-01T09:29:23'),
                 'auth_code'         => '064716',
                 'order_id'          => 'b9ebfdc5-304f-49c2-8065-a2c7481a5d1f',
                 'recurring_id'      => null,
@@ -570,7 +559,7 @@ class AkbankPosResponseDataMapperTest extends TestCase
                 'payment_model'     => 'regular',
                 'transaction_id'    => null,
                 'transaction_type'  => 'post',
-                'transaction_time'  => new \DateTimeImmutable('2022-03-01T11:52:17.914'),
+                'transaction_time'  => new DateTimeImmutable('2022-03-01T11:52:17.914'),
                 'auth_code'         => '064724',
                 'order_id'          => '0b06dc46-3243-4453-805f-d01cf51619fe',
                 'recurring_id'      => null,
@@ -663,7 +652,7 @@ class AkbankPosResponseDataMapperTest extends TestCase
                 'payment_model'     => 'regular',
                 'transaction_id'    => null,
                 'transaction_type'  => 'pre',
-                'transaction_time'  => new \DateTimeImmutable('2022-03-01T11:52:17.914'),
+                'transaction_time'  => new DateTimeImmutable('2022-03-01T11:52:17.914'),
                 'auth_code'         => '064724',
                 'order_id'          => '0b06dc46-3243-4453-805f-d01cf51619fe',
                 'recurring_id'      => null,
@@ -730,7 +719,7 @@ class AkbankPosResponseDataMapperTest extends TestCase
                 'payment_model'     => 'regular',
                 'transaction_id'    => null,
                 'transaction_type'  => 'pay',
-                'transaction_time'  => new \DateTimeImmutable('2022-03-01T09:29:23.851'),
+                'transaction_time'  => new DateTimeImmutable('2022-03-01T09:29:23.851'),
                 'auth_code'         => '064716',
                 'order_id'          => 'b9ebfdc5-304f-49c2-8065-a2c7481a5d1f',
                 'recurring_id'      => 'c3978ccf-6ef6-41e3-a987-8ca7e185c94e',
@@ -920,7 +909,7 @@ class AkbankPosResponseDataMapperTest extends TestCase
                     'batch_num'            => 43,
                     'transaction_id'       => null,
                     'transaction_type'     => 'pay',
-                    'transaction_time'     => new \DateTimeImmutable('2024-04-18T20:15:38.036'),
+                    'transaction_time'     => new DateTimeImmutable('2024-04-18T20:15:38.036'),
                     'transaction_security' => null,
                     'auth_code'            => '306455',
                     'ref_ret_num'          => '411024360234',
@@ -1170,7 +1159,7 @@ class AkbankPosResponseDataMapperTest extends TestCase
                 ],
                 'expectedData' => [
                     'transaction_id'       => null,
-                    'transaction_time'     => new \DateTimeImmutable('2024-04-18T20:27:45.000'),
+                    'transaction_time'     => new DateTimeImmutable('2024-04-18T20:27:45.000'),
                     'transaction_type'     => 'pay',
                     'transaction_security' => null,
                     'masked_number'        => null,
@@ -1334,7 +1323,7 @@ class AkbankPosResponseDataMapperTest extends TestCase
                 'expectedData' => [
                     'transaction_id'       => null,
                     'transaction_type'     => 'pay',
-                    'transaction_time'     => new \DateTimeImmutable('2024-04-18T20:56:28.000'),
+                    'transaction_time'     => new DateTimeImmutable('2024-04-18T20:56:28.000'),
                     'transaction_security' => null,
                     'auth_code'            => '306460',
                     'ref_ret_num'          => '411024360239',
@@ -1760,8 +1749,8 @@ class AkbankPosResponseDataMapperTest extends TestCase
                             'auth_code'         => '305957',
                             'proc_return_code'  => 'VPS-0000',
                             'transaction_id'    => null,
-                            'transaction_time'  => new \DateTimeImmutable('2024-04-15T20:41:03.165'),
-                            'capture_time'      => new \DateTimeImmutable('2024-04-15T20:41:03.165'),
+                            'transaction_time'  => new DateTimeImmutable('2024-04-15T20:41:03.165'),
+                            'capture_time'      => new DateTimeImmutable('2024-04-15T20:41:03.165'),
                             'error_message'     => null,
                             'ref_ret_num'       => '410724359540',
                             'masked_number'     => '521807******2834',
@@ -1827,7 +1816,7 @@ class AkbankPosResponseDataMapperTest extends TestCase
                             'auth_code'         => '305947',
                             'proc_return_code'  => 'VPS-0000',
                             'transaction_id'    => null,
-                            'transaction_time'  => new \DateTimeImmutable('2024-04-15T19:02:55.454'),
+                            'transaction_time'  => new DateTimeImmutable('2024-04-15T19:02:55.454'),
                             'capture_time'      => null,
                             'error_message'     => null,
                             'ref_ret_num'       => '410724359526',
@@ -1895,7 +1884,7 @@ class AkbankPosResponseDataMapperTest extends TestCase
                             'auth_code'         => '305950',
                             'proc_return_code'  => 'VPS-0000',
                             'transaction_id'    => null,
-                            'transaction_time'  => new \DateTimeImmutable('2024-04-15T19:18:47.188'),
+                            'transaction_time'  => new DateTimeImmutable('2024-04-15T19:18:47.188'),
                             'capture_time'      => null,
                             'error_message'     => null,
                             'ref_ret_num'       => '410724359533',
@@ -1988,8 +1977,8 @@ class AkbankPosResponseDataMapperTest extends TestCase
                             'auth_code'         => '305955',
                             'proc_return_code'  => 'VPS-0000',
                             'transaction_id'    => null,
-                            'transaction_time'  => new \DateTimeImmutable('2024-04-15T20:17:19.205'),
-                            'capture_time'      => new \DateTimeImmutable('2024-04-15T20:17:20.158'),
+                            'transaction_time'  => new DateTimeImmutable('2024-04-15T20:17:19.205'),
+                            'capture_time'      => new DateTimeImmutable('2024-04-15T20:17:20.158'),
                             'error_message'     => null,
                             'ref_ret_num'       => '410724359538',
                             'masked_number'     => '521807******2834',
@@ -2008,8 +1997,8 @@ class AkbankPosResponseDataMapperTest extends TestCase
                             'auth_code'         => '305955',
                             'proc_return_code'  => 'VPS-0000',
                             'transaction_id'    => null,
-                            'transaction_time'  => new \DateTimeImmutable('2024-04-15T20:17:20.158'),
-                            'capture_time'      => new \DateTimeImmutable('2024-04-15T20:17:20.158'),
+                            'transaction_time'  => new DateTimeImmutable('2024-04-15T20:17:20.158'),
+                            'capture_time'      => new DateTimeImmutable('2024-04-15T20:17:20.158'),
                             'error_message'     => null,
                             'ref_ret_num'       => '410724359538',
                             'masked_number'     => '521807******2834',
@@ -2101,7 +2090,7 @@ class AkbankPosResponseDataMapperTest extends TestCase
                             'auth_code'         => '305971',
                             'proc_return_code'  => 'VPS-0000',
                             'transaction_id'    => null,
-                            'transaction_time'  => new \DateTimeImmutable('2024-04-15T21:02:44.415'),
+                            'transaction_time'  => new DateTimeImmutable('2024-04-15T21:02:44.415'),
                             'capture_time'      => null,
                             'error_message'     => null,
                             'ref_ret_num'       => '410724359554',
@@ -2121,7 +2110,7 @@ class AkbankPosResponseDataMapperTest extends TestCase
                             'auth_code'         => '305971',
                             'proc_return_code'  => 'VPS-0000',
                             'transaction_id'    => null,
-                            'transaction_time'  => new \DateTimeImmutable('2024-04-15T21:02:45.940'),
+                            'transaction_time'  => new DateTimeImmutable('2024-04-15T21:02:45.940'),
                             'capture_time'      => null,
                             'error_message'     => null,
                             'ref_ret_num'       => '410724359554',
@@ -2187,7 +2176,7 @@ class AkbankPosResponseDataMapperTest extends TestCase
                             'auth_code'         => null,
                             'proc_return_code'  => 'VPS-1005',
                             'transaction_id'    => null,
-                            'transaction_time'  => new \DateTimeImmutable('2024-04-14T15:24:43.133'),
+                            'transaction_time'  => new DateTimeImmutable('2024-04-14T15:24:43.133'),
                             'capture_time'      => null,
                             'error_message'     => null,
                             'ref_ret_num'       => null,
@@ -2302,8 +2291,8 @@ class AkbankPosResponseDataMapperTest extends TestCase
                             'proc_return_code'  => 'VPS-0000',
                             'transaction_id'    => null,
                             'recurring_order'   => 1,
-                            'transaction_time'  => new \DateTimeImmutable('2024-04-17T15:23:11.576'),
-                            'capture_time'      => new \DateTimeImmutable('2024-04-17T15:23:11.576'),
+                            'transaction_time'  => new DateTimeImmutable('2024-04-17T15:23:11.576'),
+                            'capture_time'      => new DateTimeImmutable('2024-04-17T15:23:11.576'),
                             'error_message'     => null,
                             'ref_ret_num'       => '410924359975',
                             'masked_number'     => '521807******2834',
@@ -2433,7 +2422,7 @@ class AkbankPosResponseDataMapperTest extends TestCase
                             'proc_return_code'  => 'VPS-0000',
                             'transaction_id'    => null,
                             'recurring_order'   => 1,
-                            'transaction_time'  => new \DateTimeImmutable('2024-04-17T21:46:19.618'),
+                            'transaction_time'  => new DateTimeImmutable('2024-04-17T21:46:19.618'),
                             'capture_time'      => null,
                             'error_message'     => null,
                             'ref_ret_num'       => null,
@@ -2571,8 +2560,8 @@ class AkbankPosResponseDataMapperTest extends TestCase
                             'proc_return_code'  => 'VPS-0000',
                             'transaction_id'    => null,
                             'recurring_order'   => 1,
-                            'transaction_time'  => new \DateTimeImmutable('2024-04-20T12:53:58.793'),
-                            'capture_time'      => new \DateTimeImmutable('2024-04-20T12:53:58.793'),
+                            'transaction_time'  => new DateTimeImmutable('2024-04-20T12:53:58.793'),
+                            'capture_time'      => new DateTimeImmutable('2024-04-20T12:53:58.793'),
                             'error_message'     => null,
                             'masked_number'     => '521807******2834',
                             'order_status'      => 'PAYMENT_COMPLETED',
@@ -2652,7 +2641,7 @@ class AkbankPosResponseDataMapperTest extends TestCase
         ];
     }
 
-    public static function historyDataProvider(): \Generator
+    public static function historyDataProvider(): Generator
     {
         $input = file_get_contents(__DIR__.'/../../../test_data/akbankpos/history/daily_history.json');
         yield [

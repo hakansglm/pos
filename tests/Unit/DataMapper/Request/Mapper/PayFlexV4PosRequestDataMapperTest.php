@@ -6,6 +6,12 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\Mapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use LogicException;
+use InvalidArgumentException;
+use Mews\Pos\Exception\NotImplementedException;
+use Generator;
+use DateTimeImmutable;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\Request\Mapper\AbstractRequestDataMapper;
 use Mews\Pos\DataMapper\Request\Mapper\PayFlexV4PosRequestDataMapper;
@@ -78,27 +84,21 @@ class PayFlexV4PosRequestDataMapperTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider threeDPaymentRequestDataDataProvider
-     */
+    #[DataProvider('threeDPaymentRequestDataDataProvider')]
     public function testCreate3DPaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, array $gatewayResponse, CreditCardInterface $creditCard, array $expected): void
     {
         $actual = $this->requestDataMapper->create3DPaymentRequestData($posAccount, $order, $txType, $gatewayResponse, $creditCard);
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider threeDPaymentRequestDataDataProvider
-     */
+    #[DataProvider('threeDPaymentRequestDataDataProvider')]
     public function testCreate3DPaymentRequestDataWithoutCard(AbstractPosAccount $posAccount, array $order, string $txType, array $gatewayResponse): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->requestDataMapper->create3DPaymentRequestData($posAccount, $order, $txType, $gatewayResponse);
     }
 
-    /**
-     * @dataProvider three3DEnrollmentRequestDataDataProvider
-     */
+    #[DataProvider('three3DEnrollmentRequestDataDataProvider')]
     public function testCreate3DEnrollmentCheckData(array $order, ?CreditCardInterface $creditCard, array $expected): void
     {
         $this->crypt->expects(self::once())
@@ -112,7 +112,7 @@ class PayFlexV4PosRequestDataMapperTest extends TestCase
 
     public function testCreate3DFormInitializeRequestDataThrowsWithoutCard(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->requestDataMapper->create3DFormInitializeRequestData(
             $this->account,
             ['amount' => 100, 'currency' => 'TRY'],
@@ -121,9 +121,7 @@ class PayFlexV4PosRequestDataMapperTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider createNonSecurePaymentRequestDataDataProvider
-     */
+    #[DataProvider('createNonSecurePaymentRequestDataDataProvider')]
     public function testCreateNonSecurePaymentRequestData(array $order, CreditCardInterface $creditCard, string $txType, array $expected): void
     {
         $actualData = $this->requestDataMapper->createNonSecurePaymentRequestData(
@@ -136,9 +134,7 @@ class PayFlexV4PosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actualData);
     }
 
-    /**
-     * @dataProvider createNonSecurePostAuthPaymentRequestDataDataProvider
-     */
+    #[DataProvider('createNonSecurePostAuthPaymentRequestDataDataProvider')]
     public function testCreateNonSecurePostAuthPaymentRequestData(array $order, array $expected): void
     {
         $actual = $this->requestDataMapper->createNonSecurePostAuthPaymentRequestData($this->account, $order);
@@ -146,9 +142,7 @@ class PayFlexV4PosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider createCancelRequestDataDataProvider
-     */
+    #[DataProvider('createCancelRequestDataDataProvider')]
     public function testCreateCancelRequestData(array $order, array $expected): void
     {
         $actualData = $this->requestDataMapper->createCancelRequestData($this->account, $order);
@@ -156,9 +150,7 @@ class PayFlexV4PosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actualData);
     }
 
-    /**
-     * @dataProvider refundRequestDataProvider
-     */
+    #[DataProvider('refundRequestDataProvider')]
     public function testCreateRefundRequestData(array $order, string $txType, array $expectedData): void
     {
         $actualData = $this->requestDataMapper->createRefundRequestData($this->account, $order, $txType);
@@ -168,9 +160,7 @@ class PayFlexV4PosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider create3DFormDataDataProvider
-     */
+    #[DataProvider('create3DFormDataDataProvider')]
     public function testCreate3DFormData(array $bankResponse, array $expected): void
     {
         $this->dispatcher->expects(self::never())
@@ -189,9 +179,7 @@ class PayFlexV4PosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actualData);
     }
 
-    /**
-     * @dataProvider createStatusRequestDataDataProvider
-     */
+    #[DataProvider('createStatusRequestDataDataProvider')]
     public function testCreateStatusRequestData(array $order, array $expectedData): void
     {
         $actual = $this->requestDataMapper->createStatusRequestData($this->account, $order);
@@ -201,19 +189,17 @@ class PayFlexV4PosRequestDataMapperTest extends TestCase
 
     public function testCreateOrderHistoryRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->requestDataMapper->createOrderHistoryRequestData($this->account, []);
     }
 
     public function testCreateHistoryRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->requestDataMapper->createHistoryRequestData($this->account, []);
     }
 
-    /**
-     * @dataProvider createCustomQueryRequestDataDataProvider
-     */
+    #[DataProvider('createCustomQueryRequestDataDataProvider')]
     public function testCreateCustomQueryRequestData(array $requestData, array $expectedData): void
     {
         $actual = $this->requestDataMapper->createCustomQueryRequestData($this->account, $requestData);
@@ -223,7 +209,7 @@ class PayFlexV4PosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    public static function createCustomQueryRequestDataDataProvider(): \Generator
+    public static function createCustomQueryRequestDataDataProvider(): Generator
     {
         yield 'without_account_data_campaign_search' => [
             'request_data' => [
@@ -331,7 +317,7 @@ class PayFlexV4PosRequestDataMapperTest extends TestCase
         ];
     }
 
-    public static function threeDPaymentRequestDataDataProvider(): \Generator
+    public static function threeDPaymentRequestDataDataProvider(): Generator
     {
         $account = AccountFactory::createPayFlexPosAccount(
             'vakifbank',
@@ -357,7 +343,7 @@ class PayFlexV4PosRequestDataMapperTest extends TestCase
             'VerifyEnrollmentRequestId' => 'ce06048a3e9c0cd1d437803fb38b5ad0',
         ];
 
-        $card = new CreditCard('5555444433332222', new \DateTimeImmutable('2021-12-01'), '122', 'ahmet', CreditCardInterface::CARD_TYPE_VISA);
+        $card = new CreditCard('5555444433332222', new DateTimeImmutable('2021-12-01'), '122', 'ahmet', CreditCardInterface::CARD_TYPE_VISA);
 
         yield 'no_installment' => [
             'account'      => $account,
@@ -417,7 +403,7 @@ class PayFlexV4PosRequestDataMapperTest extends TestCase
         ];
     }
 
-    public static function three3DEnrollmentRequestDataDataProvider(): \Generator
+    public static function three3DEnrollmentRequestDataDataProvider(): Generator
     {
         $order = [
             'id'          => 'order222',
@@ -483,7 +469,7 @@ class PayFlexV4PosRequestDataMapperTest extends TestCase
             'frequency'     => 3,
             'frequencyType' => 'MONTH',
             'installment'   => 2,
-            'endDate'       => (new \DateTimeImmutable('2023-10-14'))->modify("+6 MONTH"),
+            'endDate'       => (new DateTimeImmutable('2023-10-14'))->modify("+6 MONTH"),
         ];
 
         yield 'with_recurrent_payment' => [
@@ -515,8 +501,8 @@ class PayFlexV4PosRequestDataMapperTest extends TestCase
             'frequency'     => 3,
             'frequencyType' => 'MONTH',
             'installment'   => 2,
-            'startDate'     => (new \DateTimeImmutable('2024-10-14')),
-            'endDate'       => (new \DateTimeImmutable('2024-10-14'))->modify("+6 MONTH"),
+            'startDate'     => (new DateTimeImmutable('2024-10-14')),
+            'endDate'       => (new DateTimeImmutable('2024-10-14'))->modify("+6 MONTH"),
         ];
 
         yield 'with_recurrent_payment_with_start_date' => [

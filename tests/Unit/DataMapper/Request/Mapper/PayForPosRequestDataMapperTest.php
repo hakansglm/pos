@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\Mapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use Generator;
+use DateTime;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\Request\Mapper\PayForPosRequestDataMapper;
 use Mews\Pos\DataMapper\Request\ValueFormatter\PayForPosRequestValueFormatter;
@@ -94,9 +97,7 @@ class PayForPosRequestDataMapperTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider createNonSecurePostAuthPaymentRequestDataDataProvider
-     */
+    #[DataProvider('createNonSecurePostAuthPaymentRequestDataDataProvider')]
     public function testCreateNonSecurePostAuthPaymentRequestData(string $account, array $order, array $expected): void
     {
         $actual = $this->requestDataMapper->createNonSecurePostAuthPaymentRequestData($this->accounts[$account], $order);
@@ -104,9 +105,7 @@ class PayForPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider nonSecurePaymentRequestDataProvider
-     */
+    #[DataProvider('nonSecurePaymentRequestDataProvider')]
     public function testCreateNonSecurePaymentRequestData(string $account, array $order, string $txType, array $expected): void
     {
         $actual = $this->requestDataMapper->createNonSecurePaymentRequestData(
@@ -119,9 +118,7 @@ class PayForPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider createCancelRequestDataDataProvider
-     */
+    #[DataProvider('createCancelRequestDataDataProvider')]
     public function testCreateCancelRequestData(string $account, array $order, array $expected): void
     {
         $actual = $this->requestDataMapper->createCancelRequestData($this->accounts[$account], $order);
@@ -129,9 +126,7 @@ class PayForPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider orderHistoryRequestDataProvider
-     */
+    #[DataProvider('orderHistoryRequestDataProvider')]
     public function testOrderCreateHistoryRequestData(string $account, array $order, array $expectedData): void
     {
         $actualData = $this->requestDataMapper->createOrderHistoryRequestData($this->accounts[$account], $order);
@@ -141,9 +136,7 @@ class PayForPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider historyRequestDataProvider
-     */
+    #[DataProvider('historyRequestDataProvider')]
     public function testCreateHistoryRequestData(string $account, array $data, array $expectedData): void
     {
         $actualData = $this->requestDataMapper->createHistoryRequestData($this->accounts[$account], $data);
@@ -154,9 +147,7 @@ class PayForPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider create3DPaymentRequestDataDataProvider
-     */
+    #[DataProvider('create3DPaymentRequestDataDataProvider')]
     public function testCreate3DPaymentRequestData(string $account, array $order, array $responseData, array $expected): void
     {
         $actual = $this->requestDataMapper->create3DPaymentRequestData($this->accounts[$account], $order, '', $responseData);
@@ -164,9 +155,7 @@ class PayForPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider threeDFormDataProvider
-     */
+    #[DataProvider('threeDFormDataProvider')]
     public function testGet3DFormData(
         string $account,
         array  $order,
@@ -206,9 +195,7 @@ class PayForPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider threeDFormDataProvider
-     */
+    #[DataProvider('threeDFormDataProvider')]
     public function testCreate3DFormInitializeRequestData(
         string $account,
         array  $order,
@@ -247,9 +234,7 @@ class PayForPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected['inputs'], $actual);
     }
 
-    /**
-     * @dataProvider createStatusRequestDataDataProvider
-     */
+    #[DataProvider('createStatusRequestDataDataProvider')]
     public function testCreateStatusRequestData(string $account, array $order, array $expected): void
     {
         $actualData = $this->requestDataMapper->createStatusRequestData($this->accounts[$account], $order);
@@ -257,9 +242,7 @@ class PayForPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actualData);
     }
 
-    /**
-     * @dataProvider refundRequestDataProvider
-     */
+    #[DataProvider('refundRequestDataProvider')]
     public function testCreateRefundRequestData(string $account, array $order, string $txType, array $expectedData): void
     {
         $actual = $this->requestDataMapper->createRefundRequestData($this->accounts[$account], $order, $txType);
@@ -269,9 +252,7 @@ class PayForPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    /**
-     * @dataProvider createCustomQueryRequestDataDataProvider
-     */
+    #[DataProvider('createCustomQueryRequestDataDataProvider')]
     public function testCreateCustomQueryRequestData(string $account, array $requestData, array $expectedData): void
     {
         $actual = $this->requestDataMapper->createCustomQueryRequestData($this->accounts[$account], $requestData);
@@ -281,7 +262,7 @@ class PayForPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    public static function createCustomQueryRequestDataDataProvider(): \Generator
+    public static function createCustomQueryRequestDataDataProvider(): Generator
     {
         yield 'without_account_data_point_inquiry' => [
             'account'      => 'finansbank',
@@ -632,7 +613,7 @@ class PayForPosRequestDataMapperTest extends TestCase
             [
                 'account'  => 'finansbank',
                 'data'     => [
-                    'transaction_date' => new \DateTime('2022-05-18'),
+                    'transaction_date' => new DateTime('2022-05-18'),
                 ],
                 'expected' => [
                     'MerchantId' => '085300000009704',
@@ -648,7 +629,7 @@ class PayForPosRequestDataMapperTest extends TestCase
             [
                 'account'  => 'ziraat_katilim',
                 'data'     => [
-                    'transaction_date' => new \DateTime('2022-05-18'),
+                    'transaction_date' => new DateTime('2022-05-18'),
                 ],
                 'expected' => [
                     'MerchantId' => '085300000009704',

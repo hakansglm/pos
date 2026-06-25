@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueFormatter;
 
+use DateTime;
+use InvalidArgumentException;
 use Mews\Pos\DataMapper\Request\ValueFormatter\KuveytPosRequestValueFormatter;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\KuveytPos;
@@ -54,7 +56,7 @@ class KuveytPosRequestValueFormatterTest extends TestCase
     #[TestWith(['CardExpireDateYear', '24'])]
     public function testFormatCreditCardExpDate(string $fieldName, string $expected): void
     {
-        $expDate = new \DateTime('2024-04-14T16:45:30.000');
+        $expDate = new DateTime('2024-04-14T16:45:30.000');
         $actual  = $this->formatter->formatCardExpDate($expDate, $fieldName);
         $this->assertSame($expected, $actual);
     }
@@ -63,14 +65,14 @@ class KuveytPosRequestValueFormatterTest extends TestCase
     #[TestWith([''])]
     public function testFormatCreditCardExpDateUnSupportedField(string $fieldName): void
     {
-        $expDate = new \DateTime('2024-04-14T16:45:30.000');
-        $this->expectException(\InvalidArgumentException::class);
+        $expDate = new DateTime('2024-04-14T16:45:30.000');
+        $this->expectException(InvalidArgumentException::class);
         $this->formatter->formatCardExpDate($expDate, $fieldName);
     }
 
     public function testFormatDateTime(): void
     {
-        $dateTime = new \DateTime('2024-04-14T16:45:30.000');
+        $dateTime = new DateTime('2024-04-14T16:45:30.000');
         $actual = $this->formatter->formatDateTime($dateTime);
         $this->assertSame('2024-04-14T16:45:30', $actual);
     }

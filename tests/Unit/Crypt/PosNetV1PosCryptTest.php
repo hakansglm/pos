@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
+use Mews\Pos\Crypt\AbstractCrypt;
+use InvalidArgumentException;
+use LogicException;
 use Mews\Pos\Crypt\PosNetV1PosCrypt;
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Account\PosNetPosAccount;
@@ -14,11 +17,12 @@ use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\PosNetV1Pos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 #[CoversClass(PosNetV1PosCrypt::class)]
-#[CoversClass(\Mews\Pos\Crypt\AbstractCrypt::class)]
+#[CoversClass(AbstractCrypt::class)]
 class PosNetV1PosCryptTest extends TestCase
 {
     public PosNetV1PosCrypt $crypt;
@@ -51,9 +55,7 @@ class PosNetV1PosCryptTest extends TestCase
         $this->assertFalse($supports);
     }
 
-    /**
-     * @dataProvider hashFromParamsDataProvider
-     */
+    #[DataProvider('hashFromParamsDataProvider')]
     public function testHashFromParams(array $data, string $expected): void
     {
         $this->assertSame($expected, $this->crypt->hashFromParams($this->account, $data, $data['MACParams'], ':'));
@@ -61,14 +63,12 @@ class PosNetV1PosCryptTest extends TestCase
 
     public function testHashFromParamsWhenNotFound(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('hashParamsValue cannot be empty');
         $this->crypt->hashFromParams($this->account, [], '', ':');
     }
 
-    /**
-     * @dataProvider hashCreateDataProvider
-     */
+    #[DataProvider('hashCreateDataProvider')]
     public function testCreateHash(array $requestData, string $expected): void
     {
         $actual = $this->crypt->createHash($this->account, $requestData);
@@ -76,9 +76,7 @@ class PosNetV1PosCryptTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider threeDHashCreateDataProvider
-     */
+    #[DataProvider('threeDHashCreateDataProvider')]
     public function testCreate3DHash(array $requestData, string $expected): void
     {
         $actual = $this->crypt->create3DHash($this->account, $requestData);
@@ -86,9 +84,7 @@ class PosNetV1PosCryptTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider threeDHashCheckDataProvider
-     */
+    #[DataProvider('threeDHashCheckDataProvider')]
     public function testCheck3DHash(bool $expected, array $responseData): void
     {
         $this->assertSame($expected, $this->crypt->check3DHash($this->account, $responseData));
@@ -97,7 +93,7 @@ class PosNetV1PosCryptTest extends TestCase
     public function testCheck3DHashException(): void
     {
         $account = $this->createMock(AbstractPosAccount::class);
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->crypt->check3DHash($account, []);
     }
 

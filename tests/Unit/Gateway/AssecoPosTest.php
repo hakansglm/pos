@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\Gateway;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use LogicException;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\HttpClientStrategyInterface;
 use Mews\Pos\Crypt\CryptInterface;
@@ -166,9 +168,7 @@ class AssecoPosTest extends TestCase
         $this->assertSame(['formData'], $actual);
     }
 
-    /**
-     * @dataProvider threeDFormDataBadInputsProvider
-     */
+    #[DataProvider('threeDFormDataBadInputsProvider')]
     public function testGet3DFormDataWithBadInputs(
         array   $order,
         string  $paymentModel,
@@ -341,9 +341,7 @@ class AssecoPosTest extends TestCase
         $this->pos->payment(PosInterface::MODEL_3D_PAY, [], $txType, null, $data);
     }
 
-    /**
-     * @dataProvider statusDataProvider
-     */
+    #[DataProvider('statusDataProvider')]
     public function testStatus(array $bankResponse, array $expectedData, bool $isSuccess): void
     {
         $account     = $this->pos->getAccount();
@@ -383,9 +381,7 @@ class AssecoPosTest extends TestCase
         $this->pos->history([]);
     }
 
-    /**
-     * @dataProvider orderHistoryDataProvider
-     */
+    #[DataProvider('orderHistoryDataProvider')]
     public function testOrderHistory(array $bankResponse, array $expectedData, bool $isSuccess): void
     {
         $account     = $this->pos->getAccount();
@@ -419,9 +415,7 @@ class AssecoPosTest extends TestCase
         $this->assertSame($isSuccess, $this->pos->isSuccess());
     }
 
-    /**
-     * @dataProvider cancelDataProvider
-     */
+    #[DataProvider('cancelDataProvider')]
     public function testCancel(array $bankResponse, array $expectedData, bool $isSuccess): void
     {
         $account     = $this->pos->getAccount();
@@ -455,9 +449,7 @@ class AssecoPosTest extends TestCase
         $this->assertSame($isSuccess, $this->pos->isSuccess());
     }
 
-    /**
-     * @dataProvider refundDataProvider
-     */
+    #[DataProvider('refundDataProvider')]
     public function testRefund(array $bankResponse, array $expectedData, bool $isSuccess): void
     {
         $account     = $this->pos->getAccount();
@@ -491,9 +483,7 @@ class AssecoPosTest extends TestCase
         $this->assertSame($isSuccess, $this->pos->isSuccess());
     }
 
-    /**
-     * @dataProvider make3DPaymentDataProvider
-     */
+    #[DataProvider('make3DPaymentDataProvider')]
     public function testMake3DPayment(
         array  $order,
         string $txType,
@@ -558,9 +548,7 @@ class AssecoPosTest extends TestCase
         $this->assertSame($isSuccess, $this->pos->isSuccess());
     }
 
-    /**
-     * @dataProvider make3DPaymentWithoutHashCheckDataProvider
-     */
+    #[DataProvider('make3DPaymentWithoutHashCheckDataProvider')]
     public function testMake3DPaymentWithoutHashCheck(
         array  $order,
         string $txType,
@@ -655,9 +643,7 @@ class AssecoPosTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider makeRegularPaymentDataProvider
-     */
+    #[DataProvider('makeRegularPaymentDataProvider')]
     public function testMakeRegularPayment(array $order, string $txType): void
     {
         $account     = $this->pos->getAccount();
@@ -687,9 +673,7 @@ class AssecoPosTest extends TestCase
         $this->pos->payment(PosInterface::MODEL_NON_SECURE, $order, $txType, $card);
     }
 
-    /**
-     * @dataProvider makeRegularPostAuthPaymentDataProvider
-     */
+    #[DataProvider('makeRegularPostAuthPaymentDataProvider')]
     public function testMakeRegularPostAuthPayment(array $order): void
     {
         $account     = $this->pos->getAccount();
@@ -720,9 +704,7 @@ class AssecoPosTest extends TestCase
         $this->pos->payment(PosInterface::MODEL_NON_SECURE, $order, $txType);
     }
 
-    /**
-     * @dataProvider customQueryRequestDataProvider
-     */
+    #[DataProvider('customQueryRequestDataProvider')]
     public function testCustomQueryRequest(array $requestData, ?string $apiUrl): void
     {
         $account = $this->pos->getAccount();
@@ -917,7 +899,7 @@ class AssecoPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
                 'isWithCard'             => false,
                 'create_with_card'       => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Bu ödeme modeli için kart bilgileri zorunlu!',
             ],
             '3d_pay_without_card'    => [
@@ -926,7 +908,7 @@ class AssecoPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
                 'isWithCard'             => false,
                 'create_with_card'       => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Bu ödeme modeli için kart bilgileri zorunlu!',
             ],
             'non_payment_tx_type'    => [
@@ -935,7 +917,7 @@ class AssecoPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_STATUS,
                 'isWithCard'             => false,
                 'create_with_card'       => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay, pre]',
             ],
             'post_auth_tx_type'      => [
@@ -944,7 +926,7 @@ class AssecoPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_POST_AUTH,
                 'isWithCard'             => true,
                 'create_with_card'       => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay, pre]',
             ],
             'unsupported_form_format' => [
@@ -1018,7 +1000,7 @@ class AssecoPosTest extends TestCase
                     }
                 )
             ))
-            ->willReturnCallback(function () use (&$updatedRequestDataPreparedEvent): ?\Mews\Pos\Event\RequestDataPreparedEvent {
+            ->willReturnCallback(function () use (&$updatedRequestDataPreparedEvent): ?RequestDataPreparedEvent {
                 $updatedRequestData                                        = $updatedRequestDataPreparedEvent->getRequestData();
                 $updatedRequestData['test-update-request-data-with-event'] = true;
                 $updatedRequestDataPreparedEvent->setRequestData($updatedRequestData);

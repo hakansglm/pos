@@ -6,6 +6,12 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\Mapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use LogicException;
+use BadMethodCallException;
+use Generator;
+use DateTimeImmutable;
+use DateTime;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\Request\Mapper\AbstractRequestDataMapper;
 use Mews\Pos\DataMapper\Request\Mapper\GarantiPosRequestDataMapper;
@@ -87,9 +93,7 @@ class GarantiPosRequestDataMapperTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider nonSecurePaymentPostRequestDataDataProvider
-     */
+    #[DataProvider('nonSecurePaymentPostRequestDataDataProvider')]
     public function testCreateNonSecurePostAuthPaymentRequestData(array $order, array $expected): void
     {
         $hashCalculationData                         = $expected;
@@ -105,9 +109,7 @@ class GarantiPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider nonSecurePaymentRequestDataDataProvider
-     */
+    #[DataProvider('nonSecurePaymentRequestDataDataProvider')]
     public function testCreateNonSecurePaymentRequestData(array $order, string $txType, CreditCardInterface $card, array $expectedData): void
     {
         $hashCalculationData                         = $expectedData;
@@ -128,9 +130,7 @@ class GarantiPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    /**
-     * @dataProvider cancelRequestDataProvider
-     */
+    #[DataProvider('cancelRequestDataProvider')]
     public function testCreateCancelRequestData(array $order, array $expectedData): void
     {
         $hashCalculationData                         = $expectedData;
@@ -146,9 +146,7 @@ class GarantiPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    /**
-     * @dataProvider orderHistoryRequestDataProvider
-     */
+    #[DataProvider('orderHistoryRequestDataProvider')]
     public function testCreateOrderHistoryRequestData(array $order, array $expectedData): void
     {
         $hashCalculationData                         = $expectedData;
@@ -164,9 +162,7 @@ class GarantiPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    /**
-     * @dataProvider historyRequestDataProvider
-     */
+    #[DataProvider('historyRequestDataProvider')]
     public function testCreateHistoryRequestData(array $data, array $expectedData): void
     {
         $hashCalculationData                         = $expectedData;
@@ -185,9 +181,7 @@ class GarantiPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider create3DPaymentRequestDataDataProvider
-     */
+    #[DataProvider('create3DPaymentRequestDataDataProvider')]
     public function testCreate3DPaymentRequestData(GarantiPosAccount $garantiPosAccount, array $order, array $responseData, array $expected): void
     {
         $hashCalculationData                         = $expected;
@@ -203,9 +197,7 @@ class GarantiPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider threeDFormDataProvider
-     */
+    #[DataProvider('threeDFormDataProvider')]
     public function testGet3DFormData(
         array  $order,
         string $gatewayURL,
@@ -242,9 +234,7 @@ class GarantiPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider statusRequestDataDataProvider
-     */
+    #[DataProvider('statusRequestDataDataProvider')]
     public function testCreateStatusRequestData(array $order, array $expected): void
     {
         $hashCalculationData                         = $expected;
@@ -260,9 +250,7 @@ class GarantiPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actualData);
     }
 
-    /**
-     * @dataProvider refundOrderDataProvider
-     */
+    #[DataProvider('refundOrderDataProvider')]
     public function testCreateRefundRequestData(array $order, string $txType, array $expected): void
     {
         $hashCalculationData                         = $expected;
@@ -300,7 +288,7 @@ class GarantiPosRequestDataMapperTest extends TestCase
             'installment' => 0,
         ];
 
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->requestDataMapper->createRefundRequestData(
             $account,
             $order,
@@ -310,7 +298,7 @@ class GarantiPosRequestDataMapperTest extends TestCase
 
     public function testCreate3DFormInitializeRequestDataThrowsByDefault(): void
     {
-        $this->expectException(\BadMethodCallException::class);
+        $this->expectException(BadMethodCallException::class);
         $this->requestDataMapper->create3DFormInitializeRequestData(
             $this->account,
             [],
@@ -319,9 +307,7 @@ class GarantiPosRequestDataMapperTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider createCustomQueryRequestDataDataProvider
-     */
+    #[DataProvider('createCustomQueryRequestDataDataProvider')]
     public function testCreateCustomQueryRequestData(array $requestData, array $expectedData): void
     {
         if (!isset($requestData['Terminal']['HashData'])) {
@@ -339,7 +325,7 @@ class GarantiPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    public static function createCustomQueryRequestDataDataProvider(): \Generator
+    public static function createCustomQueryRequestDataDataProvider(): Generator
     {
         yield 'without_account_data_bin_inquiry' => [
             'request_data' => [
@@ -633,7 +619,7 @@ class GarantiPosRequestDataMapperTest extends TestCase
                         'frequency'     => 3,
                         'frequencyType' => 'MONTH',
                         'installment'   => 4,
-                        'startDate'     => new \DateTimeImmutable('2024-09-09 00:00:00'),
+                        'startDate'     => new DateTimeImmutable('2024-09-09 00:00:00'),
                     ],
                 ],
                 'txType'   => PosInterface::TX_TYPE_PAY_AUTH,
@@ -758,7 +744,7 @@ class GarantiPosRequestDataMapperTest extends TestCase
         ];
     }
 
-    public static function refundOrderDataProvider(): \Generator
+    public static function refundOrderDataProvider(): Generator
     {
         $order = [
             'id'          => '2020110828BC',
@@ -875,8 +861,8 @@ class GarantiPosRequestDataMapperTest extends TestCase
         return [
             [
                 'data'     => [
-                    'start_date' => new \DateTime('2022-05-18 00:00:00'),
-                    'end_date'   => new \DateTime('2022-05-18 23:59:59'),
+                    'start_date' => new DateTime('2022-05-18 00:00:00'),
+                    'end_date'   => new DateTime('2022-05-18 23:59:59'),
                     'ip'         => '127.0.0.1',
                 ],
                 'expected' => [
@@ -915,7 +901,7 @@ class GarantiPosRequestDataMapperTest extends TestCase
         ];
     }
 
-    public static function create3DPaymentRequestDataDataProvider(): \Generator
+    public static function create3DPaymentRequestDataDataProvider(): Generator
     {
         $account = AccountFactory::createGarantiPosAccount(
             'garanti',
@@ -993,7 +979,7 @@ class GarantiPosRequestDataMapperTest extends TestCase
             'frequency'     => 2,
             'frequencyType' => 'MONTH',
             'installment'   => 3,
-            'startDate'     => new \DateTimeImmutable('2023-10-15'),
+            'startDate'     => new DateTimeImmutable('2023-10-15'),
         ];
         $order['installment'] = 0;
 

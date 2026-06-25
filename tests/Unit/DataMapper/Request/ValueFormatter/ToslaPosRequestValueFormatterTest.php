@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueFormatter;
 
+use DateTime;
+use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Mews\Pos\DataMapper\Request\ValueFormatter\ToslaPosRequestValueFormatter;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\ToslaPos;
@@ -55,7 +58,7 @@ class ToslaPosRequestValueFormatterTest extends TestCase
     #[TestWith(['expireDate', '0424'])]
     public function testFormatCreditCardExpDate(string $fieldName, string $expected): void
     {
-        $expDate = new \DateTime('2024-04-14T16:45:30.000');
+        $expDate = new DateTime('2024-04-14T16:45:30.000');
         $actual = $this->formatter->formatCardExpDate($expDate, $fieldName);
         $this->assertSame($expected, $actual);
     }
@@ -64,17 +67,15 @@ class ToslaPosRequestValueFormatterTest extends TestCase
     #[TestWith([''])]
     public function testFormatCreditCardExpDateUnSupportedField(string $fieldName): void
     {
-        $expDate = new \DateTime('2024-04-14T16:45:30.000');
-        $this->expectException(\InvalidArgumentException::class);
+        $expDate = new DateTime('2024-04-14T16:45:30.000');
+        $this->expectException(InvalidArgumentException::class);
         $this->formatter->formatCardExpDate($expDate, $fieldName);
     }
 
-    /**
-     * @dataProvider formatDateTimeDataProvider
-     */
+    #[DataProvider('formatDateTimeDataProvider')]
     public function testFormatDateTime(?string $fieldName, string $expected): void
     {
-        $dateTime = new \DateTime('2024-04-14T16:45:30.000');
+        $dateTime = new DateTime('2024-04-14T16:45:30.000');
         $actual = $this->formatter->formatDateTime($dateTime, $fieldName);
         $this->assertSame($expected, $actual);
     }
@@ -84,8 +85,8 @@ class ToslaPosRequestValueFormatterTest extends TestCase
     #[TestWith([''])]
     public function testFormatDateTimeUnsupportedField(?string $fieldName): void
     {
-        $dateTime = new \DateTime('2024-04-14T16:45:30.000');
-        $this->expectException(\InvalidArgumentException::class);
+        $dateTime = new DateTime('2024-04-14T16:45:30.000');
+        $this->expectException(InvalidArgumentException::class);
         $this->formatter->formatDateTime($dateTime, $fieldName);
     }
 

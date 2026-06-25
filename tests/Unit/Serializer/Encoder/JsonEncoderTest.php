@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Serializer\Encoder;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Mews\Pos\Serializer\EncodedData;
 use Mews\Pos\Serializer\Encoder\JsonEncoder;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -23,9 +24,7 @@ class JsonEncoderTest extends TestCase
         $this->encoder = new JsonEncoder();
     }
 
-    /**
-     * @dataProvider encodeDataProvider
-     */
+    #[DataProvider('encodeDataProvider')]
     public function testEncode(array $data, string $expectedData): void
     {
         $result = $this->encoder->encode($data);

@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\ValueFormatter;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\DataMapper\Response\ValueFormatter\ToslaPosResponseValueFormatter;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\ToslaPos;
@@ -33,9 +35,7 @@ class ToslaPosResponseValueFormatterTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider formatAmountProvider
-     */
+    #[DataProvider('formatAmountProvider')]
     public function testFormatAmount(string $amount, string $txType, float $expected): void
     {
         $actual = $this->formatter->formatAmount($amount, $txType);
@@ -44,7 +44,7 @@ class ToslaPosResponseValueFormatterTest extends TestCase
 
     public function testFormatInstallment(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->formatter->formatInstallment("2", PosInterface::TX_TYPE_PAY_AUTH);
     }
 

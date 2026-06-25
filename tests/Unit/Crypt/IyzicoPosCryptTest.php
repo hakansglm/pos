@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use LogicException;
+use InvalidArgumentException;
 use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\IyzicoPosCrypt;
 use Mews\Pos\Model\Account\AbstractPosAccount;
@@ -53,9 +56,7 @@ class IyzicoPosCryptTest extends TestCase
         $this->crypt->create3DHash($this->account, []);
     }
 
-    /**
-     * @dataProvider createHashDataProvider
-     */
+    #[DataProvider('createHashDataProvider')]
     public function testCreateHash(array $requestData, string $expected): void
     {
         $actual = $this->crypt->createHash($this->account, $requestData);
@@ -65,13 +66,11 @@ class IyzicoPosCryptTest extends TestCase
 
     public function testHashStringRequiresKey(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->crypt->hashString('data');
     }
 
-    /**
-     * @dataProvider hashStringDataProvider
-     */
+    #[DataProvider('hashStringDataProvider')]
     public function testHashStringReturnsBin2Hex(string $str, string $key, string $expected): void
     {
         $this->assertSame($expected, $this->crypt->hashString($str, $key));
@@ -80,13 +79,11 @@ class IyzicoPosCryptTest extends TestCase
     public function testCheck3DHashRequiresIyzicoPosAccount(): void
     {
         $account = $this->createMock(AbstractPosAccount::class);
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->crypt->check3DHash($account, []);
     }
 
-    /**
-     * @dataProvider check3DHashDataProvider
-     */
+    #[DataProvider('check3DHashDataProvider')]
     public function testCheck3DHash(bool $expected, array $responseData): void
     {
         $this->assertSame($expected, $this->crypt->check3DHash($this->account, $responseData));
@@ -102,9 +99,7 @@ class IyzicoPosCryptTest extends TestCase
         $this->assertMatchesRegularExpression('/^[0-9A-F]+$/', $str);
     }
 
-    /**
-     * @dataProvider hashFromParamsDataProvider
-     */
+    #[DataProvider('hashFromParamsDataProvider')]
     public function testHashFromParams(array $data, string $hashParamsValue, string $expected): void
     {
         $this->assertSame($expected, $this->crypt->hashFromParams($this->account, $data, $hashParamsValue));
@@ -112,7 +107,7 @@ class IyzicoPosCryptTest extends TestCase
 
     public function testHashFromParamsWhenNotFound(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('hashParamsValue cannot be empty');
         $this->crypt->hashFromParams($this->account, ['a' => '1'], '');
     }

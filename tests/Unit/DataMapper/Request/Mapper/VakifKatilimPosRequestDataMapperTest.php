@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\Mapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use LogicException;
+use DateTime;
 use Generator;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\Request\Mapper\AbstractRequestDataMapper;
@@ -87,9 +90,7 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider threeDFormDataProvider
-     */
+    #[DataProvider('threeDFormDataProvider')]
     public function testGet3DFormData(
         array  $order,
         string $gatewayURL,
@@ -131,7 +132,7 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
             'currency'    => PosInterface::CURRENCY_TRY,
         ];
 
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
 
         $this->requestDataMapper->create3DFormData(
             $this->account,
@@ -142,9 +143,7 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider nonSecurePaymentRequestDataDataProvider
-     */
+    #[DataProvider('nonSecurePaymentRequestDataDataProvider')]
     public function testCreateNonSecurePaymentRequestData(array $order, array $expectedData): void
     {
         $this->crypt->expects(self::once())
@@ -170,9 +169,7 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    /**
-     * @dataProvider createNonSecurePostAuthPaymentRequestDataDataProvider
-     */
+    #[DataProvider('createNonSecurePostAuthPaymentRequestDataDataProvider')]
     public function testCreateNonSecurePostAuthPaymentRequestData(array $order, array $expectedData): void
     {
         $this->crypt->expects(self::once())
@@ -197,9 +194,7 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider create3DFormInitializeRequestDataDataProvider
-     */
+    #[DataProvider('create3DFormInitializeRequestDataDataProvider')]
     public function testCreate3DFormInitializeRequestData(array $order, string $txType, array $expectedData): void
     {
         $account = $this->account;
@@ -231,9 +226,7 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider createCancelRequestDataProvider
-     */
+    #[DataProvider('createCancelRequestDataProvider')]
     public function testCreateCancelRequestData(array $order, array $expected): void
     {
         $this->crypt->expects(self::once())
@@ -256,9 +249,7 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider createRefundRequestDataProvider
-     */
+    #[DataProvider('createRefundRequestDataProvider')]
     public function testCreateRefundRequestData(array $order, string $txType, array $expected): void
     {
         $this->crypt->expects(self::once())
@@ -281,9 +272,7 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider createHistoryRequestDataProvider
-     */
+    #[DataProvider('createHistoryRequestDataProvider')]
     public function testCreateHistoryRequestData(array $order, array $expected): void
     {
         $hashCalculationData = $expected;
@@ -299,9 +288,7 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider createOrderHistoryRequestDataProvider
-     */
+    #[DataProvider('createOrderHistoryRequestDataProvider')]
     public function testCreateOrderHistoryRequestData(array $order, array $expected): void
     {
         $hashCalculationData = $expected;
@@ -316,9 +303,7 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider createStatusRequestDataProvider
-     */
+    #[DataProvider('createStatusRequestDataProvider')]
     public function testCreateStatusRequestData(array $order, array $expected): void
     {
         $hashCalculationData = $expected;
@@ -333,9 +318,7 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider create3DPaymentRequestDataDataProvider
-     */
+    #[DataProvider('create3DPaymentRequestDataDataProvider')]
     public function testCreate3DPaymentRequestData(BoaPosAccount $boaPosAccount, array $order, string $txType, array $responseData, array $expectedData): void
     {
         $hashCalculationData             = $expectedData;
@@ -353,9 +336,7 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    /**
-     * @dataProvider createCustomQueryRequestDataDataProvider
-     */
+    #[DataProvider('createCustomQueryRequestDataDataProvider')]
     public function testCreateCustomQueryRequestData(array $requestData, array $expectedData): void
     {
         if (!isset($requestData['HashData'])) {
@@ -376,7 +357,7 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    public static function createCustomQueryRequestDataDataProvider(): \Generator
+    public static function createCustomQueryRequestDataDataProvider(): Generator
     {
         yield 'without_account_data_mail_order_sale' => [
             'request_data' => [
@@ -811,8 +792,8 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
     {
         yield [
             'order'    => [
-                'start_date' => (new \DateTime('2024-03-30')),
-                'end_date'   => (new \DateTime('2024-03-31')),
+                'start_date' => (new DateTime('2024-03-30')),
+                'end_date'   => (new DateTime('2024-03-31')),
                 'page'       => 1,
                 'page_size'  => 10,
             ],
@@ -838,8 +819,8 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
     {
         yield [
             'order'    => [
-                'start_date' => (new \DateTime('2024-03-30')),
-                'end_date'   => (new \DateTime('2024-03-31')),
+                'start_date' => (new DateTime('2024-03-30')),
+                'end_date'   => (new DateTime('2024-03-31')),
                 'auth_code'  => '896626',
             ],
             'expected' => [

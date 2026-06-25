@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\Mapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use DateTimeImmutable;
 use Generator;
 use Mews\Pos\DataMapper\Response\Mapper\AbstractResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\PayFlexCPV4PosResponseDataMapper;
@@ -81,9 +83,7 @@ class PayFlexCPV4PosResponseDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider threesDPayResponseDataProvider
-     */
+    #[DataProvider('threesDPayResponseDataProvider')]
     public function testMap3DPayResponseData(array $order, string $txType, array $bankResponse, array $expectedData): void
     {
         if ($expectedData['status'] === ResponseDataMapperInterface::TX_APPROVED) {
@@ -92,7 +92,7 @@ class PayFlexCPV4PosResponseDataMapperTest extends TestCase
                 ->with($bankResponse['TransactionType'])
                 ->willReturn($expectedData['transaction_type']);
 
-            if ($expectedData['transaction_time'] instanceof \DateTimeImmutable) {
+            if ($expectedData['transaction_time'] instanceof DateTimeImmutable) {
                 $this->responseValueFormatter->expects($this->once())
                     ->method('formatDateTime')
                     ->with($bankResponse['HostDate'], $txType)
@@ -127,9 +127,7 @@ class PayFlexCPV4PosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider threesDPayResponseDataProvider
-     */
+    #[DataProvider('threesDPayResponseDataProvider')]
     public function testMap3DHostResponseData(array $order, string $txType, array $bankResponse, array $expectedData): void
     {
         $expectedData['payment_model'] = PosInterface::MODEL_3D_HOST;
@@ -139,7 +137,7 @@ class PayFlexCPV4PosResponseDataMapperTest extends TestCase
                 ->with($bankResponse['TransactionType'])
                 ->willReturn($expectedData['transaction_type']);
 
-            if ($expectedData['transaction_time'] instanceof \DateTimeImmutable) {
+            if ($expectedData['transaction_time'] instanceof DateTimeImmutable) {
                 $this->responseValueFormatter->expects($this->once())
                     ->method('formatDateTime')
                     ->with($bankResponse['HostDate'], $txType)
@@ -182,25 +180,25 @@ class PayFlexCPV4PosResponseDataMapperTest extends TestCase
 
     public function testMapPaymentResponse(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->responseDataMapper->mapPaymentResponse([], PosInterface::TX_TYPE_PAY_AUTH, []);
     }
 
     public function testMapRefundResponse(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->responseDataMapper->mapRefundResponse([]);
     }
 
     public function testMapCancelResponse(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->responseDataMapper->mapCancelResponse([]);
     }
 
     public function testMapStatusResponse(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->responseDataMapper->mapStatusResponse([]);
     }
 
@@ -327,7 +325,7 @@ class PayFlexCPV4PosResponseDataMapperTest extends TestCase
                 'order_id'             => '2023030913ED',
                 'transaction_id'       => '3ee068d5b5a747ada65dafc0016d5887',
                 'transaction_type'     => 'pay',
-                'transaction_time'     => new \DateTimeImmutable('2023-03-09 22:10:37'),
+                'transaction_time'     => new DateTimeImmutable('2023-03-09 22:10:37'),
                 'transaction_security' => null,
                 'auth_code'            => '735879',
                 'ref_ret_num'          => '3ee068d5b5a747ada65dafc0016d5887',

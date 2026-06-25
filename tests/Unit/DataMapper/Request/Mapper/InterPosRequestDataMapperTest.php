@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\Mapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use Mews\Pos\Exception\NotImplementedException;
+use Generator;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\Request\Mapper\AbstractRequestDataMapper;
 use Mews\Pos\DataMapper\Request\Mapper\InterPosRequestDataMapper;
@@ -87,9 +90,7 @@ class InterPosRequestDataMapperTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider nonSecurePaymentPostRequestDataDataProvider
-     */
+    #[DataProvider('nonSecurePaymentPostRequestDataDataProvider')]
     public function testCreateNonSecurePostAuthPaymentRequestData(array $order, array $expectedData): void
     {
         $actual = $this->requestDataMapper->createNonSecurePostAuthPaymentRequestData($this->account, $order);
@@ -97,9 +98,7 @@ class InterPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    /**
-     * @dataProvider createNonSecurePaymentRequestDataDataProvider
-     */
+    #[DataProvider('createNonSecurePaymentRequestDataDataProvider')]
     public function testCreateNonSecurePaymentRequestData(array $order, CreditCardInterface $creditCard, array $expected): void
     {
         $actual = $this->requestDataMapper->createNonSecurePaymentRequestData(
@@ -112,9 +111,7 @@ class InterPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider createCancelRequestDataDataProvider
-     */
+    #[DataProvider('createCancelRequestDataDataProvider')]
     public function testCreateCancelRequestData(array $order, array $expected): void
     {
         $actual = $this->requestDataMapper->createCancelRequestData($this->account, $order);
@@ -122,9 +119,7 @@ class InterPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider create3DPaymentRequestDataDataProvider
-     */
+    #[DataProvider('create3DPaymentRequestDataDataProvider')]
     public function testCreate3DPaymentRequestData(array $order, array $responseData, array $expectedData): void
     {
         $actual = $this->requestDataMapper->create3DPaymentRequestData(
@@ -137,9 +132,7 @@ class InterPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    /**
-     * @dataProvider threeDFormDataProvider
-     */
+    #[DataProvider('threeDFormDataProvider')]
     public function testGet3DFormData(
         array  $order,
         string $gatewayURL,
@@ -178,9 +171,7 @@ class InterPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider createStatusRequestDataDataProvider
-     */
+    #[DataProvider('createStatusRequestDataDataProvider')]
     public function testCreateStatusRequestData(array $order, array $expectedData): void
     {
         $actual = $this->requestDataMapper->createStatusRequestData($this->account, $order);
@@ -188,9 +179,7 @@ class InterPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    /**
-     * @dataProvider refundOrderDataProvider
-     */
+    #[DataProvider('refundOrderDataProvider')]
     public function testCreateRefundRequestData(array $order, string $txType, array $expectedData): void
     {
         $actual = $this->requestDataMapper->createRefundRequestData($this->account, $order, $txType);
@@ -202,19 +191,17 @@ class InterPosRequestDataMapperTest extends TestCase
 
     public function testCreateOrderHistoryRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->requestDataMapper->createOrderHistoryRequestData($this->account, []);
     }
 
     public function testCreateHistoryRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->requestDataMapper->createHistoryRequestData($this->account, []);
     }
 
-    /**
-     * @dataProvider createCustomQueryRequestDataDataProvider
-     */
+    #[DataProvider('createCustomQueryRequestDataDataProvider')]
     public function testCreateCustomQueryRequestData(array $requestData, array $expectedData): void
     {
         $actual = $this->requestDataMapper->createCustomQueryRequestData($this->account, $requestData);
@@ -224,7 +211,7 @@ class InterPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    public static function createCustomQueryRequestDataDataProvider(): \Generator
+    public static function createCustomQueryRequestDataDataProvider(): Generator
     {
         yield 'without_account_data' => [
             'request_data' => [
@@ -497,7 +484,7 @@ class InterPosRequestDataMapperTest extends TestCase
         ];
     }
 
-    public static function refundOrderDataProvider(): \Generator
+    public static function refundOrderDataProvider(): Generator
     {
         $order = [
             'id'     => '2020110828BC',

@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Serializer\Encoder;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Mews\Pos\Serializer\EncodedData;
 use Mews\Pos\Serializer\Encoder\FormEncoder;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -23,9 +24,7 @@ class FormEncoderTest extends TestCase
         $this->encoder = new FormEncoder();
     }
 
-    /**
-     * @dataProvider encodeDataProvider
-     */
+    #[DataProvider('encodeDataProvider')]
     public function testEncode(array $data, string $expectedData): void
     {
         $result = $this->encoder->encode($data);

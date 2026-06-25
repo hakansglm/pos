@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\Serializer\Encoder;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use Generator;
 use Mews\Pos\Serializer\EncodedData;
 use Mews\Pos\Serializer\Encoder\KuveytPosSoapApiXmlEncoder;
 use Mews\Pos\Tests\Unit\DataMapper\Request\Mapper\KuveytPosRequestDataMapperTest;
@@ -24,9 +26,7 @@ class KuveytPosSoapApiXmlEncoderTest extends TestCase
         $this->encoder = new KuveytPosSoapApiXmlEncoder();
     }
 
-    /**
-     * @dataProvider encodeDataProvider
-     */
+    #[DataProvider('encodeDataProvider')]
     public function testEncode(array $data, string $expectedData): void
     {
         $result = $this->encoder->encode($data);
@@ -35,7 +35,7 @@ class KuveytPosSoapApiXmlEncoderTest extends TestCase
         $this->assertSame(EncodedData::FORMAT_XML, $result->getFormat());
     }
 
-    public static function encodeDataProvider(): \Generator
+    public static function encodeDataProvider(): Generator
     {
         $refundTests = iterator_to_array(KuveytPosRequestDataMapperTest::createRefundRequestDataProvider());
 

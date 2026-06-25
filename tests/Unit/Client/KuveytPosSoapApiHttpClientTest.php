@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\Client;
 
+use RuntimeException;
+use Generator;
 use Mews\Pos\Client\AbstractHttpClient;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\KuveytPosSoapApiHttpClient;
@@ -15,6 +17,7 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -78,9 +81,7 @@ class KuveytPosSoapApiHttpClientTest extends TestCase
         $this->assertFalse($this->client->supportsTx(PosInterface::TX_TYPE_PAY_AUTH, PosInterface::MODEL_NON_SECURE));
     }
 
-    /**
-     * @dataProvider getApiUrlDataProvider
-     */
+    #[DataProvider('getApiUrlDataProvider')]
     public function testGetApiUrl(string $txType, string $paymentModel, string $expected): void
     {
         $actual = $this->client->getApiURL($txType, $paymentModel);
@@ -88,9 +89,7 @@ class KuveytPosSoapApiHttpClientTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider requestDataProvider
-     */
+    #[DataProvider('requestDataProvider')]
     public function testRequestCreatesCorrectSoapRequest(
         string $txType,
         string $paymentModel,
@@ -136,9 +135,7 @@ class KuveytPosSoapApiHttpClientTest extends TestCase
         $this->assertSame(['result' => 'ok'], $actual);
     }
 
-    /**
-     * @dataProvider failResponseDataProvider
-     */
+    #[DataProvider('failResponseDataProvider')]
     public function testCheckFailResponseThrowsExceptionOnSoapFault(string $responseXml, int $httpStatusCode, string $expectedExpMsg): void
     {
         $paymentModel   = PosInterface::MODEL_NON_SECURE;
@@ -173,7 +170,7 @@ class KuveytPosSoapApiHttpClientTest extends TestCase
             ->method('sendRequest')
             ->willReturn($response);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage($expectedExpMsg);
         $this->expectExceptionCode($httpStatusCode);
         $this->client->request($txType, $paymentModel, $requestData, $order, $expectedApiUrl);
@@ -217,7 +214,7 @@ class KuveytPosSoapApiHttpClientTest extends TestCase
     }
 
 
-    public static function requestDataProvider(): \Generator
+    public static function requestDataProvider(): Generator
     {
         yield [
             'txType'         => PosInterface::TX_TYPE_PAY_AUTH,

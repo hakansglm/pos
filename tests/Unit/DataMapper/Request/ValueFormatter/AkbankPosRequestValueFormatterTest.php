@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueFormatter;
 
+use DateTime;
 use Mews\Pos\DataMapper\Request\ValueFormatter\AkbankPosRequestValueFormatter;
 use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Gateway\AssecoPos;
@@ -57,14 +58,14 @@ class AkbankPosRequestValueFormatterTest extends TestCase
     #[TestWith(['', '0424'])]
     public function testFormatCreditCardExpDate(string $fieldName, string $expected): void
     {
-        $expDate = new \DateTime('2024-04-14T16:45:30.000');
+        $expDate = new DateTime('2024-04-14T16:45:30.000');
         $actual = $this->formatter->formatCardExpDate($expDate, $fieldName);
         $this->assertSame($expected, $actual);
     }
 
     public function testFormatDateTime(): void
     {
-        $dateTime = new \DateTime('2024-04-14T16:45:30.000');
+        $dateTime = new DateTime('2024-04-14T16:45:30.000');
         $actual = $this->formatter->formatDateTime($dateTime);
         $this->assertSame('2024-04-14T16:45:30.000', $actual);
     }

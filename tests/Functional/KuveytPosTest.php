@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Functional;
 
+use Mews\Pos\Factory\AccountFactory;
+use Mews\Pos\Gateway\KuveytPos;
 use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Factory\CreditCardFactory;
@@ -20,13 +22,13 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
  */
 class KuveytPosTest extends TestCase
 {
-    use \Mews\Pos\Tests\Functional\PaymentTestTrait;
+    use PaymentTestTrait;
 
     private CreditCardInterface $card;
 
     private EventDispatcher $eventDispatcher;
 
-    /** @var \Mews\Pos\Gateway\KuveytPos */
+    /** @var KuveytPos */
     private PosInterface $pos;
 
     protected function setUp(): void
@@ -35,7 +37,7 @@ class KuveytPosTest extends TestCase
 
         $config = require __DIR__.'/../../config/pos_test.php';
 
-        $account = \Mews\Pos\Factory\AccountFactory::createBoaPosAccount(
+        $account = AccountFactory::createBoaPosAccount(
             'kuveytpos',
             (string) getenv('KUVEYTPOS_MERCHANT_ID'),
             (string) getenv('KUVEYTPOS_USERNAME'),

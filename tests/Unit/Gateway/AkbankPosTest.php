@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\Gateway;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
+use LogicException;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\HttpClientStrategyInterface;
 use Mews\Pos\Crypt\CryptInterface;
@@ -135,9 +138,7 @@ class AkbankPosTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider make3DPayPaymentDataProvider
-     */
+    #[DataProvider('make3DPayPaymentDataProvider')]
     public function testMake3DPayPayment(
         array  $order,
         string $txType,
@@ -166,9 +167,7 @@ class AkbankPosTest extends TestCase
         $this->assertSame($isSuccess, $this->pos->isSuccess());
     }
 
-    /**
-     * @dataProvider make3DPayPaymentDataProvider
-     */
+    #[DataProvider('make3DPayPaymentDataProvider')]
     public function testMake3DPayPaymentWithoutHashCheck(
         array  $order,
         string $txType,
@@ -217,9 +216,7 @@ class AkbankPosTest extends TestCase
         $this->pos->payment(PosInterface::MODEL_3D_PAY, [], PosInterface::TX_TYPE_PAY_AUTH, null, $gatewayResponseData);
     }
 
-    /**
-     * @dataProvider make3DHostPaymentDataProvider
-     */
+    #[DataProvider('make3DHostPaymentDataProvider')]
     public function testMake3DHostPayment(
         array  $order,
         string $txType,
@@ -249,9 +246,7 @@ class AkbankPosTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider make3DHostPaymentDataProvider
-     */
+    #[DataProvider('make3DHostPaymentDataProvider')]
     public function testMake3DHostPaymentWithoutHashCheck(
         array  $order,
         string $txType,
@@ -300,9 +295,7 @@ class AkbankPosTest extends TestCase
         $this->pos->payment(PosInterface::MODEL_3D_HOST, [], PosInterface::TX_TYPE_PAY_AUTH, null, $gatewayResponseData);
     }
 
-    /**
-     * @dataProvider make3DPaymentDataProvider
-     */
+    #[DataProvider('make3DPaymentDataProvider')]
     public function testMake3DPayment(
         array  $order,
         string $txType,
@@ -367,9 +360,7 @@ class AkbankPosTest extends TestCase
         $this->assertSame($isSuccess, $this->pos->isSuccess());
     }
 
-    /**
-     * @dataProvider make3DPaymentWithoutHashCheckDataProvider
-     */
+    #[DataProvider('make3DPaymentWithoutHashCheckDataProvider')]
     public function testMake3DPaymentWithoutHashCheck(
         array  $order,
         string $txType,
@@ -463,9 +454,7 @@ class AkbankPosTest extends TestCase
         $this->pos->payment(PosInterface::MODEL_3D_SECURE, [], PosInterface::TX_TYPE_PAY_AUTH, null, $gatewayResponseData);
     }
 
-    /**
-     * @dataProvider threeDFormDataProvider
-     */
+    #[DataProvider('threeDFormDataProvider')]
     public function testGet3DFormData(
         array  $order,
         string $paymentModel,
@@ -493,9 +482,7 @@ class AkbankPosTest extends TestCase
         $this->assertSame($actual, $formData);
     }
 
-    /**
-     * @dataProvider threeDFormDataBadInputsProvider
-     */
+    #[DataProvider('threeDFormDataBadInputsProvider')]
     public function testGet3DFormDataWithBadInputs(
         array   $order,
         string  $paymentModel,
@@ -514,9 +501,7 @@ class AkbankPosTest extends TestCase
         $this->pos->get3DFormData($order, $paymentModel, $txType, $card, $createWithoutCard, $formFormat);
     }
 
-    /**
-     * @dataProvider historyRequestDataProvider
-     */
+    #[DataProvider('historyRequestDataProvider')]
     public function testHistoryRequest(array $order): void
     {
         $account     = $this->pos->getAccount();
@@ -545,9 +530,7 @@ class AkbankPosTest extends TestCase
         $this->pos->history($order);
     }
 
-    /**
-     * @dataProvider orderHistoryDataProvider
-     */
+    #[DataProvider('orderHistoryDataProvider')]
     public function testOrderHistory(
         array  $order,
         array  $requestData,
@@ -584,9 +567,7 @@ class AkbankPosTest extends TestCase
         $this->assertSame($result, $mappedResponse);
     }
 
-    /**
-     * @dataProvider makeRegularPaymentDataProvider
-     */
+    #[DataProvider('makeRegularPaymentDataProvider')]
     public function testMakeRegularPayment(array $order, string $txType): void
     {
         $account = $this->pos->getAccount();
@@ -613,9 +594,7 @@ class AkbankPosTest extends TestCase
         $this->pos->payment(PosInterface::MODEL_NON_SECURE, $order, $txType, $card);
     }
 
-    /**
-     * @dataProvider makeRegularPaymentDataProvider
-     */
+    #[DataProvider('makeRegularPaymentDataProvider')]
     public function testMakeRegularPaymentBadRequest(array $order, string $txType): void
     {
         $account     = $this->pos->getAccount();
@@ -636,13 +615,11 @@ class AkbankPosTest extends TestCase
             400
         );
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->pos->payment(PosInterface::MODEL_NON_SECURE, $order, $txType, $card);
     }
 
-    /**
-     * @dataProvider makeRegularPostAuthPaymentDataProvider
-     */
+    #[DataProvider('makeRegularPostAuthPaymentDataProvider')]
     public function testMakeRegularPostAuthPayment(array $order): void
     {
         $account     = $this->pos->getAccount();
@@ -676,9 +653,7 @@ class AkbankPosTest extends TestCase
         $this->pos->status([]);
     }
 
-    /**
-     * @dataProvider cancelRequestDataProvider
-     */
+    #[DataProvider('cancelRequestDataProvider')]
     public function testCancelRequest(array $order): void
     {
         $account     = $this->pos->getAccount();
@@ -706,9 +681,7 @@ class AkbankPosTest extends TestCase
         $this->pos->cancel($order);
     }
 
-    /**
-     * @dataProvider refundRequestDataProvider
-     */
+    #[DataProvider('refundRequestDataProvider')]
     public function testRefundRequest(array $order, string $txType): void
     {
         $account     = $this->pos->getAccount();
@@ -735,9 +708,7 @@ class AkbankPosTest extends TestCase
         $this->pos->refund($order);
     }
 
-    /**
-     * @dataProvider customQueryRequestDataProvider
-     */
+    #[DataProvider('customQueryRequestDataProvider')]
     public function testCustomQueryRequest(array $requestData, ?string $apiUrl): void
     {
         $account = $this->pos->getAccount();
@@ -915,7 +886,7 @@ class AkbankPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
                 'isWithCard'             => false,
                 'create_with_card'       => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Bu ödeme modeli için kart bilgileri zorunlu!',
             ],
             '3d_pay_without_card'       => [
@@ -924,7 +895,7 @@ class AkbankPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
                 'isWithCard'             => false,
                 'create_with_card'       => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Bu ödeme modeli için kart bilgileri zorunlu!',
             ],
             '3d_host_with_card'         => [
@@ -933,7 +904,7 @@ class AkbankPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
                 'isWithCard'             => true,
                 'create_with_card'       => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Kart bilgileri ile form verisi oluşturmak icin [3d_host] ödeme modeli kullanmayınız! Yerine [3d, 3d_pay, regular] ödeme model(ler)ini kullanınız.',
             ],
             'unsupported_payment_model' => [
@@ -942,7 +913,7 @@ class AkbankPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
                 'isWithCard'             => false,
                 'create_with_card'       => true,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Mews\Pos\Gateway\AkbankPos ödeme altyapıda [pay] işlem tipi [3d, 3d_pay, 3d_host, regular] ödeme model(ler) desteklemektedir. Sağlanan ödeme model: [3d_pay_hosting].',
             ],
             'non_payment_tx_type'       => [
@@ -951,7 +922,7 @@ class AkbankPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_HISTORY,
                 'isWithCard'             => false,
                 'create_with_card'       => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay, pre]',
             ],
             'unsupported_form_format'   => [
@@ -1090,7 +1061,7 @@ class AkbankPosTest extends TestCase
                 $this->account
             );
         if ($statusCode >= 400) {
-            $invocationMocker->willThrowException(new \RuntimeException());
+            $invocationMocker->willThrowException(new RuntimeException());
         } else {
             $invocationMocker->willReturn($decodedResponse);
         }
@@ -1111,7 +1082,7 @@ class AkbankPosTest extends TestCase
                     }
                 )
             ))
-            ->willReturnCallback(function () use (&$updatedRequestDataPreparedEvent): ?\Mews\Pos\Event\RequestDataPreparedEvent {
+            ->willReturnCallback(function () use (&$updatedRequestDataPreparedEvent): ?RequestDataPreparedEvent {
                 $updatedRequestData                                        = $updatedRequestDataPreparedEvent->getRequestData();
                 $updatedRequestData['test-update-request-data-with-event'] = true;
                 $updatedRequestDataPreparedEvent->setRequestData($updatedRequestData);

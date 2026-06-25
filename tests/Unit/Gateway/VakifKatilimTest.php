@@ -6,6 +6,10 @@
 
 namespace Mews\Pos\Tests\Unit\Gateway;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use InvalidArgumentException;
+use LogicException;
+use Exception;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\HttpClientStrategyInterface;
 use Mews\Pos\Crypt\CryptInterface;
@@ -71,7 +75,7 @@ class VakifKatilimTest extends TestCase
     /**
      * @return void
      *
-     * @throws \Exception
+     * @throws Exception
      */
     protected function setUp(): void
     {
@@ -212,9 +216,7 @@ class VakifKatilimTest extends TestCase
         $this->assertSame(['formData'], $actual);
     }
 
-    /**
-     * @dataProvider threeDFormDataBadInputsProvider
-     */
+    #[DataProvider('threeDFormDataBadInputsProvider')]
     public function testGet3DFormDataWithBadInputs(
         array   $order,
         string  $paymentModel,
@@ -233,9 +235,7 @@ class VakifKatilimTest extends TestCase
         $this->pos->get3DFormData($order, $paymentModel, $txType, $card, $createWithoutCard, $formFormat);
     }
 
-    /**
-     * @dataProvider make3DPaymentDataProvider
-     */
+    #[DataProvider('make3DPaymentDataProvider')]
     public function testMake3DPayment(
         array  $order,
         string $txType,
@@ -324,9 +324,7 @@ class VakifKatilimTest extends TestCase
         $this->pos->payment(PosInterface::MODEL_3D_PAY, [], $txType, null, ['abc']);
     }
 
-    /**
-     * @dataProvider makeRegularPaymentDataProvider
-     */
+    #[DataProvider('makeRegularPaymentDataProvider')]
     public function testMakeRegularPayment(array $order, string $txType): void
     {
         $account     = $this->pos->getAccount();
@@ -356,9 +354,7 @@ class VakifKatilimTest extends TestCase
         $this->pos->payment(PosInterface::MODEL_NON_SECURE, $order, $txType, $card);
     }
 
-    /**
-     * @dataProvider makeRegularPostAuthPaymentDataProvider
-     */
+    #[DataProvider('makeRegularPostAuthPaymentDataProvider')]
     public function testMakeRegularPostAuthPayment(array $order): void
     {
         $account     = $this->pos->getAccount();
@@ -390,9 +386,7 @@ class VakifKatilimTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider statusRequestDataProvider
-     */
+    #[DataProvider('statusRequestDataProvider')]
     public function testStatusRequest(array $order): void
     {
         $account     = $this->pos->getAccount();
@@ -423,9 +417,7 @@ class VakifKatilimTest extends TestCase
         $this->pos->status($order);
     }
 
-    /**
-     * @dataProvider cancelRequestDataProvider
-     */
+    #[DataProvider('cancelRequestDataProvider')]
     public function testCancelRequest(array $order): void
     {
         $account     = $this->pos->getAccount();
@@ -456,9 +448,7 @@ class VakifKatilimTest extends TestCase
         $this->pos->cancel($order);
     }
 
-    /**
-     * @dataProvider refundRequestDataProvider
-     */
+    #[DataProvider('refundRequestDataProvider')]
     public function testRefundRequest(array $order, string $txType): void
     {
         $account     = $this->pos->getAccount();
@@ -489,9 +479,7 @@ class VakifKatilimTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider historyRequestDataProvider
-     */
+    #[DataProvider('historyRequestDataProvider')]
     public function testHistoryRequest(array $order): void
     {
         $account     = $this->pos->getAccount();
@@ -522,9 +510,7 @@ class VakifKatilimTest extends TestCase
         $this->pos->history($order);
     }
 
-    /**
-     * @dataProvider orderHistoryRequestDataProvider
-     */
+    #[DataProvider('orderHistoryRequestDataProvider')]
     public function testOrderHistoryRequest(array $order): void
     {
         $account     = $this->pos->getAccount();
@@ -555,9 +541,7 @@ class VakifKatilimTest extends TestCase
         $this->pos->orderHistory($order);
     }
 
-    /**
-     * @dataProvider customQueryRequestDataProvider
-     */
+    #[DataProvider('customQueryRequestDataProvider')]
     public function testCustomQueryRequest(array $requestData, ?string $apiUrl): void
     {
         $account = $this->pos->getAccount();
@@ -587,7 +571,7 @@ class VakifKatilimTest extends TestCase
 
     public function testCustomQueryRequestWithoutAPIurl(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $this->pos->customQuery(['ac' => 'aas']);
     }
@@ -746,7 +730,7 @@ class VakifKatilimTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
                 'isWithCard'             => false,
                 'create_with_card'       => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Bu ödeme modeli için kart bilgileri zorunlu!',
             ],
             'unsupported_payment_model' => [
@@ -755,7 +739,7 @@ class VakifKatilimTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
                 'isWithCard'             => false,
                 'create_with_card'       => true,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Mews\Pos\Gateway\VakifKatilimPos ödeme altyapıda [pay] işlem tipi [regular, 3d, 3d_host] ödeme model(ler) desteklemektedir. Sağlanan ödeme model: [3d_pay].',
             ],
             'unsupported_3d_secure_tx'  => [
@@ -764,7 +748,7 @@ class VakifKatilimTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_PRE_AUTH,
                 'isWithCard'             => false,
                 'create_with_card'       => true,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay].',
             ],
             'unsupported_3d_host_tx'    => [
@@ -773,7 +757,7 @@ class VakifKatilimTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_PRE_AUTH,
                 'isWithCard'             => false,
                 'create_with_card'       => true,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay].',
             ],
             'non_payment_tx_type'       => [
@@ -782,7 +766,7 @@ class VakifKatilimTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_STATUS,
                 'isWithCard'             => false,
                 'create_with_card'       => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay]',
             ],
             'post_auth_tx_type'         => [
@@ -791,7 +775,7 @@ class VakifKatilimTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_POST_AUTH,
                 'isWithCard'             => true,
                 'create_with_card'       => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay]',
             ],
             'unsupported_form_format_3d_host'   => [
@@ -863,7 +847,7 @@ class VakifKatilimTest extends TestCase
                     }
                 )
             ))
-            ->willReturnCallback(function () use (&$updatedRequestDataPreparedEvent): ?\Mews\Pos\Event\RequestDataPreparedEvent {
+            ->willReturnCallback(function () use (&$updatedRequestDataPreparedEvent): ?RequestDataPreparedEvent {
                 $updatedRequestData                                        = $updatedRequestDataPreparedEvent->getRequestData();
                 $updatedRequestData['test-update-request-data-with-event'] = true;
                 $updatedRequestDataPreparedEvent->setRequestData($updatedRequestData);

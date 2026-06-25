@@ -6,6 +6,11 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\Mapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use DateTimeImmutable;
+use Generator;
+use InvalidArgumentException;
+use RuntimeException;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\Request\Mapper\AbstractRequestDataMapper;
 use Mews\Pos\DataMapper\Request\Mapper\ParamPosRequestDataMapper;
@@ -85,18 +90,14 @@ class ParamPosRequestDataMapperTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider nonSecurePaymentPostRequestDataProvider
-     */
+    #[DataProvider('nonSecurePaymentPostRequestDataProvider')]
     public function testCreateNonSecurePostAuthPaymentRequestData(array $order, array $expected): void
     {
         $actual = $this->requestDataMapper->createNonSecurePostAuthPaymentRequestData($this->account, $order);
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider paymentRegisterRequestDataProvider
-     */
+    #[DataProvider('paymentRegisterRequestDataProvider')]
     public function testCreate3DFormInitializeRequestData(array $order, string $paymentModel, string $txType, ?CreditCardInterface $card, string $soapAction, array $expected): void
     {
         $requestDataWithoutHash = $expected;
@@ -134,9 +135,7 @@ class ParamPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider paymentRegisterRequestDataProviderException
-     */
+    #[DataProvider('paymentRegisterRequestDataProviderException')]
     public function testCreate3DEnrollmentCheckRequestException(
         array                $order,
         string               $paymentModel,
@@ -154,9 +153,7 @@ class ParamPosRequestDataMapperTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider nonSecurePaymentRequestDataProvider
-     */
+    #[DataProvider('nonSecurePaymentRequestDataProvider')]
     public function testCreateNonSecurePaymentRequestData(array $order, string $txType, string $soapAction, array $expected): void
     {
         $requestDataWithoutHash = $expected;
@@ -193,9 +190,7 @@ class ParamPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider cancelRequestDataProvider
-     */
+    #[DataProvider('cancelRequestDataProvider')]
     public function testCreateCancelRequestData(array $order, string $soapAction, array $expected): void
     {
         $actual = $this->requestDataMapper->createCancelRequestData($this->account, $order);
@@ -212,9 +207,7 @@ class ParamPosRequestDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider threeDFormDataProvider
-     */
+    #[DataProvider('threeDFormDataProvider')]
     public function testGet3DFormData(
         array   $order,
         string  $txType,
@@ -248,9 +241,7 @@ class ParamPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider threeDFormDataProviderFail
-     */
+    #[DataProvider('threeDFormDataProviderFail')]
     public function testGet3DFormDataFail(
         array   $order,
         string  $txType,
@@ -284,9 +275,7 @@ class ParamPosRequestDataMapperTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider statusRequestDataProvider
-     */
+    #[DataProvider('statusRequestDataProvider')]
     public function testCreateStatusRequestData(array $order, array $expected): void
     {
         $actualData = $this->requestDataMapper->createStatusRequestData($this->account, $order);
@@ -294,9 +283,7 @@ class ParamPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actualData);
     }
 
-    /**
-     * @dataProvider refundRequestDataProvider
-     */
+    #[DataProvider('refundRequestDataProvider')]
     public function testCreateRefundRequestData(array $order, string $txType, array $expected): void
     {
         $actual = $this->requestDataMapper->createRefundRequestData($this->account, $order, $txType);
@@ -306,9 +293,7 @@ class ParamPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider create3DPaymentRequestDataDataProvider
-     */
+    #[DataProvider('create3DPaymentRequestDataDataProvider')]
     public function testCreate3DPaymentRequestData(array $order, string $txType, array $responseData, array $expected): void
     {
         $actual = $this->requestDataMapper->create3DPaymentRequestData(
@@ -321,9 +306,7 @@ class ParamPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider historyRequestDataProvider
-     */
+    #[DataProvider('historyRequestDataProvider')]
     public function testCreateHistoryRequestData(array $data, array $expected): void
     {
         $actualData = $this->requestDataMapper->createHistoryRequestData($this->account, $data);
@@ -332,9 +315,7 @@ class ParamPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actualData);
     }
 
-    /**
-     * @dataProvider createCustomQueryRequestDataDataProvider
-     */
+    #[DataProvider('createCustomQueryRequestDataDataProvider')]
     public function testCreateCustomQueryRequestData(array $requestData, array $expectedData): void
     {
         $actual = $this->requestDataMapper->createCustomQueryRequestData($this->account, $requestData);
@@ -348,8 +329,8 @@ class ParamPosRequestDataMapperTest extends TestCase
     {
         yield 'with_date_range' => [
             'order'    => [
-                'start_date' => new \DateTimeImmutable('2024-04-13 13:00:00'),
-                'end_date'   => new \DateTimeImmutable('2024-04-14 13:00:00'),
+                'start_date' => new DateTimeImmutable('2024-04-13 13:00:00'),
+                'end_date'   => new DateTimeImmutable('2024-04-14 13:00:00'),
             ],
             'expected' => [
                 'soap:Body' => [
@@ -369,8 +350,8 @@ class ParamPosRequestDataMapperTest extends TestCase
         ];
         yield 'with_date_range_and_other_params_1' => [
             'order'    => [
-                'start_date'       => new \DateTimeImmutable('2024-04-13 13:00:00'),
-                'end_date'         => new \DateTimeImmutable('2024-04-14 13:00:00'),
+                'start_date'       => new DateTimeImmutable('2024-04-13 13:00:00'),
+                'end_date'         => new DateTimeImmutable('2024-04-14 13:00:00'),
                 'order_status'     => 'Başarılı',
                 'transaction_type' => PosInterface::TX_TYPE_PAY_AUTH,
             ],
@@ -395,8 +376,8 @@ class ParamPosRequestDataMapperTest extends TestCase
 
         yield 'with_date_range_and_other_params_canceled_orders' => [
             'order'    => [
-                'start_date'       => new \DateTimeImmutable('2024-04-13 13:00:00'),
-                'end_date'         => new \DateTimeImmutable('2024-04-14 13:00:00'),
+                'start_date'       => new DateTimeImmutable('2024-04-13 13:00:00'),
+                'end_date'         => new DateTimeImmutable('2024-04-14 13:00:00'),
                 'order_status'     => 'Başarılı',
                 'transaction_type' => PosInterface::TX_TYPE_CANCEL,
             ],
@@ -421,8 +402,8 @@ class ParamPosRequestDataMapperTest extends TestCase
 
         yield 'with_date_range_and_other_params_canceled_refunded' => [
             'order'    => [
-                'start_date'       => new \DateTimeImmutable('2024-04-13 13:00:00'),
-                'end_date'         => new \DateTimeImmutable('2024-04-14 13:00:00'),
+                'start_date'       => new DateTimeImmutable('2024-04-13 13:00:00'),
+                'end_date'         => new DateTimeImmutable('2024-04-14 13:00:00'),
                 'order_status'     => 'Başarılı',
                 'transaction_type' => PosInterface::TX_TYPE_REFUND,
             ],
@@ -446,7 +427,7 @@ class ParamPosRequestDataMapperTest extends TestCase
         ];
     }
 
-    public static function createCustomQueryRequestDataDataProvider(): \Generator
+    public static function createCustomQueryRequestDataDataProvider(): Generator
     {
         yield 'without_account_data_installment_option_inquiry' => [
             'request_data' => [
@@ -855,14 +836,14 @@ class ParamPosRequestDataMapperTest extends TestCase
                 'paymentModel'             => PosInterface::MODEL_3D_SECURE,
                 'txType'                   => PosInterface::TX_TYPE_PAY_AUTH,
                 'card'                     => null,
-                'expected_exception_class' => \InvalidArgumentException::class,
+                'expected_exception_class' => InvalidArgumentException::class,
             ],
             '3d_host'                => [
                 'order'                    => $order,
                 'paymentModel'             => PosInterface::MODEL_3D_HOST,
                 'txType'                   => PosInterface::TX_TYPE_PAY_AUTH,
                 'card'                     => null,
-                'expected_exception_class' => \InvalidArgumentException::class,
+                'expected_exception_class' => InvalidArgumentException::class,
             ],
         ];
     }
@@ -1172,7 +1153,7 @@ class ParamPosRequestDataMapperTest extends TestCase
                         'TO_Pre_Encrypting_OOSResult' => 'SOAP Güvenlik Hatası.192.168.190.2',
                     ],
                 ],
-                'expected_exception' => \InvalidArgumentException::class,
+                'expected_exception' => InvalidArgumentException::class,
             ],
             '3d_pay_invalid_url'                  => [
                 'order'              => [],
@@ -1187,7 +1168,7 @@ class ParamPosRequestDataMapperTest extends TestCase
                         ],
                     ],
                 ],
-                'expected_exception' => \InvalidArgumentException::class,
+                'expected_exception' => InvalidArgumentException::class,
             ],
             '3d_pay_no_query_params_in_url'       => [
                 'order'              => [],
@@ -1202,7 +1183,7 @@ class ParamPosRequestDataMapperTest extends TestCase
                         ],
                     ],
                 ],
-                'expected_exception' => \InvalidArgumentException::class,
+                'expected_exception' => InvalidArgumentException::class,
             ],
             '3d_secure_form_data_with_empty_html' => [
                 'order'              => [
@@ -1226,12 +1207,12 @@ class ParamPosRequestDataMapperTest extends TestCase
                         ],
                     ],
                 ],
-                'expected_exception' => \RuntimeException::class,
+                'expected_exception' => RuntimeException::class,
             ],
         ];
     }
 
-    public static function create3DPaymentRequestDataDataProvider(): \Generator
+    public static function create3DPaymentRequestDataDataProvider(): Generator
     {
         yield [
             'order'        => [

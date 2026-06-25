@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\Gateway;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use LogicException;
+use RuntimeException;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\HttpClientStrategyInterface;
 use Mews\Pos\Crypt\CryptInterface;
@@ -118,9 +121,7 @@ class Param3DHostPosTest extends TestCase
         $this->assertFalse($this->pos->isTestMode());
     }
 
-    /**
-     * @dataProvider threeDFormDataProvider
-     */
+    #[DataProvider('threeDFormDataProvider')]
     public function testGet3DFormData(
         array   $order,
         string  $txType,
@@ -163,9 +164,7 @@ class Param3DHostPosTest extends TestCase
         $this->assertSame($actual, $formData);
     }
 
-    /**
-     * @dataProvider threeDFormDataBadInputsProvider
-     */
+    #[DataProvider('threeDFormDataBadInputsProvider')]
     public function testGet3DFormDataWithBadInputs(
         array   $order,
         string  $paymentModel,
@@ -330,7 +329,7 @@ class Param3DHostPosTest extends TestCase
                 'paymentModel'           => PosInterface::MODEL_3D_SECURE,
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
                 'isWithCard'             => true,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Mews\Pos\Gateway\Param3DHostPos ödeme altyapıda [pay] işlem tipi [3d_host] ödeme model(ler) desteklemektedir. Sağlanan ödeme model: [3d].',
             ],
             'unsupported_form_format'   => [
@@ -400,7 +399,7 @@ class Param3DHostPosTest extends TestCase
                 $account
             );
         if (isset($decodedResponse['soap:Fault'])) {
-            $mockMethod->willThrowException(new \RuntimeException($decodedResponse['soap:Fault']['faultstring']));
+            $mockMethod->willThrowException(new RuntimeException($decodedResponse['soap:Fault']['faultstring']));
         } else {
             $mockMethod->willReturn($decodedResponse);
         }
@@ -420,7 +419,7 @@ class Param3DHostPosTest extends TestCase
                         && $paymentModel === $dispatchedEvent->getPaymentModel();
                 })
             ))
-            ->willReturnCallback(function () use (&$updatedRequestDataPreparedEvent): ?\Mews\Pos\Event\RequestDataPreparedEvent {
+            ->willReturnCallback(function () use (&$updatedRequestDataPreparedEvent): ?RequestDataPreparedEvent {
                 $updatedRequestData                                        = $updatedRequestDataPreparedEvent->getRequestData();
                 $updatedRequestData['test-update-request-data-with-event'] = true;
                 $updatedRequestDataPreparedEvent->setRequestData($updatedRequestData);

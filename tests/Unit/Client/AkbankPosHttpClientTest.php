@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\Client;
 
+use RuntimeException;
+use Generator;
 use InvalidArgumentException;
 use Mews\Pos\Client\AbstractHttpClient;
 use Mews\Pos\Client\AkbankPosHttpClient;
@@ -18,6 +20,7 @@ use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -96,9 +99,7 @@ class AkbankPosHttpClientTest extends TestCase
         $this->assertTrue($this->client->supportsTx(PosInterface::TX_TYPE_PAY_AUTH, PosInterface::MODEL_3D_SECURE));
     }
 
-    /**
-     * @dataProvider getApiUrlDataProvider
-     */
+    #[DataProvider('getApiUrlDataProvider')]
     public function testGetApiUrl(string $txType, string $paymentModel, string $expected): void
     {
         $actual = $this->client->getApiURL($txType, $paymentModel);
@@ -106,18 +107,14 @@ class AkbankPosHttpClientTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider getApiUrlExceptionDataProvider
-     */
+    #[DataProvider('getApiUrlExceptionDataProvider')]
     public function testGetApiUrlException(?string $txType, string $exceptionClass): void
     {
         $this->expectException($exceptionClass);
         $this->client->getApiURL($txType);
     }
 
-    /**
-     * @dataProvider requestDataProvider
-     */
+    #[DataProvider('requestDataProvider')]
     public function testRequest(
         string $txType,
         string $paymentModel,
@@ -213,7 +210,7 @@ class AkbankPosHttpClientTest extends TestCase
             ->with($request)
             ->willReturn($response);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Error message');
         $this->expectExceptionCode(222);
         $this->client->request(
@@ -296,7 +293,7 @@ class AkbankPosHttpClientTest extends TestCase
         );
     }
 
-    public static function requestDataProvider(): \Generator
+    public static function requestDataProvider(): Generator
     {
         yield [
             'txType'             => PosInterface::TX_TYPE_PAY_AUTH,
@@ -344,7 +341,7 @@ class AkbankPosHttpClientTest extends TestCase
         return [
             [
                 'txType'          => null,
-                'exception_class' => \InvalidArgumentException::class,
+                'exception_class' => InvalidArgumentException::class,
             ],
         ];
     }

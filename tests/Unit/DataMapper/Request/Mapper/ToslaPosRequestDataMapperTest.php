@@ -6,6 +6,11 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\Mapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use Mews\Pos\Exception\NotImplementedException;
+use Generator;
+use DateTimeImmutable;
+use DateTime;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\Request\Mapper\AbstractRequestDataMapper;
 use Mews\Pos\DataMapper\Request\Mapper\ToslaPosRequestDataMapper;
@@ -79,9 +84,7 @@ class ToslaPosRequestDataMapperTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider nonSecurePaymentPostRequestDataProvider
-     */
+    #[DataProvider('nonSecurePaymentPostRequestDataProvider')]
     public function testCreateNonSecurePostAuthPaymentRequestData(array $order, array $expected): void
     {
         $requestDataWithoutHash = $expected;
@@ -99,9 +102,7 @@ class ToslaPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider paymentRegisterRequestDataProvider
-     */
+    #[DataProvider('paymentRegisterRequestDataProvider')]
     public function testCreate3DFormInitializeRequestData(array $order, string $paymentModel, string $txType, array $expected): void
     {
         $requestDataWithoutHash = $expected;
@@ -119,9 +120,7 @@ class ToslaPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider nonSecurePaymentRequestDataProvider
-     */
+    #[DataProvider('nonSecurePaymentRequestDataProvider')]
     public function testCreateNonSecurePaymentRequestData(array $order, string $txType, array $expected): void
     {
         $requestDataWithoutHash = $expected;
@@ -139,9 +138,7 @@ class ToslaPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider cancelRequestDataProvider
-     */
+    #[DataProvider('cancelRequestDataProvider')]
     public function testCreateCancelRequestData(array $order, array $expected): void
     {
         $requestDataWithoutHash = $expected;
@@ -160,9 +157,7 @@ class ToslaPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider orderHistoryRequestDataProvider
-     */
+    #[DataProvider('orderHistoryRequestDataProvider')]
     public function testCreateOrderHistoryRequestData(array $order, array $expected): void
     {
         $requestDataWithoutHash = $expected;
@@ -182,9 +177,7 @@ class ToslaPosRequestDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider threeDFormDataProvider
-     */
+    #[DataProvider('threeDFormDataProvider')]
     public function testGet3DFormData(array $order, string $txType, string $paymentModel, bool $withCard, string $gatewayURL, array $expected): void
     {
         $card = $withCard ? $this->card : null;
@@ -210,9 +203,7 @@ class ToslaPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider statusRequestDataProvider
-     */
+    #[DataProvider('statusRequestDataProvider')]
     public function testCreateStatusRequestData(array $order, array $expected): void
     {
         $requestDataWithoutHash = $expected;
@@ -231,9 +222,7 @@ class ToslaPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actualData);
     }
 
-    /**
-     * @dataProvider refundRequestDataProvider
-     */
+    #[DataProvider('refundRequestDataProvider')]
     public function testCreateRefundRequestData(array $order, string $txType, array $expected): void
     {
         $requestDataWithoutHash = $expected;
@@ -256,7 +245,7 @@ class ToslaPosRequestDataMapperTest extends TestCase
 
     public function testCreate3DPaymentRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->requestDataMapper->create3DPaymentRequestData(
             $this->account,
             [],
@@ -267,13 +256,11 @@ class ToslaPosRequestDataMapperTest extends TestCase
 
     public function testCreateHistoryRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->requestDataMapper->createHistoryRequestData($this->account);
     }
 
-    /**
-     * @dataProvider createCustomQueryRequestDataDataProvider
-     */
+    #[DataProvider('createCustomQueryRequestDataDataProvider')]
     public function testCreateCustomQueryRequestData(array $requestData, array $expectedData): void
     {
         $this->crypt->expects(self::once())
@@ -286,7 +273,7 @@ class ToslaPosRequestDataMapperTest extends TestCase
         }
 
         $actual = $this->requestDataMapper->createCustomQueryRequestData($this->account, $requestData);
-        $this->assertSame(14, \strlen($actual['timeSpan']));
+        $this->assertSame(14, \strlen((string) $actual['timeSpan']));
         unset($actual['timeSpan'], $expectedData['timeSpan']);
 
         \ksort($actual);
@@ -294,7 +281,7 @@ class ToslaPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    public static function createCustomQueryRequestDataDataProvider(): \Generator
+    public static function createCustomQueryRequestDataDataProvider(): Generator
     {
         yield 'without_account_data_installment_option_inquiry' => [
             'request_data' => [
@@ -306,7 +293,7 @@ class ToslaPosRequestDataMapperTest extends TestCase
                 'clientId' => '1000000494',
                 'hash'     => '12fsdfdsfsfs',
                 'rnd'      => 'rndsfldfls',
-                'timeSpan' => new \DateTimeImmutable('2024-11-03 14:43:02'),
+                'timeSpan' => new DateTimeImmutable('2024-11-03 14:43:02'),
             ],
         ];
 
@@ -324,7 +311,7 @@ class ToslaPosRequestDataMapperTest extends TestCase
                 'clientId' => '1000000494xx',
                 'hash'     => '12fsdfdsfsfsxxx',
                 'rnd'      => 'rndsfldfls',
-                'timeSpan' => new \DateTimeImmutable('2024-11-03 14:43:02'),
+                'timeSpan' => new DateTimeImmutable('2024-11-03 14:43:02'),
             ],
         ];
     }
@@ -335,7 +322,7 @@ class ToslaPosRequestDataMapperTest extends TestCase
             [
                 'order'    => [
                     'id'        => 'id-12',
-                    'time_span' => new \DateTimeImmutable('20231209215355'),
+                    'time_span' => new DateTimeImmutable('20231209215355'),
                 ],
                 'expected' => [
                     'clientId' => '1000000494',
@@ -355,7 +342,7 @@ class ToslaPosRequestDataMapperTest extends TestCase
             [
                 'order'    => [
                     'id'        => 'id-12',
-                    'time_span' => new \DateTimeImmutable('20231209215355'),
+                    'time_span' => new DateTimeImmutable('20231209215355'),
                 ],
                 'expected' => [
                     'clientId' => '1000000494',
@@ -376,7 +363,7 @@ class ToslaPosRequestDataMapperTest extends TestCase
                 'order'    => [
                     'id'        => 'id-12',
                     'amount'    => 1.02,
-                    'time_span' => new \DateTimeImmutable('20231209215355'),
+                    'time_span' => new DateTimeImmutable('20231209215355'),
                 ],
                 'tx_type'  => PosInterface::TX_TYPE_REFUND,
                 'expected' => [
@@ -400,7 +387,7 @@ class ToslaPosRequestDataMapperTest extends TestCase
             'installment' => 0,
             'currency'    => PosInterface::CURRENCY_TRY,
             'success_url' => 'https://domain.com/success',
-            'time_span'   => new \DateTimeImmutable('20231209214708'),
+            'time_span'   => new DateTimeImmutable('20231209214708'),
         ];
 
         return [
@@ -432,7 +419,7 @@ class ToslaPosRequestDataMapperTest extends TestCase
             'installment' => 0,
             'currency'    => PosInterface::CURRENCY_TRY,
             'success_url' => 'https://domain.com/success',
-            'time_span'   => new \DateTimeImmutable('20231209214708'),
+            'time_span'   => new DateTimeImmutable('20231209214708'),
         ];
 
         return [
@@ -465,7 +452,7 @@ class ToslaPosRequestDataMapperTest extends TestCase
                 'order'    => [
                     'id'        => '2020110828BC',
                     'amount'    => 1.10,
-                    'time_span' => new \DateTimeImmutable('20231209213944'),
+                    'time_span' => new DateTimeImmutable('20231209213944'),
                 ],
                 'expected' => [
                     'clientId' => '1000000494',
@@ -486,8 +473,8 @@ class ToslaPosRequestDataMapperTest extends TestCase
             [
                 'order'    => [
                     'id'               => '2020110828BC',
-                    'time_span'        => new \DateTimeImmutable('20231209215355'),
-                    'transaction_date' => new \DateTime('2023-12-09 00:00:00'),
+                    'time_span'        => new DateTimeImmutable('20231209215355'),
+                    'transaction_date' => new DateTime('2023-12-09 00:00:00'),
                 ],
                 'expected' => [
                     'clientId'        => '1000000494',
@@ -504,10 +491,10 @@ class ToslaPosRequestDataMapperTest extends TestCase
             [
                 'order'    => [
                     'id'               => '2020110828BC',
-                    'time_span'        => new \DateTimeImmutable('20231209215355'),
+                    'time_span'        => new DateTimeImmutable('20231209215355'),
                     'page'             => 2,
                     'page_size'        => 5,
-                    'transaction_date' => new \DateTime('2023-12-09 00:00:00'),
+                    'transaction_date' => new DateTime('2023-12-09 00:00:00'),
                 ],
                 'expected' => [
                     'clientId'        => '1000000494',

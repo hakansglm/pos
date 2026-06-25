@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\Mapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use Mews\Pos\Exception\NotImplementedException;
+use Generator;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\Request\Mapper\AbstractRequestDataMapper;
 use Mews\Pos\DataMapper\Request\Mapper\PosNetV1PosRequestDataMapper;
@@ -82,9 +85,7 @@ class PosNetV1PosRequestDataMapperTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider nonSecurePostPaymentDataProvider
-     */
+    #[DataProvider('nonSecurePostPaymentDataProvider')]
     public function testCreateNonSecurePostAuthPaymentRequestData(array $order, array $expectedData): void
     {
         $hashCalculationData = $expectedData;
@@ -100,9 +101,7 @@ class PosNetV1PosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    /**
-     * @dataProvider nonSecurePaymentRequestDataDataProvider
-     */
+    #[DataProvider('nonSecurePaymentRequestDataDataProvider')]
     public function testCreateNonSecurePaymentRequestData(array $order, array $expectedData): void
     {
         $hashCalculationData = $expectedData;
@@ -118,9 +117,7 @@ class PosNetV1PosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    /**
-     * @dataProvider create3DPaymentRequestDataProvider
-     */
+    #[DataProvider('create3DPaymentRequestDataProvider')]
     public function testCreate3DPaymentRequestData(array $order, string $txType, array $responseData, array $expectedData): void
     {
         $hashCalculationData = $expectedData;
@@ -136,9 +133,7 @@ class PosNetV1PosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    /**
-     * @dataProvider threeDFormDataTestProvider
-     */
+    #[DataProvider('threeDFormDataTestProvider')]
     public function testCreate3DFormData(array $order, string $txType, string $gatewayUrl, ?CreditCardInterface $card, array $expected): void
     {
         $paymentModel = PosInterface::MODEL_3D_SECURE;
@@ -170,9 +165,7 @@ class PosNetV1PosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider createStatusRequestDataDataProvider
-     */
+    #[DataProvider('createStatusRequestDataDataProvider')]
     public function testCreateStatusRequestData(array $order, array $expected): void
     {
         $hashCalculationData = $expected;
@@ -187,9 +180,7 @@ class PosNetV1PosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider createRefundRequestDataDataProvider
-     */
+    #[DataProvider('createRefundRequestDataDataProvider')]
     public function testCreateRefundRequestData(array $order, string $txType, array $expected): void
     {
         $hashCalculationData = $expected;
@@ -208,9 +199,7 @@ class PosNetV1PosRequestDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider createCancelRequestDataProvider
-     */
+    #[DataProvider('createCancelRequestDataProvider')]
     public function testCreateCancelRequestData(array $order, array $expected): void
     {
         $hashCalculationData = $expected;
@@ -230,19 +219,17 @@ class PosNetV1PosRequestDataMapperTest extends TestCase
 
     public function testCreateHistoryRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->requestDataMapper->createHistoryRequestData($this->account);
     }
 
     public function testCreateOrderHistoryRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->requestDataMapper->createOrderHistoryRequestData($this->account, []);
     }
 
-    /**
-     * @dataProvider createCustomQueryRequestDataDataProvider
-     */
+    #[DataProvider('createCustomQueryRequestDataDataProvider')]
     public function testCreateCustomQueryRequestData(array $requestData, array $expectedData): void
     {
         if (!isset($requestData['MAC'])) {
@@ -258,7 +245,7 @@ class PosNetV1PosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    public static function createCustomQueryRequestDataDataProvider(): \Generator
+    public static function createCustomQueryRequestDataDataProvider(): Generator
     {
         yield 'without_account_data_point_inquiry' => [
             'request_data' => [
@@ -577,7 +564,7 @@ class PosNetV1PosRequestDataMapperTest extends TestCase
         ];
     }
 
-    public static function create3DPaymentRequestDataProvider(): \Generator
+    public static function create3DPaymentRequestDataProvider(): Generator
     {
         $order = [
             'id'          => '2020110828BC',

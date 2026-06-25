@@ -6,6 +6,10 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\Mapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use Mews\Pos\Exception\NotImplementedException;
+use InvalidArgumentException;
+use DateTime;
 use Generator;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\Request\Mapper\AbstractRequestDataMapper;
@@ -91,9 +95,7 @@ class KuveytPosRequestDataMapperTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider create3DFormInitializeRequestDataDataProvider
-     */
+    #[DataProvider('create3DFormInitializeRequestDataDataProvider')]
     public function testCreate3DFormInitializeRequestData(array $order, string $txType, array $expectedData): void
     {
         $account = $this->account;
@@ -117,9 +119,7 @@ class KuveytPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider createCancelRequestDataProvider
-     */
+    #[DataProvider('createCancelRequestDataProvider')]
     public function testCreateCancelRequestData(array $order, array $expected): void
     {
         $this->crypt->expects(self::once())
@@ -134,9 +134,7 @@ class KuveytPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider createRefundRequestDataProvider
-     */
+    #[DataProvider('createRefundRequestDataProvider')]
     public function testCreateRefundRequestData(array $order, string $txType, array $expected): void
     {
         $this->crypt->expects(self::once())
@@ -151,9 +149,7 @@ class KuveytPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider createStatusRequestDataProvider
-     */
+    #[DataProvider('createStatusRequestDataProvider')]
     public function testCreateStatusRequestData(array $order, array $expected): void
     {
         $this->crypt->expects(self::once())
@@ -169,9 +165,7 @@ class KuveytPosRequestDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider create3DPaymentRequestDataDataProvider
-     */
+    #[DataProvider('create3DPaymentRequestDataDataProvider')]
     public function testCreate3DPaymentRequestData(array $order, string $txType, array $responseData, array $expectedData): void
     {
         $this->crypt->expects(self::once())
@@ -191,9 +185,7 @@ class KuveytPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actual);
     }
 
-    /**
-     * @dataProvider nonSecurePaymentRequestDataProvider
-     */
+    #[DataProvider('nonSecurePaymentRequestDataProvider')]
     public function testCreateNonSecurePaymentRequestData(array $order, string $txType, array $expectedData): void
     {
         $this->crypt->expects(self::once())
@@ -218,7 +210,7 @@ class KuveytPosRequestDataMapperTest extends TestCase
         $txType       = PosInterface::TX_TYPE_PAY_AUTH;
         $paymentModel = PosInterface::MODEL_3D_SECURE;
 
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
 
         $this->requestDataMapper->create3DFormData(
             $this->account,
@@ -231,29 +223,29 @@ class KuveytPosRequestDataMapperTest extends TestCase
 
     public function testCreateNonSecurePostAuthPaymentRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->requestDataMapper->createNonSecurePostAuthPaymentRequestData($this->account, []);
     }
 
     public function testCreateOrderHistoryRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->requestDataMapper->createOrderHistoryRequestData($this->account, []);
     }
 
     public function testCreateHistoryRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->requestDataMapper->createHistoryRequestData($this->account, []);
     }
 
     public function testCreateCustomQueryRequestData(): void
     {
-        $this->expectException(\Mews\Pos\Exception\NotImplementedException::class);
+        $this->expectException(NotImplementedException::class);
         $this->requestDataMapper->createCustomQueryRequestData($this->account, []);
     }
 
-    public static function createCustomQueryRequestDataDataProvider(): \Generator
+    public static function createCustomQueryRequestDataDataProvider(): Generator
     {
         yield 'without_account_data' => [
             'request_data' => [
@@ -356,12 +348,10 @@ class KuveytPosRequestDataMapperTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider missingRequiredOrderFieldDataProvider
-     */
+    #[DataProvider('missingRequiredOrderFieldDataProvider')]
     public function testCreate3DFormInitializeRequestDataThrowsOnMissingField(array $order): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $this->requestDataMapper->create3DFormInitializeRequestData(
             $this->account,
@@ -517,7 +507,7 @@ class KuveytPosRequestDataMapperTest extends TestCase
         ];
     }
 
-    public static function createCancelRequestDataProvider(): \Generator
+    public static function createCancelRequestDataProvider(): Generator
     {
         yield [
             'order'    => [
@@ -693,8 +683,8 @@ class KuveytPosRequestDataMapperTest extends TestCase
 
     public static function createStatusRequestDataProvider(): Generator
     {
-        $startDate = new \DateTime('2022-07-08T22:44:31');
-        $endDate   = new \DateTime('2023-07-08T22:44:31');
+        $startDate = new DateTime('2022-07-08T22:44:31');
+        $endDate   = new DateTime('2023-07-08T22:44:31');
         yield [
             'order'    => [
                 'id'         => '2023070849CD',

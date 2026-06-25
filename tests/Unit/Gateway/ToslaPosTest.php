@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\Gateway;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
+use LogicException;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\HttpClientStrategyInterface;
 use Mews\Pos\Crypt\CryptInterface;
@@ -135,9 +138,7 @@ class ToslaPosTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider make3DPayPaymentDataProvider
-     */
+    #[DataProvider('make3DPayPaymentDataProvider')]
     public function testMake3DPayPayment(
         array  $order,
         string $txType,
@@ -172,9 +173,7 @@ class ToslaPosTest extends TestCase
         $this->assertSame($isSuccess, $this->pos->isSuccess());
     }
 
-    /**
-     * @dataProvider make3DPayPaymentWithoutHashCheckDataProvider
-     */
+    #[DataProvider('make3DPayPaymentWithoutHashCheckDataProvider')]
     public function testMake3DPayPaymentWithoutHashCheck(
         array  $order,
         string $txType,
@@ -236,9 +235,7 @@ class ToslaPosTest extends TestCase
         $this->pos->payment(PosInterface::MODEL_3D_PAY, [], $txType, null, $gatewayResponseData);
     }
 
-    /**
-     * @dataProvider make3DPayPaymentDataProvider
-     */
+    #[DataProvider('make3DPayPaymentDataProvider')]
     public function testMake3DHostPayment(
         array  $order,
         string $txType,
@@ -274,9 +271,7 @@ class ToslaPosTest extends TestCase
         $this->assertSame($isSuccess, $this->pos->isSuccess());
     }
 
-    /**
-     * @dataProvider make3DPayPaymentWithoutHashCheckDataProvider
-     */
+    #[DataProvider('make3DPayPaymentWithoutHashCheckDataProvider')]
     public function testMake3DHostPaymentWithoutHashCheck(
         array  $order,
         string $txType,
@@ -338,18 +333,14 @@ class ToslaPosTest extends TestCase
         $this->pos->payment(PosInterface::MODEL_3D_HOST, [], $txType, null, $gatewayResponseData);
     }
 
-    /**
-     * @dataProvider make3DPayPaymentDataProvider
-     */
+    #[DataProvider('make3DPayPaymentDataProvider')]
     public function testMake3DPayment(array $order, string $txType, array $gatewayResponseData): void
     {
         $this->expectException(UnsupportedPaymentModelException::class);
         $this->pos->payment(PosInterface::MODEL_3D_SECURE, $order, $txType, $this->card, $gatewayResponseData);
     }
 
-    /**
-     * @dataProvider threeDFormDataProvider
-     */
+    #[DataProvider('threeDFormDataProvider')]
     public function testGet3DFormData(
         array  $order,
         string $paymentModel,
@@ -393,9 +384,7 @@ class ToslaPosTest extends TestCase
         $this->assertSame($actual, $formData);
     }
 
-    /**
-     * @dataProvider threeDFormDataBadInputsProvider
-     */
+    #[DataProvider('threeDFormDataBadInputsProvider')]
     public function testGet3DFormDataWithBadInputs(
         array   $order,
         string  $paymentModel,
@@ -414,9 +403,7 @@ class ToslaPosTest extends TestCase
         $this->pos->get3DFormData($order, $paymentModel, $txType, $card, $createWithoutCard, $formFormat);
     }
 
-    /**
-     * @dataProvider registerFailResponseDataProvider
-     */
+    #[DataProvider('registerFailResponseDataProvider')]
     public function testGet3DFormDataRegisterPaymentFail(array $response): void
     {
         $txType      = PosInterface::TX_TYPE_PAY_AUTH;
@@ -438,13 +425,11 @@ class ToslaPosTest extends TestCase
         $this->requestMapperMock->expects(self::never())
             ->method('create3DFormData');
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->pos->get3DFormData($order, PosInterface::MODEL_3D_PAY, $txType, $this->card);
     }
 
-    /**
-     * @dataProvider statusDataProvider
-     */
+    #[DataProvider('statusDataProvider')]
     public function testStatus(
         array  $order,
         array  $requestData,
@@ -484,9 +469,7 @@ class ToslaPosTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider cancelDataProvider
-     */
+    #[DataProvider('cancelDataProvider')]
     public function testCancel(
         array  $order,
         array  $requestData,
@@ -522,9 +505,7 @@ class ToslaPosTest extends TestCase
         $this->assertSame($result, $mappedResponse);
     }
 
-    /**
-     * @dataProvider refundDataProvider
-     */
+    #[DataProvider('refundDataProvider')]
     public function testRefund(
         array  $order,
         string $txType,
@@ -567,9 +548,7 @@ class ToslaPosTest extends TestCase
         $this->pos->history([]);
     }
 
-    /**
-     * @dataProvider orderHistoryDataProvider
-     */
+    #[DataProvider('orderHistoryDataProvider')]
     public function testOrderHistory(
         array  $order,
         array  $requestData,
@@ -608,9 +587,7 @@ class ToslaPosTest extends TestCase
         $this->assertSame($result, $mappedResponse);
     }
 
-    /**
-     * @dataProvider customQueryRequestDataProvider
-     */
+    #[DataProvider('customQueryRequestDataProvider')]
     public function testCustomQueryRequest(array $requestData, ?string $apiUrl): void
     {
         $account = $this->pos->getAccount();
@@ -785,9 +762,7 @@ class ToslaPosTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider makeRegularPaymentDataProvider
-     */
+    #[DataProvider('makeRegularPaymentDataProvider')]
     public function testMakeRegularPayment(array $order, string $txType): void
     {
         $account     = $this->pos->getAccount();
@@ -818,9 +793,7 @@ class ToslaPosTest extends TestCase
         $this->pos->payment(PosInterface::MODEL_NON_SECURE, $order, $txType, $card);
     }
 
-    /**
-     * @dataProvider makeRegularPostAuthPaymentDataProvider
-     */
+    #[DataProvider('makeRegularPostAuthPaymentDataProvider')]
     public function testMakeRegularPostAuthPayment(array $order): void
     {
         $account     = $this->pos->getAccount();
@@ -852,9 +825,7 @@ class ToslaPosTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider statusRequestDataProvider
-     */
+    #[DataProvider('statusRequestDataProvider')]
     public function testStatusRequest(array $order): void
     {
         $account     = $this->pos->getAccount();
@@ -885,9 +856,7 @@ class ToslaPosTest extends TestCase
         $this->pos->status($order);
     }
 
-    /**
-     * @dataProvider cancelRequestDataProvider
-     */
+    #[DataProvider('cancelRequestDataProvider')]
     public function testCancelRequest(array $order): void
     {
         $account     = $this->pos->getAccount();
@@ -918,9 +887,7 @@ class ToslaPosTest extends TestCase
         $this->pos->cancel($order);
     }
 
-    /**
-     * @dataProvider refundRequestDataProvider
-     */
+    #[DataProvider('refundRequestDataProvider')]
     public function testRefundRequest(array $order): void
     {
         $account     = $this->pos->getAccount();
@@ -1030,7 +997,7 @@ class ToslaPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
                 'isWithCard'             => false,
                 'create_without_card'    => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Bu ödeme modeli için kart bilgileri zorunlu!',
             ],
             'unsupported_payment_model' => [
@@ -1039,7 +1006,7 @@ class ToslaPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_AUTH,
                 'isWithCard'             => false,
                 'create_without_card'    => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Mews\Pos\Gateway\ToslaPos ödeme altyapıda [pay] işlem tipi [3d_pay, 3d_host, regular] ödeme model(ler) desteklemektedir. Sağlanan ödeme model: [3d]',
             ],
             'non_payment_tx_type'       => [
@@ -1048,7 +1015,7 @@ class ToslaPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_STATUS,
                 'isWithCard'             => false,
                 'create_with_card'       => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay, pre]',
             ],
             'post_auth_tx_type'         => [
@@ -1057,7 +1024,7 @@ class ToslaPosTest extends TestCase
                 'txType'                 => PosInterface::TX_TYPE_PAY_POST_AUTH,
                 'isWithCard'             => true,
                 'create_with_card'       => false,
-                'expectedExceptionClass' => \LogicException::class,
+                'expectedExceptionClass' => LogicException::class,
                 'expectedExceptionMsg'   => 'Hatalı işlem tipi! Desteklenen işlem tipleri: [pay, pre]',
             ],
             'unsupported_form_format'   => [
@@ -1130,7 +1097,7 @@ class ToslaPosTest extends TestCase
                     }
                 )
             ))
-            ->willReturnCallback(function () use (&$updatedRequestDataPreparedEvent): ?\Mews\Pos\Event\RequestDataPreparedEvent {
+            ->willReturnCallback(function () use (&$updatedRequestDataPreparedEvent): ?RequestDataPreparedEvent {
                 $updatedRequestData                                        = $updatedRequestDataPreparedEvent->getRequestData();
                 $updatedRequestData['test-update-request-data-with-event'] = true;
                 $updatedRequestDataPreparedEvent->setRequestData($updatedRequestData);

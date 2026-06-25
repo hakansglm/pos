@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\Mapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use DateTimeImmutable;
+use Generator;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\Request\Mapper\AbstractRequestDataMapper;
 use Mews\Pos\DataMapper\Request\Mapper\IyzicoPosRequestDataMapper;
@@ -108,9 +111,7 @@ class IyzicoPosRequestDataMapperTest extends TestCase
         $this->requestDataMapper->create3DFormData($this->account, [], PosInterface::MODEL_3D_SECURE, PosInterface::TX_TYPE_PAY_AUTH, 'https://example.com');
     }
 
-    /**
-     * @dataProvider createStatusRequestDataProvider
-     */
+    #[DataProvider('createStatusRequestDataProvider')]
     public function testCreateStatusRequestData(array $order, array $expected): void
     {
         $actual = $this->requestDataMapper->createStatusRequestData($this->account, $order);
@@ -118,9 +119,7 @@ class IyzicoPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider createOrderHistoryRequestDataProvider
-     */
+    #[DataProvider('createOrderHistoryRequestDataProvider')]
     public function testCreateOrderHistoryRequestData(array $order, array $expected): void
     {
         $actual = $this->requestDataMapper->createOrderHistoryRequestData($this->account, $order);
@@ -128,9 +127,7 @@ class IyzicoPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider createCancelRequestDataProvider
-     */
+    #[DataProvider('createCancelRequestDataProvider')]
     public function testCreateCancelRequestData(array $order, array $expected): void
     {
         $actual = $this->requestDataMapper->createCancelRequestData($this->account, $order);
@@ -138,9 +135,7 @@ class IyzicoPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider refundRequestDataProvider
-     */
+    #[DataProvider('refundRequestDataProvider')]
     public function testCreateRefundRequestData(array $order, array $expected): void
     {
         $actual = $this->requestDataMapper->createRefundRequestData($this->account, $order, PosInterface::TX_TYPE_REFUND);
@@ -148,9 +143,7 @@ class IyzicoPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider create3DPaymentRequestDataProvider
-     */
+    #[DataProvider('create3DPaymentRequestDataProvider')]
     public function testCreate3DPaymentRequestData(array $responseData, array $expected): void
     {
         $actual = $this->requestDataMapper->create3DPaymentRequestData(
@@ -163,9 +156,7 @@ class IyzicoPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider createNonSecurePostAuthPaymentRequestDataProvider
-     */
+    #[DataProvider('createNonSecurePostAuthPaymentRequestDataProvider')]
     public function testCreateNonSecurePostAuthPaymentRequestData(array $order, array $expected): void
     {
         $actual = $this->requestDataMapper->createNonSecurePostAuthPaymentRequestData($this->account, $order);
@@ -173,9 +164,7 @@ class IyzicoPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider createHistoryRequestDataProvider
-     */
+    #[DataProvider('createHistoryRequestDataProvider')]
     public function testCreateHistoryRequestData(array $data, array $expected): void
     {
         $actual = $this->requestDataMapper->createHistoryRequestData($this->account, $data);
@@ -191,9 +180,7 @@ class IyzicoPosRequestDataMapperTest extends TestCase
         $this->assertSame($requestData, $actual);
     }
 
-    /**
-     * @dataProvider create3DHostPaymentStatusRequestDataProvider
-     */
+    #[DataProvider('create3DHostPaymentStatusRequestDataProvider')]
     public function testCreate3DHostPaymentStatusRequestData(array $responseData, array $order, array $expected): void
     {
         $actual = $this->requestDataMapper->create3DHostPaymentStatusRequestData($responseData, $order);
@@ -201,9 +188,7 @@ class IyzicoPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider nonSecurePaymentRequestDataProvider
-     */
+    #[DataProvider('nonSecurePaymentRequestDataProvider')]
     public function testCreateNonSecurePaymentRequestData(
         IyzicoPosAccount $account,
         array $order,
@@ -219,9 +204,7 @@ class IyzicoPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider enrollmentCheckRequestDataProvider
-     */
+    #[DataProvider('enrollmentCheckRequestDataProvider')]
     public function testCreate3DFormInitializeRequestData(
         string $paymentModel,
         array $orderExtra,
@@ -399,7 +382,7 @@ class IyzicoPosRequestDataMapperTest extends TestCase
         return [
             'default_page' => [
                 'data'     => [
-                    'transaction_date' => new \DateTimeImmutable('2024-06-01'),
+                    'transaction_date' => new DateTimeImmutable('2024-06-01'),
                 ],
                 'expected' => [
                     'locale'          => 'tr',
@@ -409,7 +392,7 @@ class IyzicoPosRequestDataMapperTest extends TestCase
             ],
             'custom_page'  => [
                 'data'     => [
-                    'transaction_date' => new \DateTimeImmutable('2024-06-01'),
+                    'transaction_date' => new DateTimeImmutable('2024-06-01'),
                     'page'             => 3,
                 ],
                 'expected' => [
@@ -436,7 +419,7 @@ class IyzicoPosRequestDataMapperTest extends TestCase
         ];
     }
 
-    public static function nonSecurePaymentRequestDataProvider(): \Generator
+    public static function nonSecurePaymentRequestDataProvider(): Generator
     {
         $account = AccountFactory::createIyzicoPosAccount('iyzico', 'key', 'secret');
         $order   = self::buildOrderStatic();

@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueMapper;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use InvalidArgumentException;
 use Mews\Pos\DataMapper\Request\ValueMapper\AbstractRequestValueMapper;
 use Mews\Pos\DataMapper\Request\ValueMapper\AkbankPosRequestValueMapper;
 use Mews\Pos\Exception\UnsupportedTransactionTypeException;
@@ -37,27 +39,21 @@ class AkbankPosRequestValueMapperTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @dataProvider mapTxTypeDataProvider
-     */
+    #[DataProvider('mapTxTypeDataProvider')]
     public function testMapTxType(string $txType, string $paymentModel, string $expected): void
     {
         $actual = $this->valueMapper->mapTxType($txType, $paymentModel);
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider mapTxTypeUnsupportedDataProvider
-     */
+    #[DataProvider('mapTxTypeUnsupportedDataProvider')]
     public function testMapTxTypeException(string $txType, ?string $paymentModel, string $exceptionClass): void
     {
         $this->expectException($exceptionClass);
         $this->valueMapper->mapTxType($txType, $paymentModel);
     }
 
-    /**
-     * @dataProvider mapSecureTypeDataProvider
-     */
+    #[DataProvider('mapSecureTypeDataProvider')]
     public function testMapSecureType(string $paymentModel, string $expected): void
     {
         $mappedSecureType = $this->valueMapper->mapSecureType($paymentModel);
@@ -142,7 +138,7 @@ class AkbankPosRequestValueMapperTest extends TestCase
     {
         return [
             ['3000', null, UnsupportedTransactionTypeException::class],
-            [PosInterface::TX_TYPE_PAY_AUTH, null, \InvalidArgumentException::class],
+            [PosInterface::TX_TYPE_PAY_AUTH, null, InvalidArgumentException::class],
         ];
     }
 }

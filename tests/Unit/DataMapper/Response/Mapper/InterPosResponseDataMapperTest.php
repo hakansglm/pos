@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Response\Mapper;
 
+use DateTimeImmutable;
 use Mews\Pos\DataMapper\Response\Mapper\AbstractResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\InterPosResponseDataMapper;
 use Mews\Pos\DataMapper\Response\ValueFormatter\ResponseValueFormatterInterface;
@@ -15,6 +16,7 @@ use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Gateway\InterPos;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -83,12 +85,10 @@ class InterPosResponseDataMapperTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider paymentTestDataProvider
-     */
+    #[DataProvider('paymentTestDataProvider')]
     public function testMapPaymentResponse(array $order, string $txType, array $responseData, array $expectedData): void
     {
-        if ($expectedData['transaction_time'] instanceof \DateTimeImmutable) {
+        if ($expectedData['transaction_time'] instanceof DateTimeImmutable) {
             $this->responseValueFormatter->expects($this->once())
                 ->method('formatDateTime')
                 ->with($responseData['TRXDATE'] ?? 'now', $txType)
@@ -110,12 +110,10 @@ class InterPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider threeDPaymentDataProvider
-     */
+    #[DataProvider('threeDPaymentDataProvider')]
     public function testMap3DPaymentData(array $order, string $txType, array $threeDResponseData, array $paymentResponse, array $expectedData): void
     {
-        if ($expectedData['transaction_time'] instanceof \DateTimeImmutable) {
+        if ($expectedData['transaction_time'] instanceof DateTimeImmutable) {
             $this->responseValueFormatter->expects($this->once())
                 ->method('formatDateTime')
                 ->with($paymentResponse['TRXDATE'] ?? $threeDResponseData['TRXDATE'], $txType)
@@ -155,12 +153,10 @@ class InterPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider threeDPayPaymentDataProvider
-     */
+    #[DataProvider('threeDPayPaymentDataProvider')]
     public function testMap3DPayResponseData(array $order, string $txType, array $responseData, array $expectedData): void
     {
-        if ($expectedData['transaction_time'] instanceof \DateTimeImmutable) {
+        if ($expectedData['transaction_time'] instanceof DateTimeImmutable) {
             $this->responseValueFormatter->expects($this->once())
                 ->method('formatDateTime')
                 ->with($responseData['TRXDATE'], $txType)
@@ -189,12 +185,10 @@ class InterPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider threeDHostPaymentDataProvider
-     */
+    #[DataProvider('threeDHostPaymentDataProvider')]
     public function testMap3DHostResponseData(array $order, string $txType, array $responseData, array $expectedData): void
     {
-        if ($expectedData['transaction_time'] instanceof \DateTimeImmutable) {
+        if ($expectedData['transaction_time'] instanceof DateTimeImmutable) {
             $this->responseValueFormatter->expects($this->once())
                 ->method('formatDateTime')
                 ->with($responseData['TRXDATE'], $txType)
@@ -224,13 +218,11 @@ class InterPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider statusTestDataProvider
-     */
+    #[DataProvider('statusTestDataProvider')]
     public function testMapStatusResponse(array $responseData, array $expectedData): void
     {
         $txType = PosInterface::TX_TYPE_STATUS;
-        if ($expectedData['transaction_time'] instanceof \DateTimeImmutable) {
+        if ($expectedData['transaction_time'] instanceof DateTimeImmutable) {
             $this->responseValueFormatter->expects($this->once())
                 ->method('formatDateTime')
                 ->with($responseData['VoidDate'], $txType)
@@ -256,9 +248,7 @@ class InterPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider refundTestDataProvider
-     */
+    #[DataProvider('refundTestDataProvider')]
     public function testMapRefundResponse(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapRefundResponse($responseData);
@@ -271,9 +261,7 @@ class InterPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    /**
-     * @dataProvider cancelTestDataProvider
-     */
+    #[DataProvider('cancelTestDataProvider')]
     public function testMapCancelResponse(array $responseData, array $expectedData): void
     {
         $actualData = $this->responseDataMapper->mapCancelResponse($responseData);
@@ -591,7 +579,7 @@ class InterPosResponseDataMapperTest extends TestCase
                     'transaction_type'     => 'pay',
                     'payment_model'        => '3d',
                     'installment_count'    => null,
-                    'transaction_time'     => new \DateTimeImmutable('09.08.2024 10:40:34'),
+                    'transaction_time'     => new DateTimeImmutable('09.08.2024 10:40:34'),
                 ],
             ],
         ];

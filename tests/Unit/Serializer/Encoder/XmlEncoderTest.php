@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Serializer\Encoder;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Mews\Pos\Serializer\EncodedData;
 use Mews\Pos\Serializer\Encoder\XmlEncoder;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -15,9 +16,7 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder as SymfonyXmlEncoder;
 #[CoversClass(XmlEncoder::class)]
 class XmlEncoderTest extends TestCase
 {
-    /**
-     * @dataProvider encodeDataProvider
-     */
+    #[DataProvider('encodeDataProvider')]
     public function testEncode(XmlEncoder $encoder, array $data, string $expectedData): void
     {
         $result = $encoder->encode($data);

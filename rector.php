@@ -9,14 +9,10 @@ return RectorConfig::configure()
     ->withPaths([
         __DIR__.'/config',
         __DIR__.'/src',
-        __DIR__.'/tests',
     ])
     ->withSets([
         LevelSetList::UP_TO_PHP_80,
     ])
-    ->withAttributesSets(
-        phpunit: true,
-    )
     ->withSkip([
         \Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector::class,
         \Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector::class,

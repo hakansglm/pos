@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\Client;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
+use Generator;
 use Mews\Pos\Client\AbstractHttpClient;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\PayFlexV4PosSearchApiHttpClient;
@@ -90,9 +93,7 @@ class PayFlexV4PosSearchApiHttpClientTest extends TestCase
         $this->assertTrue($this->client->supportsTx(PosInterface::TX_TYPE_STATUS, PosInterface::MODEL_NON_SECURE));
     }
 
-    /**
-     * @dataProvider getApiUrlDataProvider
-     */
+    #[DataProvider('getApiUrlDataProvider')]
     public function testGetApiUrl(string $txType, string $paymentModel, string $expected): void
     {
         $actual = $this->client->getApiURL($txType, $paymentModel);
@@ -100,9 +101,7 @@ class PayFlexV4PosSearchApiHttpClientTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider requestDataProvider
-     */
+    #[DataProvider('requestDataProvider')]
     public function testRequest(
         string $txType,
         string $paymentModel,
@@ -166,7 +165,7 @@ class PayFlexV4PosSearchApiHttpClientTest extends TestCase
             ->method('sendRequest')
             ->willReturn($response);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->client->request(
             $txType,
             $paymentModel,
@@ -200,7 +199,7 @@ class PayFlexV4PosSearchApiHttpClientTest extends TestCase
             ->with($request)
             ->willReturn($response);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('İstek Başarısız!');
 
         $this->client->request(
@@ -222,7 +221,7 @@ class PayFlexV4PosSearchApiHttpClientTest extends TestCase
         ];
     }
 
-    public static function requestDataProvider(): \Generator
+    public static function requestDataProvider(): Generator
     {
         yield [
             'txType'             => PosInterface::TX_TYPE_STATUS,

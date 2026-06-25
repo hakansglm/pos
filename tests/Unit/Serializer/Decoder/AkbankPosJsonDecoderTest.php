@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\Serializer\Decoder;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
 use Mews\Pos\Serializer\Decoder\AkbankPosJsonDecoder;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -23,9 +25,7 @@ class AkbankPosJsonDecoderTest extends TestCase
         $this->decoder = new AkbankPosJsonDecoder();
     }
 
-    /**
-     * @dataProvider decodeDataProvider
-     */
+    #[DataProvider('decodeDataProvider')]
     public function testDecode(string $data, array $expected): void
     {
         $actual = $this->decoder->decode($data);
@@ -68,7 +68,7 @@ class AkbankPosJsonDecoderTest extends TestCase
             'responseCode'    => 'VPS-0000',
         ]);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->decoder->decode($input);
     }
 
