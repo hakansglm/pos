@@ -65,6 +65,7 @@ abstract class AbstractGateway implements PosInterface
     /**
      * @param array{
      *      gateway_configs?: array{
+     *           lang?: PosInterface::LANG_*,
      *           test_mode?: bool,
      *           disable_3d_hash_check?: bool
      *      },

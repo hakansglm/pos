@@ -27,7 +27,11 @@ class PosFactory
      *     banks: array<string, array{
      *          name: string,
      *          class?: class-string<T>,
-     *          lang?: PosInterface::LANG_*,
+     *          gateway_configs?: array{
+     *              lang?: PosInterface::LANG_*,
+     *              test_mode?: bool,
+     *              disable_3d_hash_check?: bool
+     *          },
      *          gateway_endpoints: array{
      *              payment_api: non-empty-string,
      *              query_api?: non-empty-string}
@@ -93,7 +97,11 @@ class PosFactory
      * @param array{
      *           name: string,
      *           class?: class-string,
-     *           lang?: PosInterface::LANG_*,
+     *           gateway_configs?: array{
+     *               lang?: PosInterface::LANG_*,
+     *               test_mode?: bool,
+     *               disable_3d_hash_check?: bool
+     *           },
      *           gateway_endpoints: array<HttpClientInterface::API_NAME_*, non-empty-string>
      *          }                              $apiConfig
      * @param EventDispatcherInterface         $eventDispatcher
@@ -113,7 +121,7 @@ class PosFactory
         $crypt                 = CryptFactory::createForGateway($gatewayClass, $logger);
         $requestValueMapper    = RequestValueMapperFactory::createForGateway($gatewayClass);
         $requestValueFormatter = RequestValueFormatterFactory::createForGateway($gatewayClass);
-        $defaultLang           = $apiConfig['lang'] ?? PosInterface::LANG_TR;
+        $defaultLang           = $apiConfig['gateway_configs']['lang'] ?? PosInterface::LANG_TR;
 
         $requestDataMapper     = RequestDataMapperFactory::createForGateway(
             $gatewayClass,

@@ -221,9 +221,9 @@ class PosFactoryTest extends TestCase
             $config    = [
                 'banks' => [
                     $configKey => [
-                        'name'              => 'Akbank',
-                        'class'             => $gatewayClass,
-                        'lang'              => $lang,
+                        'name'            => 'Akbank',
+                        'class'           => $gatewayClass,
+                        'gateway_configs' => ['lang' => $lang],
                         'gateway_endpoints' => $gatewayEndpoints,
                     ],
                 ],
