@@ -41,14 +41,6 @@ abstract class AbstractRequestDataMapper implements RequestDataMapperInterface
     /**
      * @inheritDoc
      */
-    public function getCrypt(): CryptInterface
-    {
-        return $this->crypt;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function isTestMode(): bool
     {
         return $this->testMode;

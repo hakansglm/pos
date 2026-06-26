@@ -86,11 +86,6 @@ class IyzicoPosRequestDataMapperTest extends TestCase
         $this->assertFalse($this->requestDataMapper::supports(AkbankPos::class));
     }
 
-    public function testGetCrypt(): void
-    {
-        $this->assertSame($this->cryptMock, $this->requestDataMapper->getCrypt());
-    }
-
     public function testIsTestModeDefaultsFalse(): void
     {
         $this->assertFalse($this->requestDataMapper->isTestMode());

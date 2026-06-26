@@ -6,7 +6,6 @@
 
 namespace Mews\Pos\DataMapper\Request\Mapper;
 
-use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Exception\UnsupportedTransactionTypeException;
@@ -30,11 +29,6 @@ interface RequestDataMapperInterface
      * @param bool $testMode
      */
     public function setTestMode(bool $testMode): void;
-
-    /**
-     * @return CryptInterface
-     */
-    public function getCrypt(): CryptInterface;
 
     /**
      * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType

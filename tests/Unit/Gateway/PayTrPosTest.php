@@ -101,10 +101,6 @@ class PayTrPosTest extends TestCase
         $this->loggerMock             = $this->createMock(LoggerInterface::class);
         $this->eventDispatcherMock    = $this->createMock(EventDispatcherInterface::class);
 
-        $this->requestMapperMock->expects(self::any())
-            ->method('getCrypt')
-            ->willReturn($this->cryptMock);
-
         $this->pos = $this->createGateway($this->config, $this->account);
 
         $this->card = CreditCardFactory::create('4355084355084358', '30', '12', '000', 'John Doe');
@@ -117,6 +113,7 @@ class PayTrPosTest extends TestCase
         $this->assertInstanceOf(PayTrPosAccount::class, $this->pos->getAccount());
         $this->assertSame($this->account, $this->pos->getAccount());
         $this->assertFalse($this->pos->isTestMode());
+        $this->assertSame($this->cryptMock, $this->pos->getCrypt());
     }
 
     #[TestWith([PosInterface::MODEL_3D_PAY, 'gateway_3d'])]
@@ -639,6 +636,7 @@ class PayTrPosTest extends TestCase
             $this->requestValueMapper,
             $this->requestMapperMock,
             $this->responseMapperMock,
+            $this->cryptMock,
             $this->eventDispatcherMock,
             $this->httpClientStrategyMock,
             $this->loggerMock,

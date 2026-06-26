@@ -82,7 +82,7 @@ class PayForPos extends AbstractGateway
 
         if (
             !$this->is3DHashCheckDisabled()
-            && !$this->requestDataMapper->getCrypt()->check3DHash($this->account, $gatewayResponseData)
+            && !$this->crypt->check3DHash($this->account, $gatewayResponseData)
         ) {
             throw new HashMismatchException();
         }

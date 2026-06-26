@@ -98,10 +98,6 @@ class Param3DHostPosTest extends TestCase
         $this->loggerMock             = $this->createMock(LoggerInterface::class);
         $this->eventDispatcherMock    = $this->createMock(EventDispatcherInterface::class);
 
-        $this->requestMapperMock->expects(self::any())
-            ->method('getCrypt')
-            ->willReturn($this->cryptMock);
-
         $this->pos = $this->createGateway($this->config);
     }
 
@@ -117,6 +113,7 @@ class Param3DHostPosTest extends TestCase
         $this->assertSame($this->account, $this->pos->getAccount());
         $this->assertSame([PosInterface::CURRENCY_TRY], $this->pos->getCurrencies());
         $this->assertFalse($this->pos->isTestMode());
+        $this->assertSame($this->cryptMock, $this->pos->getCrypt());
     }
 
     #[DataProvider('threeDFormDataProvider')]
@@ -381,6 +378,7 @@ class Param3DHostPosTest extends TestCase
             $this->requestValueMapperMock,
             $this->requestMapperMock,
             $this->responseMapperMock,
+            $this->cryptMock,
             $this->eventDispatcherMock,
             $this->httpClientStrategyMock,
             $this->loggerMock

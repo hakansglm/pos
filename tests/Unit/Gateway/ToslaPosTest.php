@@ -99,10 +99,6 @@ class ToslaPosTest extends TestCase
         $this->loggerMock             = $this->createMock(LoggerInterface::class);
         $this->eventDispatcherMock    = $this->createMock(EventDispatcherInterface::class);
 
-        $this->requestMapperMock->expects(self::any())
-            ->method('getCrypt')
-            ->willReturn($this->cryptMock);
-
         $this->pos = $this->createGateway($this->config);
 
         $this->card = CreditCardFactory::createForGateway($this->pos, '5555444433332222', '21', '12', '122', 'ahmet', CreditCardInterface::CARD_TYPE_VISA);
@@ -113,6 +109,7 @@ class ToslaPosTest extends TestCase
         $this->assertSame($this->config, $this->pos->getConfig());
         $this->assertSame($this->account, $this->pos->getAccount());
         $this->assertFalse($this->pos->isTestMode());
+        $this->assertSame($this->cryptMock, $this->pos->getCrypt());
     }
 
     public function testGet3DGatewayURL(): void
@@ -1131,6 +1128,7 @@ class ToslaPosTest extends TestCase
             $this->requestValueMapper,
             $this->requestMapperMock,
             $this->responseMapperMock,
+            $this->cryptMock,
             $this->eventDispatcherMock,
             $this->httpClientStrategyMock,
             $this->loggerMock,

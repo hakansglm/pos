@@ -114,7 +114,7 @@ class PosNetPos extends AbstractGateway
 
         if (
             !$this->is3DHashCheckDisabled()
-            && !$this->requestDataMapper->getCrypt()->check3DHash($this->account, $userVerifyResponse['oosResolveMerchantDataResponse'])
+            && !$this->crypt->check3DHash($this->account, $userVerifyResponse['oosResolveMerchantDataResponse'])
         ) {
             throw new HashMismatchException();
         }

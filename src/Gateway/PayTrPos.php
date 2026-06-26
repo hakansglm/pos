@@ -116,7 +116,7 @@ class PayTrPos extends AbstractGateway
          * Başarısız durumda ise sadece fail_message değeri döner. Bu durumda da hash kontrolüne gerek yok.
          * Hash kontrolünü sadece Bildirim URL'e gelen $_POST verisi için çalıştırıyoruz.
          */
-        if (count($gatewayResponseData) > 1 && (!$this->is3DHashCheckDisabled() && !$this->requestDataMapper->getCrypt()->check3DHash($this->account, $gatewayResponseData))) {
+        if (count($gatewayResponseData) > 1 && (!$this->is3DHashCheckDisabled() && !$this->crypt->check3DHash($this->account, $gatewayResponseData))) {
             throw new HashMismatchException();
         }
 
@@ -141,7 +141,7 @@ class PayTrPos extends AbstractGateway
          * Başarısız durumda ise sadece fail_message değeri döner. Bu durumda da hash kontrolüne gerek yok.
          * Hash kontrolünü sadece Bildirim URL'e gelen $_POST verisi için çalıştırıyoruz.
          */
-        if (count($gatewayResponseData) > 1 && (!$this->is3DHashCheckDisabled() && !$this->requestDataMapper->getCrypt()->check3DHash($this->account, $gatewayResponseData))) {
+        if (count($gatewayResponseData) > 1 && (!$this->is3DHashCheckDisabled() && !$this->crypt->check3DHash($this->account, $gatewayResponseData))) {
             throw new HashMismatchException();
         }
 

@@ -101,10 +101,6 @@ class PayForPosTest extends TestCase
         $this->loggerMock             = $this->createMock(LoggerInterface::class);
         $this->eventDispatcherMock    = $this->createMock(EventDispatcherInterface::class);
 
-        $this->requestMapperMock->expects(self::any())
-            ->method('getCrypt')
-            ->willReturn($this->cryptMock);
-
         $this->pos = $this->createGateway($this->config);
 
         $this->card = CreditCardFactory::createForGateway(
@@ -129,6 +125,7 @@ class PayForPosTest extends TestCase
         $this->assertFalse($this->pos->isTestMode());
         $this->assertSame($this->config['gateway_endpoints']['gateway_3d_host'], $this->pos->get3DGatewayURL(PosInterface::MODEL_3D_HOST));
         $this->assertSame($this->config['gateway_endpoints']['gateway_3d'], $this->pos->get3DGatewayURL());
+        $this->assertSame($this->cryptMock, $this->pos->getCrypt());
     }
 
     #[TestWith([true, '3d', 'https://vpostest.qnbfinansbank.com/Gateway/Default.aspx'])]
@@ -1036,6 +1033,7 @@ class PayForPosTest extends TestCase
             $this->requestValueMapper,
             $this->requestMapperMock,
             $this->responseMapperMock,
+            $this->cryptMock,
             $this->eventDispatcherMock,
             $this->httpClientStrategyMock,
             $this->loggerMock,

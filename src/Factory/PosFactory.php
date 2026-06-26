@@ -145,6 +145,7 @@ class PosFactory
             $requestValueMapper,
             $requestDataMapper,
             $responseDataMapper,
+            $crypt,
             $eventDispatcher,
             $httpClientStrategy,
             $logger

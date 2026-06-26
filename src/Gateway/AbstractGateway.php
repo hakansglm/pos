@@ -8,6 +8,7 @@ namespace Mews\Pos\Gateway;
 
 use LogicException;
 use Mews\Pos\Client\HttpClientStrategyInterface;
+use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\Request\Mapper\RequestDataMapperInterface;
 use Mews\Pos\DataMapper\Request\ValueMapper\RequestValueMapperInterface;
 use Mews\Pos\DataMapper\Response\Mapper\ResponseDataMapperInterface;
@@ -79,6 +80,7 @@ abstract class AbstractGateway implements PosInterface
         protected RequestValueMapperInterface $valueMapper,
         protected RequestDataMapperInterface  $requestDataMapper,
         protected ResponseDataMapperInterface $responseDataMapper,
+        protected CryptInterface              $crypt,
         protected EventDispatcherInterface    $eventDispatcher,
         protected HttpClientStrategyInterface $clientStrategy,
         protected LoggerInterface             $logger
@@ -119,6 +121,11 @@ abstract class AbstractGateway implements PosInterface
     public function getConfig(): array
     {
         return $this->config;
+    }
+
+    public function getCrypt(): CryptInterface
+    {
+        return $this->crypt;
     }
 
     /**
