@@ -9,6 +9,9 @@ namespace Mews\Pos\DataMapper\Request\ValueMapper;
 use Mews\Pos\Gateway\PayTrPos;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 class PayTrPosRequestValueMapper extends AbstractRequestValueMapper
 {
     /** @var non-empty-array<PosInterface::CURRENCY_*, string> */

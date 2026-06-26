@@ -10,6 +10,9 @@ use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Gateway\PayFlexCPV4Pos;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 class PayFlexCPV4PosRequestValueMapper extends AbstractRequestValueMapper
 {
     /**

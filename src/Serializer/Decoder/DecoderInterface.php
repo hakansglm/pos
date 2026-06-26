@@ -8,6 +8,9 @@ namespace Mews\Pos\Serializer\Decoder;
 
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
+/**
+ * @internal
+ */
 interface DecoderInterface
 {
     /**

@@ -9,6 +9,9 @@ namespace Mews\Pos\Serializer\Decoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Serializer;
 
+/**
+ * @internal
+ */
 class VakifKatilimPosXmlDecoder implements DecoderInterface
 {
     private Serializer $serializer;

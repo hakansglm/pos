@@ -12,6 +12,8 @@ use Mews\Pos\PosInterface;
 
 /**
  * Boa Pos is used by Kuveyt and VakifKatilim
+ *
+ * @internal
  */
 class BoaPosResponseValueFormatter extends AbstractResponseValueFormatter
 {

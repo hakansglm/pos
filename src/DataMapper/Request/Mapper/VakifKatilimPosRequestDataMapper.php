@@ -16,6 +16,8 @@ use Mews\Pos\PosInterface;
 
 /**
  * Creates request data for Vakif Katilim Gateway requests
+ *
+ * @internal
  */
 class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
 {

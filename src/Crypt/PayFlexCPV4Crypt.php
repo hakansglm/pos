@@ -10,6 +10,9 @@ use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Gateway\PayFlexCPV4Pos;
 
+/**
+ * @internal
+ */
 class PayFlexCPV4Crypt extends AbstractCrypt
 {
     /**

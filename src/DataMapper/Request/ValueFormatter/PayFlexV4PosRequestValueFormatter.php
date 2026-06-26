@@ -8,6 +8,9 @@ namespace Mews\Pos\DataMapper\Request\ValueFormatter;
 
 use Mews\Pos\Gateway\PayFlexV4Pos;
 
+/**
+ * @internal
+ */
 class PayFlexV4PosRequestValueFormatter implements RequestValueFormatterInterface
 {
     /**

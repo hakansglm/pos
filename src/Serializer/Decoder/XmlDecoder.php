@@ -10,6 +10,9 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Symfony\Component\Serializer\Serializer;
 
+/**
+ * @internal
+ */
 class XmlDecoder implements DecoderInterface
 {
     private Serializer $serializer;

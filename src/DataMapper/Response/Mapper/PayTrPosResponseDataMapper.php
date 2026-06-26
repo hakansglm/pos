@@ -14,6 +14,8 @@ use Mews\Pos\PosInterface;
  * Maps PayTR API responses to the unified response format.
  *
  * @link https://dev.paytr.com/
+ *
+ * @internal
  */
 class PayTrPosResponseDataMapper extends AbstractResponseDataMapper
 {

@@ -9,6 +9,9 @@ namespace Mews\Pos\Serializer\Decoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder as SymfonyJsonEncoder;
 use Symfony\Component\Serializer\Serializer;
 
+/**
+ * @internal
+ */
 class JsonDecoder implements DecoderInterface
 {
     private Serializer $serializer;

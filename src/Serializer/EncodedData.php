@@ -9,6 +9,9 @@ namespace Mews\Pos\Serializer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 
+/**
+ * @internal
+ */
 class EncodedData
 {
     public const FORMAT_XML = XmlEncoder::FORMAT;

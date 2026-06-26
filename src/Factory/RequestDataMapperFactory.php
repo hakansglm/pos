@@ -32,6 +32,8 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
  * RequestDataMapperFactory
+ *
+ * @internal
  */
 class RequestDataMapperFactory
 {

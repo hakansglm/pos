@@ -10,6 +10,9 @@ use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Gateway\InterPos;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 class InterPosRequestValueMapper extends AbstractRequestValueMapper
 {
     /**

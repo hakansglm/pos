@@ -9,6 +9,9 @@ namespace Mews\Pos\Crypt;
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Gateway\PosNetV1Pos;
 
+/**
+ * @internal
+ */
 class PosNetV1PosCrypt extends AbstractCrypt
 {
     /** @var string */

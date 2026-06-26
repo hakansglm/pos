@@ -10,6 +10,9 @@ use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Gateway\PosNetPos;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 class PosNetPosResponseDataMapper extends AbstractResponseDataMapper
 {
     /** @var string */

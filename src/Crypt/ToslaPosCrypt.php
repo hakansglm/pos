@@ -10,6 +10,9 @@ use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Gateway\ToslaPos;
 
+/**
+ * @internal
+ */
 class ToslaPosCrypt extends AbstractCrypt
 {
     /** @var string */

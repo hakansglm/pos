@@ -20,6 +20,8 @@ use Psr\Log\LoggerInterface;
 
 /**
  * PayTR HTTP client.
+ *
+ * @internal
  */
 class PayTrPosHttpClient extends AbstractHttpClient
 {

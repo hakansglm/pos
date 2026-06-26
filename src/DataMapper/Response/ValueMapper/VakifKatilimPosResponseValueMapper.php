@@ -9,6 +9,9 @@ namespace Mews\Pos\DataMapper\Response\ValueMapper;
 use Mews\Pos\Gateway\VakifKatilimPos;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 class VakifKatilimPosResponseValueMapper extends AbstractResponseValueMapper
 {
     /** @var array<string, PosInterface::CURRENCY_*> */

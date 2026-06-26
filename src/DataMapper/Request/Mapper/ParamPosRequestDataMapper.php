@@ -19,6 +19,8 @@ use Mews\Pos\PosInterface;
 
 /**
  * Creates request data for ParamPos Gateway requests
+ *
+ * @internal
  */
 class ParamPosRequestDataMapper extends AbstractRequestDataMapper
 {

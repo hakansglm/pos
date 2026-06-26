@@ -9,6 +9,9 @@ namespace Mews\Pos\DataMapper\Request\ValueMapper;
 use Mews\Pos\Gateway\GarantiPos;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 class GarantiPosRequestValueMapper extends AbstractRequestValueMapper
 {
     /**

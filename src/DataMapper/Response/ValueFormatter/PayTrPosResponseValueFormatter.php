@@ -9,6 +9,9 @@ namespace Mews\Pos\DataMapper\Response\ValueFormatter;
 use Mews\Pos\Gateway\PayTrPos;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 class PayTrPosResponseValueFormatter extends AbstractResponseValueFormatter
 {
     /** @inheritDoc */

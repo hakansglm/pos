@@ -9,6 +9,9 @@ namespace Mews\Pos\DataMapper\Response\ValueMapper;
 use Mews\Pos\Gateway\PayFlexV4Pos;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 class PayFlexV4PosResponseValueMapper extends AbstractResponseValueMapper
 {
     /** @var array<string|int, PosInterface::CURRENCY_*> */

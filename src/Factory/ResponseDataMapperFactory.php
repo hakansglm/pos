@@ -30,6 +30,8 @@ use Psr\Log\LoggerInterface;
 
 /**
  * ResponseDataMapperFactory
+ *
+ * @internal
  */
 class ResponseDataMapperFactory
 {

@@ -11,6 +11,9 @@ use Mews\Pos\Model\Account\PosNetPosAccount;
 use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Gateway\PosNetPos;
 
+/**
+ * @internal
+ */
 class PosNetPosCrypt extends AbstractCrypt
 {
     /** @var string */

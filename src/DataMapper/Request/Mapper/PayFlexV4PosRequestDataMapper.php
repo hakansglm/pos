@@ -17,6 +17,8 @@ use Mews\Pos\PosInterface;
 
 /**
  * Creates request data for PayFlex V4 Gateway requests
+ *
+ * @internal
  */
 class PayFlexV4PosRequestDataMapper extends AbstractRequestDataMapper
 {

@@ -19,6 +19,8 @@ use Mews\Pos\PosInterface;
 
 /**
  * Creates request data for GarantiPos Gateway requests
+ *
+ * @internal
  */
 class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
 {

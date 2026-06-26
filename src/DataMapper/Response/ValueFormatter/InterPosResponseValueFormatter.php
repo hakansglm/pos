@@ -9,6 +9,9 @@ namespace Mews\Pos\DataMapper\Response\ValueFormatter;
 use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Gateway\InterPos;
 
+/**
+ * @internal
+ */
 class InterPosResponseValueFormatter extends AbstractResponseValueFormatter
 {
     /**

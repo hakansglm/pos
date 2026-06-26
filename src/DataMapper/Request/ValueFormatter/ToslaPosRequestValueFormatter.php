@@ -8,6 +8,9 @@ namespace Mews\Pos\DataMapper\Request\ValueFormatter;
 
 use Mews\Pos\Gateway\ToslaPos;
 
+/**
+ * @internal
+ */
 class ToslaPosRequestValueFormatter implements RequestValueFormatterInterface
 {
     /**

@@ -8,6 +8,9 @@ namespace Mews\Pos\Serializer\Encoder;
 
 use Mews\Pos\Serializer\EncodedData;
 
+/**
+ * @internal
+ */
 interface EncoderInterface
 {
     /**

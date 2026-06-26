@@ -26,6 +26,8 @@ use Psr\Log\LoggerInterface;
 
 /**
  * CryptFactory
+ *
+ * @internal
  */
 class CryptFactory
 {

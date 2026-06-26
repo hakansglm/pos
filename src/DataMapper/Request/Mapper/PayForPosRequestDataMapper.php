@@ -15,6 +15,8 @@ use Mews\Pos\PosInterface;
 
 /**
  * Creates request data for PayForPos Gateway requests
+ *
+ * @internal
  */
 class PayForPosRequestDataMapper extends AbstractRequestDataMapper
 {

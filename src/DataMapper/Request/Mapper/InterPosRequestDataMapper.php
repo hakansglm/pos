@@ -15,6 +15,8 @@ use Mews\Pos\PosInterface;
 
 /**
  * Creates request data for KuveytPos Gateway requests
+ *
+ * @internal
  */
 class InterPosRequestDataMapper extends AbstractRequestDataMapper
 {

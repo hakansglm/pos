@@ -13,6 +13,8 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  *
  * The class provides functionality to normalize data arrays by adding a given prefix to each key.
  * It supports normalization only when the format is "xml" and a prefix is defined in the context.
+ *
+ * @internal
  */
 class XmlPrefixNormalizer implements NormalizerInterface
 {

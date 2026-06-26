@@ -17,6 +17,9 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @internal
+ */
 class PosNetPosHttpClient extends AbstractHttpClient
 {
     public function __construct(

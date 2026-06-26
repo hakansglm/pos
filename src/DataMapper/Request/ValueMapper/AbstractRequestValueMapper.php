@@ -10,6 +10,9 @@ use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Exception\UnsupportedTransactionTypeException;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 abstract class AbstractRequestValueMapper implements RequestValueMapperInterface
 {
     /** @var array<CreditCardInterface::CARD_TYPE_*, string> */

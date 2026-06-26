@@ -17,6 +17,9 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @internal
+ */
 abstract class AbstractIyzicoPosHttpClient extends AbstractHttpClient
 {
     protected IyzicoPosCrypt $crypt;

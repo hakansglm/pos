@@ -11,6 +11,8 @@ use Mews\Pos\PosInterface;
 
 /**
  * Value mapper for KuveytPos gateway
+ *
+ * @internal
  */
 class KuveytPosResponseValueMapper extends AbstractResponseValueMapper
 {

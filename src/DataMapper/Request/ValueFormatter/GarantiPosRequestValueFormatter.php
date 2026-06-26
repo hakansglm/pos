@@ -9,6 +9,9 @@ namespace Mews\Pos\DataMapper\Request\ValueFormatter;
 use Mews\Pos\Gateway\GarantiPos;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 class GarantiPosRequestValueFormatter implements RequestValueFormatterInterface
 {
     /**

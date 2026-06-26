@@ -9,6 +9,9 @@ namespace Mews\Pos\DataMapper\Request\ValueFormatter;
 use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Gateway\AssecoPos;
 
+/**
+ * @internal
+ */
 class AssecoPosRequestValueFormatter implements RequestValueFormatterInterface
 {
     /**

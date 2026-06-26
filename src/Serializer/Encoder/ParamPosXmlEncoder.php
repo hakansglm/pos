@@ -10,6 +10,9 @@ use Mews\Pos\Serializer\EncodedData;
 use Symfony\Component\Serializer\Encoder\XmlEncoder as SymfonyXmlEncoder;
 use Symfony\Component\Serializer\Serializer;
 
+/**
+ * @internal
+ */
 class ParamPosXmlEncoder implements EncoderInterface
 {
     private Serializer $serializer;

@@ -9,6 +9,9 @@ namespace Mews\Pos\DataMapper\Response\ValueMapper;
 use Mews\Pos\Gateway\IyzicoPos;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 class IyzicoPosResponseValueMapper extends AbstractResponseValueMapper
 {
     /** @var array<string, PosInterface::CURRENCY_*> */

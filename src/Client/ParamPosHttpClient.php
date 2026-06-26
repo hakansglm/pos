@@ -19,6 +19,9 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @internal
+ */
 class ParamPosHttpClient extends AbstractHttpClient
 {
     public function __construct(

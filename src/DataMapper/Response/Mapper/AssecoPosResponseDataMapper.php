@@ -12,6 +12,8 @@ use Mews\Pos\PosInterface;
 
 /**
  * @phpstan-type PaymentStatusModel array<string, mixed>
+ *
+ * @internal
  */
 class AssecoPosResponseDataMapper extends AbstractResponseDataMapper
 {

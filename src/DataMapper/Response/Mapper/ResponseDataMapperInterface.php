@@ -8,6 +8,9 @@ namespace Mews\Pos\DataMapper\Response\Mapper;
 
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 interface ResponseDataMapperInterface extends PaymentResponseMapperInterface, NonPaymentResponseMapperInterface
 {
     /** @var string */

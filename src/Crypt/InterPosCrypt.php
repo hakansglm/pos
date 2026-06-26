@@ -10,6 +10,9 @@ use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Gateway\InterPos;
 
+/**
+ * @internal
+ */
 class InterPosCrypt extends AbstractCrypt
 {
     /**

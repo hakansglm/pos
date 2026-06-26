@@ -10,6 +10,9 @@ use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Gateway\VakifKatilimPos;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 class VakifKatilimPosResponseDataMapper extends AbstractResponseDataMapper
 {
     /**

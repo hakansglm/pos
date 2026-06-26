@@ -11,6 +11,9 @@ use Psr\Log\LoggerInterface;
 use RecursiveArrayIterator;
 use RecursiveIteratorIterator;
 
+/**
+ * @internal
+ */
 abstract class AbstractCrypt implements CryptInterface
 {
     /** @var string */

@@ -17,6 +17,8 @@ use Mews\Pos\PosInterface;
 
 /**
  * Creates request data for AkbankPos Gateway requests
+ *
+ * @internal
  */
 class AkbankPosRequestDataMapper extends AbstractRequestDataMapper
 {

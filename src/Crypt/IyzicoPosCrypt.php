@@ -11,6 +11,9 @@ use Mews\Pos\Model\Account\IyzicoPosAccount;
 use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Gateway\IyzicoPos;
 
+/**
+ * @internal
+ */
 class IyzicoPosCrypt extends AbstractCrypt
 {
     /** @var string */

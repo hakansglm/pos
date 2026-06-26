@@ -10,6 +10,9 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder as SymfonyJsonEncoder;
 use Symfony\Component\Serializer\Serializer;
 
+/**
+ * @internal
+ */
 class AkbankPosJsonDecoder implements DecoderInterface
 {
     private Serializer $serializer;

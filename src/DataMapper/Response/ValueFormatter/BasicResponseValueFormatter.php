@@ -11,6 +11,9 @@ use Mews\Pos\Gateway\PayFlexCPV4Pos;
 use Mews\Pos\Gateway\PayFlexV4Pos;
 use Mews\Pos\Gateway\PayForPos;
 
+/**
+ * @internal
+ */
 class BasicResponseValueFormatter extends AbstractResponseValueFormatter
 {
     /**

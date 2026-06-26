@@ -9,6 +9,9 @@ namespace Mews\Pos\DataMapper\Request\ValueFormatter;
 use Mews\Pos\Gateway\PayTrPos;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 class PayTrPosRequestValueFormatter implements RequestValueFormatterInterface
 {
     /** @inheritDoc */

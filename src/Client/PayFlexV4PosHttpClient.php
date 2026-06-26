@@ -19,6 +19,9 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Serializer\Encoder\XmlEncoder as SymfonyXmlEncoder;
 
+/**
+ * @internal
+ */
 class PayFlexV4PosHttpClient extends AbstractHttpClient
 {
     public function __construct(

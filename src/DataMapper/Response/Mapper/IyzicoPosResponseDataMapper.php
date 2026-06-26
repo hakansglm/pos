@@ -14,6 +14,8 @@ use Mews\Pos\PosInterface;
 
 /**
  * Maps iyzico API responses to the unified response format.
+ *
+ * @internal
  */
 class IyzicoPosResponseDataMapper extends AbstractResponseDataMapper
 {

@@ -17,6 +17,8 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
  * AbstractRequestDataMapper
+ *
+ * @internal
  */
 abstract class AbstractRequestDataMapper implements RequestDataMapperInterface
 {

@@ -15,6 +15,8 @@ use Mews\Pos\PosInterface;
 
 /**
  * Creates request data for Tosla Gateway requests
+ *
+ * @internal
  */
 class ToslaPosRequestDataMapper extends AbstractRequestDataMapper
 {

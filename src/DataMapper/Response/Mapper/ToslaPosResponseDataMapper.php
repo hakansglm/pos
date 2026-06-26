@@ -12,6 +12,8 @@ use Mews\Pos\PosInterface;
 
 /**
  * maps the response of Tosla API requests
+ *
+ * @internal
  */
 class ToslaPosResponseDataMapper extends AbstractResponseDataMapper
 {

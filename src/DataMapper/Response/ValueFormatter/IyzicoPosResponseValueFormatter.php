@@ -9,6 +9,9 @@ namespace Mews\Pos\DataMapper\Response\ValueFormatter;
 use Mews\Pos\Gateway\IyzicoPos;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 class IyzicoPosResponseValueFormatter extends AbstractResponseValueFormatter
 {
     /**

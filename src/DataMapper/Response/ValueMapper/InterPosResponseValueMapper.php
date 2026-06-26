@@ -9,6 +9,9 @@ namespace Mews\Pos\DataMapper\Response\ValueMapper;
 use Mews\Pos\Gateway\InterPos;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 class InterPosResponseValueMapper extends AbstractResponseValueMapper
 {
     /** @var array<string|int, PosInterface::CURRENCY_*> */

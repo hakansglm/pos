@@ -11,6 +11,9 @@ use Mews\Pos\Serializer\XmlPrefixNormalizer;
 use Symfony\Component\Serializer\Encoder\XmlEncoder as SymfonyXmlEncoder;
 use Symfony\Component\Serializer\Serializer;
 
+/**
+ * @internal
+ */
 class KuveytPosSoapApiXmlEncoder implements EncoderInterface
 {
     private Serializer $serializer;

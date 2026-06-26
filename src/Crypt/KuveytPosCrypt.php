@@ -11,6 +11,9 @@ use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Gateway\KuveytPos;
 use Mews\Pos\Gateway\VakifKatilimPos;
 
+/**
+ * @internal
+ */
 class KuveytPosCrypt extends AbstractCrypt
 {
     /**

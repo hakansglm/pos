@@ -12,6 +12,9 @@ use Mews\Pos\PosInterface;
 use Psr\Http\Client\ClientExceptionInterface;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
+/**
+ * @internal
+ */
 interface HttpClientInterface
 {
     /**

@@ -16,6 +16,8 @@ use Mews\Pos\PosInterface;
  * Creates request data for PayTR API requests.
  *
  * @link https://dev.paytr.com/
+ *
+ * @internal
  */
 class PayTrPosRequestDataMapper extends AbstractRequestDataMapper
 {

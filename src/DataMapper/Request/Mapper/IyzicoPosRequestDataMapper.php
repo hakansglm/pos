@@ -14,6 +14,8 @@ use Mews\Pos\PosInterface;
 
 /**
  * Creates request data for iyzico API requests.
+ *
+ * @internal
  */
 class IyzicoPosRequestDataMapper extends AbstractRequestDataMapper
 {

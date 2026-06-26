@@ -8,6 +8,9 @@ namespace Mews\Pos\DataMapper\Request\ValueFormatter;
 
 use Mews\Pos\Gateway\VakifKatilimPos;
 
+/**
+ * @internal
+ */
 class VakifKatilimPosRequestValueFormatter implements RequestValueFormatterInterface
 {
     /**

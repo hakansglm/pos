@@ -15,6 +15,8 @@ use Mews\Pos\PosInterface;
 
 /**
  * Creates request data for Asseco/Payten Gateway requests that supports v3 Hash algorithm
+ *
+ * @internal
  */
 class AssecoPosRequestDataMapper extends AbstractRequestDataMapper
 {

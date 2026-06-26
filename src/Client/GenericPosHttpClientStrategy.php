@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Client;
 
+/**
+ * @internal
+ */
 class GenericPosHttpClientStrategy implements HttpClientStrategyInterface
 {
     /**

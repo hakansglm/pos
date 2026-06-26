@@ -27,6 +27,8 @@ use Mews\Pos\PosInterface;
 
 /**
  * RequestValueMapperFactory
+ *
+ * @internal
  */
 class RequestValueMapperFactory
 {

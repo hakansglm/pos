@@ -18,6 +18,8 @@ use Mews\Pos\PosInterface;
 
 /**
  * Creates request data for PosNetV1Pos Gateway requests
+ *
+ * @internal
  */
 class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
 {

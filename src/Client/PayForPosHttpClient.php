@@ -18,6 +18,9 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @internal
+ */
 class PayForPosHttpClient extends AbstractHttpClient
 {
     public function __construct(

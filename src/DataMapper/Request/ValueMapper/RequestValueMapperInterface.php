@@ -12,6 +12,8 @@ use Mews\Pos\PosInterface;
 
 /**
  * Maps order/request values to values that are expected by the POS API.
+ *
+ * @internal
  */
 interface RequestValueMapperInterface
 {

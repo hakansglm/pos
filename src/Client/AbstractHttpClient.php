@@ -23,6 +23,8 @@ use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
 /**
  * PSR18 HTTP Client wrapper
+ *
+ * @internal
  */
 abstract class AbstractHttpClient implements HttpClientInterface
 {

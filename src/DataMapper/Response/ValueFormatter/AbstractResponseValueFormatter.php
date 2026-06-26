@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\DataMapper\Response\ValueFormatter;
 
+/**
+ * @internal
+ */
 abstract class AbstractResponseValueFormatter implements ResponseValueFormatterInterface
 {
     /**

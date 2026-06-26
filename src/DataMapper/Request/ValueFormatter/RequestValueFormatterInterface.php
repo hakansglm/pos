@@ -10,6 +10,8 @@ use Mews\Pos\PosInterface;
 
 /**
  * Formats values according to API requirements
+ *
+ * @internal
  */
 interface RequestValueFormatterInterface
 {

@@ -25,6 +25,9 @@ use Mews\Pos\DataMapper\Response\ValueMapper\ToslaPosResponseValueMapper;
 use Mews\Pos\DataMapper\Response\ValueMapper\VakifKatilimPosResponseValueMapper;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 class ResponseValueMapperFactory
 {
     /**

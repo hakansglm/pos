@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\DataMapper\Response\Mapper;
 
+/**
+ * @internal
+ */
 interface NonPaymentResponseMapperInterface
 {
     /**

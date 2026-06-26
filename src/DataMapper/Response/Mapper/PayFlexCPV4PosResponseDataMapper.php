@@ -10,6 +10,9 @@ use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Gateway\PayFlexCPV4Pos;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 class PayFlexCPV4PosResponseDataMapper extends AbstractResponseDataMapper
 {
     /** @var string */

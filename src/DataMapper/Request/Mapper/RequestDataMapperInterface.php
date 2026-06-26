@@ -11,6 +11,9 @@ use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Exception\UnsupportedTransactionTypeException;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 interface RequestDataMapperInterface
 {
     /**

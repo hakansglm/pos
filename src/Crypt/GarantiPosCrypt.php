@@ -10,6 +10,9 @@ use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Account\GarantiPosAccount;
 use Mews\Pos\Gateway\GarantiPos;
 
+/**
+ * @internal
+ */
 class GarantiPosCrypt extends AbstractCrypt
 {
     /** @var string */

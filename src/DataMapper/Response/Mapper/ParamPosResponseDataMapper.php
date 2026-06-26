@@ -11,6 +11,9 @@ use Mews\Pos\Gateway\Param3DHostPos;
 use Mews\Pos\Gateway\ParamPos;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 class ParamPosResponseDataMapper extends AbstractResponseDataMapper
 {
     /**

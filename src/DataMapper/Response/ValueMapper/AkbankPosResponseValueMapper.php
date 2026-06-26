@@ -9,6 +9,9 @@ namespace Mews\Pos\DataMapper\Response\ValueMapper;
 use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 class AkbankPosResponseValueMapper extends AbstractResponseValueMapper
 {
     /** @var array<int, PosInterface::CURRENCY_*> */

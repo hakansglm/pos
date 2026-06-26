@@ -14,6 +14,8 @@ use Mews\Pos\PosInterface;
 
 /**
  * @phpstan-type PaymentStatusModel array{Order: array<string, string|array<string, string|null>>, Response: array<string, string>, Transaction: array<string, string>|array{Response: array<string, string>}}
+ *
+ * @internal
  */
 class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
 {

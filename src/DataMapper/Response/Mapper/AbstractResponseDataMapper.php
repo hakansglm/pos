@@ -11,6 +11,9 @@ use Mews\Pos\DataMapper\Response\ValueMapper\ResponseValueMapperInterface;
 use Mews\Pos\PosInterface;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @internal
+ */
 abstract class AbstractResponseDataMapper implements ResponseDataMapperInterface
 {
     /** @var string */

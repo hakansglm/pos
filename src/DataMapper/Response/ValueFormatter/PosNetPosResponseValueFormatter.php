@@ -12,6 +12,8 @@ use Mews\Pos\PosInterface;
 
 /**
  * Value formatter for PosNet and PosNetV1Pos
+ *
+ * @internal
  */
 class PosNetPosResponseValueFormatter extends AbstractResponseValueFormatter
 {

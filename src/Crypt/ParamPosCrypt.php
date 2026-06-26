@@ -11,6 +11,9 @@ use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Gateway\Param3DHostPos;
 use Mews\Pos\Gateway\ParamPos;
 
+/**
+ * @internal
+ */
 class ParamPosCrypt extends AbstractCrypt
 {
     /**

@@ -9,6 +9,9 @@ namespace Mews\Pos\DataMapper\Request\ValueMapper;
 use Mews\Pos\Gateway\PayForPos;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 class PayForPosRequestValueMapper extends AbstractRequestValueMapper
 {
     /**

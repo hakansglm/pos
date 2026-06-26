@@ -10,6 +10,8 @@ use Mews\Pos\Model\Account\AbstractPosAccount;
 
 /**
  * Dummy crypt that can be used if there is no cryptography logic needed.
+ *
+ * @internal
  */
 class NullCrypt extends AbstractCrypt
 {

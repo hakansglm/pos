@@ -10,6 +10,9 @@ use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Gateway\KuveytPos;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 class KuveytPosRequestValueMapper extends AbstractRequestValueMapper
 {
     /**

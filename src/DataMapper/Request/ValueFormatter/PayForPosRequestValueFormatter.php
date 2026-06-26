@@ -8,6 +8,9 @@ namespace Mews\Pos\DataMapper\Request\ValueFormatter;
 
 use Mews\Pos\Gateway\PayForPos;
 
+/**
+ * @internal
+ */
 class PayForPosRequestValueFormatter implements RequestValueFormatterInterface
 {
     /**

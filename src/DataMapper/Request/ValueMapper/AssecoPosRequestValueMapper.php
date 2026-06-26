@@ -9,6 +9,9 @@ namespace Mews\Pos\DataMapper\Request\ValueMapper;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 class AssecoPosRequestValueMapper extends AbstractRequestValueMapper
 {
     /**

@@ -19,6 +19,8 @@ use Mews\Pos\PosInterface;
 
 /**
  * Creates request data for Param3DHostPos Gateway requests
+ *
+ * @internal
  */
 class Param3DHostPosRequestDataMapper extends AbstractRequestDataMapper
 {

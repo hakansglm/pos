@@ -14,6 +14,8 @@ use Mews\Pos\PosInterface;
 
 /**
  * maps responses of AkbankPos
+ *
+ * @internal
  */
 class AkbankPosResponseDataMapper extends AbstractResponseDataMapper
 {

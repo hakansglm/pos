@@ -20,6 +20,9 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @internal
+ */
 class IyzicoPosQueryApiHttpClient extends AbstractIyzicoPosHttpClient
 {
     public function __construct(

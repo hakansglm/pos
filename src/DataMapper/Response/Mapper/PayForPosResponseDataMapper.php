@@ -9,6 +9,9 @@ namespace Mews\Pos\DataMapper\Response\Mapper;
 use Mews\Pos\Gateway\PayForPos;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 class PayForPosResponseDataMapper extends AbstractResponseDataMapper
 {
     /**

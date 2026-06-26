@@ -9,6 +9,9 @@ namespace Mews\Pos\Crypt;
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Gateway\PayTrPos;
 
+/**
+ * @internal
+ */
 class PayTrPosCrypt extends AbstractCrypt
 {
     /** @var string */

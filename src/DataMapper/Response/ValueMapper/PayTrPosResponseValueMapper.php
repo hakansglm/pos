@@ -9,6 +9,9 @@ namespace Mews\Pos\DataMapper\Response\ValueMapper;
 use Mews\Pos\Gateway\PayTrPos;
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 class PayTrPosResponseValueMapper extends AbstractResponseValueMapper
 {
     /**

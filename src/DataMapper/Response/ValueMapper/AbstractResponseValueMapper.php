@@ -8,6 +8,9 @@ namespace Mews\Pos\DataMapper\Response\ValueMapper;
 
 use Mews\Pos\PosInterface;
 
+/**
+ * @internal
+ */
 abstract class AbstractResponseValueMapper implements ResponseValueMapperInterface
 {
     /** @var array<string|int, PosInterface::CURRENCY_*> */
