@@ -52,34 +52,6 @@ try {
 }
 ```
 
-**_iframe_form.php** (form.php icinde kullanilacak)
-```php
-<!DOCTYPE HTML>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title></title>
-</head>
-<body>
-<form method="<?= $formData['method']; ?>" action="<?= $formData['gateway']; ?>" name="redirect-form"
-      class="redirect-form" role="form">
-    <?php foreach ($formData['inputs'] as $key => $value) : ?>
-        <input type="hidden" name="<?= $key; ?>" value="<?= $value; ?>">
-    <?php endforeach; ?>
-    <div class="text-center">Redirecting...</div>
-</form>
-<script>
-    setTimeout(function () {
-        document.forms['redirect-form'].submit();
-    }, 1000);
-<\/script>
-</body>
-</html>
-```
-
 **form.php (kullanıcıdan kredi kart bilgileri alındıktan sonra çalışacak kod)**
 
 ```php
@@ -108,6 +80,7 @@ $order = [
  * Siz veri tabanı ya da farklı bir storage mediumda kullanabilirsiniz.
  */
 $_SESSION['order'] = $order;
+$_SESSION['tx'] = $transactionType;
 
 // Kredi kartı bilgileri
 try {
@@ -145,7 +118,15 @@ try {
          * form verisini oluşturmak için true yapabilirsiniz.
          * Yine de bazı gatewaylerde kartsız form verisi oluşturulamıyor.
          */
-        false // optional, default: false
+        false, // optional, default: false
+        /**
+         * İsteğe bağlı: 3D form verisinin dönüş formatını belirtir.
+         * PosInterface::FORM_FORMAT_ARRAY: gateway URL, HTTP metodu ve form alanlarını içeren dizi döner.
+         * PosInterface::FORM_FORMAT_HTML: hazır HTML form string'i döner.
+         * Belirtilmezse (null) gateway'in varsayılan formatı kullanılır.
+         * Desteklenmeyen format talep edilirse UnsupportedFormFormatException fırlatılır.
+         */
+        // null // $formFormat, default: null
     );
 } catch (\InvalidArgumentException $e) {
     // örneğin kart bilgisi sağlanmadığında bu exception'i alırsınız.
@@ -158,11 +139,15 @@ try {
     exit;
 }
 
+$gatewayUrl   = null;
+$renderedForm = null;
 if (is_string($formData)) {
     $renderedForm = $formData;
+} elseif ($formData['method'] === 'GET' && $formData['inputs'] === []) {
+    $gatewayUrl = $formData['gateway'];
 } else {
     ob_start();
-    include('_iframe_form.php');
+    include('_redirect_iframe_or_popup_window_form.php');
     $renderedForm = ob_get_clean();
 }
 ?>
@@ -172,7 +157,7 @@ if (is_string($formData)) {
     $renderedForm içinde 3D formun verileriyle oluşturulan HTML form bulunur.
     alttaki kodlar ise bu $renderedForm verisini seçilen $flowType'a göre
     iframe modal box içine veya pop up window içine basar.
-    NOT: ornek JS kodlar Boostrap ve jQuery kullanarak yapilmistir.
+    NOT: ornek JS kodlar Bootstrap 5 kullanarak yapilmistir.
 -->
 <div class="alert alert-dismissible" role="alert" id="result-alert">
     <!-- buraya odeme basarili olup olmadini alttaki JS kodlariyla basiyoruz. -->
@@ -208,9 +193,14 @@ if (is_string($formData)) {
 </script>
 
     <div class="modal fade" tabindex="-1" role="dialog" id="iframe-modal" data-keyboard="false" data-backdrop="static">
-        <div class="modal-dialog" role="document" id="iframe-modal-dialog" style="width: 426px;">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-                    style="color: white; opacity: 1;"><span aria-hidden="true">&times;</span></button>
+        <div class="modal-dialog" role="document" style="width: 426px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="iframe-modal-body">
+                </div>
+            </div>
         </div>
     </div>
     <script>
@@ -227,6 +217,9 @@ if (is_string($formData)) {
             myModal.hide();
         });
 
+        const iframeSrc    = <?= json_encode($gatewayUrl); ?>;
+        const iframeSrcdoc = <?= json_encode($renderedForm); ?>;
+
         /**
          * modal box'ta iframe ile ödeme yöntemi seçilmiş.
          * modal box içinde yeni iframe oluşturuyoruz ve iframe içine $renderedForm verisini basıyoruz.
@@ -235,9 +228,11 @@ if (is_string($formData)) {
         document.getElementById("iframe-modal-body").appendChild(iframe);
         iframe.style.height = '500px';
         iframe.style.width = '410px';
-        iframe.contentWindow.document.open();
-        iframe.contentWindow.document.write(`<?= $renderedForm; ?>`);
-        iframe.contentWindow.document.close();
+        if (iframeSrc !== null) {
+            iframe.src = iframeSrc;
+        } else {
+            iframe.srcdoc = iframeSrcdoc;
+        }
         let modalElement = document.getElementById('iframe-modal');
         let myModal = new bootstrap.Modal(modalElement, {
             keyboard: false
