@@ -43,7 +43,7 @@ class ToslaPosCrypt extends AbstractCrypt
             throw new \LogicException('Account storeKey eksik!');
         }
 
-        $data['ClientId'] = $posAccount->getClientId();
+        $data['ClientId'] = $posAccount->getMerchantId();
         $data['ApiUser']  = $posAccount->getUsername();
 
         $actualHash = $this->hashFromParams($posAccount, $data, $data['HashParameters'], ',');

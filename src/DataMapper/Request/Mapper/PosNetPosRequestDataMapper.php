@@ -58,7 +58,7 @@ class PosNetPosRequestDataMapper extends AbstractRequestDataMapper
         $mappedOrder['currency'] = (string) $this->valueMapper->mapCurrency($order['currency']);
 
         $requestData = [
-            'mid'         => $posAccount->getClientId(),
+            'mid'         => $posAccount->getMerchantId(),
             'tid'         => $posAccount->getTerminalId(),
             'oosTranData' => [
                 'bankData'     => $responseData['BankPacket'],
@@ -85,7 +85,7 @@ class PosNetPosRequestDataMapper extends AbstractRequestDataMapper
         $txType = $this->valueMapper->mapTxType($txType);
 
         return [
-            'mid'               => $posAccount->getClientId(),
+            'mid'               => $posAccount->getMerchantId(),
             'tid'               => $posAccount->getTerminalId(),
             'tranDateRequired'  => '1',
             strtolower($txType) => [
@@ -112,7 +112,7 @@ class PosNetPosRequestDataMapper extends AbstractRequestDataMapper
         $txType = $this->valueMapper->mapTxType(PosInterface::TX_TYPE_PAY_POST_AUTH);
 
         return [
-            'mid'                => $posAccount->getClientId(),
+            'mid'                => $posAccount->getMerchantId(),
             'tid'                => $posAccount->getTerminalId(),
             'tranDateRequired'   => '1',
             \strtolower($txType) => [
@@ -136,7 +136,7 @@ class PosNetPosRequestDataMapper extends AbstractRequestDataMapper
         $txType = $this->valueMapper->mapTxType(PosInterface::TX_TYPE_STATUS);
 
         return [
-            'mid'   => $posAccount->getClientId(),
+            'mid'   => $posAccount->getMerchantId(),
             'tid'   => $posAccount->getTerminalId(),
             $txType => [
                 'orderID' => $this->valueFormatter->formatOrderId($order['id'], PosInterface::TX_TYPE_STATUS, $order['payment_model']),
@@ -170,7 +170,7 @@ class PosNetPosRequestDataMapper extends AbstractRequestDataMapper
         }
 
         return [
-            'mid'              => $posAccount->getClientId(),
+            'mid'              => $posAccount->getMerchantId(),
             'tid'              => $posAccount->getTerminalId(),
             'tranDateRequired' => '1',
             $txType            => $txTypeData,
@@ -199,7 +199,7 @@ class PosNetPosRequestDataMapper extends AbstractRequestDataMapper
         }
 
         return [
-            'mid'              => $posAccount->getClientId(),
+            'mid'              => $posAccount->getMerchantId(),
             'tid'              => $posAccount->getTerminalId(),
             'tranDateRequired' => '1',
             $txType            => $txTypeData,
@@ -249,7 +249,7 @@ class PosNetPosRequestDataMapper extends AbstractRequestDataMapper
         $order = $this->preparePaymentOrder($order);
 
         $inputs = [
-            'mid'               => $posAccount->getClientId(),
+            'mid'               => $posAccount->getMerchantId(),
             'posnetID'          => $posAccount->getPosNetId(),
             'posnetData'        => $extraData['data1'], //Ödeme bilgilerini içermektedir.
             'posnetData2'       => $extraData['data2'], //Kart bilgileri request içerisinde bulunuyorsa bu alan oluşturulmaktadır
@@ -292,7 +292,7 @@ class PosNetPosRequestDataMapper extends AbstractRequestDataMapper
         $order = $this->preparePaymentOrder($order);
 
         return [
-            'mid'            => $posAccount->getClientId(),
+            'mid'            => $posAccount->getMerchantId(),
             'tid'            => $posAccount->getTerminalId(),
             'oosRequestData' => [
                 'posnetid'       => $posAccount->getPosNetId(),
@@ -326,7 +326,7 @@ class PosNetPosRequestDataMapper extends AbstractRequestDataMapper
         $mappedOrder['currency'] = (string) $this->valueMapper->mapCurrency($order['currency']);
 
         $requestData = [
-            'mid'                    => $posAccount->getClientId(),
+            'mid'                    => $posAccount->getMerchantId(),
             'tid'                    => $posAccount->getTerminalId(),
             'oosResolveMerchantData' => [
                 'bankData'     => $responseData['BankPacket'],
@@ -348,7 +348,7 @@ class PosNetPosRequestDataMapper extends AbstractRequestDataMapper
     public function createCustomQueryRequestData(AbstractPosAccount $posAccount, array $requestData): array
     {
         return $requestData + [
-                'mid' => $posAccount->getClientId(),
+                'mid' => $posAccount->getMerchantId(),
                 'tid' => $posAccount->getTerminalId(),
             ];
     }

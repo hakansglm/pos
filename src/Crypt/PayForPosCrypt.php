@@ -50,7 +50,7 @@ class PayForPosCrypt extends AbstractCrypt
     public function check3DHash(AbstractPosAccount $posAccount, array $data): bool
     {
         $hashData = [
-            $posAccount->getClientId(),
+            $posAccount->getMerchantId(),
             $posAccount->getStoreKey(),
             $data['OrderId'],
             $data['AuthCode'],

@@ -408,7 +408,7 @@ class ParamPosRequestDataMapper extends AbstractRequestDataMapper
     {
         return [
             'G'    => [
-                'CLIENT_CODE'     => $posAccount->getClientId(),
+                'CLIENT_CODE'     => $posAccount->getMerchantId(),
                 'CLIENT_USERNAME' => $posAccount->getUsername(),
                 'CLIENT_PASSWORD' => $posAccount->getPassword(),
             ],

@@ -62,7 +62,7 @@ class ParamPosCryptTest extends TestCase
     public function testCheck3DHash(array $responseData): void
     {
         $this->account->expects($this->any())
-            ->method('getClientId')
+            ->method('getMerchantId')
             ->willReturn('10738');
         $this->account->expects($this->atLeastOnce())
             ->method('getStoreKey')

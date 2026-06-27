@@ -147,7 +147,7 @@ class ParamPosCrypt extends AbstractCrypt
         ];
 
         $hashStr = $this->buildHashString($data, $hashParamsArr, '');
-        $hashStr = $posAccount->getClientId().$hashStr;
+        $hashStr = $posAccount->getMerchantId().$hashStr;
 
         $actualHash = $this->hashString($hashStr);
 

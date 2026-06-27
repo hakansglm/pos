@@ -325,7 +325,7 @@ class ToslaPosRequestDataMapper extends AbstractRequestDataMapper
     private function getRequestAccountData(AbstractPosAccount $posAccount): array
     {
         return [
-            'clientId' => $posAccount->getClientId(),
+            'clientId' => $posAccount->getMerchantId(),
             'apiUser'  => $posAccount->getUsername(),
         ];
     }

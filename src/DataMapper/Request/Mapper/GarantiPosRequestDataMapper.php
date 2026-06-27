@@ -372,7 +372,7 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
             'apiversion'            => self::API_VERSION,
             'terminalprovuserid'    => $posAccount->getUsername(),
             'terminaluserid'        => $posAccount->getUsername(),
-            'terminalmerchantid'    => $posAccount->getClientId(),
+            'terminalmerchantid'    => $posAccount->getMerchantId(),
             'terminalid'            => $posAccount->getTerminalId(),
             'txntype'               => $this->valueMapper->mapTxType($txType),
             'txnamount'             => (string) $this->valueFormatter->formatAmount($order['amount']),
@@ -541,7 +541,7 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
                 'UserID'     => $posAccount->getUsername(),
                 'HashData'   => '',
                 'ID'         => $posAccount->getTerminalId(),
-                'MerchantID' => $posAccount->getClientId(),
+                'MerchantID' => $posAccount->getMerchantId(),
             ];
         }
 
@@ -554,7 +554,7 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
             'UserID'     => $posAccount->getRefundUsername(),
             'HashData'   => '',
             'ID'         => $posAccount->getTerminalId(),
-            'MerchantID' => $posAccount->getClientId(),
+            'MerchantID' => $posAccount->getMerchantId(),
         ];
     }
 

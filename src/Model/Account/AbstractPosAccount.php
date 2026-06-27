@@ -12,7 +12,7 @@ abstract class AbstractPosAccount
      * AbstractPosAccount constructor.
      *
      * @param string      $bankName
-     * @param string      $clientId
+     * @param string      $merchantId
      * @param string      $username
      * @param string      $password
      * @param string|null $storeKey
@@ -20,7 +20,7 @@ abstract class AbstractPosAccount
      */
     public function __construct(
         protected string  $bankName,
-        protected string  $clientId,
+        protected string  $merchantId,
         protected string  $username,
         protected string  $password,
         protected ?string $storeKey = null,
@@ -31,9 +31,9 @@ abstract class AbstractPosAccount
     /**
      * @return string
      */
-    public function getClientId(): string
+    public function getMerchantId(): string
     {
-        return $this->clientId;
+        return $this->merchantId;
     }
 
     /**

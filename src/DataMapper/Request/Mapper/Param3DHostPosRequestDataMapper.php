@@ -74,7 +74,7 @@ class Param3DHostPosRequestDataMapper extends AbstractRequestDataMapper
             'Return_URL'       => 'r|'.$order['success_url'],
             'Islem_ID'         => $this->crypt->generateRandomString(),
             'Borclu_Kisi_TC'   => '',
-            'Terminal_ID'      => $posAccount->getClientId(),
+            'Terminal_ID'      => $posAccount->getMerchantId(),
             'Borclu_GSM'       => 'r|',
             // = 0 ise tüm taksitler listelenir. > 0 ise sadece o taksit seçeneği listelenir.
             'Taksit'           => $this->valueFormatter->formatInstallment(max(0, (int) $order['installment'])),
@@ -224,7 +224,7 @@ class Param3DHostPosRequestDataMapper extends AbstractRequestDataMapper
             'soap:Header' => [
                 'ServiceSecuritySoapHeader' => [
                     '@xmlns'          => 'https://turkodeme.com.tr/',
-                    'CLIENT_CODE'     => $posAccount->getClientId(),
+                    'CLIENT_CODE'     => $posAccount->getMerchantId(),
                     'CLIENT_USERNAME' => $posAccount->getUsername(),
                     'CLIENT_PASSWORD' => $posAccount->getPassword(),
                 ],

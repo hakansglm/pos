@@ -73,7 +73,7 @@ class PayFlexCPV4PosRequestDataMapper extends AbstractRequestDataMapper
         $order = $this->preparePaymentOrder($order);
 
         $requestData = [
-            'HostMerchantId'       => $posAccount->getClientId(),
+            'HostMerchantId'       => $posAccount->getMerchantId(),
             'MerchantPassword'     => $posAccount->getPassword(),
             'HostTerminalId'       => $posAccount->getTerminalId(),
             'TransactionType'      => $this->valueMapper->mapTxType($txType),
@@ -238,7 +238,7 @@ class PayFlexCPV4PosRequestDataMapper extends AbstractRequestDataMapper
     private function getRequestAccountData(AbstractPosAccount $posAccount): array
     {
         return [
-            'HostMerchantId' => $posAccount->getClientId(),
+            'HostMerchantId' => $posAccount->getMerchantId(),
             'Password'       => $posAccount->getPassword(),
         ];
     }

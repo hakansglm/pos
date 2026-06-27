@@ -51,7 +51,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
         $requestData = [
             'ApiType'               => 'JSON',
             'ApiVersion'            => self::API_VERSION,
-            'MerchantNo'            => $posAccount->getClientId(),
+            'MerchantNo'            => $posAccount->getMerchantId(),
             'TerminalNo'            => $posAccount->getTerminalId(),
             'PaymentInstrumentType' => 'CARD',
             'IsEncrypted'           => 'N',
@@ -95,7 +95,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
             'ApiType'                => 'JSON',
             'ApiVersion'             => self::API_VERSION,
             'MACParams'              => 'MerchantNo:TerminalNo:CardNo:Cvc2:ExpireDate:Amount',
-            'MerchantNo'             => $posAccount->getClientId(),
+            'MerchantNo'             => $posAccount->getMerchantId(),
             'TerminalNo'             => $posAccount->getTerminalId(),
             'CipheredData'           => null,
             'DealerData'             => null,
@@ -149,7 +149,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
             'ApiType'                => 'JSON',
             'ApiVersion'             => self::API_VERSION,
             'MACParams'              => 'MerchantNo:TerminalNo',
-            'MerchantNo'             => $posAccount->getClientId(),
+            'MerchantNo'             => $posAccount->getMerchantId(),
             'TerminalNo'             => $posAccount->getTerminalId(),
             'CipheredData'           => null,
             'DealerData'             => null,
@@ -187,7 +187,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
         $requestData = [
             'ApiType'                => 'JSON',
             'ApiVersion'             => self::API_VERSION,
-            'MerchantNo'             => $posAccount->getClientId(),
+            'MerchantNo'             => $posAccount->getMerchantId(),
             'TerminalNo'             => $posAccount->getTerminalId(),
             'MACParams'              => 'MerchantNo:TerminalNo',
             'CipheredData'           => null,
@@ -217,7 +217,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
         $requestData = [
             'ApiType'                => 'JSON',
             'ApiVersion'             => self::API_VERSION,
-            'MerchantNo'             => $posAccount->getClientId(),
+            'MerchantNo'             => $posAccount->getMerchantId(),
             'TerminalNo'             => $posAccount->getTerminalId(),
             'MACParams'              => 'MerchantNo:TerminalNo:ReferenceCode:OrderId',
             'CipheredData'           => null,
@@ -256,7 +256,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
         $requestData = [
             'ApiType'                => 'JSON',
             'ApiVersion'             => self::API_VERSION,
-            'MerchantNo'             => $posAccount->getClientId(),
+            'MerchantNo'             => $posAccount->getMerchantId(),
             'TerminalNo'             => $posAccount->getTerminalId(),
             'MACParams'              => 'MerchantNo:TerminalNo:ReferenceCode:OrderId',
             'CipheredData'           => null,
@@ -298,7 +298,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
         $requestData += [
             'ApiType'    => 'JSON',
             'ApiVersion' => self::API_VERSION,
-            'MerchantNo' => $posAccount->getClientId(),
+            'MerchantNo' => $posAccount->getMerchantId(),
             'TerminalNo' => $posAccount->getTerminalId(),
         ];
 
@@ -349,7 +349,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
         $order = $this->preparePaymentOrder($order);
 
         $inputs = [
-            'MerchantNo'        => $posAccount->getClientId(),
+            'MerchantNo'        => $posAccount->getMerchantId(),
             'TerminalNo'        => $posAccount->getTerminalId(),
             'PosnetID'          => $posAccount->getPosNetId(),
             'TransactionType'   => $this->valueMapper->mapTxType($txType),

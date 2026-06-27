@@ -228,7 +228,7 @@ class AssecoPosRequestDataMapper extends AbstractRequestDataMapper
 
         $inputs = [
             'hashAlgorithm' => 'ver3',
-            'clientid'    => $posAccount->getClientId(),
+            'clientid'    => $posAccount->getMerchantId(),
             'storetype'   => $this->valueMapper->mapSecureType($paymentModel),
             'amount'      => (string) $this->valueFormatter->formatAmount((float) $order['amount']),
             'oid'         => (string) $order['id'],
@@ -332,7 +332,7 @@ class AssecoPosRequestDataMapper extends AbstractRequestDataMapper
         return [
             'Name'     => $posAccount->getUsername(),
             'Password' => $posAccount->getPassword(),
-            'ClientId' => $posAccount->getClientId(),
+            'ClientId' => $posAccount->getMerchantId(),
         ];
     }
 

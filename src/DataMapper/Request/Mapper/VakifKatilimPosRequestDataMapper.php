@@ -269,7 +269,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
         $inputs             = [
             'UserName'        => $posAccount->getUsername(),
             'HashPassword'    => $this->crypt->hashString($posAccount->getStoreKey() ?? ''),
-            'MerchantId'      => $posAccount->getClientId(),
+            'MerchantId'      => $posAccount->getMerchantId(),
             'MerchantOrderId' => (string) $order['id'],
             'Amount'          => (string) $this->valueFormatter->formatAmount($order['amount']),
             'FECCurrencyCode' => (string) $this->valueMapper->mapCurrency($order['currency']),
@@ -432,7 +432,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
     private function getRequestAccountData(AbstractPosAccount $posAccount): array
     {
         return [
-            'MerchantId'    => $posAccount->getClientId(),
+            'MerchantId'    => $posAccount->getMerchantId(),
             'CustomerId'    => $posAccount->getCustomerId(),
             'UserName'      => $posAccount->getUsername(),
             'SubMerchantId' => $posAccount->getSubMerchantId() ?? '0',

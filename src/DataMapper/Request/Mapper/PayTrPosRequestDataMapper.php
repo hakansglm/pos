@@ -38,7 +38,7 @@ class PayTrPosRequestDataMapper extends AbstractRequestDataMapper
         $installment = $this->valueFormatter->formatInstallment(max(0, (int) $order['installment']));
 
         $requestData = [
-            'merchant_id'       => $posAccount->getClientId(),
+            'merchant_id'       => $posAccount->getMerchantId(),
             'user_ip'           => (string) $order['ip'],
             'merchant_oid'      => (string) $order['id'],
             'email'             => (string) ($order['buyer']['email'] ?? ''),
@@ -100,7 +100,7 @@ class PayTrPosRequestDataMapper extends AbstractRequestDataMapper
         $order = $this->prepareStatusOrder($order);
 
         $requestData = [
-            'merchant_id'  => $posAccount->getClientId(),
+            'merchant_id'  => $posAccount->getMerchantId(),
             'merchant_oid' => (string) $order['id'],
         ];
 
@@ -125,7 +125,7 @@ class PayTrPosRequestDataMapper extends AbstractRequestDataMapper
         $order = $this->prepareRefundOrder($order);
 
         $requestData = [
-            'merchant_id'   => $posAccount->getClientId(),
+            'merchant_id'   => $posAccount->getMerchantId(),
             'merchant_oid'  => (string) $order['id'],
             'return_amount' => $this->valueFormatter->formatAmount($order['amount']),
         ];
@@ -153,7 +153,7 @@ class PayTrPosRequestDataMapper extends AbstractRequestDataMapper
         $data = $this->prepareHistoryOrder($data);
 
         $requestData = [
-            'merchant_id' => $posAccount->getClientId(),
+            'merchant_id' => $posAccount->getMerchantId(),
             'start_date'  => $this->valueFormatter->formatDateTime($data['start_date'], 'start_date'),
             'end_date'    => $this->valueFormatter->formatDateTime($data['end_date'], 'end_date'),
         ];
@@ -172,7 +172,7 @@ class PayTrPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createCustomQueryRequestData(AbstractPosAccount $posAccount, array $requestData): array
     {
-        $requestData['merchant_id'] ??= $posAccount->getClientId();
+        $requestData['merchant_id'] ??= $posAccount->getMerchantId();
 
         if (!isset($requestData['paytr_token'])) {
             $requestData['paytr_token'] = $this->crypt->createHash($posAccount, $requestData);
@@ -252,7 +252,7 @@ class PayTrPosRequestDataMapper extends AbstractRequestDataMapper
 
         $installment = (int) $this->valueFormatter->formatInstallment(max(0, (int) $order['installment']));
         $requestData = [
-            'merchant_id'       => $posAccount->getClientId(),
+            'merchant_id'       => $posAccount->getMerchantId(),
             'user_ip'           => (string) $order['ip'],
             'merchant_oid'      => (string) $order['id'],
             'email'             => (string) ($order['buyer']['email'] ?? ''),

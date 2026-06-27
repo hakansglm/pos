@@ -203,7 +203,7 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
             'CustomerId'            => $posAccount->getCustomerId(),
             'MailOrTelephoneOrder'  => true,
             'Amount'                => 0,
-            'MerchantId'            => $posAccount->getClientId(),
+            'MerchantId'            => $posAccount->getMerchantId(),
             'MerchantOrderId'       => $order['id'],
             /**
              * Eğer döndüğümüz orderid ile aratılırsa yalnızca aranan işlem gelir.
@@ -265,7 +265,7 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
             'CustomerId'            => $posAccount->getCustomerId(),
             'MailOrTelephoneOrder'  => true,
             'Amount'                => $this->valueFormatter->formatAmount($order['amount']),
-            'MerchantId'            => $posAccount->getClientId(),
+            'MerchantId'            => $posAccount->getMerchantId(),
             'OrderId'               => $order['remote_order_id'],
             'RRN'                   => $order['ref_ret_num'],
             'Stan'                  => $order['transaction_id'],
@@ -316,7 +316,7 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
             'CustomerId'            => $posAccount->getCustomerId(),
             'MailOrTelephoneOrder'  => true,
             'Amount'                => $this->valueFormatter->formatAmount($order['amount']),
-            'MerchantId'            => $posAccount->getClientId(),
+            'MerchantId'            => $posAccount->getMerchantId(),
             'OrderId'               => $order['remote_order_id'],
             'RRN'                   => $order['ref_ret_num'],
             'Stan'                  => $order['transaction_id'],
@@ -453,7 +453,7 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
     private function getRequestAccountData(AbstractPosAccount $posAccount): array
     {
         return [
-            'MerchantId' => $posAccount->getClientId(),
+            'MerchantId' => $posAccount->getMerchantId(),
             'CustomerId' => $posAccount->getCustomerId(),
             'UserName'   => $posAccount->getUsername(),
         ];

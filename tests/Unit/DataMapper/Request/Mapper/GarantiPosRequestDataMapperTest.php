@@ -950,7 +950,7 @@ class GarantiPosRequestDataMapperTest extends TestCase
                     'UserID'     => $account->getUsername(),
                     'HashData'   => 'C7806BCDC5874CD227C4B7278302077F6B3E463A9C74497F263E8AF08844DEF364F4D7A089084A705D4210B9B36841E0919B72F804729F466BF00472C53AFD8B',
                     'ID'         => $account->getTerminalId(),
-                    'MerchantID' => $account->getClientId(),
+                    'MerchantID' => $account->getMerchantId(),
                 ],
                 'Customer'    => [
                     'IPAddress' => '127.0.0.1',
@@ -995,7 +995,7 @@ class GarantiPosRequestDataMapperTest extends TestCase
                     'UserID'     => $account->getUsername(),
                     'HashData'   => 'C7806BCDC5874CD227C4B7278302077F6B3E463A9C74497F263E8AF08844DEF364F4D7A089084A705D4210B9B36841E0919B72F804729F466BF00472C53AFD8B',
                     'ID'         => $account->getTerminalId(),
-                    'MerchantID' => $account->getClientId(),
+                    'MerchantID' => $account->getMerchantId(),
                 ],
                 'Customer'    => [
                     'IPAddress' => '127.0.0.1',

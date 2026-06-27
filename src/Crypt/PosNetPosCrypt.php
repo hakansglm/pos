@@ -54,7 +54,7 @@ class PosNetPosCrypt extends AbstractCrypt
             $data['xid'],
             $data['amount'],
             $data['currency'],
-            $posAccount->getClientId(),
+            $posAccount->getMerchantId(),
             $this->createSecurityData($posAccount->getStoreKey(), $posAccount->getTerminalId()),
         ];
         $hashStr        = implode(static::HASH_SEPARATOR, $secondHashData);

@@ -320,7 +320,7 @@ class AkbankPosRequestDataMapper extends AbstractRequestDataMapper
         $inputs = [
             'paymentModel'    => $this->valueMapper->mapSecureType($paymentModel),
             'txnCode'         => $this->valueMapper->mapTxType($txType, $paymentModel),
-            'merchantSafeId'  => $posAccount->getClientId(),
+            'merchantSafeId'  => $posAccount->getMerchantId(),
             'terminalSafeId'  => $posAccount->getTerminalId(),
             'orderId'         => (string) $order['id'],
             'lang'            => $this->getLang($order),
@@ -491,7 +491,7 @@ class AkbankPosRequestDataMapper extends AbstractRequestDataMapper
     {
         $data = [
             'terminal' => [
-                'merchantSafeId' => $posAccount->getClientId(),
+                'merchantSafeId' => $posAccount->getMerchantId(),
                 'terminalSafeId' => $posAccount->getTerminalId(),
             ],
         ];

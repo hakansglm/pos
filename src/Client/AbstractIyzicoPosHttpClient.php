@@ -65,7 +65,7 @@ abstract class AbstractIyzicoPosHttpClient extends AbstractHttpClient
         ];
         $signature = $this->crypt->createHash($account, $data);
 
-        $authStr = \sprintf('apiKey:%s&randomKey:%s&signature:%s', $account->getClientId(), $randomKey, $signature);
+        $authStr = \sprintf('apiKey:%s&randomKey:%s&signature:%s', $account->getMerchantId(), $randomKey, $signature);
 
         return 'IYZWSv2 '.\base64_encode($authStr);
     }

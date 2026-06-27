@@ -74,7 +74,7 @@ class AssecoPosCryptTest extends TestCase
     {
         $account = $this->account;
         $inputs  = [
-            'clientid'      => $account->getClientId(),
+            'clientid'      => $account->getMerchantId(),
             'storetype'     => PosInterface::MODEL_3D_SECURE,
             'amount'        => '100.25',
             'oid'           => 'order222',
@@ -113,7 +113,7 @@ class AssecoPosCryptTest extends TestCase
         return [
             '3d_pay'    => [
                 'requestData' => [
-                    'clientid'      => $account->getClientId(),
+                    'clientid'      => $account->getMerchantId(),
                     'storetype'     => '3d_pay',
                     'amount'        => '100.25',
                     'oid'           => 'order222',
@@ -133,7 +133,7 @@ class AssecoPosCryptTest extends TestCase
             ],
             '3d_secure' => [
                 'requestData' => [
-                    'clientid'      => $account->getClientId(),
+                    'clientid'      => $account->getMerchantId(),
                     'storetype'     => PosInterface::MODEL_3D_SECURE,
                     'amount'        => '100.25',
                     'oid'           => 'order222',

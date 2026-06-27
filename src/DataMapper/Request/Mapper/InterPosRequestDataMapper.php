@@ -197,7 +197,7 @@ class InterPosRequestDataMapper extends AbstractRequestDataMapper
         $order = $this->preparePaymentOrder($order);
 
         $inputs = [
-            'ShopCode'         => $posAccount->getClientId(),
+            'ShopCode'         => $posAccount->getMerchantId(),
             'TxnType'          => $this->valueMapper->mapTxType($txType),
             'SecureType'       => $this->valueMapper->mapSecureType($paymentModel),
             'PurchAmount'      => (string) $this->valueFormatter->formatAmount($order['amount']),
@@ -277,7 +277,7 @@ class InterPosRequestDataMapper extends AbstractRequestDataMapper
         return [
             'UserCode' => $posAccount->getUsername(),
             'UserPass' => $posAccount->getPassword(),
-            'ShopCode' => $posAccount->getClientId(),
+            'ShopCode' => $posAccount->getMerchantId(),
         ];
     }
 }

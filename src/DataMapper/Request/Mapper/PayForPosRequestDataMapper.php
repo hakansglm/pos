@@ -322,7 +322,7 @@ class PayForPosRequestDataMapper extends AbstractRequestDataMapper
 
         $formData = [
             'MbrId'            => $posAccount->getMbrId(),
-            'MerchantID'       => $posAccount->getClientId(),
+            'MerchantID'       => $posAccount->getMerchantId(),
             'UserCode'         => $posAccount->getUsername(),
             'OrderId'          => (string) $order['id'],
             'Lang'             => $this->getLang($order),
@@ -366,7 +366,7 @@ class PayForPosRequestDataMapper extends AbstractRequestDataMapper
     private function getRequestAccountData(AbstractPosAccount $posAccount): array
     {
         return [
-            'MerchantId' => $posAccount->getClientId(),
+            'MerchantId' => $posAccount->getMerchantId(),
             'UserCode'   => $posAccount->getUsername(),
             'UserPass'   => $posAccount->getPassword(),
             'MbrId'      => $posAccount->getMbrId(),
