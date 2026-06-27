@@ -41,7 +41,6 @@ class GarantiPosTest extends TestCase
             (string) getenv('GARANTI_USERNAME'),
             (string) getenv('GARANTI_PASSWORD'),
             (string) getenv('GARANTI_TERMINAL_ID'),
-            PosInterface::MODEL_3D_SECURE,
             (string) getenv('GARANTI_STORE_KEY'),
             (string) getenv('GARANTI_REFUND_USERNAME'),
             (string) getenv('GARANTI_REFUND_PASSWORD')

@@ -57,7 +57,6 @@ class PayForPosRequestDataMapperTest extends TestCase
             '085300000009704',
             'QNB_API_KULLANICI_3DPAY',
             'UcBN0',
-            PosInterface::MODEL_3D_SECURE,
             '12345678',
             PayForPosAccount::MBR_ID_FINANSBANK
         );
@@ -67,7 +66,6 @@ class PayForPosRequestDataMapperTest extends TestCase
             '085300000009704',
             'ZIRAATKATILIM_API_KULLANICI_3DPAY',
             'UcBN0',
-            PosInterface::MODEL_3D_SECURE,
             '12345678',
             PayForPosAccount::MBR_ID_ZIRAAT_KATILIM
         );

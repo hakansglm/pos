@@ -40,7 +40,6 @@ $account = \Mews\Pos\Factory\AccountFactory::createPayForPosAccount(
     'merchantId',
     'userCode',
     'userPassword',
-    $paymentModel,
     'merchantPass'
 );
 

@@ -12,7 +12,6 @@ $account = \Mews\Pos\Factory\AccountFactory::createBoaPosAccount(
     (string) getenv('KUVEYTPOS_USERNAME'),
     (string) getenv('KUVEYTPOS_CUSTOMER_NUMBER'),
     (string) getenv('KUVEYTPOS_PASSWORD'),
-    PosInterface::MODEL_NON_SECURE
 );
 
 $pos = getGateway($account, $eventDispatcher);

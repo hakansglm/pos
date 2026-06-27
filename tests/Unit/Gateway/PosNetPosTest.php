@@ -91,7 +91,6 @@ class PosNetPosTest extends TestCase
             '6706598320',
             '67005551',
             '27426',
-            PosInterface::MODEL_3D_SECURE,
             '10,10,10,10,10,10,10,10'
         );
 

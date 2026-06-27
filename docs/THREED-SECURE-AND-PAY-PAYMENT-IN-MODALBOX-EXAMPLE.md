@@ -37,7 +37,6 @@ $account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
     'yourClientID',
     'yourKullaniciAdi',
     'yourSifre',
-    $paymentModel,
     'yourStoreKey'
 );
 

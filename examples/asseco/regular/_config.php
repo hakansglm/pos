@@ -12,7 +12,6 @@ $account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
     (string) getenv('ASSECO_CLIENT_ID'),
     (string) getenv('ASSECO_USERNAME'),
     (string) getenv('ASSECO_PASSWORD'),
-    PosInterface::MODEL_NON_SECURE,
 );
 
 $pos = getGateway($account, $eventDispatcher);

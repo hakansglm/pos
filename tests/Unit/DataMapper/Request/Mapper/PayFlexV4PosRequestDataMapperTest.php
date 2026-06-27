@@ -57,8 +57,7 @@ class PayFlexV4PosRequestDataMapperTest extends TestCase
             'vakifbank',
             '000000000111111',
             '3XTgER89as',
-            'VP999999',
-            PosInterface::MODEL_3D_SECURE
+            'VP999999'
         );
 
         $this->dispatcher     = $this->createMock(EventDispatcherInterface::class);
@@ -323,8 +322,7 @@ class PayFlexV4PosRequestDataMapperTest extends TestCase
             'vakifbank',
             '000000000111111',
             '3XTgER89as',
-            'VP999999',
-            PosInterface::MODEL_3D_SECURE
+            'VP999999'
         );
 
         $order = [

@@ -87,9 +87,7 @@ class PayForPosTest extends TestCase
             '085300000009704',
             'QNB_API_KULLANICI_3DPAY',
             'UcBN0',
-            PosInterface::MODEL_3D_SECURE,
-            '12345678',
-            PosInterface::LANG_TR
+            '12345678'
         );
 
         $this->requestValueMapper     = new PayForPosRequestValueMapper();

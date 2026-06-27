@@ -42,7 +42,6 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
         'yourClientID',
         'yourKullaniciAdi',
         'yourSifre',
-        $paymentModel,
         'yourStoreKey'
     );
 

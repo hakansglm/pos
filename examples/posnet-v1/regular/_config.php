@@ -11,7 +11,6 @@ $account = \Mews\Pos\Factory\AccountFactory::createPosNetPosAccount(
     (string) getenv('POSNET_V1_MERCHANT_ID'), // 10 haneli üye işyeri numarası
     (string) getenv('POSNET_V1_TERMINAL_ID'), // 8 haneli üye işyeri terminal numarası
     (string) getenv('POSNET_V1_POS_ID'), // 16 haneli üye işyeri EPOS numarası.
-    PosInterface::MODEL_NON_SECURE,
     '10,10,10,10,10,10,10,10'
 );
 

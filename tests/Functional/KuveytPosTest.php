@@ -42,8 +42,7 @@ class KuveytPosTest extends TestCase
             (string) getenv('KUVEYTPOS_MERCHANT_ID'),
             (string) getenv('KUVEYTPOS_USERNAME'),
             (string) getenv('KUVEYTPOS_CUSTOMER_NUMBER'),
-            (string) getenv('KUVEYTPOS_PASSWORD'),
-            PosInterface::MODEL_3D_SECURE
+            (string) getenv('KUVEYTPOS_PASSWORD')
         );
 
         $this->eventDispatcher = new EventDispatcher();

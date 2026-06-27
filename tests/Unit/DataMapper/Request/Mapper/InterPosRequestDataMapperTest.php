@@ -61,7 +61,6 @@ class InterPosRequestDataMapperTest extends TestCase
             $shopCode,
             $userCode,
             $userPass,
-            PosInterface::MODEL_3D_SECURE,
             $merchantPass
         );
 

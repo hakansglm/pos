@@ -15,7 +15,6 @@ use Mews\Pos\Model\Account\GarantiPosAccount;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\GarantiPos;
-use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -38,7 +37,6 @@ class GarantiPosCryptTest extends TestCase
             'PROVAUT',
             '123qweASD/',
             '30691298',
-            PosInterface::MODEL_3D_SECURE,
             '12345678',
             'PROVRFN',
             '123qweASD/'

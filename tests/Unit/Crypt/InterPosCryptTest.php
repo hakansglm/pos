@@ -15,7 +15,6 @@ use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\InterPos;
-use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -43,7 +42,6 @@ class InterPosCryptTest extends TestCase
             $shopCode,
             $userCode,
             $userPass,
-            PosInterface::MODEL_3D_SECURE,
             $merchantPass
         );
 

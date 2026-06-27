@@ -11,7 +11,6 @@ $account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
     (string) getenv('ASSECO_CLIENT_ID'),
     (string) getenv('ASSECO_USERNAME'),
     (string) getenv('ASSECO_PASSWORD'),
-    PosInterface::MODEL_3D_PAY_HOSTING,
     (string) getenv('ASSECO_STORE_KEY')
 );
 

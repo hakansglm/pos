@@ -40,7 +40,6 @@ class AssecoPosTest extends TestCase
             (string) getenv('ASSECO_CLIENT_ID'),
             (string) getenv('ASSECO_USERNAME'),
             (string) getenv('ASSECO_PASSWORD'),
-            PosInterface::MODEL_3D_SECURE,
             (string) getenv('ASSECO_STORE_KEY')
         );
         $this->eventDispatcher = new EventDispatcher();

@@ -15,7 +15,6 @@ use Mews\Pos\Model\Account\PosNetPosAccount;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\PosNetV1Pos;
-use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -38,7 +37,6 @@ class PosNetV1PosCryptTest extends TestCase
             '6700950031',
             '67540050',
             '1010272261352072',
-            PosInterface::MODEL_3D_SECURE,
             '10,10,10,10,10,10,10,10'
         );
 

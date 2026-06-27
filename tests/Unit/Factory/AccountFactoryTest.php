@@ -21,7 +21,6 @@ use Mews\Pos\Model\Account\PayForPosAccount;
 use Mews\Pos\Model\Account\PayTrPosAccount;
 use Mews\Pos\Model\Account\PosNetPosAccount;
 use Mews\Pos\Model\Account\ToslaPosAccount;
-use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
@@ -65,7 +64,6 @@ class AccountFactoryTest extends TestCase
             'merchant-id',
             'user',
             'pass',
-            PosInterface::MODEL_3D_SECURE,
             'store-key',
         );
 
@@ -73,20 +71,6 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('user', $account->getUsername());
         $this->assertSame('pass', $account->getPassword());
         $this->assertSame('store-key', $account->getStoreKey());
-    }
-
-    public function testCreateAssecoPosAccountThrowsExceptionWhenStoreKeyMissing(): void
-    {
-        $this->expectException(MissingAccountInfoException::class);
-        $this->expectExceptionMessage('payment model 3d requires storeKey!');
-
-        AccountFactory::createAssecoPosAccount(
-            'akbank',
-            'merchant-id',
-            'user',
-            'pass',
-            PosInterface::MODEL_3D_SECURE,
-        );
     }
 
     public function testCreateBoaPosAccount(): void
@@ -97,7 +81,6 @@ class AccountFactoryTest extends TestCase
             'APIUSER',
             '11111',
             'kdsnsksl',
-            PosInterface::MODEL_3D_SECURE,
             'SUB1',
         );
 
@@ -179,7 +162,6 @@ class AccountFactoryTest extends TestCase
             '085300000009704',
             'QNB_API_KULLANICI_3DPAY',
             'UcBN0',
-            PosInterface::MODEL_3D_SECURE,
             '12345678',
             PayForPosAccount::MBR_ID_ZIRAAT_KATILIM
         );
@@ -205,20 +187,6 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('QNB_API_KULLANICI', $account->getUsername());
         $this->assertNull($account->getStoreKey());
         $this->assertSame(PayForPosAccount::MBR_ID_FINANSBANK, $account->getMbrId());
-    }
-
-    public function testCreatePayForPosAccountThrowsExceptionWhenMerchantPassMissing(): void
-    {
-        $this->expectException(MissingAccountInfoException::class);
-        $this->expectExceptionMessage('payment model 3d requires storeKey!');
-
-        AccountFactory::createPayForPosAccount(
-            'qnbfinansbank-payfor',
-            '085300000009704',
-            'QNB_API_KULLANICI_3DPAY',
-            'UcBN0',
-            PosInterface::MODEL_3D_SECURE,
-        );
     }
 
     public function testCreateIyzicoPosAccount(): void
@@ -311,7 +279,6 @@ class AccountFactoryTest extends TestCase
             'PROVAUT',
             'pass',
             '30691298',
-            PosInterface::MODEL_3D_SECURE,
             'store-key',
             'PROVRFN',
             'refund-pass',
@@ -324,21 +291,6 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('store-key', $account->getStoreKey());
         $this->assertSame('PROVRFN', $account->getRefundUsername());
         $this->assertSame('refund-pass', $account->getRefundPassword());
-    }
-
-    public function testCreateGarantiPosAccountThrowsExceptionWhenStoreKeyMissing(): void
-    {
-        $this->expectException(MissingAccountInfoException::class);
-        $this->expectExceptionMessage('payment model 3d requires storeKey!');
-
-        AccountFactory::createGarantiPosAccount(
-            'garanti',
-            '7000679',
-            'PROVAUT',
-            'pass',
-            '30691298',
-            PosInterface::MODEL_3D_SECURE,
-        );
     }
 
     public function testCreateInterPosAccountNonSecure(): void
@@ -365,7 +317,6 @@ class AccountFactoryTest extends TestCase
             'shop-code',
             'user-code',
             'user-pass',
-            PosInterface::MODEL_3D_SECURE,
             'merchant-pass',
         );
 
@@ -373,20 +324,6 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('user-code', $account->getUsername());
         $this->assertSame('user-pass', $account->getPassword());
         $this->assertSame('merchant-pass', $account->getStoreKey());
-    }
-
-    public function testCreateInterPosAccountThrowsExceptionWhenMerchantPassMissing(): void
-    {
-        $this->expectException(MissingAccountInfoException::class);
-        $this->expectExceptionMessage('payment model 3d requires storeKey!');
-
-        AccountFactory::createInterPosAccount(
-            'denizbank',
-            'shop-code',
-            'user-code',
-            'user-pass',
-            PosInterface::MODEL_3D_SECURE,
-        );
     }
 
     public function testCreatePosNetPosAccountNonSecure(): void
@@ -413,7 +350,6 @@ class AccountFactoryTest extends TestCase
             '6706598320',
             '67005551',
             '27426457',
-            PosInterface::MODEL_3D_SECURE,
             '10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10',
         );
 
@@ -421,20 +357,6 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('27426457', $account->getPosNetId());
         $this->assertSame('67005551', $account->getTerminalId());
         $this->assertSame('10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10', $account->getStoreKey());
-    }
-
-    public function testCreatePosNetPosAccountThrowsExceptionWhenStoreKeyMissing(): void
-    {
-        $this->expectException(MissingAccountInfoException::class);
-        $this->expectExceptionMessage('payment model 3d requires storeKey!');
-
-        AccountFactory::createPosNetPosAccount(
-            'yapikredi',
-            '6706598320',
-            '67005551',
-            '27426457',
-            PosInterface::MODEL_3D_SECURE,
-        );
     }
 
     public function testCreatePayFlexPosAccountStandard(): void
@@ -463,7 +385,6 @@ class AccountFactoryTest extends TestCase
             'merchant-id',
             'password',
             'dVB007000000000',
-            PosInterface::MODEL_NON_SECURE,
             PayFlexPosAccount::MERCHANT_TYPE_MAIN_DEALER,
         );
 
@@ -478,7 +399,6 @@ class AccountFactoryTest extends TestCase
             'merchant-id',
             'password',
             'dVB007000000000',
-            PosInterface::MODEL_NON_SECURE,
             PayFlexPosAccount::MERCHANT_TYPE_SUB_DEALER,
             'sub-merchant-1',
         );
@@ -498,7 +418,6 @@ class AccountFactoryTest extends TestCase
             'merchant-id',
             'password',
             'dVB007000000000',
-            PosInterface::MODEL_NON_SECURE,
             PayFlexPosAccount::MERCHANT_TYPE_SUB_DEALER,
         );
     }
@@ -513,7 +432,6 @@ class AccountFactoryTest extends TestCase
             'merchant-id',
             'password',
             'dVB007000000000',
-            PosInterface::MODEL_NON_SECURE,
             999,
         );
     }

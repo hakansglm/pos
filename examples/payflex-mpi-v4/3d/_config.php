@@ -11,7 +11,6 @@ $account = \Mews\Pos\Factory\AccountFactory::createPayFlexPosAccount(
     (string) getenv('PAYFLEX_MPI_MERCHANT_ID'),
     (string) getenv('PAYFLEX_MPI_MERCHANT_PASSWORD'),
     (string) getenv('PAYFLEX_MPI_TERMINAL_ID'),
-    PosInterface::MODEL_3D_SECURE
 );
 
 $pos = getGateway($account, $eventDispatcher);

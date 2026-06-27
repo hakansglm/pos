@@ -57,7 +57,6 @@ class AssecoPosRequestDataMapperTest extends TestCase
             '190100000',
             'ZIRAATAPI',
             'ZIRAAT19',
-            PosInterface::MODEL_3D_SECURE,
             '123456'
         );
 
@@ -359,7 +358,6 @@ class AssecoPosRequestDataMapperTest extends TestCase
             '190100000',
             'ZIRAATAPI',
             'ZIRAAT19',
-            PosInterface::MODEL_3D_SECURE,
             'TRPS0200'
         );
 

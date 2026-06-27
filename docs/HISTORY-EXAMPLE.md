@@ -19,8 +19,6 @@ $account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
     'yourClientID',
     'yourKullaniciAdi',
     'yourSifre',
-    \Mews\Pos\PosInterface::MODEL_NON_SECURE,
-    '' // bankaya göre zorunlu
 );
 
 $eventDispatcher = new Symfony\Component\EventDispatcher\EventDispatcher();

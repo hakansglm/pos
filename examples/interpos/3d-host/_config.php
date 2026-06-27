@@ -15,7 +15,6 @@ $account = \Mews\Pos\Factory\AccountFactory::createInterPosAccount(
     (string) getenv('INTERPOS_SHOP_CODE'),
     $userCode,
     $userPass,
-    PosInterface::MODEL_3D_HOST,
     (string) getenv('INTERPOS_MERCHANT_PASS')
 );
 

@@ -13,7 +13,6 @@ use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\PayForPos;
-use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -36,9 +35,7 @@ class PayForPosCryptTest extends TestCase
             '085300000009704',
             'QNB_API_KULLANICI_3DPAY',
             'UcBN0',
-            PosInterface::MODEL_3D_SECURE,
-            '12345678',
-            PosInterface::LANG_TR
+            '12345678'
         );
 
         $logger      = $this->createMock(LoggerInterface::class);

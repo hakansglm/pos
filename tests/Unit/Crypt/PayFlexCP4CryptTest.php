@@ -14,7 +14,6 @@ use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\PayFlexCPV4Pos;
-use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -35,8 +34,7 @@ class PayFlexCP4CryptTest extends TestCase
             'vakifbank-cp',
             '000000000111111',
             '3XTgER89as',
-            'VP999999',
-            PosInterface::MODEL_3D_SECURE
+            'VP999999'
         );
 
         $logger      = $this->createMock(LoggerInterface::class);

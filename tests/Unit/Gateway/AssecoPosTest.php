@@ -89,7 +89,6 @@ class AssecoPosTest extends TestCase
             '700655000200',
             'ISBANKAPI',
             'ISBANK07',
-            PosInterface::MODEL_3D_SECURE,
             'TRPS0200'
         );
 

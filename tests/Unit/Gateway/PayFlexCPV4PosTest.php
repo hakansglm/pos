@@ -89,8 +89,7 @@ class PayFlexCPV4PosTest extends TestCase
             'vakifbank-cp',
             '000000000111111',
             '3XTgER89as',
-            'VP999999',
-            PosInterface::MODEL_3D_SECURE
+            'VP999999'
         );
 
 

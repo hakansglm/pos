@@ -42,7 +42,6 @@ class PayForPosTest extends TestCase
             (string) getenv('FINANSBANK_MERCHANT_ID'),
             (string) getenv('FINANSBANK_USERNAME'),
             (string) getenv('FINANSBANK_PASSWORD'),
-            PosInterface::MODEL_3D_SECURE,
             (string) getenv('FINANSBANK_STORE_KEY'),
             PayForPosAccount::MBR_ID_FINANSBANK
         );

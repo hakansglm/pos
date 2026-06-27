@@ -37,7 +37,6 @@ class AssecoPosCryptTest extends TestCase
             '190100000',
             'ISBANKAPI',
             'ISBANK07',
-            PosInterface::MODEL_3D_SECURE,
             '123456'
         );
 
@@ -106,7 +105,6 @@ class AssecoPosCryptTest extends TestCase
             '190100000',
             'ISBANKAPI',
             'ISBANK07',
-            PosInterface::MODEL_3D_SECURE,
             '123456'
         );
 

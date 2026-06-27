@@ -88,7 +88,6 @@ class GarantiPosTest extends TestCase
             'PROVAUT',
             '123qweASD/',
             '30691298',
-            PosInterface::MODEL_3D_SECURE,
             '12345678',
             'PROVRFN',
             '123qweASD/'

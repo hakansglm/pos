@@ -11,7 +11,6 @@ $account = \Mews\Pos\Factory\AccountFactory::createPayForPosAccount(
     (string) getenv('FINANSBANK_QR_MERCHANT_ID'),
     (string) getenv('FINANSBANK_QR_USERNAME'),
     (string) getenv('FINANSBANK_QR_PASSWORD'),
-    PosInterface::MODEL_3D_HOST,
     (string) getenv('FINANSBANK_QR_STORE_KEY'),
     \Mews\Pos\Model\Account\PayForPosAccount::MBR_ID_FINANSBANK // ya da PayForAccount::MBR_ID_ZIRAAT_KATILIM
 );

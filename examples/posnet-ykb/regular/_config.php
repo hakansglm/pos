@@ -11,7 +11,6 @@ $account = \Mews\Pos\Factory\AccountFactory::createPosNetPosAccount(
     (string) getenv('POSNET_YKB_MERCHANT_ID'),
     (string) getenv('POSNET_YKB_TERMINAL_ID'),
     (string) getenv('POSNET_YKB_POS_ID'),
-    PosInterface::MODEL_NON_SECURE,
     '10,10,10,10,10,10,10,10'
 );
 

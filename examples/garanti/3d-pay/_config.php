@@ -13,7 +13,6 @@ $account = AccountFactory::createGarantiPosAccount(
     (string) getenv('GARANTI_USERNAME'),
     (string) getenv('GARANTI_PASSWORD'),
     (string) getenv('GARANTI_TERMINAL_ID'),
-    PosInterface::MODEL_3D_PAY,
     (string) getenv('GARANTI_STORE_KEY')
 );
 

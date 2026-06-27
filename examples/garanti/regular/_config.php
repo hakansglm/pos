@@ -12,7 +12,6 @@ $account = \Mews\Pos\Factory\AccountFactory::createGarantiPosAccount(
     (string) getenv('GARANTI_USERNAME'),
     (string) getenv('GARANTI_PASSWORD'),
     (string) getenv('GARANTI_TERMINAL_ID'),
-    PosInterface::MODEL_NON_SECURE,
     null,
     (string) getenv('GARANTI_REFUND_USERNAME'),
     (string) getenv('GARANTI_REFUND_PASSWORD')
