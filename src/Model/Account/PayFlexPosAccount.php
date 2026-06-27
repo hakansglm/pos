@@ -46,7 +46,7 @@ class PayFlexPosAccount extends AbstractPosAccount
         private int    $merchantType = self::MERCHANT_TYPE_STANDARD,
         ?string        $subMerchantId = null
     ) {
-        parent::__construct($bankName, $merchantId, '', $password, 'tr', $subMerchantId);
+        parent::__construct($bankName, $merchantId, '', $password, null, $subMerchantId);
     }
 
     /**
