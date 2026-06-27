@@ -139,10 +139,10 @@ class PayTrPosCryptTest extends TestCase
     public function testHashFromParamsNullStoreKeyThrows(): void
     {
         $accountMock = $this->createMock(AbstractPosAccount::class);
-        $accountMock->method('getStoreKey')->willReturn(null);
+        $accountMock->method('getSecretKey')->willReturn(null);
 
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('Account storeKey eksik!');
+        $this->expectExceptionMessage('Account secretKey eksik!');
         $this->crypt->hashFromParams($accountMock, ['merchant_id' => '123'], 'merchant_id', ':');
     }
 

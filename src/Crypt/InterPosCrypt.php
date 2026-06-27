@@ -37,7 +37,7 @@ class InterPosCrypt extends AbstractCrypt
             $formInputs['TxnType'],
             $formInputs['InstallmentCount'],
             $formInputs['Rnd'],
-            $posAccount->getStoreKey(),
+            $posAccount->getSecretKey(),
         ];
 
         $hashStr = \implode(static::HASH_SEPARATOR, $hashData);
@@ -50,8 +50,8 @@ class InterPosCrypt extends AbstractCrypt
      */
     public function check3DHash(AbstractPosAccount $posAccount, array $data): bool
     {
-        if (null === $posAccount->getStoreKey()) {
-            throw new \LogicException('Account storeKey eksik!');
+        if (null === $posAccount->getSecretKey()) {
+            throw new \LogicException('Account secretKey eksik!');
         }
 
         $actualHash = $this->hashFromParams($posAccount, $data, $data['HASHPARAMS'], ':');

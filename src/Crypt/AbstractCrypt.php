@@ -54,17 +54,17 @@ abstract class AbstractCrypt implements CryptInterface
             throw new \InvalidArgumentException('hashParamsValue cannot be empty');
         }
 
-        $storeKey = $account->getStoreKey();
-        if (null === $storeKey) {
-            throw new \LogicException('Account storeKey eksik!');
+        $secretKey = $account->getSecretKey();
+        if (null === $secretKey) {
+            throw new \LogicException('Account secretKey eksik!');
         }
 
         /** @var non-empty-string $hashParamsValue ex: "MerchantNo:TerminalNo:ReferenceCode:OrderId" */
         $hashParamsArr = \explode($paramSeparator, $hashParamsValue);
 
-        $hashVal = $this->buildHashString($data, $hashParamsArr, '', $storeKey);
+        $hashVal = $this->buildHashString($data, $hashParamsArr, '', $secretKey);
 
-        return $this->hashString($hashVal, $storeKey);
+        return $this->hashString($hashVal, $secretKey);
     }
 
     /**
@@ -90,16 +90,16 @@ abstract class AbstractCrypt implements CryptInterface
      * @param array<string, mixed> $data       data from which the hash string will be built
      * @param string[]             $paramNames parameter names that will be used in hash calculation
      * @param string               $separator  separator between the parameter values
-     * @param string|null          $storeKey   secret key of the API, will be attached to the hash string if provided
+     * @param string|null          $secretKey  secret key of the API, will be attached to the hash string if provided
      *
      * @return string string data to be hashed
      */
-    protected function buildHashString(array $data, array $paramNames, string $separator = '', ?string $storeKey = null): string
+    protected function buildHashString(array $data, array $paramNames, string $separator = '', ?string $secretKey = null): string
     {
         $paramsVal = \implode($separator, $this->buildHashData($data, $paramNames));
 
-        if (null !== $storeKey) {
-            return $this->concatenateHashKey($storeKey, $paramsVal);
+        if (null !== $secretKey) {
+            return $this->concatenateHashKey($secretKey, $paramsVal);
         }
 
         return $paramsVal;

@@ -84,7 +84,7 @@ class AkbankPosHttpClient extends AbstractHttpClient
         }
 
         $body = $this->streamFactory->createStream($content->getData());
-        $hash = $this->crypt->hashString($content->getData(), $account->getStoreKey());
+        $hash = $this->crypt->hashString($content->getData(), $account->getSecretKey());
 
         $request = $this->requestFactory->createRequest('POST', $url);
 

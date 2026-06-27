@@ -31,7 +31,7 @@ class PayTrPosCrypt extends AbstractCrypt
      */
     public function check3DHash(AbstractPosAccount $posAccount, array $data): bool
     {
-        $merchantKey  = (string) $posAccount->getStoreKey();
+        $merchantKey  = (string) $posAccount->getSecretKey();
         $merchantSalt = $posAccount->getPassword();
 
         $hashStr = ($data['merchant_oid'] ?? '')
@@ -107,9 +107,9 @@ class PayTrPosCrypt extends AbstractCrypt
             throw new \InvalidArgumentException('hashParamsValue cannot be empty');
         }
 
-        $storeKey = $account->getStoreKey();
-        if (null === $storeKey) {
-            throw new \LogicException('Account storeKey eksik!');
+        $secretKey = $account->getSecretKey();
+        if (null === $secretKey) {
+            throw new \LogicException('Account secretKey eksik!');
         }
 
         /** @var non-empty-string $hashParamsValue ex: "MerchantNo:TerminalNo:ReferenceCode:OrderId" */
@@ -117,7 +117,7 @@ class PayTrPosCrypt extends AbstractCrypt
 
         $hashVal = $this->buildHashString($data, $hashParamsArr, '', $account->getPassword());
 
-        return $this->hashString($hashVal, $account->getStoreKey());
+        return $this->hashString($hashVal, $account->getSecretKey());
     }
 
     /**

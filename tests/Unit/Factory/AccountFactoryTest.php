@@ -71,7 +71,7 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('merchant-id', $account->getMerchantId());
         $this->assertSame('user', $account->getUsername());
         $this->assertSame('pass', $account->getPassword());
-        $this->assertNull($account->getStoreKey());
+        $this->assertNull($account->getSecretKey());
     }
 
     public function testCreateAssecoPosAccount3DSecure(): void
@@ -87,7 +87,7 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('merchant-id', $account->getMerchantId());
         $this->assertSame('user', $account->getUsername());
         $this->assertSame('pass', $account->getPassword());
-        $this->assertSame('store-key', $account->getStoreKey());
+        $this->assertSame('store-key', $account->getSecretKey());
     }
 
     public function testCreateBoaPosAccount(): void
@@ -105,7 +105,7 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('1', $account->getMerchantId());
         $this->assertSame('APIUSER', $account->getUsername());
         $this->assertSame('11111', $account->getCustomerId());
-        $this->assertSame('kdsnsksl', $account->getStoreKey());
+        $this->assertSame('kdsnsksl', $account->getSecretKey());
         $this->assertSame('SUB1', $account->getSubMerchantId());
     }
 
@@ -136,7 +136,7 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('akbank-pos', $account->getBankName());
         $this->assertSame('1', $account->getMerchantId());
         $this->assertSame('APIUSER', $account->getTerminalId());
-        $this->assertSame('kdsnsksl', $account->getStoreKey());
+        $this->assertSame('kdsnsksl', $account->getSecretKey());
         $this->assertSame('SUB1', $account->getSubMerchantId());
     }
 
@@ -151,7 +151,7 @@ class AccountFactoryTest extends TestCase
 
         $this->assertSame('1', $account->getMerchantId());
         $this->assertSame('APIUSER', $account->getTerminalId());
-        $this->assertSame('kdsnsksl', $account->getStoreKey());
+        $this->assertSame('kdsnsksl', $account->getSecretKey());
         $this->assertNull($account->getSubMerchantId());
     }
 
@@ -169,7 +169,7 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('12345', $account->getMerchantId());
         $this->assertSame('APIUSER', $account->getUsername());
         $this->assertSame('kdsnsksl', $account->getPassword());
-        $this->assertSame('guid123', $account->getStoreKey());
+        $this->assertSame('guid123', $account->getSecretKey());
     }
 
     public function testCreatePayForPosAccount(): void
@@ -187,7 +187,7 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('085300000009704', $account->getMerchantId());
         $this->assertSame('QNB_API_KULLANICI_3DPAY', $account->getUsername());
         $this->assertSame('UcBN0', $account->getPassword());
-        $this->assertSame('12345678', $account->getStoreKey());
+        $this->assertSame('12345678', $account->getSecretKey());
         $this->assertSame(PayForPosAccount::MBR_ID_ZIRAAT_KATILIM, $account->getMbrId());
     }
 
@@ -202,7 +202,7 @@ class AccountFactoryTest extends TestCase
 
         $this->assertSame('085300000009704', $account->getMerchantId());
         $this->assertSame('QNB_API_KULLANICI', $account->getUsername());
-        $this->assertNull($account->getStoreKey());
+        $this->assertNull($account->getSecretKey());
         $this->assertSame(PayForPosAccount::MBR_ID_FINANSBANK, $account->getMbrId());
     }
 
@@ -217,7 +217,7 @@ class AccountFactoryTest extends TestCase
         $this->assertInstanceOf(IyzicoPosAccount::class, $account);
         $this->assertSame('iyzico', $account->getBankName());
         $this->assertSame('api-key', $account->getMerchantId());
-        $this->assertSame('api-secret-key', $account->getStoreKey());
+        $this->assertSame('api-secret-key', $account->getSecretKey());
         $this->assertNull($account->getSubMerchantId());
     }
 
@@ -231,7 +231,7 @@ class AccountFactoryTest extends TestCase
         );
 
         $this->assertSame('api-key', $account->getMerchantId());
-        $this->assertSame('api-secret-key', $account->getStoreKey());
+        $this->assertSame('api-secret-key', $account->getSecretKey());
         $this->assertSame('sub-merchant-key', $account->getSubMerchantId());
     }
 
@@ -248,7 +248,7 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('paytr', $account->getBankName());
         $this->assertSame('123456', $account->getMerchantId());
         $this->assertSame('wWwU8buJp6jo1r25', $account->getPassword());
-        $this->assertSame('YEUaNcdHXqyt7hjt', $account->getStoreKey());
+        $this->assertSame('YEUaNcdHXqyt7hjt', $account->getSecretKey());
     }
 
     public function testCreateToslaPosAccount(): void
@@ -264,7 +264,7 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('tosla', $account->getBankName());
         $this->assertSame('merchant-id', $account->getMerchantId());
         $this->assertSame('api-user', $account->getUsername());
-        $this->assertSame('api-pass', $account->getStoreKey());
+        $this->assertSame('api-pass', $account->getSecretKey());
     }
 
     public function testCreateGarantiPosAccountNonSecure(): void
@@ -283,7 +283,7 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('PROVAUT', $account->getUsername());
         $this->assertSame('pass', $account->getPassword());
         $this->assertSame('30691298', $account->getTerminalId());
-        $this->assertNull($account->getStoreKey());
+        $this->assertNull($account->getSecretKey());
         $this->assertNull($account->getRefundUsername());
         $this->assertNull($account->getRefundPassword());
     }
@@ -305,7 +305,7 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('PROVAUT', $account->getUsername());
         $this->assertSame('pass', $account->getPassword());
         $this->assertSame('30691298', $account->getTerminalId());
-        $this->assertSame('store-key', $account->getStoreKey());
+        $this->assertSame('store-key', $account->getSecretKey());
         $this->assertSame('PROVRFN', $account->getRefundUsername());
         $this->assertSame('refund-pass', $account->getRefundPassword());
     }
@@ -324,7 +324,7 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('shop-code', $account->getMerchantId());
         $this->assertSame('user-code', $account->getUsername());
         $this->assertSame('user-pass', $account->getPassword());
-        $this->assertNull($account->getStoreKey());
+        $this->assertNull($account->getSecretKey());
     }
 
     public function testCreateInterPosAccount3DSecure(): void
@@ -340,7 +340,7 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('shop-code', $account->getMerchantId());
         $this->assertSame('user-code', $account->getUsername());
         $this->assertSame('user-pass', $account->getPassword());
-        $this->assertSame('merchant-pass', $account->getStoreKey());
+        $this->assertSame('merchant-pass', $account->getSecretKey());
     }
 
     public function testCreatePosNetPosAccountNonSecure(): void
@@ -357,7 +357,7 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('6706598320', $account->getMerchantId());
         $this->assertSame('27426457', $account->getPosNetId());
         $this->assertSame('67005551', $account->getTerminalId());
-        $this->assertNull($account->getStoreKey());
+        $this->assertNull($account->getSecretKey());
     }
 
     public function testCreatePosNetPosAccount3DSecure(): void
@@ -373,7 +373,7 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('6706598320', $account->getMerchantId());
         $this->assertSame('27426457', $account->getPosNetId());
         $this->assertSame('67005551', $account->getTerminalId());
-        $this->assertSame('10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10', $account->getStoreKey());
+        $this->assertSame('10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10', $account->getSecretKey());
     }
 
     public function testCreatePayFlexPosAccountStandard(): void
@@ -477,19 +477,19 @@ class AccountFactoryTest extends TestCase
             'AssecoPos with enc_key' => [
                 AssecoPos::class,
                 'akbank',
-                ['merchant_id' => 'mid', 'user_name' => 'user', 'user_password' => 'pass', 'enc_key' => 'sk'],
+                ['merchant_id' => 'mid', 'user_name' => 'user', 'user_password' => 'pass', 'secret_key' => 'sk'],
                 AssecoPosAccount::class,
             ],
             'AkbankPos without sub_merchant_id' => [
                 AkbankPos::class,
                 'akbank-pos',
-                ['merchant_id' => 'msid', 'terminal_id' => 'tsid', 'enc_key' => 'skey'],
+                ['merchant_id' => 'msid', 'terminal_id' => 'tsid', 'secret_key' => 'skey'],
                 AkbankPosAccount::class,
             ],
             'AkbankPos with sub_merchant_id' => [
                 AkbankPos::class,
                 'akbank-pos',
-                ['merchant_id' => 'msid', 'terminal_id' => 'tsid', 'enc_key' => 'skey', 'sub_merchant_id' => 'sub1'],
+                ['merchant_id' => 'msid', 'terminal_id' => 'tsid', 'secret_key' => 'skey', 'sub_merchant_id' => 'sub1'],
                 AkbankPosAccount::class,
             ],
             'GarantiPos minimal' => [
@@ -506,7 +506,7 @@ class AccountFactoryTest extends TestCase
                     'user_name'            => 'PROVAUT',
                     'user_password'        => 'pass',
                     'terminal_id'          => '30691298',
-                    'enc_key'              => 'sk',
+                    'secret_key'              => 'sk',
                     'refund_user_name'     => 'PROVRFN',
                     'refund_user_password' => 'refpass',
                 ],
@@ -521,43 +521,43 @@ class AccountFactoryTest extends TestCase
             'InterPos with enc_key' => [
                 InterPos::class,
                 'denizbank',
-                ['merchant_id' => 'shop-code', 'user_name' => 'user', 'user_password' => 'pass', 'enc_key' => 'mpass'],
+                ['merchant_id' => 'shop-code', 'user_name' => 'user', 'user_password' => 'pass', 'secret_key' => 'mpass'],
                 InterPosAccount::class,
             ],
             'IyzicoPos without sub_merchant_id' => [
                 IyzicoPos::class,
                 'iyzico',
-                ['merchant_id' => 'ak', 'enc_key' => 'sk'],
+                ['merchant_id' => 'ak', 'secret_key' => 'sk'],
                 IyzicoPosAccount::class,
             ],
             'IyzicoPos with sub_merchant_id' => [
                 IyzicoPos::class,
                 'iyzico',
-                ['merchant_id' => 'ak', 'enc_key' => 'sk', 'sub_merchant_id' => 'smk'],
+                ['merchant_id' => 'ak', 'secret_key' => 'sk', 'sub_merchant_id' => 'smk'],
                 IyzicoPosAccount::class,
             ],
             'KuveytPos' => [
                 KuveytPos::class,
                 'kuveyt-turk',
-                ['merchant_id' => 'mid', 'user_name' => 'user', 'terminal_id' => 'cid', 'enc_key' => 'sk'],
+                ['merchant_id' => 'mid', 'user_name' => 'user', 'terminal_id' => 'cid', 'secret_key' => 'sk'],
                 BoaPosAccount::class,
             ],
             'VakifKatilimPos with sub_merchant_id' => [
                 VakifKatilimPos::class,
                 'vakif-katilim',
-                ['merchant_id' => 'mid', 'user_name' => 'user', 'terminal_id' => 'cid', 'enc_key' => 'sk', 'sub_merchant_id' => 'sub1'],
+                ['merchant_id' => 'mid', 'user_name' => 'user', 'terminal_id' => 'cid', 'secret_key' => 'sk', 'sub_merchant_id' => 'sub1'],
                 BoaPosAccount::class,
             ],
             'ParamPos' => [
                 ParamPos::class,
                 'param',
-                ['merchant_id' => '12345', 'user_name' => 'user', 'user_password' => 'pass', 'enc_key' => 'guid123'],
+                ['merchant_id' => '12345', 'user_name' => 'user', 'user_password' => 'pass', 'secret_key' => 'guid123'],
                 ParamPosAccount::class,
             ],
             'Param3DHostPos' => [
                 Param3DHostPos::class,
                 'param',
-                ['merchant_id' => '12345', 'user_name' => 'user', 'user_password' => 'pass', 'enc_key' => 'guid123'],
+                ['merchant_id' => '12345', 'user_name' => 'user', 'user_password' => 'pass', 'secret_key' => 'guid123'],
                 ParamPosAccount::class,
             ],
             'PayFlexV4Pos standard' => [
@@ -581,13 +581,13 @@ class AccountFactoryTest extends TestCase
             'PayForPos with enc_key and mbr_id' => [
                 PayForPos::class,
                 'qnbfinansbank-payfor',
-                ['merchant_id' => '085300000009704', 'user_name' => 'QNB_API', 'user_password' => 'UcBN0', 'enc_key' => '12345678', 'mbr_id' => PayForPosAccount::MBR_ID_ZIRAAT_KATILIM],
+                ['merchant_id' => '085300000009704', 'user_name' => 'QNB_API', 'user_password' => 'UcBN0', 'secret_key' => '12345678', 'mbr_id' => PayForPosAccount::MBR_ID_ZIRAAT_KATILIM],
                 PayForPosAccount::class,
             ],
             'PayTrPos' => [
                 PayTrPos::class,
                 'paytr',
-                ['merchant_id' => '123456', 'user_password' => 'wWwU8buJp6jo1r25', 'enc_key' => 'YEUaNcdHXqyt7hjt'],
+                ['merchant_id' => '123456', 'user_password' => 'wWwU8buJp6jo1r25', 'secret_key' => 'YEUaNcdHXqyt7hjt'],
                 PayTrPosAccount::class,
             ],
             'PosNetPos without enc_key' => [
@@ -599,13 +599,13 @@ class AccountFactoryTest extends TestCase
             'PosNetV1Pos with enc_key' => [
                 PosNetV1Pos::class,
                 'yapikredi',
-                ['merchant_id' => '6706598320', 'terminal_id' => '67005551', 'user_name' => '27426457', 'enc_key' => '10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10'],
+                ['merchant_id' => '6706598320', 'terminal_id' => '67005551', 'user_name' => '27426457', 'secret_key' => '10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10'],
                 PosNetPosAccount::class,
             ],
             'ToslaPos' => [
                 ToslaPos::class,
                 'tosla',
-                ['merchant_id' => 'mid', 'user_name' => 'api-user', 'enc_key' => 'api-pass'],
+                ['merchant_id' => 'mid', 'user_name' => 'api-user', 'secret_key' => 'api-pass'],
                 ToslaPosAccount::class,
             ],
         ];
@@ -624,13 +624,13 @@ class AccountFactoryTest extends TestCase
             'merchant_id'   => 'mid',
             'user_name'     => 'user',
             'user_password' => 'pass',
-            'enc_key'       => 'sk',
+            'secret_key'       => 'sk',
         ]);
 
         $this->assertSame('mid', $account->getMerchantId());
         $this->assertSame('user', $account->getUsername());
         $this->assertSame('pass', $account->getPassword());
-        $this->assertSame('sk', $account->getStoreKey());
+        $this->assertSame('sk', $account->getSecretKey());
     }
 
     public function testCreateAkbankPosSetsCredentialsCorrectly(): void
@@ -638,14 +638,14 @@ class AccountFactoryTest extends TestCase
         $account = AccountFactory::createForGateway(AkbankPos::class, 'akbank-pos', [
             'merchant_id'     => 'msid',
             'terminal_id'     => 'tsid',
-            'enc_key'         => 'skey',
+            'secret_key'         => 'skey',
             'sub_merchant_id' => 'sub1',
         ]);
 
         $this->assertInstanceOf(AkbankPosAccount::class, $account);
         $this->assertSame('msid', $account->getMerchantId());
         $this->assertSame('tsid', $account->getTerminalId());
-        $this->assertSame('skey', $account->getStoreKey());
+        $this->assertSame('skey', $account->getSecretKey());
         $this->assertSame('sub1', $account->getSubMerchantId());
     }
 
@@ -656,7 +656,7 @@ class AccountFactoryTest extends TestCase
             'user_name'            => 'PROVAUT',
             'user_password'        => 'pass',
             'terminal_id'          => '30691298',
-            'enc_key'              => 'sk',
+            'secret_key'              => 'sk',
             'refund_user_name'     => 'PROVRFN',
             'refund_user_password' => 'refpass',
         ]);
@@ -666,7 +666,7 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('PROVAUT', $account->getUsername());
         $this->assertSame('pass', $account->getPassword());
         $this->assertSame('30691298', $account->getTerminalId());
-        $this->assertSame('sk', $account->getStoreKey());
+        $this->assertSame('sk', $account->getSecretKey());
         $this->assertSame('PROVRFN', $account->getRefundUsername());
         $this->assertSame('refpass', $account->getRefundPassword());
     }
@@ -675,13 +675,13 @@ class AccountFactoryTest extends TestCase
     {
         $account = AccountFactory::createForGateway(IyzicoPos::class, 'iyzico', [
             'merchant_id'     => 'ak',
-            'enc_key'         => 'sk',
+            'secret_key'         => 'sk',
             'sub_merchant_id' => 'smk',
         ]);
 
         $this->assertInstanceOf(IyzicoPosAccount::class, $account);
         $this->assertSame('ak', $account->getMerchantId());
-        $this->assertSame('sk', $account->getStoreKey());
+        $this->assertSame('sk', $account->getSecretKey());
         $this->assertSame('smk', $account->getSubMerchantId());
     }
 
@@ -691,14 +691,14 @@ class AccountFactoryTest extends TestCase
             'merchant_id'   => 'mid',
             'user_name'     => 'user',
             'terminal_id' => 'cid',
-            'enc_key'       => 'sk',
+            'secret_key'       => 'sk',
         ]);
 
         $this->assertInstanceOf(BoaPosAccount::class, $account);
         $this->assertSame('mid', $account->getMerchantId());
         $this->assertSame('user', $account->getUsername());
         $this->assertSame('cid', $account->getCustomerId());
-        $this->assertSame('sk', $account->getStoreKey());
+        $this->assertSame('sk', $account->getSecretKey());
         $this->assertNull($account->getSubMerchantId());
     }
 
@@ -708,14 +708,14 @@ class AccountFactoryTest extends TestCase
             'merchant_id'   => '12345',
             'user_name'     => 'user',
             'user_password' => 'pass',
-            'enc_key'       => 'guid123',
+            'secret_key'       => 'guid123',
         ]);
 
         $this->assertInstanceOf(ParamPosAccount::class, $account);
         $this->assertSame('12345', $account->getMerchantId());
         $this->assertSame('user', $account->getUsername());
         $this->assertSame('pass', $account->getPassword());
-        $this->assertSame('guid123', $account->getStoreKey());
+        $this->assertSame('guid123', $account->getSecretKey());
     }
 
     public function testCreatePayFlexPosSetsCredentialsCorrectly(): void
@@ -739,13 +739,13 @@ class AccountFactoryTest extends TestCase
             'merchant_id'   => '085300000009704',
             'user_name'     => 'QNB_API',
             'user_password' => 'UcBN0',
-            'enc_key'       => '12345678',
+            'secret_key'       => '12345678',
             'mbr_id'        => PayForPosAccount::MBR_ID_ZIRAAT_KATILIM,
         ]);
 
         $this->assertInstanceOf(PayForPosAccount::class, $account);
         $this->assertSame('085300000009704', $account->getMerchantId());
-        $this->assertSame('12345678', $account->getStoreKey());
+        $this->assertSame('12345678', $account->getSecretKey());
         $this->assertSame(PayForPosAccount::MBR_ID_ZIRAAT_KATILIM, $account->getMbrId());
     }
 
@@ -754,13 +754,13 @@ class AccountFactoryTest extends TestCase
         $account = AccountFactory::createForGateway(PayTrPos::class, 'paytr', [
             'merchant_id'   => '123456',
             'user_password' => 'wWwU8buJp6jo1r25',
-            'enc_key'       => 'YEUaNcdHXqyt7hjt',
+            'secret_key'       => 'YEUaNcdHXqyt7hjt',
         ]);
 
         $this->assertInstanceOf(PayTrPosAccount::class, $account);
         $this->assertSame('123456', $account->getMerchantId());
         $this->assertSame('wWwU8buJp6jo1r25', $account->getPassword());
-        $this->assertSame('YEUaNcdHXqyt7hjt', $account->getStoreKey());
+        $this->assertSame('YEUaNcdHXqyt7hjt', $account->getSecretKey());
     }
 
     public function testCreatePosNetPosSetsCredentialsCorrectly(): void
@@ -769,14 +769,14 @@ class AccountFactoryTest extends TestCase
             'merchant_id' => '6706598320',
             'terminal_id' => '67005551',
             'user_name'   => '27426457',
-            'enc_key'     => '10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10',
+            'secret_key'     => '10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10',
         ]);
 
         $this->assertInstanceOf(PosNetPosAccount::class, $account);
         $this->assertSame('6706598320', $account->getMerchantId());
         $this->assertSame('27426457', $account->getPosNetId());
         $this->assertSame('67005551', $account->getTerminalId());
-        $this->assertSame('10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10', $account->getStoreKey());
+        $this->assertSame('10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10', $account->getSecretKey());
     }
 
     public function testCreateToslaPosSetsCredentialsCorrectly(): void
@@ -784,12 +784,12 @@ class AccountFactoryTest extends TestCase
         $account = AccountFactory::createForGateway(ToslaPos::class, 'tosla', [
             'merchant_id' => 'mid',
             'user_name'   => 'api-user',
-            'enc_key'     => 'api-pass',
+            'secret_key'     => 'api-pass',
         ]);
 
         $this->assertInstanceOf(ToslaPosAccount::class, $account);
         $this->assertSame('mid', $account->getMerchantId());
         $this->assertSame('api-user', $account->getUsername());
-        $this->assertSame('api-pass', $account->getStoreKey());
+        $this->assertSame('api-pass', $account->getSecretKey());
     }
 }

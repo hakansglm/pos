@@ -42,8 +42,8 @@ class ParamPosCrypt extends AbstractCrypt
             return $this->check3DPayOr3DHostHash($posAccount, $data);
         }
 
-        if (null === $posAccount->getStoreKey()) {
-            throw new \LogicException('Account storeKey eksik!');
+        if (null === $posAccount->getSecretKey()) {
+            throw new \LogicException('Account secretKey eksik!');
         }
 
         $hashParamsArr = [
@@ -53,7 +53,7 @@ class ParamPosCrypt extends AbstractCrypt
             'orderId',
         ];
 
-        $hashStr = $this->buildHashString($data, $hashParamsArr, '', $posAccount->getStoreKey());
+        $hashStr = $this->buildHashString($data, $hashParamsArr, '', $posAccount->getSecretKey());
 
         $actualHash = $this->hashString($hashStr);
 
@@ -134,8 +134,8 @@ class ParamPosCrypt extends AbstractCrypt
      */
     private function check3DPayOr3DHostHash(AbstractPosAccount $posAccount, array $data): bool
     {
-        if (null === $posAccount->getStoreKey()) {
-            throw new \LogicException('Account storeKey eksik!');
+        if (null === $posAccount->getSecretKey()) {
+            throw new \LogicException('Account secretKey eksik!');
         }
 
         $hashParamsArr = [

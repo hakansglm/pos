@@ -69,7 +69,7 @@ class AkbankPosCryptTest extends TestCase
     #[DataProvider('hashStringDataProvider')]
     public function testHashString(string $str, string $expected): void
     {
-        $actual = $this->crypt->hashString($str, $this->account->getStoreKey());
+        $actual = $this->crypt->hashString($str, $this->account->getSecretKey());
         $this->assertSame($expected, $actual);
     }
 

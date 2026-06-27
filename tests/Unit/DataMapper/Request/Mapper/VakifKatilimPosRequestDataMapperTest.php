@@ -103,7 +103,7 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
 
         $this->crypt->expects(self::once())
             ->method('hashString')
-            ->with($this->account->getStoreKey())
+            ->with($this->account->getSecretKey())
             ->willReturn($expected['inputs']['HashPassword']);
 
         $actual = $this->requestDataMapper->create3DFormData(
@@ -148,7 +148,7 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
     {
         $this->crypt->expects(self::once())
             ->method('hashString')
-            ->with($this->account->getStoreKey())
+            ->with($this->account->getSecretKey())
             ->willReturn($expectedData['HashPassword']);
 
         $hashCalculationData = $expectedData;
@@ -174,7 +174,7 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
     {
         $this->crypt->expects(self::once())
             ->method('hashString')
-            ->with($this->account->getStoreKey())
+            ->with($this->account->getSecretKey())
             ->willReturn($expectedData['HashPassword']);
 
         $hashCalculationData = $expectedData;
@@ -202,7 +202,7 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
 
         $this->crypt->expects(self::once())
             ->method('hashString')
-            ->with($account->getStoreKey())
+            ->with($account->getSecretKey())
             ->willReturn($expectedData['HashPassword']);
 
         $hashCalculationData = $expectedData;
@@ -231,7 +231,7 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
     {
         $this->crypt->expects(self::once())
             ->method('hashString')
-            ->with($this->account->getStoreKey())
+            ->with($this->account->getSecretKey())
             ->willReturn($expected['HashPassword']);
 
         $hashCalculationData = $expected;
@@ -254,7 +254,7 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
     {
         $this->crypt->expects(self::once())
             ->method('hashString')
-            ->with($this->account->getStoreKey())
+            ->with($this->account->getSecretKey())
             ->willReturn($expected['HashPassword']);
 
         $hashCalculationData = $expected;
@@ -347,7 +347,7 @@ class VakifKatilimPosRequestDataMapperTest extends TestCase
 
         $this->crypt->expects(self::once())
             ->method('hashString')
-            ->with($this->account->getStoreKey())
+            ->with($this->account->getSecretKey())
             ->willReturn($expectedData['HashPassword']);
 
         $actual = $this->requestDataMapper->createCustomQueryRequestData($this->account, $requestData);

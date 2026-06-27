@@ -65,7 +65,7 @@ class ParamPosCryptTest extends TestCase
             ->method('getMerchantId')
             ->willReturn('10738');
         $this->account->expects($this->atLeastOnce())
-            ->method('getStoreKey')
+            ->method('getSecretKey')
             ->willReturn('0c13d406-873b-403b-9c09-a5766840d98c');
 
         $this->assertTrue($this->crypt->check3DHash($this->account, $responseData));

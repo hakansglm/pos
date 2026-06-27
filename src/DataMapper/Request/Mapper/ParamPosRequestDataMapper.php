@@ -412,7 +412,7 @@ class ParamPosRequestDataMapper extends AbstractRequestDataMapper
                 'CLIENT_USERNAME' => $posAccount->getUsername(),
                 'CLIENT_PASSWORD' => $posAccount->getPassword(),
             ],
-            'GUID' => $posAccount->getStoreKey(),
+            'GUID' => $posAccount->getSecretKey(),
         ];
     }
 

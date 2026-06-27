@@ -42,7 +42,7 @@ class PosNetV1PosCrypt extends AbstractCrypt
             $formInputs['ExpiredDate'] ?? null,
 
             $formInputs['Amount'],
-            $posAccount->getStoreKey(),
+            $posAccount->getSecretKey(),
         ];
         $hashStr  = \implode(static::HASH_SEPARATOR, $hashData);
 
@@ -54,8 +54,8 @@ class PosNetV1PosCrypt extends AbstractCrypt
      */
     public function check3DHash(AbstractPosAccount $posAccount, array $data): bool
     {
-        if (null === $posAccount->getStoreKey()) {
-            throw new \LogicException('Account storeKey eksik!');
+        if (null === $posAccount->getSecretKey()) {
+            throw new \LogicException('Account secretKey eksik!');
         }
 
         $actualHash = $this->hashFromParams($posAccount, $data, $data['MacParams'], ':');
@@ -90,7 +90,7 @@ class PosNetV1PosCrypt extends AbstractCrypt
             $threeDSecureData['CavvData'],
             $threeDSecureData['Eci'],
             $threeDSecureData['MdStatus'],
-            $posAccount->getStoreKey() ?? '',
+            $posAccount->getSecretKey() ?? '',
         ];
 
         $hashStr = \implode(static::HASH_SEPARATOR, $hashData);

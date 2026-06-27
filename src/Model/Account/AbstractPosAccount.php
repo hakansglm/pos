@@ -15,7 +15,7 @@ abstract class AbstractPosAccount
      * @param string      $merchantId
      * @param string      $username
      * @param string      $password
-     * @param string|null $storeKey
+     * @param string|null $secretKey
      * @param string|null $subMerchantId
      */
     public function __construct(
@@ -23,7 +23,7 @@ abstract class AbstractPosAccount
         protected string  $merchantId,
         protected string  $username,
         protected string  $password,
-        protected ?string $storeKey = null,
+        protected ?string $secretKey = null,
         protected ?string $subMerchantId = null
     ) {
     }
@@ -55,9 +55,9 @@ abstract class AbstractPosAccount
     /**
      * @return string|null
      */
-    public function getStoreKey(): ?string
+    public function getSecretKey(): ?string
     {
-        return $this->storeKey;
+        return $this->secretKey;
     }
 
     /**

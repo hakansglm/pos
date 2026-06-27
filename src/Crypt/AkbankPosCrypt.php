@@ -71,7 +71,7 @@ class AkbankPosCrypt extends AbstractCrypt
 
         $hashStr = \implode(static::HASH_SEPARATOR, $hashData);
 
-        return $this->hashString($hashStr, $posAccount->getStoreKey());
+        return $this->hashString($hashStr, $posAccount->getSecretKey());
     }
 
     /**
@@ -79,8 +79,8 @@ class AkbankPosCrypt extends AbstractCrypt
      */
     public function check3DHash(AbstractPosAccount $posAccount, array $data): bool
     {
-        if (null === $posAccount->getStoreKey()) {
-            throw new \LogicException('Account storeKey eksik!');
+        if (null === $posAccount->getSecretKey()) {
+            throw new \LogicException('Account secretKey eksik!');
         }
 
         $actualHash = $this->hashFromParams($posAccount, $data, $data['hashParams'], '+');

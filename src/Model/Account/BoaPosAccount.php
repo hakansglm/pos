@@ -16,7 +16,7 @@ class BoaPosAccount extends AbstractPosAccount
      * @param string      $merchantId    Mağaza Numarası
      * @param string      $username      POS panelinizden kullanıcı işlemleri sayfasında APİ rolünde kullanıcı oluşturulmalıdır
      * @param string      $customerId    CustomerNumber, Müşteri No
-     * @param string      $storeKey      Oluşturulan APİ kullanıcısının şifre bilgisidir.
+     * @param string      $secretKey     Oluşturulan APİ kullanıcısının şifre bilgisidir.
      * @param string|null $subMerchantId
      */
     public function __construct(
@@ -24,10 +24,10 @@ class BoaPosAccount extends AbstractPosAccount
         string  $merchantId,
         string  $username,
         string  $customerId,
-        string  $storeKey,
+        string  $secretKey,
         ?string $subMerchantId = null
     ) {
-        parent::__construct($bankName, $merchantId, $username, $customerId, $storeKey, $subMerchantId);
+        parent::__construct($bankName, $merchantId, $username, $customerId, $secretKey, $subMerchantId);
     }
 
     /**

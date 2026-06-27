@@ -46,7 +46,7 @@ class IyzicoPosCrypt extends AbstractCrypt
             $data['status'] ?? '',
         ]);
 
-        $expected = $this->hashString($dataToSign, $posAccount->getStoreKey());
+        $expected = $this->hashString($dataToSign, $posAccount->getSecretKey());
 
         if (isset($data['signature']) && \hash_equals($expected, $data['signature'])) {
             $this->logger->debug('hash check is successful');
@@ -83,7 +83,7 @@ class IyzicoPosCrypt extends AbstractCrypt
         ];
         $payload = \implode(static::HASH_SEPARATOR, $hashData);
 
-        return $this->hashString($payload, $posAccount->getStoreKey());
+        return $this->hashString($payload, $posAccount->getSecretKey());
     }
 
     /**

@@ -45,8 +45,8 @@ class PosNetPosCrypt extends AbstractCrypt
      */
     public function check3DHash(AbstractPosAccount $posAccount, array $data): bool
     {
-        if (null === $posAccount->getStoreKey()) {
-            throw new \LogicException('Account storeKey eksik!');
+        if (null === $posAccount->getSecretKey()) {
+            throw new \LogicException('Account secretKey eksik!');
         }
 
         $secondHashData = [
@@ -55,7 +55,7 @@ class PosNetPosCrypt extends AbstractCrypt
             $data['amount'],
             $data['currency'],
             $posAccount->getMerchantId(),
-            $this->createSecurityData($posAccount->getStoreKey(), $posAccount->getTerminalId()),
+            $this->createSecurityData($posAccount->getSecretKey(), $posAccount->getTerminalId()),
         ];
         $hashStr        = implode(static::HASH_SEPARATOR, $secondHashData);
 
@@ -81,8 +81,8 @@ class PosNetPosCrypt extends AbstractCrypt
      */
     public function createHash(AbstractPosAccount $posAccount, array $requestData, array $order = []): string
     {
-        if (null === $posAccount->getStoreKey()) {
-            throw new \LogicException('Account storeKey eksik!');
+        if (null === $posAccount->getSecretKey()) {
+            throw new \LogicException('Account secretKey eksik!');
         }
 
         $hashData = [
@@ -90,7 +90,7 @@ class PosNetPosCrypt extends AbstractCrypt
             $order['amount'],
             $order['currency'],
             $requestData['mid'],
-            $this->createSecurityData($posAccount->getStoreKey(), $requestData['tid']),
+            $this->createSecurityData($posAccount->getSecretKey(), $requestData['tid']),
         ];
         $hashStr  = \implode(static::HASH_SEPARATOR, $hashData);
 
@@ -100,15 +100,15 @@ class PosNetPosCrypt extends AbstractCrypt
     /**
      * Make Security Data
      *
-     * @param string $storeKey
+     * @param string $secretKey
      * @param string $terminalId
      *
      * @return string
      */
-    private function createSecurityData(string $storeKey, string $terminalId): string
+    private function createSecurityData(string $secretKey, string $terminalId): string
     {
         $hashData = [
-            $storeKey,
+            $secretKey,
             $terminalId,
         ];
         $hashStr  = \implode(static::HASH_SEPARATOR, $hashData);

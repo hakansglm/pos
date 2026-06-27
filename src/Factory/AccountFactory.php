@@ -48,13 +48,13 @@ class AccountFactory
      * @param non-empty-string      $clientId     Üye iş yeri (Mağaza) numarası
      * @param non-empty-string      $kullaniciAdi
      * @param non-empty-string      $password
-     * @param non-empty-string|null $storeKey
+     * @param non-empty-string|null $secretKey
      *
      * @return AssecoPosAccount
      */
-    public static function createAssecoPosAccount(string $bank, string $clientId, string $kullaniciAdi, string $password, ?string $storeKey = null): AssecoPosAccount
+    public static function createAssecoPosAccount(string $bank, string $clientId, string $kullaniciAdi, string $password, ?string $secretKey = null): AssecoPosAccount
     {
-        return new AssecoPosAccount($bank, $clientId, $kullaniciAdi, $password, $storeKey);
+        return new AssecoPosAccount($bank, $clientId, $kullaniciAdi, $password, $secretKey);
     }
 
     /**
@@ -146,15 +146,15 @@ class AccountFactory
      * @param non-empty-string      $userId
      * @param non-empty-string      $password       Terminal UserID şifresi
      * @param non-empty-string      $terminalId
-     * @param non-empty-string|null $storeKey
+     * @param non-empty-string|null $secretKey
      * @param non-empty-string|null $refundUsername
      * @param non-empty-string|null $refundPassword
      *
      * @return GarantiPosAccount
      */
-    public static function createGarantiPosAccount(string $bank, string $merchantId, string $userId, string $password, string $terminalId, ?string $storeKey = null, ?string $refundUsername = null, ?string $refundPassword = null): GarantiPosAccount
+    public static function createGarantiPosAccount(string $bank, string $merchantId, string $userId, string $password, string $terminalId, ?string $secretKey = null, ?string $refundUsername = null, ?string $refundPassword = null): GarantiPosAccount
     {
-        return new GarantiPosAccount($bank, $merchantId, $userId, $password, $terminalId, $storeKey, $refundUsername, $refundPassword);
+        return new GarantiPosAccount($bank, $merchantId, $userId, $password, $terminalId, $secretKey, $refundUsername, $refundPassword);
     }
 
 
@@ -163,14 +163,14 @@ class AccountFactory
      * @param non-empty-string      $merchantId    Mağaza Numarası / Üye iş yeri tekil numarası
      * @param non-empty-string      $username      Yönetim panelinden oluşturulan api rollü kullanıcı adı
      * @param non-empty-string      $customerId    CustomerNumber, Müşteri No
-     * @param non-empty-string      $storeKey      Oluşturulan APİ kullanıcısının şifre bilgisidir.
+     * @param non-empty-string      $secretKey     Oluşturulan APİ kullanıcısının şifre bilgisidir.
      * @param non-empty-string|null $subMerchantId
      *
      * @return BoaPosAccount
      */
-    public static function createBoaPosAccount(string $bank, string $merchantId, string $username, string $customerId, string $storeKey, ?string $subMerchantId = null): BoaPosAccount
+    public static function createBoaPosAccount(string $bank, string $merchantId, string $username, string $customerId, string $secretKey, ?string $subMerchantId = null): BoaPosAccount
     {
-        return new BoaPosAccount($bank, $merchantId, $username, $customerId, $storeKey, $subMerchantId);
+        return new BoaPosAccount($bank, $merchantId, $username, $customerId, $secretKey, $subMerchantId);
     }
 
     /**
@@ -178,13 +178,13 @@ class AccountFactory
      * @param non-empty-string      $merchantId
      * @param non-empty-string      $terminalId
      * @param non-empty-string      $posNetId
-     * @param non-empty-string|null $storeKey
+     * @param non-empty-string|null $secretKey
      *
      * @return PosNetPosAccount
      */
-    public static function createPosNetPosAccount(string $bank, string $merchantId, string $terminalId, string $posNetId, ?string $storeKey = null): PosNetPosAccount
+    public static function createPosNetPosAccount(string $bank, string $merchantId, string $terminalId, string $posNetId, ?string $secretKey = null): PosNetPosAccount
     {
-        return new PosNetPosAccount($bank, $merchantId, $posNetId, $terminalId, $storeKey);
+        return new PosNetPosAccount($bank, $merchantId, $posNetId, $terminalId, $secretKey);
     }
 
     /**
@@ -241,22 +241,22 @@ class AccountFactory
      * Intended for configuration-driven callers (framework wrappers, config files).
      *
      * Credential keys per gateway ([] = optional, parentheses = bank's own field name):
-     * - AssecoPos:       merchant_id (ClientId), user_name (KullaniciAdi), user_password (Sifre), [enc_key (StoreKey)]
-     * - AkbankPos:       merchant_id (MerchantSafeId), terminal_id (TerminalSafeId), enc_key (SecretKey), [sub_merchant_id]
-     * - GarantiPos:      merchant_id, user_name (ProvUserID), user_password (ProvisionPassword), terminal_id, [enc_key (StoreKey)], [refund_user_name (ProvUserID)], [refund_user_password (ProvisionPassword)]
-     * - InterPos:        merchant_id (ShopCode), user_name (UserCode), user_password (UserPass), [enc_key (MerchantPass)]
-     * - IyzicoPos:       merchant_id (ApiKey), enc_key (SecretKey), [sub_merchant_id (SubMerchantKey)]
-     * - KuveytPos:       merchant_id, user_name, terminal_id (CustomerId/MüşteriNo), enc_key (StoreKey), [sub_merchant_id]
-     * - Param3DHostPos:  merchant_id (ClientCode), user_name, user_password, enc_key (Guid)
-     * - ParamPos:        merchant_id (ClientCode), user_name, user_password, enc_key (Guid)
+     * - AssecoPos:       merchant_id (ClientId), user_name (KullaniciAdi), user_password (Sifre), [secret_key (StoreKey)]
+     * - AkbankPos:       merchant_id (MerchantSafeId), terminal_id (TerminalSafeId), secret_key (SecretKey), [sub_merchant_id]
+     * - GarantiPos:      merchant_id, user_name (ProvUserID), user_password (ProvisionPassword), terminal_id, [secret_key (StoreKey)], [refund_user_name (ProvUserID)], [refund_user_password (ProvisionPassword)]
+     * - InterPos:        merchant_id (ShopCode), user_name (UserCode), user_password (UserPass), [secret_key (MerchantPass)]
+     * - IyzicoPos:       merchant_id (ApiKey), secret_key (SecretKey), [sub_merchant_id (SubMerchantKey)]
+     * - KuveytPos:       merchant_id, user_name, terminal_id (CustomerId/MüşteriNo), secret_key (StoreKey), [sub_merchant_id]
+     * - Param3DHostPos:  merchant_id (ClientCode), user_name, user_password, secret_key (Guid)
+     * - ParamPos:        merchant_id (ClientCode), user_name, user_password, secret_key (Guid)
      * - PayFlexCPV4Pos:  merchant_id, user_password (Password), terminal_id (TerminalNo), [merchant_type], [sub_merchant_id]
      * - PayFlexV4Pos:    merchant_id, user_password (Password), terminal_id (TerminalNo), [merchant_type], [sub_merchant_id]
-     * - PayForPos:       merchant_id, user_name (UserCode), user_password (UserPassword), [enc_key (MerchantPass)], [mbr_id]
-     * - PayTrPos:        merchant_id, user_password (MerchantSalt), enc_key (MerchantKey)
-     * - PosNetPos:       merchant_id, terminal_id, user_name (PosNetId), [enc_key (EncKey)]
-     * - PosNetV1Pos:     merchant_id, terminal_id, user_name (PosNetId), [enc_key (EncKey)]
-     * - ToslaPos:        merchant_id (ClientId), user_name (ApiUser), enc_key (ApiPass)
-     * - VakifKatilimPos: merchant_id, user_name, terminal_id (CustomerId/MüşteriNo), enc_key (StoreKey), [sub_merchant_id]
+     * - PayForPos:       merchant_id, user_name (UserCode), user_password (UserPassword), [secret_key (MerchantPass)], [mbr_id]
+     * - PayTrPos:        merchant_id, user_password (MerchantSalt), secret_key (MerchantKey)
+     * - PosNetPos:       merchant_id, terminal_id, user_name (PosNetId), [secret_key (EncKey)]
+     * - PosNetV1Pos:     merchant_id, terminal_id, user_name (PosNetId), [secret_key (EncKey)]
+     * - ToslaPos:        merchant_id (ClientId), user_name (ApiUser), secret_key (ApiPass)
+     * - VakifKatilimPos: merchant_id, user_name, terminal_id (CustomerId/MüşteriNo), secret_key (StoreKey), [sub_merchant_id]
      *
      * @param class-string<PosInterface>                $gatewayClass
      * @param non-empty-string                          $bank
@@ -275,13 +275,13 @@ class AccountFactory
                 $credentials['merchant_id'],
                 $credentials['user_name'],
                 $credentials['user_password'],
-                $credentials['enc_key'] ?? null,
+                $credentials['secret_key'] ?? null,
             ),
             AkbankPos::class => self::createAkbankPosAccount(
                 $bank,
                 $credentials['merchant_id'],
                 $credentials['terminal_id'],
-                $credentials['enc_key'],
+                $credentials['secret_key'],
                 $credentials['sub_merchant_id'] ?? null,
             ),
             GarantiPos::class => self::createGarantiPosAccount(
@@ -290,7 +290,7 @@ class AccountFactory
                 $credentials['user_name'],
                 $credentials['user_password'],
                 $credentials['terminal_id'],
-                $credentials['enc_key'] ?? null,
+                $credentials['secret_key'] ?? null,
                 $credentials['refund_user_name'] ?? null,
                 $credentials['refund_user_password'] ?? null,
             ),
@@ -299,12 +299,12 @@ class AccountFactory
                 $credentials['merchant_id'],
                 $credentials['user_name'],
                 $credentials['user_password'],
-                $credentials['enc_key'] ?? null,
+                $credentials['secret_key'] ?? null,
             ),
             IyzicoPos::class => self::createIyzicoPosAccount(
                 $bank,
                 $credentials['merchant_id'],
-                $credentials['enc_key'],
+                $credentials['secret_key'],
                 $credentials['sub_merchant_id'] ?? null,
             ),
             KuveytPos::class, VakifKatilimPos::class => self::createBoaPosAccount(
@@ -312,7 +312,7 @@ class AccountFactory
                 $credentials['merchant_id'],
                 $credentials['user_name'],
                 $credentials['terminal_id'],
-                $credentials['enc_key'],
+                $credentials['secret_key'],
                 $credentials['sub_merchant_id'] ?? null,
             ),
             Param3DHostPos::class, ParamPos::class => self::createParamPosAccount(
@@ -320,7 +320,7 @@ class AccountFactory
                 (int) $credentials['merchant_id'],
                 $credentials['user_name'],
                 $credentials['user_password'],
-                $credentials['enc_key'],
+                $credentials['secret_key'],
             ),
             PayFlexCPV4Pos::class, PayFlexV4Pos::class => self::createPayFlexPosAccount(
                 $bank,
@@ -335,27 +335,27 @@ class AccountFactory
                 $credentials['merchant_id'],
                 $credentials['user_name'],
                 $credentials['user_password'],
-                $credentials['enc_key'] ?? null,
+                $credentials['secret_key'] ?? null,
                 $credentials['mbr_id'] ?? PayForPosAccount::MBR_ID_FINANSBANK, // @phpstan-ignore argument.type
             ),
             PayTrPos::class => self::createPayTrPosAccount(
                 $bank,
                 $credentials['merchant_id'],
                 $credentials['user_password'],
-                $credentials['enc_key'],
+                $credentials['secret_key'],
             ),
             PosNetPos::class, PosNetV1Pos::class => self::createPosNetPosAccount(
                 $bank,
                 $credentials['merchant_id'],
                 $credentials['terminal_id'],
                 $credentials['user_name'],
-                $credentials['enc_key'] ?? null,
+                $credentials['secret_key'] ?? null,
             ),
             ToslaPos::class => self::createToslaPosAccount(
                 $bank,
                 $credentials['merchant_id'],
                 $credentials['user_name'],
-                $credentials['enc_key'],
+                $credentials['secret_key'],
             ),
             default => throw new \DomainException(\sprintf('No matching Account for gateway %s', $gatewayClass)),
         };

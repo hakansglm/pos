@@ -143,7 +143,7 @@ class AkbankPosHttpClientTest extends TestCase
             ->willReturn($request);
 
         $this->account->expects($this->once())
-            ->method('getStoreKey')
+            ->method('getSecretKey')
             ->willReturn('store-key123');
 
         $this->crypt->expects($this->once())
@@ -197,7 +197,7 @@ class AkbankPosHttpClientTest extends TestCase
             ->willReturn($request);
 
         $this->account->expects($this->once())
-            ->method('getStoreKey')
+            ->method('getSecretKey')
             ->willReturn('store-key123');
 
         $this->crypt->expects($this->once())
@@ -250,7 +250,7 @@ class AkbankPosHttpClientTest extends TestCase
             ->willReturn($request);
 
         $this->account->expects($this->once())
-            ->method('getStoreKey')
+            ->method('getSecretKey')
             ->willReturn('store-key123');
 
         $this->crypt->expects($this->once())

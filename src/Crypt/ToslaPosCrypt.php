@@ -39,8 +39,8 @@ class ToslaPosCrypt extends AbstractCrypt
      */
     public function check3DHash(AbstractPosAccount $posAccount, array $data): bool
     {
-        if (null === $posAccount->getStoreKey()) {
-            throw new \LogicException('Account storeKey eksik!');
+        if (null === $posAccount->getSecretKey()) {
+            throw new \LogicException('Account secretKey eksik!');
         }
 
         $data['ClientId'] = $posAccount->getMerchantId();
@@ -69,7 +69,7 @@ class ToslaPosCrypt extends AbstractCrypt
     public function createHash(AbstractPosAccount $posAccount, array $requestData): string
     {
         $hashData = [
-            $posAccount->getStoreKey(),
+            $posAccount->getSecretKey(),
             $requestData['clientId'],
             $requestData['apiUser'],
             $requestData['rnd'],

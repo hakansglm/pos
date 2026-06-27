@@ -17,11 +17,11 @@ class GarantiPosAccount extends AbstractPosAccount
         string          $username,
         string          $password,
         private string  $terminalId,
-        ?string         $storeKey = null,
+        ?string         $secretKey = null,
         private ?string $refundUsername = null,
         private ?string $refundPassword = null
     ) {
-        parent::__construct($bankName, $merchantId, $username, $password, $storeKey);
+        parent::__construct($bankName, $merchantId, $username, $password, $secretKey);
     }
 
     /**

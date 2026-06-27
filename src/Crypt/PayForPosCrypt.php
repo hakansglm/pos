@@ -37,7 +37,7 @@ class PayForPosCrypt extends AbstractCrypt
             $formInputs['TxnType'],
             $formInputs['InstallmentCount'],
             $formInputs['Rnd'],
-            $posAccount->getStoreKey(),
+            $posAccount->getSecretKey(),
         ];
         $hashStr = \implode(static::HASH_SEPARATOR, $hashData);
 
@@ -51,7 +51,7 @@ class PayForPosCrypt extends AbstractCrypt
     {
         $hashData = [
             $posAccount->getMerchantId(),
-            $posAccount->getStoreKey(),
+            $posAccount->getSecretKey(),
             $data['OrderId'],
             $data['AuthCode'],
             $data['ProcReturnCode'],

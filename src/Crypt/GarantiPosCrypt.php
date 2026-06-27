@@ -42,7 +42,7 @@ class GarantiPosCrypt extends AbstractCrypt
             $formInputs['errorurl'],
             $formInputs['txntype'],
             $formInputs['txninstallmentcount'],
-            $posAccount->getStoreKey(),
+            $posAccount->getSecretKey(),
             $this->createSecurityData(
                 $posAccount,
                 (string) $formInputs['terminalid'],
@@ -58,8 +58,8 @@ class GarantiPosCrypt extends AbstractCrypt
      */
     public function check3DHash(AbstractPosAccount $posAccount, array $data): bool
     {
-        if (null === $posAccount->getStoreKey()) {
-            throw new \LogicException('Account storeKey eksik!');
+        if (null === $posAccount->getSecretKey()) {
+            throw new \LogicException('Account secretKey eksik!');
         }
 
         $actualHash = $this->hashFromParams($posAccount, $data, $data['hashparams'], ':');

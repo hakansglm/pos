@@ -47,11 +47,11 @@ class KuveytPosCrypt extends AbstractCrypt
      */
     public function createHash(AbstractPosAccount $posAccount, array $requestData): string
     {
-        if (null === $posAccount->getStoreKey()) {
-            throw new \LogicException('Account storeKey eksik!');
+        if (null === $posAccount->getSecretKey()) {
+            throw new \LogicException('Account secretKey eksik!');
         }
 
-        $hashedPassword = $this->hashString($posAccount->getStoreKey());
+        $hashedPassword = $this->hashString($posAccount->getSecretKey());
 
         $hashData = [
             $requestData['MerchantId'],
