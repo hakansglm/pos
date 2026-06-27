@@ -6,19 +6,37 @@
 
 namespace Mews\Pos\Factory;
 
+use Mews\Pos\Exception\MissingAccountInfoException;
+use Mews\Pos\Gateway\AkbankPos;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\GarantiPos;
+use Mews\Pos\Gateway\InterPos;
+use Mews\Pos\Gateway\IyzicoPos;
+use Mews\Pos\Gateway\KuveytPos;
+use Mews\Pos\Gateway\Param3DHostPos;
+use Mews\Pos\Gateway\ParamPos;
+use Mews\Pos\Gateway\PayFlexCPV4Pos;
+use Mews\Pos\Gateway\PayFlexV4Pos;
+use Mews\Pos\Gateway\PayForPos;
+use Mews\Pos\Gateway\PayTrPos;
+use Mews\Pos\Gateway\PosNetPos;
+use Mews\Pos\Gateway\PosNetV1Pos;
+use Mews\Pos\Gateway\ToslaPos;
+use Mews\Pos\Gateway\VakifKatilimPos;
+use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Account\AkbankPosAccount;
 use Mews\Pos\Model\Account\AssecoPosAccount;
-use Mews\Pos\Model\Account\IyzicoPosAccount;
+use Mews\Pos\Model\Account\BoaPosAccount;
 use Mews\Pos\Model\Account\GarantiPosAccount;
 use Mews\Pos\Model\Account\InterPosAccount;
-use Mews\Pos\Model\Account\BoaPosAccount;
+use Mews\Pos\Model\Account\IyzicoPosAccount;
 use Mews\Pos\Model\Account\ParamPosAccount;
 use Mews\Pos\Model\Account\PayFlexPosAccount;
 use Mews\Pos\Model\Account\PayForPosAccount;
-use Mews\Pos\Model\Account\PosNetPosAccount;
 use Mews\Pos\Model\Account\PayTrPosAccount;
+use Mews\Pos\Model\Account\PosNetPosAccount;
 use Mews\Pos\Model\Account\ToslaPosAccount;
-use Mews\Pos\Exception\MissingAccountInfoException;
+use Mews\Pos\PosInterface;
 
 /**
  * AccountFactory
@@ -216,6 +234,131 @@ class AccountFactory
     public static function createParamPosAccount(string $bank, int $clientCode, string $username, string $password, string $guid): ParamPosAccount
     {
         return new ParamPosAccount($bank, $clientCode, $username, $password, $guid);
+    }
+
+    /**
+     * Creates an account from a gateway class name and a flat credentials array.
+     * Intended for configuration-driven callers (framework wrappers, config files).
+     *
+     * Credential keys per gateway ([] = optional, parentheses = bank's own field name):
+     * - AssecoPos:       merchant_id (ClientId), user_name (KullaniciAdi), user_password (Sifre), [enc_key (StoreKey)]
+     * - AkbankPos:       merchant_id (MerchantSafeId), terminal_id (TerminalSafeId), enc_key (SecretKey), [sub_merchant_id]
+     * - GarantiPos:      merchant_id, user_name (ProvUserID), user_password (ProvisionPassword), terminal_id, [enc_key (StoreKey)], [refund_user_name (ProvUserID)], [refund_user_password (ProvisionPassword)]
+     * - InterPos:        merchant_id (ShopCode), user_name (UserCode), user_password (UserPass), [enc_key (MerchantPass)]
+     * - IyzicoPos:       merchant_id (ApiKey), enc_key (SecretKey), [sub_merchant_id (SubMerchantKey)]
+     * - KuveytPos:       merchant_id, user_name, terminal_id (CustomerId/MüşteriNo), enc_key (StoreKey), [sub_merchant_id]
+     * - Param3DHostPos:  merchant_id (ClientCode), user_name, user_password, enc_key (Guid)
+     * - ParamPos:        merchant_id (ClientCode), user_name, user_password, enc_key (Guid)
+     * - PayFlexCPV4Pos:  merchant_id, user_password (Password), terminal_id (TerminalNo), [merchant_type], [sub_merchant_id]
+     * - PayFlexV4Pos:    merchant_id, user_password (Password), terminal_id (TerminalNo), [merchant_type], [sub_merchant_id]
+     * - PayForPos:       merchant_id, user_name (UserCode), user_password (UserPassword), [enc_key (MerchantPass)], [mbr_id]
+     * - PayTrPos:        merchant_id, user_password (MerchantSalt), enc_key (MerchantKey)
+     * - PosNetPos:       merchant_id, terminal_id, user_name (PosNetId), [enc_key (EncKey)]
+     * - PosNetV1Pos:     merchant_id, terminal_id, user_name (PosNetId), [enc_key (EncKey)]
+     * - ToslaPos:        merchant_id (ClientId), user_name (ApiUser), enc_key (ApiPass)
+     * - VakifKatilimPos: merchant_id, user_name, terminal_id (CustomerId/MüşteriNo), enc_key (StoreKey), [sub_merchant_id]
+     *
+     * @param class-string<PosInterface>                $gatewayClass
+     * @param non-empty-string                          $bank
+     * @param array<non-empty-string, non-empty-string> $credentials
+     *
+     * @return AbstractPosAccount
+     *
+     * @throws \DomainException            if no account matches the given gateway class
+     * @throws MissingAccountInfoException propagated from PayFlex validation
+     */
+    public static function createForGateway(string $gatewayClass, string $bank, array $credentials): AbstractPosAccount
+    {
+        return match ($gatewayClass) {
+            AssecoPos::class => self::createAssecoPosAccount(
+                $bank,
+                $credentials['merchant_id'],
+                $credentials['user_name'],
+                $credentials['user_password'],
+                $credentials['enc_key'] ?? null,
+            ),
+            AkbankPos::class => self::createAkbankPosAccount(
+                $bank,
+                $credentials['merchant_id'],
+                $credentials['terminal_id'],
+                $credentials['enc_key'],
+                $credentials['sub_merchant_id'] ?? null,
+            ),
+            GarantiPos::class => self::createGarantiPosAccount(
+                $bank,
+                $credentials['merchant_id'],
+                $credentials['user_name'],
+                $credentials['user_password'],
+                $credentials['terminal_id'],
+                $credentials['enc_key'] ?? null,
+                $credentials['refund_user_name'] ?? null,
+                $credentials['refund_user_password'] ?? null,
+            ),
+            InterPos::class => self::createInterPosAccount(
+                $bank,
+                $credentials['merchant_id'],
+                $credentials['user_name'],
+                $credentials['user_password'],
+                $credentials['enc_key'] ?? null,
+            ),
+            IyzicoPos::class => self::createIyzicoPosAccount(
+                $bank,
+                $credentials['merchant_id'],
+                $credentials['enc_key'],
+                $credentials['sub_merchant_id'] ?? null,
+            ),
+            KuveytPos::class, VakifKatilimPos::class => self::createBoaPosAccount(
+                $bank,
+                $credentials['merchant_id'],
+                $credentials['user_name'],
+                $credentials['terminal_id'],
+                $credentials['enc_key'],
+                $credentials['sub_merchant_id'] ?? null,
+            ),
+            Param3DHostPos::class, ParamPos::class => self::createParamPosAccount(
+                $bank,
+                (int) $credentials['merchant_id'],
+                $credentials['user_name'],
+                $credentials['user_password'],
+                $credentials['enc_key'],
+            ),
+            PayFlexCPV4Pos::class, PayFlexV4Pos::class => self::createPayFlexPosAccount(
+                $bank,
+                $credentials['merchant_id'],
+                $credentials['user_password'],
+                $credentials['terminal_id'],
+                isset($credentials['merchant_type']) ? (int) $credentials['merchant_type'] : PayFlexPosAccount::MERCHANT_TYPE_STANDARD, // @phpstan-ignore argument.type
+                $credentials['sub_merchant_id'] ?? null,
+            ),
+            PayForPos::class => self::createPayForPosAccount(
+                $bank,
+                $credentials['merchant_id'],
+                $credentials['user_name'],
+                $credentials['user_password'],
+                $credentials['enc_key'] ?? null,
+                $credentials['mbr_id'] ?? PayForPosAccount::MBR_ID_FINANSBANK, // @phpstan-ignore argument.type
+            ),
+            PayTrPos::class => self::createPayTrPosAccount(
+                $bank,
+                $credentials['merchant_id'],
+                $credentials['user_password'],
+                $credentials['enc_key'],
+            ),
+            PosNetPos::class, PosNetV1Pos::class => self::createPosNetPosAccount(
+                $bank,
+                $credentials['merchant_id'],
+                $credentials['terminal_id'],
+                $credentials['user_name'],
+                $credentials['enc_key'] ?? null,
+            ),
+            ToslaPos::class => self::createToslaPosAccount(
+                $bank,
+                $credentials['merchant_id'],
+                $credentials['user_name'],
+                $credentials['enc_key'],
+            ),
+            default => throw new \DomainException(\sprintf('No matching Account for gateway %s', $gatewayClass)),
+        };
     }
 
     /**
