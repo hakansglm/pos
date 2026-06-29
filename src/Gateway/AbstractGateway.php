@@ -30,13 +30,6 @@ abstract class AbstractGateway implements PosInterface
     protected ?array $response;
 
     /**
-     * Raw Response Data From Bank
-     *
-     * @var array<string, mixed>|null
-     */
-    protected ?array $data;
-
-    /**
      * @var array<PosInterface::TX_TYPE_*, array<int, PosInterface::MODEL_*>|bool>
      */
     protected static array $supportedTransactions = [];
