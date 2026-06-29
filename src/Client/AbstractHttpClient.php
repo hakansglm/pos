@@ -30,7 +30,7 @@ abstract class AbstractHttpClient implements HttpClientInterface
 {
     /**
      * @param non-empty-string        $baseApiUrl
-     * @param ClientInterface         $psrClient
+     * @param ClientInterface         $httpClient
      * @param RequestFactoryInterface $requestFactory
      * @param StreamFactoryInterface  $streamFactory
      * @param EncoderInterface        $encoder
@@ -39,7 +39,7 @@ abstract class AbstractHttpClient implements HttpClientInterface
      */
     public function __construct(
         protected string                  $baseApiUrl,
-        protected ClientInterface         $psrClient,
+        protected ClientInterface         $httpClient,
         protected RequestFactoryInterface $requestFactory,
         protected StreamFactoryInterface  $streamFactory,
         protected EncoderInterface        $encoder,
@@ -137,7 +137,7 @@ abstract class AbstractHttpClient implements HttpClientInterface
 
         $this->logger->debug('sending request', ['url' => $url]);
 
-        $response = $this->psrClient->sendRequest($request);
+        $response = $this->httpClient->sendRequest($request);
 
         $this->logger->debug('request completed', ['status_code' => $response->getStatusCode()]);
 
