@@ -22,7 +22,7 @@ use Mews\Pos\Crypt\ParamPosCrypt;
 use Mews\Pos\Gateway\PayFlexV4Pos;
 use Mews\Pos\Crypt\NullCrypt;
 use Mews\Pos\Gateway\PayFlexCPV4Pos;
-use Mews\Pos\Crypt\PayFlexCPV4Crypt;
+use Mews\Pos\Crypt\PayFlexCPV4PosCrypt;
 use Mews\Pos\Gateway\PayForPos;
 use Mews\Pos\Crypt\PayForPosCrypt;
 use Mews\Pos\Gateway\PosNetPos;
@@ -59,7 +59,7 @@ class CryptFactoryTest extends TestCase
             [KuveytPos::class, KuveytPosCrypt::class],
             [ParamPos::class, ParamPosCrypt::class],
             [PayFlexV4Pos::class, NullCrypt::class],
-            [PayFlexCPV4Pos::class, PayFlexCPV4Crypt::class],
+            [PayFlexCPV4Pos::class, PayFlexCPV4PosCrypt::class],
             [PayForPos::class, PayForPosCrypt::class],
             [PosNetPos::class, PosNetPosCrypt::class],
             [PosNetV1Pos::class, PosNetV1PosCrypt::class],

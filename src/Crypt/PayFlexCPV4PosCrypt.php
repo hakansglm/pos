@@ -13,7 +13,7 @@ use Mews\Pos\Gateway\PayFlexCPV4Pos;
 /**
  * @internal
  */
-class PayFlexCPV4Crypt extends AbstractCrypt
+class PayFlexCPV4PosCrypt extends AbstractCrypt
 {
     /**
      * @inheritDoc

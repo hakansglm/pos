@@ -15,7 +15,7 @@ use Mews\Pos\Crypt\IyzicoPosCrypt;
 use Mews\Pos\Crypt\KuveytPosCrypt;
 use Mews\Pos\Crypt\NullCrypt;
 use Mews\Pos\Crypt\ParamPosCrypt;
-use Mews\Pos\Crypt\PayFlexCPV4Crypt;
+use Mews\Pos\Crypt\PayFlexCPV4PosCrypt;
 use Mews\Pos\Crypt\PayForPosCrypt;
 use Mews\Pos\Crypt\PayTrPosCrypt;
 use Mews\Pos\Crypt\PosNetPosCrypt;
@@ -42,7 +42,7 @@ class CryptFactory
         IyzicoPosCrypt::class,
         KuveytPosCrypt::class,
         ParamPosCrypt::class,
-        PayFlexCPV4Crypt::class,
+        PayFlexCPV4PosCrypt::class,
         PayForPosCrypt::class,
         PayTrPosCrypt::class,
         PosNetPosCrypt::class,

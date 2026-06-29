@@ -8,7 +8,7 @@ namespace Mews\Pos\Tests\Unit\Crypt;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use Mews\Pos\Crypt\AbstractCrypt;
-use Mews\Pos\Crypt\PayFlexCPV4Crypt;
+use Mews\Pos\Crypt\PayFlexCPV4PosCrypt;
 use Mews\Pos\Model\Account\PayFlexPosAccount;
 use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
@@ -18,11 +18,11 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-#[CoversClass(PayFlexCPV4Crypt::class)]
+#[CoversClass(PayFlexCPV4PosCrypt::class)]
 #[CoversClass(AbstractCrypt::class)]
-class PayFlexCP4CryptTest extends TestCase
+class PayFlexCPV4PosCryptTest extends TestCase
 {
-    public PayFlexCPV4Crypt $crypt;
+    public PayFlexCPV4PosCrypt $crypt;
 
     private PayFlexPosAccount $account;
 
@@ -38,7 +38,7 @@ class PayFlexCP4CryptTest extends TestCase
         );
 
         $logger      = $this->createMock(LoggerInterface::class);
-        $this->crypt = new PayFlexCPV4Crypt($logger);
+        $this->crypt = new PayFlexCPV4PosCrypt($logger);
     }
 
     public function testSupports(): void
