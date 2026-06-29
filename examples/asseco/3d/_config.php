@@ -16,6 +16,14 @@ $account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
 
 $pos = getGateway($account, $eventDispatcher);
 
+// İsteğe bağlı: İşbank İmece Kart — ödeme tamamlama isteğine eklenecek alanlar (bankadan alınır).
+// $eventDispatcher->addListener(\Mews\Pos\Event\RequestDataPreparedEvent::class, function (\Mews\Pos\Event\RequestDataPreparedEvent $event): void {
+//     $data                    = $event->getRequestData();
+//     $data['Extra']['IMCKOD'] = '9999';
+//     $data['Extra']['FDONEM'] = '5';
+//     $event->setRequestData($data);
+// });
+
 $transaction = $_SESSION['tx'] ?? PosInterface::TX_TYPE_PAY_AUTH;
 
 $templateTitle = '3D Model Payment';

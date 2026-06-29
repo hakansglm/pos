@@ -59,25 +59,14 @@ function createCancelOrder(string $gatewayClass, array $lastResponse, string $ip
                 'recurringOrderInstallmentNumber' => 1, // hangi taksidi iptal etmek istiyoruz?
             ];
         } elseif (\Mews\Pos\Gateway\AkbankPos::class === $gatewayClass) {
-            // odemesi gerceklesmis recurring taksidin iptali:
-//            $cancelOrder += [
-//                'recurring_id'                    => $lastResponse['recurring_id'],
-//                'recurringOrderInstallmentNumber' => 1,
-//            ];
-
-            // odemesi henuz gerceklesmemis recurring taksidin iptali:
+            // Henüz tahsil edilmemiş bir taksiti iptal etmek için:
+            // Tahsil edilmiş taksit için 'recurring_payment_is_pending' => false kullanın.
+            // Tüm bekleyen taksitleri iptal etmek için 'recurringOrderInstallmentNumber' => null kullanın.
             $cancelOrder += [
                 'recurring_id'                    => $lastResponse['recurring_id'],
                 'recurringOrderInstallmentNumber' => 2,
                 'recurring_payment_is_pending'    => true,
             ];
-
-            // odemesi henuz gerceklesmemis recurring işlem talimatlarının tamamı iptal edilmek isteniyorsa
-//            $cancelOrder += [
-//                'recurring_id'                    => $lastResponse['recurring_id'],
-//                'recurringOrderInstallmentNumber' => null,
-//                'recurring_payment_is_pending'    => true,
-//            ];
         }
     }
 

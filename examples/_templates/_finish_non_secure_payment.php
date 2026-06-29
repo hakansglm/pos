@@ -17,42 +17,14 @@ if ((($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST')) {
     header('Location: '.$baseUrl);
     exit();
 }
-// ============================================================================================
-// OZEL DURUMLAR ICIN KODLAR START
-// ============================================================================================
+// İsteğe bağlı: istek bankaya gönderilmeden önce düzenlemek için bu listener'ı kullanın.
+// Banka özelinde örnekler için ilgili bankanın _config.php dosyasına bakınız.
 /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
-$eventDispatcher->addListener(RequestDataPreparedEvent::class, function (RequestDataPreparedEvent $event) {
-//         Burda istek banka API'na gonderilmeden once gonderilecek veriyi degistirebilirsiniz.
-//         Ornek:
-//         $data = $event->getRequestData();
-//         $data['abcd'] = '1234';
-//         $event->setRequestData($data);
-
-    /**
-     * KOICodes:
-     * 1:Ek Taksit
-     * 2: Taksit Atlatma
-     * 3: Ekstra Puan
-     * 4: Kontur Kazanım
-     * 5: Ekstre Erteleme
-     * 6: Özel Vade Farkı
-     */
-    if ($event->getGatewayClass() instanceof \Mews\Pos\Gateway\PosNetV1Pos) {
-        // Albaraka PosNet KOICode ekleme
-        // $data            = $event->getRequestData();
-        // $data['KOICode'] = '1';
-        // $event->setRequestData($data);
-    }
-    if ($event->getGatewayClass() instanceof \Mews\Pos\Gateway\PosNetPos) {
-        // Yapikredi PosNet KOICode ekleme
-        // $data            = $event->getRequestData();
-        // $data['sale']['koiCode'] = '1';
-        // $event->setRequestData($data);
-    }
+$eventDispatcher->addListener(RequestDataPreparedEvent::class, function (RequestDataPreparedEvent $event): void {
+    // $data = $event->getRequestData();
+    // $data['ozel_alan'] = 'deger';
+    // $event->setRequestData($data);
 });
-// ============================================================================================
-// OZEL DURUMLAR ICIN KODLAR END
-// ============================================================================================
 try {
     $response = doPayment($pos, $paymentModel, $transaction, $order, $card);
 } catch (Exception $e) {

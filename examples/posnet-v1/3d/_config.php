@@ -16,6 +16,13 @@ $account = \Mews\Pos\Factory\AccountFactory::createPosNetPosAccount(
 
 $pos = getGateway($account, $eventDispatcher);
 
+// İsteğe bağlı: KOI kampanya kodu — 3D ödeme tamamlama isteğine eklenir (bankadan temin edilir).
+// $eventDispatcher->addListener(\Mews\Pos\Event\RequestDataPreparedEvent::class, function (\Mews\Pos\Event\RequestDataPreparedEvent $event): void {
+//     $data            = $event->getRequestData();
+//     $data['KOICode'] = '1'; // 1:Ek Taksit 2:Taksit Atlatma 3:Ekstra Puan 4:Kontur Kazanım 5:Ekstre Erteleme 6:Özel Vade Farkı
+//     $event->setRequestData($data);
+// });
+
 $transaction = $_SESSION['tx'] ?? PosInterface::TX_TYPE_PAY_AUTH;
 
 $templateTitle = '3D Model Payment';

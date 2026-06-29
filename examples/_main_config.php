@@ -1,5 +1,22 @@
 <?php
 
+/**
+ * Tüm örneklerin giriş noktası. Her bankanın _payment_config.php dosyası bu dosyayı yükler.
+ *
+ * DOSYA YÜKLEMESİ ZİNCİRİ
+ *   examples/{banka}/_payment_config.php  ← $account, $pos, $bankTestsUrl, $testCards tanımlar
+ *       └─ _main_config.php               ← bu dosya; autoloader, logger, event dispatcher başlatır
+ *
+ *   examples/_common-codes/{model}/
+ *       index.php    ← kart formunu gösterir
+ *       form.php     ← sipariş ve kart oluşturur, ödemeyi başlatır
+ *       response.php ← banka callback'ini işler, sonucu gösterir
+ *
+ * BANKA DEĞİŞTİRMEK İÇİN: sadece ilgili bankanın _payment_config.php
+ * (veya model klasörü altındaki _config.php) dosyasını güncelleyin.
+ * Geri kalan her şey paylaşımlıdır ve bankadan bağımsızdır.
+ */
+
 use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\PosInterface;
 

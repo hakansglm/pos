@@ -43,61 +43,24 @@ if (get_class($pos) !== \Mews\Pos\Gateway\PayTrPos::class) {
     $order = [];
 }
 
-// ============================================================================================
-// OZEL DURUMLAR ICIN KODLAR START
-// ============================================================================================
+// İsteğe bağlı: istek bankaya gönderilmeden önce düzenlemek için bu listener'ı kullanın.
+// Banka özelinde örnekler için ilgili bankanın _config.php dosyasına bakınız.
 /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
-$eventDispatcher->addListener(RequestDataPreparedEvent::class, function (RequestDataPreparedEvent $event) {
-//         Burda istek banka API'na gonderilmeden once gonderilecek veriyi degistirebilirsiniz.
-//         Ornek:
-//         $data = $event->getRequestData();
-//         $data['abcd'] = '1234';
-//         $event->setRequestData($data);
-    /**
-     * Bu asamada bu Event genellikle 1 kere trigger edilir.
-     * Bir tek PosNet MODEL_3D_SECURE odemede 2 kere API call'i yapildigi icin bu event 2 kere trigger edilir.
-     */
-
-    /**
-     * KOICodes
-     * 1: Ek Taksit
-     * 2: Taksit Atlatma
-     * 3: Ekstra Puan
-     * 4: Kontur Kazanım
-     * 5: Ekstre Erteleme
-     * 6: Özel Vade Farkı
-     */
-    if ($event->getGatewayClass() instanceof \Mews\Pos\Gateway\PosNetV1Pos && $event->getTxType() === PosInterface::TX_TYPE_PAY_AUTH) {
-        // Albaraka PosNet KOICode ekleme
-        // $data            = $event->getRequestData();
-        // $data['KOICode'] = '1';
-        // $event->setRequestData($data);
-    }
+$eventDispatcher->addListener(RequestDataPreparedEvent::class, function (RequestDataPreparedEvent $event): void {
+    // $data = $event->getRequestData();
+    // $data['ozel_alan'] = 'deger';
+    // $event->setRequestData($data);
 });
-
-
-//  // Isbank İMECE için ekstra alanların eklenme örneği
-    $eventDispatcher->addListener(RequestDataPreparedEvent::class, function (RequestDataPreparedEvent $event) {
-//        if ($event->getPaymentModel() === PosInterface::MODEL_3D_SECURE && $event->getTxType() === PosInterface::TX_TYPE_PAY_AUTH) {
-//            $data                    = $event->getRequestData();
-//            $data['Extra']['IMCKOD'] = '9999'; // IMCKOD bilgisi bankadan alınmaktadır.
-//            $data['Extra']['FDONEM'] = '5'; // Ödemenin faizsiz ertelenmesini istediğiniz dönem sayısı
-//            $event->setRequestData($data);
-//        }
-    });
 
 $card = null;
 if (get_class($pos) === \Mews\Pos\Gateway\PayFlexV4Pos::class) {
-    // bu gateway için ödemeyi tamamlarken tekrar kart bilgisi lazım.
+    // bu gateway ödemeyi tamamlarken tekrar kart bilgisi gerektiriyor.
     $savedCard = $_SESSION['card'] ?? null;
     if (isset($_SESSION['card'])) {
         unset($_SESSION['card']);
     }
-    $card      = createCard($pos, $savedCard);
+    $card = createCard($pos, $savedCard);
 }
-// ============================================================================================
-// OZEL DURUMLAR ICIN KODLAR END
-// ============================================================================================
 
 try {
     $response = doPayment($pos, $paymentModel, $transaction, $order, $card);
