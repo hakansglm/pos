@@ -42,10 +42,6 @@ class ParamPosCrypt extends AbstractCrypt
             return $this->check3DPayOr3DHostHash($posAccount, $data);
         }
 
-        if (null === $posAccount->getSecretKey()) {
-            throw new \LogicException('Account secretKey eksik!');
-        }
-
         $hashParamsArr = [
             'islemGUID',
             'md',
@@ -134,10 +130,6 @@ class ParamPosCrypt extends AbstractCrypt
      */
     private function check3DPayOr3DHostHash(AbstractPosAccount $posAccount, array $data): bool
     {
-        if (null === $posAccount->getSecretKey()) {
-            throw new \LogicException('Account secretKey eksik!');
-        }
-
         $hashParamsArr = [
             'TURKPOS_RETVAL_GUID',
             'TURKPOS_RETVAL_Dekont_ID',

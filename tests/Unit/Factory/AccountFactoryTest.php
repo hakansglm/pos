@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Factory;
 
+use DomainException;
 use Mews\Pos\Exception\MissingAccountInfoException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateway\AkbankPos;
@@ -71,7 +72,6 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('merchant-id', $account->getMerchantId());
         $this->assertSame('user', $account->getUsername());
         $this->assertSame('pass', $account->getPassword());
-        $this->assertNull($account->getSecretKey());
     }
 
     public function testCreateAssecoPosAccount3DSecure(): void
@@ -202,7 +202,6 @@ class AccountFactoryTest extends TestCase
 
         $this->assertSame('085300000009704', $account->getMerchantId());
         $this->assertSame('QNB_API_KULLANICI', $account->getUsername());
-        $this->assertNull($account->getSecretKey());
         $this->assertSame(PayForPosAccount::MBR_ID_FINANSBANK, $account->getMbrId());
     }
 
@@ -283,7 +282,6 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('PROVAUT', $account->getUsername());
         $this->assertSame('pass', $account->getPassword());
         $this->assertSame('30691298', $account->getTerminalId());
-        $this->assertNull($account->getSecretKey());
         $this->assertNull($account->getRefundUsername());
         $this->assertNull($account->getRefundPassword());
     }
@@ -324,7 +322,6 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('shop-code', $account->getMerchantId());
         $this->assertSame('user-code', $account->getUsername());
         $this->assertSame('user-pass', $account->getPassword());
-        $this->assertNull($account->getSecretKey());
     }
 
     public function testCreateInterPosAccount3DSecure(): void
@@ -357,7 +354,6 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('6706598320', $account->getMerchantId());
         $this->assertSame('27426457', $account->getPosNetId());
         $this->assertSame('67005551', $account->getTerminalId());
-        $this->assertNull($account->getSecretKey());
     }
 
     public function testCreatePosNetPosAccount3DSecure(): void
@@ -613,7 +609,7 @@ class AccountFactoryTest extends TestCase
 
     public function testCreateThrowsDomainExceptionForUnknownGateway(): void
     {
-        $this->expectException(\DomainException::class);
+        $this->expectException(DomainException::class);
 
         AccountFactory::createForGateway('UnknownGateway', 'bank', []);
     }
@@ -624,7 +620,7 @@ class AccountFactoryTest extends TestCase
             'merchant_id'   => 'mid',
             'user_name'     => 'user',
             'user_password' => 'pass',
-            'secret_key'       => 'sk',
+            'secret_key'    => 'sk',
         ]);
 
         $this->assertSame('mid', $account->getMerchantId());
@@ -638,7 +634,7 @@ class AccountFactoryTest extends TestCase
         $account = AccountFactory::createForGateway(AkbankPos::class, 'akbank-pos', [
             'merchant_id'     => 'msid',
             'terminal_id'     => 'tsid',
-            'secret_key'         => 'skey',
+            'secret_key'      => 'skey',
             'sub_merchant_id' => 'sub1',
         ]);
 
@@ -656,7 +652,7 @@ class AccountFactoryTest extends TestCase
             'user_name'            => 'PROVAUT',
             'user_password'        => 'pass',
             'terminal_id'          => '30691298',
-            'secret_key'              => 'sk',
+            'secret_key'           => 'sk',
             'refund_user_name'     => 'PROVRFN',
             'refund_user_password' => 'refpass',
         ]);
@@ -675,7 +671,7 @@ class AccountFactoryTest extends TestCase
     {
         $account = AccountFactory::createForGateway(IyzicoPos::class, 'iyzico', [
             'merchant_id'     => 'ak',
-            'secret_key'         => 'sk',
+            'secret_key'      => 'sk',
             'sub_merchant_id' => 'smk',
         ]);
 
@@ -688,10 +684,10 @@ class AccountFactoryTest extends TestCase
     public function testCreateKuveytPosSetsCredentialsCorrectly(): void
     {
         $account = AccountFactory::createForGateway(KuveytPos::class, 'kuveyt-turk', [
-            'merchant_id'   => 'mid',
-            'user_name'     => 'user',
+            'merchant_id' => 'mid',
+            'user_name'   => 'user',
             'terminal_id' => 'cid',
-            'secret_key'       => 'sk',
+            'secret_key'  => 'sk',
         ]);
 
         $this->assertInstanceOf(BoaPosAccount::class, $account);
@@ -708,7 +704,7 @@ class AccountFactoryTest extends TestCase
             'merchant_id'   => '12345',
             'user_name'     => 'user',
             'user_password' => 'pass',
-            'secret_key'       => 'guid123',
+            'secret_key'    => 'guid123',
         ]);
 
         $this->assertInstanceOf(ParamPosAccount::class, $account);
@@ -739,7 +735,7 @@ class AccountFactoryTest extends TestCase
             'merchant_id'   => '085300000009704',
             'user_name'     => 'QNB_API',
             'user_password' => 'UcBN0',
-            'secret_key'       => '12345678',
+            'secret_key'    => '12345678',
             'mbr_id'        => PayForPosAccount::MBR_ID_ZIRAAT_KATILIM,
         ]);
 
@@ -754,7 +750,7 @@ class AccountFactoryTest extends TestCase
         $account = AccountFactory::createForGateway(PayTrPos::class, 'paytr', [
             'merchant_id'   => '123456',
             'user_password' => 'wWwU8buJp6jo1r25',
-            'secret_key'       => 'YEUaNcdHXqyt7hjt',
+            'secret_key'    => 'YEUaNcdHXqyt7hjt',
         ]);
 
         $this->assertInstanceOf(PayTrPosAccount::class, $account);
@@ -769,7 +765,7 @@ class AccountFactoryTest extends TestCase
             'merchant_id' => '6706598320',
             'terminal_id' => '67005551',
             'user_name'   => '27426457',
-            'secret_key'     => '10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10',
+            'secret_key'  => '10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10',
         ]);
 
         $this->assertInstanceOf(PosNetPosAccount::class, $account);
@@ -784,7 +780,7 @@ class AccountFactoryTest extends TestCase
         $account = AccountFactory::createForGateway(ToslaPos::class, 'tosla', [
             'merchant_id' => 'mid',
             'user_name'   => 'api-user',
-            'secret_key'     => 'api-pass',
+            'secret_key'  => 'api-pass',
         ]);
 
         $this->assertInstanceOf(ToslaPosAccount::class, $account);

@@ -55,9 +55,6 @@ abstract class AbstractCrypt implements CryptInterface
         }
 
         $secretKey = $account->getSecretKey();
-        if (null === $secretKey) {
-            throw new \LogicException('Account secretKey eksik!');
-        }
 
         /** @var non-empty-string $hashParamsValue ex: "MerchantNo:TerminalNo:ReferenceCode:OrderId" */
         $hashParamsArr = \explode($paramSeparator, $hashParamsValue);

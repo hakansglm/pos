@@ -127,10 +127,6 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
             $requestData['InstallmentType'] = 'Y';
         }
 
-        if (null === $posAccount->getSecretKey()) {
-            throw new \LogicException('Account secretKey eksik!');
-        }
-
         $requestData['MAC'] = $this->crypt->hashFromParams($posAccount, $requestData, $requestData['MACParams'], ':');
 
         return $requestData;
@@ -166,10 +162,6 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
             $requestData['InstallmentType'] = 'Y';
         }
 
-        if (null === $posAccount->getSecretKey()) {
-            throw new \LogicException('Account secretKey eksik!');
-        }
-
         $requestData['MAC'] = $this->crypt->hashFromParams($posAccount, $requestData, $requestData['MACParams'], ':');
 
         return $requestData;
@@ -196,9 +188,6 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
             'PaymentFacilitatorData' => null,
             'OrderId'                => $this->valueFormatter->formatOrderId($order['id'], PosInterface::TX_TYPE_STATUS, $order['payment_model']),
         ];
-        if (null === $posAccount->getSecretKey()) {
-            throw new \LogicException('Account secretKey eksik!');
-        }
 
         $requestData['MAC'] = $this->crypt->hashFromParams($posAccount, $requestData, $requestData['MACParams'], ':');
 
@@ -233,10 +222,6 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
             $requestData['ReferenceCode'] = $order['ref_ret_num'];
         } else {
             $requestData['OrderId'] = $this->valueFormatter->formatOrderId($order['id'], PosInterface::TX_TYPE_CANCEL, $order['payment_model']);
-        }
-
-        if (null === $posAccount->getSecretKey()) {
-            throw new \LogicException('Account secretKey eksik!');
         }
 
         $requestData['MAC'] = $this->crypt->hashFromParams($posAccount, $requestData, $requestData['MACParams'], ':');
@@ -279,10 +264,6 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
             $requestData['CurrencyCode'] = $this->valueMapper->mapCurrency($order['currency']);
         }
 
-        if (null === $posAccount->getSecretKey()) {
-            throw new \LogicException('Account secretKey eksik!');
-        }
-
         $requestData['MAC'] = $this->crypt->hashFromParams($posAccount, $requestData, $requestData['MACParams'], ':');
 
         return $requestData;
@@ -303,10 +284,6 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
         ];
 
         if (!isset($requestData['MAC'])) {
-            if (null === $posAccount->getSecretKey()) {
-                throw new \LogicException('Account secretKey eksik!');
-            }
-
             $requestData['MAC'] = $this->crypt->hashFromParams($posAccount, $requestData, $requestData['MACParams'], ':');
         }
 

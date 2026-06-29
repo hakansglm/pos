@@ -45,10 +45,6 @@ class PosNetPosCrypt extends AbstractCrypt
      */
     public function check3DHash(AbstractPosAccount $posAccount, array $data): bool
     {
-        if (null === $posAccount->getSecretKey()) {
-            throw new \LogicException('Account secretKey eksik!');
-        }
-
         $secondHashData = [
             $data['mdStatus'],
             $data['xid'],
@@ -81,10 +77,6 @@ class PosNetPosCrypt extends AbstractCrypt
      */
     public function createHash(AbstractPosAccount $posAccount, array $requestData, array $order = []): string
     {
-        if (null === $posAccount->getSecretKey()) {
-            throw new \LogicException('Account secretKey eksik!');
-        }
-
         $hashData = [
             $order['id'],
             $order['amount'],

@@ -47,10 +47,6 @@ class KuveytPosCrypt extends AbstractCrypt
      */
     public function createHash(AbstractPosAccount $posAccount, array $requestData): string
     {
-        if (null === $posAccount->getSecretKey()) {
-            throw new \LogicException('Account secretKey eksik!');
-        }
-
         $hashedPassword = $this->hashString($posAccount->getSecretKey());
 
         $hashData = [

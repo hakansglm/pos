@@ -6,10 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
-use LogicException;
 use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\KuveytPosCrypt;
-use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Account\BoaPosAccount;
 use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
@@ -80,13 +78,6 @@ class KuveytPosCryptTest extends TestCase
         $actual = $this->crypt->createHash($this->account, $requestData);
 
         $this->assertSame($expected, $actual);
-    }
-
-    public function testCreateHashException(): void
-    {
-        $account = $this->createMock(AbstractPosAccount::class);
-        $this->expectException(LogicException::class);
-        $this->crypt->createHash($account, []);
     }
 
     public static function hashCreateDataProvider(): array

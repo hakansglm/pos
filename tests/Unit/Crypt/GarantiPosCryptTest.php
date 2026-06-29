@@ -7,10 +7,8 @@
 namespace Mews\Pos\Tests\Unit\Crypt;
 
 use PHPUnit\Framework\Attributes\DataProvider;
-use LogicException;
 use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\GarantiPosCrypt;
-use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Account\GarantiPosAccount;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Gateway\AssecoPos;
@@ -62,13 +60,6 @@ class GarantiPosCryptTest extends TestCase
 
         $responseData['mdstatus'] = '';
         $this->assertFalse($this->crypt->check3DHash($this->account, $responseData));
-    }
-
-    public function testCheck3DHashException(): void
-    {
-        $account = $this->createMock(AbstractPosAccount::class);
-        $this->expectException(LogicException::class);
-        $this->crypt->check3DHash($account, []);
     }
 
     /**

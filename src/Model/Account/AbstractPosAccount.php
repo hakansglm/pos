@@ -55,10 +55,12 @@ abstract class AbstractPosAccount
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getSecretKey(): ?string
+    public function getSecretKey(): string
     {
+        \assert($this->secretKey !== null);
+
         return $this->secretKey;
     }
 

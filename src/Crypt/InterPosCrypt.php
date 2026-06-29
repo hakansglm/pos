@@ -50,10 +50,6 @@ class InterPosCrypt extends AbstractCrypt
      */
     public function check3DHash(AbstractPosAccount $posAccount, array $data): bool
     {
-        if (null === $posAccount->getSecretKey()) {
-            throw new \LogicException('Account secretKey eksik!');
-        }
-
         $actualHash = $this->hashFromParams($posAccount, $data, $data['HASHPARAMS'], ':');
 
         if (\hash_equals($data['HASH'], $actualHash)) {

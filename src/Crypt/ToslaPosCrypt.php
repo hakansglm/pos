@@ -39,10 +39,6 @@ class ToslaPosCrypt extends AbstractCrypt
      */
     public function check3DHash(AbstractPosAccount $posAccount, array $data): bool
     {
-        if (null === $posAccount->getSecretKey()) {
-            throw new \LogicException('Account secretKey eksik!');
-        }
-
         $data['ClientId'] = $posAccount->getMerchantId();
         $data['ApiUser']  = $posAccount->getUsername();
 

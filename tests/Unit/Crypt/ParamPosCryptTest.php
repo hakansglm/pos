@@ -6,7 +6,6 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
-use LogicException;
 use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\ParamPosCrypt;
 use Mews\Pos\Model\Account\AbstractPosAccount;
@@ -64,7 +63,7 @@ class ParamPosCryptTest extends TestCase
         $this->account->expects($this->any())
             ->method('getMerchantId')
             ->willReturn('10738');
-        $this->account->expects($this->atLeastOnce())
+        $this->account->expects($this->any())
             ->method('getSecretKey')
             ->willReturn('0c13d406-873b-403b-9c09-a5766840d98c');
 
@@ -79,14 +78,6 @@ class ParamPosCryptTest extends TestCase
 
         $responseData['mdStatus'] = '';
         $this->assertFalse($this->crypt->check3DHash($this->account, $responseData));
-    }
-
-    #[DataProvider('threeDHashCheckDataProvider')]
-    public function testCheck3DHashException(array $responseData): void
-    {
-        $account = $this->createMock(AbstractPosAccount::class);
-        $this->expectException(LogicException::class);
-        $this->crypt->check3DHash($account, $responseData);
     }
 
     #[DataProvider('hashCreateDataProvider')]

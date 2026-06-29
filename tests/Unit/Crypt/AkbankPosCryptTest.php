@@ -9,7 +9,6 @@ namespace Mews\Pos\Tests\Unit\Crypt;
 use LogicException;
 use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\AkbankPosCrypt;
-use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Account\AkbankPosAccount;
 use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
@@ -94,14 +93,6 @@ class AkbankPosCryptTest extends TestCase
         $responseData['responseCode'] = '';
         $this->assertFalse($this->crypt->check3DHash($this->account, $responseData));
     }
-
-    public function testCheck3DHashException(): void
-    {
-        $account = $this->createMock(AbstractPosAccount::class);
-        $this->expectException(LogicException::class);
-        $this->crypt->check3DHash($account, []);
-    }
-
 
     public static function threeDHashCheckDataProvider(): array
     {

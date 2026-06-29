@@ -88,7 +88,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
 
         $requestData = $this->getRequestAccountData($posAccount) + [
                 'APIVersion'          => self::API_VERSION,
-                'HashPassword'        => $this->crypt->hashString($posAccount->getSecretKey() ?? ''),
+                'HashPassword'        => $this->crypt->hashString($posAccount->getSecretKey()),
                 'TransactionSecurity' => $this->valueMapper->mapSecureType($paymentModel),
                 'InstallmentCount'    => $this->valueFormatter->formatInstallment($order['installment']),
                 'Amount'              => (int) $this->valueFormatter->formatAmount($order['amount']),
@@ -122,7 +122,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
         $order = $this->preparePostPaymentOrder($order);
 
         $inputs = $this->getRequestAccountData($posAccount) + [
-                'HashPassword'      => $this->crypt->hashString($posAccount->getSecretKey() ?? ''),
+                'HashPassword'      => $this->crypt->hashString($posAccount->getSecretKey()),
                 'MerchantOrderId'   => $order['id'],
                 'OrderId'           => $order['remote_order_id'],
                 'CustomerIPAddress' => $order['ip'],
@@ -144,7 +144,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
 
         $inputs = $this->getRequestAccountData($posAccount) + [
                 'APIVersion'          => self::API_VERSION,
-                'HashPassword'        => $this->crypt->hashString($posAccount->getSecretKey() ?? ''),
+                'HashPassword'        => $this->crypt->hashString($posAccount->getSecretKey()),
                 'MerchantOrderId'     => $order['id'],
                 'InstallmentCount'    => $this->valueFormatter->formatInstallment($order['installment']),
                 'Amount'              => $this->valueFormatter->formatAmount($order['amount']),
@@ -191,7 +191,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
         $order = $this->prepareCancelOrder($order);
 
         $result = $this->getRequestAccountData($posAccount) + [
-                'HashPassword'    => $this->crypt->hashString($posAccount->getSecretKey() ?? ''),
+                'HashPassword'    => $this->crypt->hashString($posAccount->getSecretKey()),
                 'MerchantOrderId' => $order['id'],
                 'OrderId'         => $order['remote_order_id'],
                 'PaymentType'     => '1',
@@ -216,7 +216,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
         $order = $this->prepareRefundOrder($order);
 
         $result = $this->getRequestAccountData($posAccount) + [
-                'HashPassword'    => $this->crypt->hashString($posAccount->getSecretKey() ?? ''),
+                'HashPassword'    => $this->crypt->hashString($posAccount->getSecretKey()),
                 'MerchantOrderId' => $order['id'],
                 'OrderId'         => $order['remote_order_id'],
             ];
@@ -235,7 +235,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
     {
         $requestData += $this->getRequestAccountData($posAccount) + [
                 'APIVersion'   => self::API_VERSION,
-                'HashPassword' => $this->crypt->hashString($posAccount->getSecretKey() ?? ''),
+                'HashPassword' => $this->crypt->hashString($posAccount->getSecretKey()),
             ];
 
         if (!isset($requestData['HashData'])) {
@@ -268,7 +268,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
 
         $inputs             = [
             'UserName'        => $posAccount->getUsername(),
-            'HashPassword'    => $this->crypt->hashString($posAccount->getSecretKey() ?? ''),
+            'HashPassword'    => $this->crypt->hashString($posAccount->getSecretKey()),
             'MerchantId'      => $posAccount->getMerchantId(),
             'MerchantOrderId' => (string) $order['id'],
             'Amount'          => (string) $this->valueFormatter->formatAmount($order['amount']),
