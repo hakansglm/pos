@@ -53,7 +53,8 @@ class Param3DHostPosRequestDataMapperTest extends TestCase
             10738,
             'Test1',
             'Test2',
-            '0c13d406-873b-403b-9c09-a5766840d98c'
+            '0c13d406-873b-403b-9c09-a5766840d98c',
+            '99001'
         );
 
         $this->dispatcher     = $this->createMock(EventDispatcherInterface::class);
@@ -258,7 +259,7 @@ class Param3DHostPosRequestDataMapperTest extends TestCase
                             'Islem_ID'         => 'rand',
                             'Return_URL'       => 'r|https://domain.com/success',
                             'Taksit'           => '1',
-                            'Terminal_ID'      => '10738',
+                            'Terminal_ID'      => '99001',
                         ],
                     ],
                     'soap:Header' => [
@@ -297,7 +298,7 @@ class Param3DHostPosRequestDataMapperTest extends TestCase
                             'Islem_ID'         => 'rand',
                             'Return_URL'       => 'r|https://domain.com/success',
                             'Taksit'           => '1',
-                            'Terminal_ID'      => '10738',
+                            'Terminal_ID'      => '99001',
                         ],
                     ],
                     'soap:Header' => [

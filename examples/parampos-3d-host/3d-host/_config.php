@@ -11,7 +11,8 @@ $account = \Mews\Pos\Factory\AccountFactory::createParamPosAccount(
     (int) getenv('PARAMPOS_3DHOST_MERCHANT_ID'),
     (string) getenv('PARAMPOS_3DHOST_USERNAME'),
     (string) getenv('PARAMPOS_3DHOST_PASSWORD'),
-    (string) getenv('PARAMPOS_3DHOST_CLIENT_SECRET')
+    (string) getenv('PARAMPOS_3DHOST_CLIENT_SECRET'),
+    (string) getenv('PARAMPOS_3DHOST_TERMINAL_ID') ?: null,
 );
 
 $pos = getGateway($account, $eventDispatcher);

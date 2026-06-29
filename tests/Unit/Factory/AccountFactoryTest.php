@@ -170,6 +170,22 @@ class AccountFactoryTest extends TestCase
         $this->assertSame('APIUSER', $account->getUsername());
         $this->assertSame('kdsnsksl', $account->getPassword());
         $this->assertSame('guid123', $account->getSecretKey());
+        $this->assertNull($account->getSubMerchantId());
+    }
+
+    public function testCreateParamPosAccountWithTerminalId(): void
+    {
+        $account = AccountFactory::createParamPosAccount(
+            'param-pos',
+            12345,
+            'APIUSER',
+            'kdsnsksl',
+            'guid123',
+            '99001',
+        );
+
+        $this->assertSame('12345', $account->getMerchantId());
+        $this->assertSame('99001', $account->getTerminalId());
     }
 
     public function testCreatePayForPosAccount(): void

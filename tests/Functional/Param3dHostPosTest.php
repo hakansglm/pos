@@ -39,7 +39,8 @@ class Param3dHostPosTest extends TestCase
             (int) getenv('PARAMPOS_MERCHANT_ID'),
             (string) getenv('PARAMPOS_USERNAME'),
             (string) getenv('PARAMPOS_PASSWORD'),
-            (string) getenv('PARAMPOS_CLIENT_SECRET')
+            (string) getenv('PARAMPOS_CLIENT_SECRET'),
+            (string) getenv('PARAMPOS_TERMINAL_ID') ?: null,
         );
 
         $this->eventDispatcher = new EventDispatcher();

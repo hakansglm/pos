@@ -223,17 +223,18 @@ class AccountFactory
     }
 
     /**
-     * @param string $bank
-     * @param int    $clientCode CLIENT_CODE Terminal ID
-     * @param string $username   CLIENT_USERNAME Kullanıcı adı
-     * @param string $password   CLIENT_PASSWORD Şifre
-     * @param string $guid       GUID  Üye İşyeri ait anahtarı
+     * @param string      $bank
+     * @param int         $clientCode CLIENT_CODE
+     * @param string      $username   CLIENT_USERNAME Kullanıcı adı
+     * @param string      $password   CLIENT_PASSWORD Şifre
+     * @param string      $guid       GUID  Üye İşyeri ait anahtarı
+     * @param string|null $terminalId Terminal_ID
      *
      * @return ParamPosAccount
      */
-    public static function createParamPosAccount(string $bank, int $clientCode, string $username, string $password, string $guid): ParamPosAccount
+    public static function createParamPosAccount(string $bank, int $clientCode, string $username, string $password, string $guid, ?string $terminalId = null): ParamPosAccount
     {
-        return new ParamPosAccount($bank, $clientCode, $username, $password, $guid);
+        return new ParamPosAccount($bank, $clientCode, $username, $password, $guid, $terminalId);
     }
 
     /**
@@ -247,8 +248,8 @@ class AccountFactory
      * - InterPos:        merchant_id (ShopCode), user_name (UserCode), user_password (UserPass), [secret_key (MerchantPass)]
      * - IyzicoPos:       merchant_id (ApiKey), secret_key (SecretKey), [sub_merchant_id (SubMerchantKey)]
      * - KuveytPos:       merchant_id, user_name, terminal_id (CustomerId/MüşteriNo), secret_key (StoreKey), [sub_merchant_id]
-     * - Param3DHostPos:  merchant_id (ClientCode), user_name, user_password, secret_key (Guid)
-     * - ParamPos:        merchant_id (ClientCode), user_name, user_password, secret_key (Guid)
+     * - Param3DHostPos:  merchant_id (ClientCode), user_name, user_password, secret_key (Guid), [terminal_id (Terminal_ID)]
+     * - ParamPos:        merchant_id (ClientCode), user_name, user_password, secret_key (Guid), [terminal_id (Terminal_ID)]
      * - PayFlexCPV4Pos:  merchant_id, user_password (Password), terminal_id (TerminalNo), [merchant_type], [sub_merchant_id]
      * - PayFlexV4Pos:    merchant_id, user_password (Password), terminal_id (TerminalNo), [merchant_type], [sub_merchant_id]
      * - PayForPos:       merchant_id, user_name (UserCode), user_password (UserPassword), [secret_key (MerchantPass)], [mbr_id]
@@ -321,6 +322,7 @@ class AccountFactory
                 $credentials['user_name'],
                 $credentials['user_password'],
                 $credentials['secret_key'],
+                $credentials['terminal_id'] ?? null,
             ),
             PayFlexCPV4Pos::class, PayFlexV4Pos::class => self::createPayFlexPosAccount(
                 $bank,
