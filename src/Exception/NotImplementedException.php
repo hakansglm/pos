@@ -9,10 +9,7 @@ namespace Mews\Pos\Exception;
 use BadMethodCallException;
 use Throwable;
 
-/**
- * Class NotImplementedException
- */
-class NotImplementedException extends BadMethodCallException
+class NotImplementedException extends BadMethodCallException implements PosException
 {
     /**
      * @inheritDoc

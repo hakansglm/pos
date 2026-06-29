@@ -28,8 +28,8 @@ use Mews\Pos\Gateway\PosNetV1Pos;
 use Mews\Pos\Gateway\ToslaPos;
 use Mews\Pos\Gateway\VakifKatilimPos;
 use Mews\Pos\Model\Account\AbstractPosAccount;
-use Mews\Pos\Exception\BankClassNullException;
-use Mews\Pos\Exception\BankNotFoundException;
+use Mews\Pos\Exception\GatewayClassNotConfiguredException;
+use Mews\Pos\Exception\GatewayConfigNotFoundException;
 use Mews\Pos\Factory\PosFactory;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -133,7 +133,7 @@ class PosFactoryTest extends TestCase
                 ],
             ],
             'config_key'               => 'akbank',
-            'expected_exception_class' => BankClassNullException::class,
+            'expected_exception_class' => GatewayClassNotConfiguredException::class,
         ];
 
         yield 'invalid_gateway_class' => [
@@ -181,7 +181,7 @@ class PosFactoryTest extends TestCase
                 ],
             ],
             'config_key'               => 'akbank2',
-            'expected_exception_class' => BankNotFoundException::class,
+            'expected_exception_class' => GatewayConfigNotFoundException::class,
         ];
     }
 

@@ -8,8 +8,8 @@ namespace Mews\Pos\Factory;
 
 use Mews\Pos\Client\HttpClientStrategyInterface;
 use Mews\Pos\Model\Account\AbstractPosAccount;
-use Mews\Pos\Exception\BankClassNullException;
-use Mews\Pos\Exception\BankNotFoundException;
+use Mews\Pos\Exception\GatewayClassNotConfiguredException;
+use Mews\Pos\Exception\GatewayConfigNotFoundException;
 use Mews\Pos\PosInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
@@ -46,8 +46,8 @@ class PosFactory
      *
      * @return T
      *
-     * @throws BankClassNullException
-     * @throws BankNotFoundException
+     * @throws GatewayClassNotConfiguredException
+     * @throws GatewayConfigNotFoundException
      */
     public static function createPosGateway(
         AbstractPosAccount           $posAccount,
@@ -62,13 +62,13 @@ class PosFactory
 
         // Bank Config Exist
         if (!\array_key_exists($posAccount->getBankName(), $config['banks'])) {
-            throw new BankNotFoundException();
+            throw new GatewayConfigNotFoundException();
         }
 
         $gatewayClass = $config['banks'][$posAccount->getBankName()]['class'] ?? null;
 
         if (null === $gatewayClass) {
-            throw new BankClassNullException();
+            throw new GatewayClassNotConfiguredException();
         }
 
         if (!\in_array(PosInterface::class, \class_implements($gatewayClass), true)) {

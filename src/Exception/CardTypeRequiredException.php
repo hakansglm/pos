@@ -12,11 +12,9 @@ use Throwable;
 /**
  * thrown if card type is not provided
  */
-class CardTypeRequiredException extends DomainException
+class CardTypeRequiredException extends DomainException implements PosException
 {
     /**
-     * BankNotFoundException constructor.
-     *
      * @param string         $gatewayName
      * @param string         $message
      * @param int            $code

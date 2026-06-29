@@ -6,21 +6,11 @@
 
 namespace Mews\Pos\Exception;
 
-use Exception;
+use RuntimeException;
 use Throwable;
 
-/**
- * Class MissingAccountInfoException
- */
-class MissingAccountInfoException extends Exception
+class MissingAccountInfoException extends RuntimeException implements PosException
 {
-    /**
-     * BankNotFoundException constructor.
-     *
-     * @param string         $message
-     * @param int            $code
-     * @param Throwable|null $previous
-     */
     public function __construct(string $message = 'Missing Account Information!', int $code = 430, ?Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);

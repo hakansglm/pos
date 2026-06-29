@@ -12,7 +12,7 @@ use Throwable;
 /**
  * Thrown when generated hash and the hash from the bank response does not match
  */
-class HashMismatchException extends LogicException
+class HashMismatchException extends LogicException implements PosException
 {
     /**
      * @inheritDoc
