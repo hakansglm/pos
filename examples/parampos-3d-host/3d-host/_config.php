@@ -8,7 +8,7 @@ $baseUrl = $bankTestsUrl.'/3d-host/';
 
 $account = \Mews\Pos\Factory\AccountFactory::createParamPosAccount(
     'param-3d-host-pos',
-    (int) getenv('PARAMPOS_3DHOST_MERCHANT_ID'),
+    (string) getenv('PARAMPOS_3DHOST_MERCHANT_ID'),
     (string) getenv('PARAMPOS_3DHOST_USERNAME'),
     (string) getenv('PARAMPOS_3DHOST_PASSWORD'),
     (string) getenv('PARAMPOS_3DHOST_CLIENT_SECRET'),

@@ -8,7 +8,7 @@ namespace Mews\Pos\Client;
 
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\Crypt\IyzicoPosCrypt;
-use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\IyzicoPosAccount;
 use Mews\Pos\Serializer\Decoder\DecoderInterface;
 use Mews\Pos\Serializer\Encoder\EncoderInterface;
 use Psr\Http\Client\ClientInterface;
@@ -55,7 +55,7 @@ abstract class AbstractIyzicoPosHttpClient extends AbstractHttpClient
         $this->crypt = $crypt;
     }
 
-    protected function createAuthorizationHeader(string $url, string $requestBody, AbstractPosAccount $account): string
+    protected function createAuthorizationHeader(string $url, string $requestBody, IyzicoPosAccount $account): string
     {
         $randomKey = $this->crypt->generateRandomString();
         $data      = [
@@ -65,7 +65,7 @@ abstract class AbstractIyzicoPosHttpClient extends AbstractHttpClient
         ];
         $signature = $this->crypt->createHash($account, $data);
 
-        $authStr = \sprintf('apiKey:%s&randomKey:%s&signature:%s', $account->getMerchantId(), $randomKey, $signature);
+        $authStr = \sprintf('apiKey:%s&randomKey:%s&signature:%s', $account->getApiKey(), $randomKey, $signature);
 
         return 'IYZWSv2 '.\base64_encode($authStr);
     }

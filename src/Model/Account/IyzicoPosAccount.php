@@ -22,4 +22,12 @@ class IyzicoPosAccount extends AbstractPosAccount
     ) {
         parent::__construct($bankName, $apiKey, '', '', $secretKey, null, $subMerchantKey);
     }
+
+    /**
+     * Iyzico API key (stored as merchantId in the base class).
+     */
+    public function getApiKey(): string
+    {
+        return $this->merchantId;
+    }
 }

@@ -10,7 +10,7 @@ class ParamPosAccount extends AbstractPosAccount
 {
     /**
      * @param string      $bankName
-     * @param int         $merchantId CLIENT_CODE
+     * @param string      $merchantId CLIENT_CODE
      * @param string      $username   CLIENT_USERNAME Kullanıcı adı
      * @param string      $password   CLIENT_PASSWORD Şifre
      * @param string      $secretKey  GUID  Üye İşyeri ait anahtarı
@@ -18,12 +18,12 @@ class ParamPosAccount extends AbstractPosAccount
      */
     public function __construct(
         string  $bankName,
-        int     $merchantId,
+        string  $merchantId,
         string  $username,
         string  $password,
         string  $secretKey,
         ?string $terminalId = null
     ) {
-        parent::__construct($bankName, (string) $merchantId, $username, $password, $secretKey, $terminalId);
+        parent::__construct($bankName, $merchantId, $username, $password, $secretKey, $terminalId);
     }
 }

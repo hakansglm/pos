@@ -159,7 +159,7 @@ class AccountFactoryTest extends TestCase
     {
         $account = AccountFactory::createParamPosAccount(
             'param-pos',
-            12345,
+            '12345',
             'APIUSER',
             'kdsnsksl',
             'guid123',
@@ -177,7 +177,7 @@ class AccountFactoryTest extends TestCase
     {
         $account = AccountFactory::createParamPosAccount(
             'param-pos',
-            12345,
+            '12345',
             'APIUSER',
             'kdsnsksl',
             'guid123',
@@ -231,7 +231,7 @@ class AccountFactoryTest extends TestCase
 
         $this->assertInstanceOf(IyzicoPosAccount::class, $account);
         $this->assertSame('iyzico', $account->getBankName());
-        $this->assertSame('api-key', $account->getMerchantId());
+        $this->assertSame('api-key', $account->getApiKey());
         $this->assertSame('api-secret-key', $account->getSecretKey());
         $this->assertNull($account->getSubMerchantId());
     }
@@ -245,7 +245,7 @@ class AccountFactoryTest extends TestCase
             'sub-merchant-key',
         );
 
-        $this->assertSame('api-key', $account->getMerchantId());
+        $this->assertSame('api-key', $account->getApiKey());
         $this->assertSame('api-secret-key', $account->getSecretKey());
         $this->assertSame('sub-merchant-key', $account->getSubMerchantId());
     }

@@ -36,7 +36,7 @@ class ParamPosTest extends TestCase
 
         $account = AccountFactory::createParamPosAccount(
             'param-pos',
-            (int) getenv('PARAMPOS_MERCHANT_ID'),
+            (string) getenv('PARAMPOS_MERCHANT_ID'),
             (string) getenv('PARAMPOS_USERNAME'),
             (string) getenv('PARAMPOS_PASSWORD'),
             (string) getenv('PARAMPOS_CLIENT_SECRET')

@@ -83,7 +83,7 @@ class Param3DHostPosTest extends TestCase
 
         $this->account = AccountFactory::createParamPosAccount(
             'param-3d-host-pos',
-            10738,
+            '10738',
             'Test',
             'Test',
             '0c13d406-873b-403b-9c09-a5766840d98c'

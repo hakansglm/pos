@@ -224,7 +224,7 @@ class AccountFactory
 
     /**
      * @param string      $bank
-     * @param int         $clientCode CLIENT_CODE
+     * @param string      $clientCode CLIENT_CODE
      * @param string      $username   CLIENT_USERNAME Kullanıcı adı
      * @param string      $password   CLIENT_PASSWORD Şifre
      * @param string      $guid       GUID  Üye İşyeri ait anahtarı
@@ -232,7 +232,7 @@ class AccountFactory
      *
      * @return ParamPosAccount
      */
-    public static function createParamPosAccount(string $bank, int $clientCode, string $username, string $password, string $guid, ?string $terminalId = null): ParamPosAccount
+    public static function createParamPosAccount(string $bank, string $clientCode, string $username, string $password, string $guid, ?string $terminalId = null): ParamPosAccount
     {
         return new ParamPosAccount($bank, $clientCode, $username, $password, $guid, $terminalId);
     }
@@ -318,7 +318,7 @@ class AccountFactory
             ),
             Param3DHostPos::class, ParamPos::class => self::createParamPosAccount(
                 $bank,
-                (int) $credentials['merchant_id'],
+                $credentials['merchant_id'],
                 $credentials['user_name'],
                 $credentials['user_password'],
                 $credentials['secret_key'],

@@ -16,6 +16,6 @@ class PayTrPosAccount extends AbstractPosAccount
      */
     public function __construct(string $bank, string $merchantId, string $merchantSalt, string $merchantKey)
     {
-        parent::__construct($bank, $merchantId, $merchantId, $merchantSalt, $merchantKey);
+        parent::__construct($bank, $merchantId, '', $merchantSalt, $merchantKey);
     }
 }
