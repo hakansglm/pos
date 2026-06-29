@@ -33,6 +33,9 @@ class AkbankPosTest extends TestCase
     /** @var AkbankPos */
     private PosInterface $recurringPos;
 
+    /** @var AkbankPos */
+    private PosInterface $instalmentEnabledPos;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -53,10 +56,18 @@ class AkbankPosTest extends TestCase
             (string) getenv('AKBANKPOS_RECURRING_API_KEY'),
         );
 
+        $installmentEnabledAccount = AccountFactory::createAkbankPosAccount(
+            'akbank-pos',
+            (string) getenv('AKBANKPOS_INSTALMENT_ENABLED_MERCHANT_ID'),
+            (string) getenv('AKBANKPOS_INSTALMENT_ENABLED_TERMINAL_ID'),
+            (string) getenv('AKBANKPOS_INSTALMENT_ENABLED_API_KEY'),
+        );
+
         $this->eventDispatcher = new EventDispatcher();
 
-        $this->pos          = PosFactory::createPosGateway($account, $config, $this->eventDispatcher);
-        $this->recurringPos = PosFactory::createPosGateway($recurringAccount, $config, $this->eventDispatcher);
+        $this->pos                  = PosFactory::createPosGateway($account, $config, $this->eventDispatcher);
+        $this->recurringPos         = PosFactory::createPosGateway($recurringAccount, $config, $this->eventDispatcher);
+        $this->instalmentEnabledPos = PosFactory::createPosGateway($installmentEnabledAccount, $config, $this->eventDispatcher);
 
         $this->card = CreditCardFactory::createForGateway(
             $this->pos,
@@ -92,6 +103,28 @@ class AkbankPosTest extends TestCase
         $this->assertIsArray($response);
         $this->assertNotEmpty($response);
         $this->assertTrue($eventIsThrown);
+
+        return $response;
+    }
+
+    public function testNonSecurePaymentWithInstalmentSuccess(): array
+    {
+        $order = $this->createPaymentOrder(
+            PosInterface::MODEL_NON_SECURE,
+            installment: 3,
+        );
+
+        $response = $this->instalmentEnabledPos->payment(
+            PosInterface::MODEL_NON_SECURE,
+            $order,
+            PosInterface::TX_TYPE_PAY_AUTH,
+            $this->card
+        );
+
+        $this->assertTrue($this->instalmentEnabledPos->isSuccess(), $response['error_message'] ?? '');
+
+        $this->assertIsArray($response);
+        $this->assertNotEmpty($response);
 
         return $response;
     }
@@ -171,7 +204,7 @@ class AkbankPosTest extends TestCase
             PosInterface::MODEL_NON_SECURE,
             PosInterface::CURRENCY_TRY,
             30.0,
-            3
+            1
         );
 
         $eventIsThrown = false;
