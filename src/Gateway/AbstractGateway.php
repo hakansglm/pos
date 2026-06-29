@@ -12,10 +12,10 @@ use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\Request\Mapper\RequestDataMapperInterface;
 use Mews\Pos\DataMapper\Request\ValueMapper\RequestValueMapperInterface;
 use Mews\Pos\DataMapper\Response\Mapper\ResponseDataMapperInterface;
-use Mews\Pos\Model\Account\AbstractPosAccount;
-use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exception\UnsupportedPaymentModelException;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\PosInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
@@ -224,16 +224,16 @@ abstract class AbstractGateway implements PosInterface
         $event = $this->eventDispatcher->dispatch($event);
         if ($requestData !== $event->getRequestData()) {
             $this->logger->debug('Request data is changed via listeners', [
-                'txType'      => $event->getTxType(),
-                'bankName'          => $event->getBankName(),
-                'initialData' => $requestData,
-                'updatedData' => $event->getRequestData(),
+                'tx_type'      => $event->getTxType(),
+                'bank_name'    => $event->getBankName(),
+                'initial_data' => $requestData,
+                'updated_data' => $event->getRequestData(),
             ]);
             $requestData = $event->getRequestData();
         }
 
         /** @var array<string, mixed> $bankResponse */
-        $bankResponse = $this->clientStrategy->getClient(
+        $bankResponse   = $this->clientStrategy->getClient(
             $txType,
             $paymentModel,
         )->request(
@@ -275,10 +275,10 @@ abstract class AbstractGateway implements PosInterface
         $event = $this->eventDispatcher->dispatch($event);
         if ($requestData !== $event->getRequestData()) {
             $this->logger->debug('Request data is changed via listeners', [
-                'txType'      => $event->getTxType(),
-                'bankName'          => $event->getBankName(),
-                'initialData' => $requestData,
-                'updatedData' => $event->getRequestData(),
+                'tx_type'      => $event->getTxType(),
+                'bank_name'    => $event->getBankName(),
+                'initial_data' => $requestData,
+                'updated_data' => $event->getRequestData(),
             ]);
             $requestData = $event->getRequestData();
         }
@@ -326,16 +326,16 @@ abstract class AbstractGateway implements PosInterface
         $event = $this->eventDispatcher->dispatch($event);
         if ($requestData !== $event->getRequestData()) {
             $this->logger->debug('Request data is changed via listeners', [
-                'txType'      => $event->getTxType(),
-                'bankName'          => $event->getBankName(),
-                'initialData' => $requestData,
-                'updatedData' => $event->getRequestData(),
+                'tx_type'      => $event->getTxType(),
+                'bank_name'    => $event->getBankName(),
+                'initial_data' => $requestData,
+                'updated_data' => $event->getRequestData(),
             ]);
             $requestData = $event->getRequestData();
         }
 
         /** @var array<string, mixed> $bankResponse */
-        $bankResponse = $this->clientStrategy->getClient(
+        $bankResponse   = $this->clientStrategy->getClient(
             $txType,
             $paymentModel,
         )->request(
@@ -359,7 +359,7 @@ abstract class AbstractGateway implements PosInterface
     {
         $txType       = PosInterface::TX_TYPE_CANCEL;
         $paymentModel = PosInterface::MODEL_NON_SECURE;
-        $requestData = $this->requestDataMapper->createCancelRequestData($this->account, $order);
+        $requestData  = $this->requestDataMapper->createCancelRequestData($this->account, $order);
 
         $event = new RequestDataPreparedEvent(
             $requestData,
@@ -373,16 +373,16 @@ abstract class AbstractGateway implements PosInterface
         $event = $this->eventDispatcher->dispatch($event);
         if ($requestData !== $event->getRequestData()) {
             $this->logger->debug('Request data is changed via listeners', [
-                'txType'      => $event->getTxType(),
-                'bankName'          => $event->getBankName(),
-                'initialData' => $requestData,
-                'updatedData' => $event->getRequestData(),
+                'tx_type'      => $event->getTxType(),
+                'bank_name'    => $event->getBankName(),
+                'initial_data' => $requestData,
+                'updated_data' => $event->getRequestData(),
             ]);
             $requestData = $event->getRequestData();
         }
 
         /** @var array<string, mixed> $bankResponse */
-        $bankResponse = $this->clientStrategy->getClient(
+        $bankResponse   = $this->clientStrategy->getClient(
             $txType,
             $paymentModel,
         )->request(
@@ -406,7 +406,7 @@ abstract class AbstractGateway implements PosInterface
     {
         $txType       = PosInterface::TX_TYPE_STATUS;
         $paymentModel = PosInterface::MODEL_NON_SECURE;
-        $requestData = $this->requestDataMapper->createStatusRequestData($this->account, $order);
+        $requestData  = $this->requestDataMapper->createStatusRequestData($this->account, $order);
 
         $event = new RequestDataPreparedEvent(
             $requestData,
@@ -420,10 +420,10 @@ abstract class AbstractGateway implements PosInterface
         $event = $this->eventDispatcher->dispatch($event);
         if ($requestData !== $event->getRequestData()) {
             $this->logger->debug('Request data is changed via listeners', [
-                'txType'      => $event->getTxType(),
-                'bankName'          => $event->getBankName(),
-                'initialData' => $requestData,
-                'updatedData' => $event->getRequestData(),
+                'tx_type'      => $event->getTxType(),
+                'bank_name'    => $event->getBankName(),
+                'initial_data' => $requestData,
+                'updated_data' => $event->getRequestData(),
             ]);
             $requestData = $event->getRequestData();
         }
@@ -453,7 +453,7 @@ abstract class AbstractGateway implements PosInterface
     {
         $txType       = PosInterface::TX_TYPE_HISTORY;
         $paymentModel = PosInterface::MODEL_NON_SECURE;
-        $requestData = $this->requestDataMapper->createHistoryRequestData($this->account, $data);
+        $requestData  = $this->requestDataMapper->createHistoryRequestData($this->account, $data);
 
         $event = new RequestDataPreparedEvent(
             $requestData,
@@ -467,10 +467,10 @@ abstract class AbstractGateway implements PosInterface
         $event = $this->eventDispatcher->dispatch($event);
         if ($requestData !== $event->getRequestData()) {
             $this->logger->debug('Request data is changed via listeners', [
-                'txType'      => $event->getTxType(),
-                'bankName'          => $event->getBankName(),
-                'initialData' => $requestData,
-                'updatedData' => $event->getRequestData(),
+                'tx_type'      => $event->getTxType(),
+                'bank_name'    => $event->getBankName(),
+                'initial_data' => $requestData,
+                'updated_data' => $event->getRequestData(),
             ]);
             $requestData = $event->getRequestData();
         }
@@ -488,7 +488,7 @@ abstract class AbstractGateway implements PosInterface
             $this->account
         );
 
-        $this->response     = $this->responseDataMapper->mapHistoryResponse($bankResponse);
+        $this->response = $this->responseDataMapper->mapHistoryResponse($bankResponse);
 
         return $this->response;
     }
@@ -500,7 +500,7 @@ abstract class AbstractGateway implements PosInterface
     {
         $txType       = PosInterface::TX_TYPE_ORDER_HISTORY;
         $paymentModel = PosInterface::MODEL_NON_SECURE;
-        $requestData = $this->requestDataMapper->createOrderHistoryRequestData($this->account, $order);
+        $requestData  = $this->requestDataMapper->createOrderHistoryRequestData($this->account, $order);
 
         $event = new RequestDataPreparedEvent(
             $requestData,
@@ -514,10 +514,10 @@ abstract class AbstractGateway implements PosInterface
         $event = $this->eventDispatcher->dispatch($event);
         if ($requestData !== $event->getRequestData()) {
             $this->logger->debug('Request data is changed via listeners', [
-                'txType'      => $event->getTxType(),
-                'bankName'          => $event->getBankName(),
-                'initialData' => $requestData,
-                'updatedData' => $event->getRequestData(),
+                'tx_type'      => $event->getTxType(),
+                'bank_name'    => $event->getBankName(),
+                'initial_data' => $requestData,
+                'updated_data' => $event->getRequestData(),
             ]);
             $requestData = $event->getRequestData();
         }
@@ -545,8 +545,8 @@ abstract class AbstractGateway implements PosInterface
      */
     public function customQuery(array $requestData, ?string $apiUrl = null): array
     {
-        $txType       = PosInterface::TX_TYPE_CUSTOM_QUERY;
-        $paymentModel = PosInterface::MODEL_NON_SECURE;
+        $txType             = PosInterface::TX_TYPE_CUSTOM_QUERY;
+        $paymentModel       = PosInterface::MODEL_NON_SECURE;
         $updatedRequestData = $this->requestDataMapper->createCustomQueryRequestData($this->account, $requestData);
 
         $event = new RequestDataPreparedEvent(
@@ -562,10 +562,10 @@ abstract class AbstractGateway implements PosInterface
         $event = $this->eventDispatcher->dispatch($event);
         if ($updatedRequestData !== $event->getRequestData()) {
             $this->logger->debug('Request data is changed via listeners', [
-                'txType'      => $event->getTxType(),
-                'bankName'    => $event->getBankName(),
-                'initialData' => $requestData,
-                'updatedData' => $event->getRequestData(),
+                'tx_type'      => $event->getTxType(),
+                'bank_name'    => $event->getBankName(),
+                'initial_data' => $requestData,
+                'updated_data' => $event->getRequestData(),
             ]);
             $updatedRequestData = $event->getRequestData();
         }
