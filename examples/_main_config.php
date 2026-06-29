@@ -116,7 +116,7 @@ function getGateway(\Mews\Pos\Model\Account\AbstractPosAccount $account, \Psr\Ev
         $config = require __DIR__.'/../config/pos_test.php';
         global $logger;
 
-        $pos = \Mews\Pos\Factory\PosFactory::createPosGateway($account, $config, $eventDispatcher, null, $logger);
+        $pos = \Mews\Pos\Factory\PosFactory::createPosGateway($account, $config, $eventDispatcher, null, null, $logger);
 
         return $pos;
     } catch (Exception $e) {

@@ -54,6 +54,7 @@ class PosFactoryTest extends TestCase
             $config,
             $eventDispatcher,
             null,
+            null,
             $logger
         );
         $this->assertInstanceOf($expectedGatewayClass, $gateway);

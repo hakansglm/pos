@@ -17,6 +17,8 @@ use Monolog\Test\TestCase;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Depends;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpClient\Psr18Client;
 
 #[CoversNothing]
 class PayFlexV4PosTest extends TestCase
@@ -45,7 +47,8 @@ class PayFlexV4PosTest extends TestCase
 
         $this->eventDispatcher = new EventDispatcher();
 
-        $this->pos = PosFactory::createPosGateway($account, $config, $this->eventDispatcher);
+        $httpClient = new Psr18Client(HttpClient::create(['verify_peer' => false, 'verify_host' => false]));
+        $this->pos  = PosFactory::createPosGateway($account, $config, $this->eventDispatcher, null, $httpClient);
 
         $this->card = CreditCardFactory::createForGateway(
             $this->pos,

@@ -12,6 +12,7 @@ use Mews\Pos\Exception\GatewayClassNotConfiguredException;
 use Mews\Pos\Exception\GatewayConfigNotFoundException;
 use Mews\Pos\PosInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Http\Client\ClientInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -42,6 +43,7 @@ class PosFactory
      * @param array                            $config
      * @param EventDispatcherInterface         $eventDispatcher
      * @param HttpClientStrategyInterface|null $httpClientStrategy
+     * @param ClientInterface|null             $httpClient         PSR-18 client; pass a pre-configured instance
      * @param LoggerInterface|null             $logger
      *
      * @return T
@@ -54,9 +56,10 @@ class PosFactory
         array                        $config,
         EventDispatcherInterface     $eventDispatcher,
         ?HttpClientStrategyInterface $httpClientStrategy = null,
+        ?ClientInterface             $httpClient = null,
         ?LoggerInterface             $logger = null
     ): PosInterface {
-        if (!$logger instanceof \Psr\Log\LoggerInterface) {
+        if (!$logger instanceof LoggerInterface) {
             $logger = new NullLogger();
         }
 
@@ -84,8 +87,9 @@ class PosFactory
             $posAccount,
             $config['banks'][$posAccount->getBankName()],
             $eventDispatcher,
-            $logger,
-            $httpClientStrategy
+            $httpClientStrategy,
+            $httpClient,
+            $logger
         );
     }
 
@@ -105,18 +109,20 @@ class PosFactory
      *           gateway_endpoints: array<HttpClientInterface::API_NAME_*, non-empty-string>
      *          }                              $apiConfig
      * @param EventDispatcherInterface         $eventDispatcher
-     * @param LoggerInterface                  $logger
      * @param HttpClientStrategyInterface|null $httpClientStrategy
+     * @param ClientInterface|null             $httpClient
+     * @param LoggerInterface                  $logger
      *
      * @return T
      */
     private static function doCreatePosGateway(
-        string                   $gatewayClass,
-        AbstractPosAccount       $posAccount,
-        array                    $apiConfig,
-        EventDispatcherInterface $eventDispatcher,
-        LoggerInterface          $logger,
-        ?HttpClientStrategyInterface $httpClientStrategy = null
+        string                       $gatewayClass,
+        AbstractPosAccount           $posAccount,
+        array                        $apiConfig,
+        EventDispatcherInterface     $eventDispatcher,
+        ?HttpClientStrategyInterface $httpClientStrategy = null,
+        ?ClientInterface             $httpClient = null,
+        LoggerInterface              $logger = new NullLogger()
     ): PosInterface {
         $crypt                 = CryptFactory::createForGateway($gatewayClass, $logger);
         $requestValueMapper    = RequestValueMapperFactory::createForGateway($gatewayClass);
@@ -142,7 +148,8 @@ class PosFactory
                 $apiConfig['gateway_endpoints'],
                 $crypt,
                 $requestValueMapper,
-                $logger
+                $logger,
+                $httpClient
             );
         }
 

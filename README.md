@@ -264,6 +264,7 @@ $pos = \Mews\Pos\Factory\PosFactory::createPosGateway(
     $config,
     $eventDispatcher,
     null,
+    null,
     $logger
 );
 ```
