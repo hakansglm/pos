@@ -118,7 +118,6 @@ class PayForPosTest extends TestCase
     public function testInit(): void
     {
         $this->assertCount(count($this->requestValueMapper->getCurrencyMappings()), $this->pos->getCurrencies());
-        $this->assertSame($this->config, $this->pos->getConfig());
         $this->assertSame($this->account, $this->pos->getAccount());
         $this->assertFalse($this->pos->isTestMode());
         $this->assertSame($this->config['gateway_endpoints']['gateway_3d_host'], $this->pos->get3DGatewayURL(PosInterface::MODEL_3D_HOST));

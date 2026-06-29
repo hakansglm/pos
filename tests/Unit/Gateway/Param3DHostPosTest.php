@@ -109,7 +109,6 @@ class Param3DHostPosTest extends TestCase
         $this->requestValueMapperMock->expects(self::once())
             ->method('getCurrencyMappings')
             ->willReturn([PosInterface::CURRENCY_TRY => '1000']);
-        $this->assertSame($this->config, $this->pos->getConfig());
         $this->assertSame($this->account, $this->pos->getAccount());
         $this->assertSame([PosInterface::CURRENCY_TRY], $this->pos->getCurrencies());
         $this->assertFalse($this->pos->isTestMode());

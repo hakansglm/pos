@@ -124,7 +124,6 @@ class PosNetPosTest extends TestCase
     public function testInit(): void
     {
         $this->assertCount(count($this->requestValueMapper->getCurrencyMappings()), $this->pos->getCurrencies());
-        $this->assertSame($this->config, $this->pos->getConfig());
         $this->assertSame($this->account, $this->pos->getAccount());
         $this->assertFalse($this->pos->isTestMode());
         $this->assertSame($this->cryptMock, $this->pos->getCrypt());

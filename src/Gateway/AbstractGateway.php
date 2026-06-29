@@ -100,23 +100,6 @@ abstract class AbstractGateway implements PosInterface
         return \array_keys($this->valueMapper->getCurrencyMappings());
     }
 
-    /**
-     * @return array{
-     *      gateway_configs?: array{
-     *          test_mode?: bool,
-     *          disable_3d_hash_check?: bool
-     *      },
-     *      gateway_endpoints: array{
-     *          gateway_3d: non-empty-string,
-     *          gateway_3d_host?: non-empty-string
-     *      }
-     * }
-     */
-    public function getConfig(): array
-    {
-        return $this->config;
-    }
-
     public function getCrypt(): CryptInterface
     {
         return $this->crypt;

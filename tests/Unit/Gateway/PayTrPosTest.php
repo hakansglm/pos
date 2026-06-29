@@ -108,7 +108,6 @@ class PayTrPosTest extends TestCase
 
     public function testInit(): void
     {
-        $this->assertSame($this->config, $this->pos->getConfig());
         $this->assertSame($this->account, $this->pos->getAccount());
         $this->assertInstanceOf(PayTrPosAccount::class, $this->pos->getAccount());
         $this->assertSame($this->account, $this->pos->getAccount());
