@@ -20,6 +20,6 @@ class IyzicoPosAccount extends AbstractPosAccount
         string  $secretKey,
         ?string $subMerchantKey = null
     ) {
-        parent::__construct($bankName, $apiKey, '', '', $secretKey, $subMerchantKey);
+        parent::__construct($bankName, $apiKey, '', '', $secretKey, null, $subMerchantKey);
     }
 }

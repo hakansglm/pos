@@ -39,22 +39,14 @@ class PayFlexPosAccount extends AbstractPosAccount
         string         $bankName,
         string         $merchantId,
         string         $password,
-        private string $terminalId,
+        string         $terminalId,
         /**
          * Banka tarafından Üye işyerine iletilmektedir
          */
         private int    $merchantType = self::MERCHANT_TYPE_STANDARD,
         ?string        $subMerchantId = null
     ) {
-        parent::__construct($bankName, $merchantId, '', $password, null, $subMerchantId);
-    }
-
-    /**
-     * @return string
-     */
-    public function getTerminalId(): string
-    {
-        return $this->terminalId;
+        parent::__construct($bankName, $merchantId, '', $password, null, $terminalId, $subMerchantId);
     }
 
     /**

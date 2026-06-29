@@ -22,14 +22,6 @@ class AkbankPosAccount extends AbstractPosAccount
         string  $secretKey,
         ?string $subMerchantId = null
     ) {
-        parent::__construct($bankName, $merchantSafeId, $terminalSafeId, '', $secretKey, $subMerchantId);
-    }
-
-    /**
-     * @return string
-     */
-    public function getTerminalId(): string
-    {
-        return $this->username;
+        parent::__construct($bankName, $merchantSafeId, '', '', $secretKey, $terminalSafeId, $subMerchantId);
     }
 }

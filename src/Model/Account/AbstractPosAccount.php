@@ -16,6 +16,7 @@ abstract class AbstractPosAccount
      * @param string      $username
      * @param string      $password
      * @param string|null $secretKey
+     * @param string|null $terminalId
      * @param string|null $subMerchantId
      */
     public function __construct(
@@ -24,6 +25,7 @@ abstract class AbstractPosAccount
         protected string  $username,
         protected string  $password,
         protected ?string $secretKey = null,
+        protected ?string $terminalId = null,
         protected ?string $subMerchantId = null
     ) {
     }
@@ -74,5 +76,15 @@ abstract class AbstractPosAccount
     public function getSubMerchantId(): ?string
     {
         return $this->subMerchantId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTerminalId(): string
+    {
+        \assert($this->terminalId !== null);
+
+        return $this->terminalId;
     }
 }

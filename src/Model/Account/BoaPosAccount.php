@@ -27,7 +27,7 @@ class BoaPosAccount extends AbstractPosAccount
         string  $secretKey,
         ?string $subMerchantId = null
     ) {
-        parent::__construct($bankName, $merchantId, $username, $customerId, $secretKey, $subMerchantId);
+        parent::__construct($bankName, $merchantId, $username, '', $secretKey, $customerId, $subMerchantId);
     }
 
     /**
@@ -35,6 +35,6 @@ class BoaPosAccount extends AbstractPosAccount
      */
     public function getCustomerId(): string
     {
-        return $this->password;
+        return $this->getTerminalId();
     }
 }

@@ -11,12 +11,15 @@ namespace Mews\Pos\Model\Account;
  */
 class PosNetPosAccount extends AbstractPosAccount
 {
-    /**
-     * @return string
-     */
-    public function getTerminalId(): string
-    {
-        return $this->password;
+    public function __construct(
+        string  $bankName,
+        string  $merchantId,
+        string  $posNetId,
+        string  $terminalId,
+        ?string $secretKey = null,
+        ?string $subMerchantId = null
+    ) {
+        parent::__construct($bankName, $merchantId, $posNetId, '', $secretKey, $terminalId, $subMerchantId);
     }
 
     /**
