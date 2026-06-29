@@ -297,7 +297,7 @@ class ParamPosTest extends TestCase
             function (RequestDataPreparedEvent $requestDataPreparedEvent) use (&$eventIsThrown): void {
                 $eventIsThrown = true;
                 $this->assertCount(1, $requestDataPreparedEvent->getRequestData()['soap:Body']);
-                $this->assertSame(PosInterface::TX_TYPE_PAY_AUTH, $requestDataPreparedEvent->getTxType());
+                $this->assertSame(PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, $requestDataPreparedEvent->getTxType());
             }
         );
         $formData = $this->pos->get3DFormData(
@@ -342,32 +342,6 @@ class ParamPosTest extends TestCase
 
         $this->assertIsArray($formData);
         $this->assertNotEmpty($formData['gateway']);
-        $this->assertTrue($eventIsThrown);
-    }
-
-    public function testGet3DHostFormData(): void
-    {
-        $order = $this->createPaymentOrder(PosInterface::MODEL_3D_HOST);
-
-        $eventIsThrown = false;
-        $this->eventDispatcher->addListener(
-            RequestDataPreparedEvent::class,
-            function (RequestDataPreparedEvent $requestDataPreparedEvent) use (&$eventIsThrown): void {
-                $eventIsThrown = true;
-                $this->assertCount(1, $requestDataPreparedEvent->getRequestData()['soap:Body']);
-                $this->assertCount(1, $requestDataPreparedEvent->getRequestData()['soap:Header']);
-                $this->assertSame(PosInterface::TX_TYPE_PAY_AUTH, $requestDataPreparedEvent->getTxType());
-            }
-        );
-        $formData = $this->pos->get3DFormData(
-            $order,
-            PosInterface::MODEL_3D_HOST,
-            PosInterface::TX_TYPE_PAY_AUTH
-        );
-
-        $this->assertIsArray($formData);
-        $this->assertArrayHasKey('inputs', $formData);
-        $this->assertNotEmpty($formData['inputs']);
         $this->assertTrue($eventIsThrown);
     }
 

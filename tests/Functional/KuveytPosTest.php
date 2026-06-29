@@ -73,7 +73,7 @@ class KuveytPosTest extends TestCase
             RequestDataPreparedEvent::class,
             function (RequestDataPreparedEvent $requestDataPreparedEvent) use (&$eventIsThrown): void {
                 $eventIsThrown = true;
-                $this->assertSame(PosInterface::TX_TYPE_PAY_AUTH, $requestDataPreparedEvent->getTxType());
+                $this->assertSame(PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, $requestDataPreparedEvent->getTxType());
                 $this->assertCount(22, $requestDataPreparedEvent->getRequestData());
             }
         );

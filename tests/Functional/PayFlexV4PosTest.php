@@ -68,7 +68,7 @@ class PayFlexV4PosTest extends TestCase
             function (RequestDataPreparedEvent $requestDataPreparedEvent) use (&$eventIsThrown): void {
                 $eventIsThrown = true;
                 $this->assertCount(12, $requestDataPreparedEvent->getRequestData());
-                $this->assertSame(PosInterface::TX_TYPE_PAY_AUTH, $requestDataPreparedEvent->getTxType());
+                $this->assertSame(PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, $requestDataPreparedEvent->getTxType());
             }
         );
         $formData = $this->pos->get3DFormData(
@@ -97,7 +97,7 @@ class PayFlexV4PosTest extends TestCase
             function (RequestDataPreparedEvent $requestDataPreparedEvent) use (&$eventIsThrown): void {
                 $eventIsThrown = true;
                 $this->assertCount(17, $requestDataPreparedEvent->getRequestData());
-                $this->assertSame(PosInterface::TX_TYPE_PAY_AUTH, $requestDataPreparedEvent->getTxType());
+                $this->assertSame(PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, $requestDataPreparedEvent->getTxType());
             }
         );
         $formData = $this->pos->get3DFormData(

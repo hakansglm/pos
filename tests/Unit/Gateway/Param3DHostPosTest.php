@@ -131,7 +131,7 @@ class Param3DHostPosTest extends TestCase
             ->willReturn($requestData);
 
         $this->configureClientResponse(
-            $txType,
+            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
             $requestData,
             $decodedResponseData,
             $order,

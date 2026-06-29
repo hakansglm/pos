@@ -224,7 +224,7 @@ class PayForPos extends AbstractGateway
     /**
      * @param array<string, mixed>                                              $order
      * @param PosInterface::MODEL_3D_*                                          $paymentModel
-     * @param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
+     * @param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $orderTxType
      * @param CreditCardInterface|null                                          $creditCard
      *
      * @return string
@@ -232,20 +232,21 @@ class PayForPos extends AbstractGateway
      * @throws UnsupportedTransactionTypeException
      * @throws ClientExceptionInterface
      */
-    private function initialize3DForm(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): string
+    private function initialize3DForm(array $order, string $paymentModel, string $orderTxType, ?CreditCardInterface $creditCard = null): string
     {
-        $requestData = $this->requestDataMapper->create3DFormInitializeRequestData(
+        $requestTxType = PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD;
+        $requestData   = $this->requestDataMapper->create3DFormInitializeRequestData(
             $this->account,
             $order,
             $paymentModel,
-            $txType,
+            $orderTxType,
             $creditCard
         );
 
         $event = new RequestDataPreparedEvent(
             $requestData,
             $this->account->getBankName(),
-            $txType,
+            $requestTxType,
             static::class,
             $order,
             $paymentModel
@@ -264,10 +265,10 @@ class PayForPos extends AbstractGateway
 
         /** @var string $result */
         $result = $this->clientStrategy->getClient(
-            PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD,
+            $requestTxType,
             $paymentModel,
         )->request(
-            $txType,
+            $requestTxType,
             $paymentModel,
             $requestData,
             $order

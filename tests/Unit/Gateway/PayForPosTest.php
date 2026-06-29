@@ -176,7 +176,7 @@ class PayForPosTest extends TestCase
 
         $this->httpClientMock->expects(self::once())
             ->method('request')
-            ->with($txType, $paymentModel, $requestData, $order)
+            ->with(PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, $paymentModel, $requestData, $order)
             ->willReturn($htmlResponse);
 
         $actual = $this->pos->get3DFormData($order, $paymentModel, $txType, $this->card, false, PosInterface::FORM_FORMAT_HTML);
@@ -213,7 +213,7 @@ class PayForPosTest extends TestCase
 
         $this->httpClientMock->expects(self::once())
             ->method('request')
-            ->with($txType, $paymentModel, $modifiedData, $order)
+            ->with(PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, $paymentModel, $modifiedData, $order)
             ->willReturn($htmlResponse);
 
         $actual = $this->pos->get3DFormData($order, $paymentModel, $txType, $this->card, false, PosInterface::FORM_FORMAT_HTML);
@@ -244,7 +244,7 @@ class PayForPosTest extends TestCase
 
         $this->httpClientMock->expects(self::once())
             ->method('request')
-            ->with($txType, $paymentModel, $requestData, $order)
+            ->with(PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, $paymentModel, $requestData, $order)
             ->willReturn('');
 
         $this->expectException(RuntimeException::class);

@@ -283,6 +283,16 @@ class PayForPosTest extends TestCase
     {
         $order = $this->createPaymentOrder($paymentModel);
 
+        $eventIsThrown = false;
+        $this->eventDispatcher->addListener(
+            RequestDataPreparedEvent::class,
+            function (RequestDataPreparedEvent $requestDataPreparedEvent) use (&$eventIsThrown): void {
+                $eventIsThrown = true;
+                $this->assertSame(PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, $requestDataPreparedEvent->getTxType());
+                $this->assertCount(18, $requestDataPreparedEvent->getRequestData());
+            }
+        );
+
         $formData = $this->pos->get3DFormData(
             $order,
             $paymentModel,
@@ -294,6 +304,7 @@ class PayForPosTest extends TestCase
 
         $this->assertIsString($formData);
         $this->assertNotEmpty($formData);
+        $this->assertTrue($eventIsThrown);
     }
 
     #[Depends('testNonSecurePostPaymentSuccess')]

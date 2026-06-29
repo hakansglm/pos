@@ -232,7 +232,8 @@ class ParamPos extends AbstractGateway
      */
     private function registerPayment(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard): array
     {
-        $requestData = $this->requestDataMapper->create3DFormInitializeRequestData(
+        $requestTxType = PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD;
+        $requestData   = $this->requestDataMapper->create3DFormInitializeRequestData(
             $this->account,
             $order,
             $paymentModel,
@@ -243,7 +244,7 @@ class ParamPos extends AbstractGateway
         $event = new RequestDataPreparedEvent(
             $requestData,
             $this->account->getBankName(),
-            $txType,
+            $requestTxType,
             static::class,
             $order,
             $paymentModel
@@ -262,10 +263,10 @@ class ParamPos extends AbstractGateway
 
         /** @var array<string, mixed> $result */
         $result = $this->clientStrategy->getClient(
-            $txType,
+            $requestTxType,
             $paymentModel,
         )->request(
-            $txType,
+            $requestTxType,
             $paymentModel,
             $requestData,
             $order
