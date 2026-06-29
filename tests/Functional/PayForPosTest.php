@@ -16,10 +16,12 @@ use Mews\Pos\Factory\PosFactory;
 use Mews\Pos\Gateway\PayForPos;
 use Mews\Pos\PosInterface;
 use Monolog\Test\TestCase;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\Attributes\TestWith;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
+#[CoversNothing]
 class PayForPosTest extends TestCase
 {
     use PaymentTestTrait;

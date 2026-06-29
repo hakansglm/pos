@@ -14,9 +14,10 @@ use Mews\Pos\Factory\PosFactory;
 use Mews\Pos\Gateway\ParamPos;
 use Mews\Pos\PosInterface;
 use Monolog\Test\TestCase;
-use PHPUnit\Framework\Attributes\Depends;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
+#[CoversNothing]
 class Param3dHostPosTest extends TestCase
 {
     use PaymentTestTrait;

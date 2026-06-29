@@ -15,9 +15,11 @@ use Mews\Pos\Factory\PosFactory;
 use Mews\Pos\Gateway\GarantiPos;
 use Mews\Pos\PosInterface;
 use Monolog\Test\TestCase;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Depends;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
+#[CoversNothing]
 class GarantiPosTest extends TestCase
 {
     use PaymentTestTrait;

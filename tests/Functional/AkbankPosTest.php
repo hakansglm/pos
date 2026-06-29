@@ -14,9 +14,11 @@ use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Factory\PosFactory;
 use Mews\Pos\PosInterface;
 use Monolog\Test\TestCase;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Depends;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
+#[CoversNothing]
 class AkbankPosTest extends TestCase
 {
     use PaymentTestTrait;
