@@ -105,7 +105,7 @@ class PosNetPos extends AbstractGateway
             $order
         );
 
-        if (!$this->is3DAuthSuccess($userVerifyResponse)) {
+        if (!$this->is3dAuthSuccess($userVerifyResponse)) {
             $this->response = $this->responseDataMapper->map3DPaymentData($userVerifyResponse, null, $txType, $order);
             $this->logger->debug('finished 3D payment', ['mapped_response' => $this->response]);
 

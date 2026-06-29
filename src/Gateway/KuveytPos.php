@@ -145,7 +145,7 @@ class KuveytPos extends AbstractGateway
         $gatewayResponse = \urldecode($gatewayResponse);
         $gatewayResponse = (new XmlDecoder())->decode($gatewayResponse);
 
-        if (!$this->is3DAuthSuccess($gatewayResponse)) {
+        if (!$this->is3dAuthSuccess($gatewayResponse)) {
             $this->response = $this->responseDataMapper->map3DPaymentData($gatewayResponse, null, $txType, $order);
 
             return $this->response;

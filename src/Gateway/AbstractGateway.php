@@ -632,7 +632,7 @@ abstract class AbstractGateway implements PosInterface
      *
      * @return bool
      */
-    protected function is3DAuthSuccess(array $responseData): bool
+    protected function is3dAuthSuccess(array $responseData): bool
     {
         $mdStatus = $this->responseDataMapper->extractMdStatus($responseData);
 
@@ -710,7 +710,7 @@ abstract class AbstractGateway implements PosInterface
     /**
      * @return array<int, PosInterface::TX_TYPE_*>
      */
-    private function getSupport3DTxTypes(): array
+    private function getSupported3DTxTypes(): array
     {
         $threeDSupportedTxTypes = [];
         $txTypes                = [
@@ -735,7 +735,7 @@ abstract class AbstractGateway implements PosInterface
      */
     private function getSupported3DPaymentModelsForPaymentTransaction(string $txType, ?bool $withCard = null): array
     {
-        $supported3DPaymentTxs = $this->getSupport3DTxTypes();
+        $supported3DPaymentTxs = $this->getSupported3DTxTypes();
         if (!\in_array($txType, $supported3DPaymentTxs, true)) {
             throw new \LogicException(\sprintf(
                 'Hatalı işlem tipi! Desteklenen işlem tipleri: [%s].',

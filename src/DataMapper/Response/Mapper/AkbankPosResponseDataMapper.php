@@ -543,7 +543,7 @@ class AkbankPosResponseDataMapper extends AbstractResponseDataMapper
     private function map3DResponseData(array $raw3DAuthResponseData, string $paymentModel): array
     {
         $procReturnCode        = $this->getProcReturnCode($raw3DAuthResponseData);
-        $is3DAuthSuccess       = $this->is3dAuthSuccess($procReturnCode);
+        $is3dAuthSuccess       = $this->is3dAuthSuccess($procReturnCode);
 
         $threeDResponse = [
             'proc_return_code'     => $procReturnCode,
@@ -553,10 +553,10 @@ class AkbankPosResponseDataMapper extends AbstractResponseDataMapper
             'order_id'             => $raw3DAuthResponseData['orderId'],
             'masked_number'        => null,
             'eci'                  => null,
-            'md_error_message'     => $is3DAuthSuccess ? null : $raw3DAuthResponseData['responseMessage'],
+            'md_error_message'     => $is3dAuthSuccess ? null : $raw3DAuthResponseData['responseMessage'],
         ];
 
-        if ($is3DAuthSuccess && PosInterface::MODEL_3D_SECURE === $paymentModel) {
+        if ($is3dAuthSuccess && PosInterface::MODEL_3D_SECURE === $paymentModel) {
             $threeDResponse['eci'] = $raw3DAuthResponseData['secureEcomInd'];
         }
 

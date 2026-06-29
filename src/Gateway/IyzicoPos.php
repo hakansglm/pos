@@ -134,7 +134,7 @@ class IyzicoPos extends AbstractGateway
     {
         $paymentModel = PosInterface::MODEL_3D_SECURE;
 
-        if (!$this->is3DAuthSuccess($gatewayResponseData)) {
+        if (!$this->is3dAuthSuccess($gatewayResponseData)) {
             $this->response = $this->responseDataMapper->map3DPaymentData(
                 $gatewayResponseData,
                 null,

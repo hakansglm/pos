@@ -83,7 +83,7 @@ class ParamPos extends AbstractGateway
         }
 
 
-        if (!$this->is3DAuthSuccess($gatewayResponseData)) {
+        if (!$this->is3dAuthSuccess($gatewayResponseData)) {
             $this->response = $this->responseDataMapper->map3DPaymentData(
                 $gatewayResponseData,
                 null,

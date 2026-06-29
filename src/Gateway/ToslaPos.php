@@ -98,7 +98,7 @@ class ToslaPos extends AbstractGateway
     public function make3DPayPayment(array $gatewayResponseData, array $order, string $txType): array
     {
         if (
-            $this->is3DAuthSuccess($gatewayResponseData)
+            $this->is3dAuthSuccess($gatewayResponseData)
             && !$this->is3DHashCheckDisabled()
             && !$this->crypt->check3DHash($this->account, $gatewayResponseData)
         ) {
@@ -118,7 +118,7 @@ class ToslaPos extends AbstractGateway
     public function make3DHostPayment(array $gatewayResponseData, array $order, string $txType): array
     {
         if (
-            $this->is3DAuthSuccess($gatewayResponseData)
+            $this->is3dAuthSuccess($gatewayResponseData)
             && !$this->is3DHashCheckDisabled()
             && !$this->crypt->check3DHash($this->account, $gatewayResponseData)
         ) {

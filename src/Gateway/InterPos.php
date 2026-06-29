@@ -77,7 +77,7 @@ class InterPos extends AbstractGateway
         /** @var array{"3DStatus": string, MD: string, PayerTxnId: string, Eci: string, PayerAuthenticationCode: string} $gatewayResponse */
         $gatewayResponse = $gatewayResponseData;
 
-        if (!$this->is3DAuthSuccess($gatewayResponse)) {
+        if (!$this->is3dAuthSuccess($gatewayResponse)) {
             $this->response = $this->responseDataMapper->map3DPaymentData($gatewayResponse, null, $txType, $order);
 
             return $this->response;
