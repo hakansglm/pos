@@ -6,6 +6,8 @@
 
 namespace Mews\Pos\Tests\Unit\Gateway;
 
+use DateTimeImmutable;
+use DateTimeZone;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 use LogicException;
@@ -686,7 +688,7 @@ class ToslaPosTest extends TestCase
                 'installment' => 0,
                 'currency'    => 'TRY',
                 'success_url' => 'https://domain.com/success',
-                'time_span'   => new \DateTimeImmutable('2023-12-09 21:47:08.000000', new \DateTimeZone('UTC')),
+                'time_span'   => new DateTimeImmutable('2023-12-09 21:47:08.000000', new DateTimeZone('UTC')),
             ],
             'paymentModel'        => PosInterface::MODEL_3D_PAY,
             'txType'              => PosInterface::TX_TYPE_PAY_AUTH,
@@ -724,7 +726,7 @@ class ToslaPosTest extends TestCase
                 'installment' => 0,
                 'currency'    => 'TRY',
                 'success_url' => 'https://domain.com/success',
-                'time_span'   => new \DateTimeImmutable('2023-12-09 21:47:08.000000', new \DateTimeZone('UTC')),
+                'time_span'   => new DateTimeImmutable('2023-12-09 21:47:08.000000', new DateTimeZone('UTC')),
             ],
             'paymentModel'        => PosInterface::MODEL_3D_HOST,
             'txType'              => PosInterface::TX_TYPE_PAY_AUTH,

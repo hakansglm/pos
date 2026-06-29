@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Model\Account;
 
+use AssertionError;
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -37,7 +38,7 @@ class AbstractPosAccountTest extends TestCase
     {
         $account = new class ('bank', 'mid', 'user', 'pass') extends AbstractPosAccount {};
 
-        $this->expectException(\AssertionError::class);
+        $this->expectException(AssertionError::class);
         $account->getSecretKey();
     }
 
@@ -45,7 +46,7 @@ class AbstractPosAccountTest extends TestCase
     {
         $account = new class ('bank', 'mid', 'user', 'pass') extends AbstractPosAccount {};
 
-        $this->expectException(\AssertionError::class);
+        $this->expectException(AssertionError::class);
         $account->getTerminalId();
     }
 }
