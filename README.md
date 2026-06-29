@@ -91,7 +91,6 @@ sistemlerinin kullanılabilmesidir.
 - ext-libxml
 - ext-zlib
 - ext-SimpleXML
-- ext-soap (sadece KuveytPos için)
 - [PSR-18](https://packagist.org/providers/psr/http-client-implementation): HTTP
   Client
 - [PSR-14](https://packagist.org/providers/psr/event-dispatcher-implementation):
