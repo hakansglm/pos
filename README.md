@@ -34,11 +34,13 @@ sistemlerinin kullanılabilmesidir.
 
 - [Özellikler](#özellikler)
 - [Changelog](./docs/CHANGELOG.md)
+- [v1'den v2'ye Geçiş Kılavuzu](./docs/UPGRADE-v2.md)
 - [Minimum Gereksinimler](#minimum-gereksinimler)
 - [Kurulum](#kurulum)
 - [Farklı Banka Sanal Poslarını Eklemek](#farklı-banka-sanal-poslarını-eklemek)
 - [Örnek Kodlar](#örnek-kodlar)
     - [3DSecure, 3DPay ve 3DHost Ödeme Örneği](./docs/THREED-PAYMENT-EXAMPLE.md)
+    - [PayTR 3DPay ve 3DHost Ödeme Örneği](./docs/THREED-PAYMENT-PAYTR_EXAMPLE.md)
     - [3DSecure, 3DPay ve 3DHost Modal Box ile Ödeme Örneği](./docs/THREED-SECURE-AND-PAY-PAYMENT-IN-MODALBOX-EXAMPLE.md)
     - [QR Code ile Ödeme Örneği](./docs/QR-CODE-PAYMENT-EXAMPLE.md)
     - [Non Secure Ödeme Örneği](./docs/NON-SECURE-PAYMENT-EXAMPLE.md)
