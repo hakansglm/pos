@@ -59,7 +59,9 @@ abstract class AbstractPosAccount
      */
     public function getSecretKey(): string
     {
-        \assert($this->secretKey !== null);
+        if (null === $this->secretKey) {
+            throw new \LogicException(\sprintf('%s::$secretKey is not set.', static::class));
+        }
 
         return $this->secretKey;
     }
@@ -85,7 +87,9 @@ abstract class AbstractPosAccount
      */
     public function getTerminalId(): string
     {
-        \assert($this->terminalId !== null);
+        if (null === $this->terminalId) {
+            throw new \LogicException(\sprintf('%s::$terminalId is not set.', static::class));
+        }
 
         return $this->terminalId;
     }
