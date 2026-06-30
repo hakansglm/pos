@@ -123,17 +123,6 @@ class ToslaPosTest extends TestCase
         );
     }
 
-    public function testGet3DHostGatewayURL(): void
-    {
-        $sessionId = 'A2A6E942BD2AE4A68BC42FE99D1BC917D67AFF54AB2BA44EBA675843744187708';
-        $actual    = $this->pos->get3DGatewayURL(PosInterface::MODEL_3D_HOST, $sessionId);
-
-        $this->assertSame(
-            $this->config['gateway_endpoints']['gateway_3d_host'].'/'.$sessionId,
-            $actual
-        );
-    }
-
     #[DataProvider('make3DPayPaymentDataProvider')]
     public function testMake3DPayPayment(
         array  $order,
@@ -755,7 +744,7 @@ class ToslaPosTest extends TestCase
                     'Cvv'             => '123',
                 ],
             ],
-            'gateway_url'         => 'https://ent.akodepos.com/api/Payment/threeDSecure/PA49E341381C94587AB4CB196DAC10DC02E509578520E4471A3EEE2BB4830AE4F',
+            'gateway_url'         => 'https://ent.akodepos.com/api/Payment/threeDSecure',
         ];
     }
 

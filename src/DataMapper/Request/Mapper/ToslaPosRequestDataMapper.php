@@ -221,7 +221,7 @@ class ToslaPosRequestDataMapper extends AbstractRequestDataMapper
     ): array {
         if (PosInterface::MODEL_3D_HOST === $paymentModel) {
             return [
-                'gateway' => $gatewayURL,
+                'gateway' => $gatewayURL.'/'.$order['ThreeDSessionId'],
                 'method'  => 'GET',
                 'inputs'  => [],
             ];
