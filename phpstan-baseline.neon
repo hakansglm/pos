@@ -25,6 +25,18 @@ parameters:
 			path: src/DataMapper/Request/Mapper/PayForPosRequestDataMapper.php
 
 		-
+			message: '#^Offset ''3d''\|''3d_host''\|''3d_pay''\|''3d_pay_hosting''\|''regular''\|null might not exist on array\<''3d''\|''3d_host''\|''3d_pay''\|''3d_pay_hosting''\|''regular'', string\>\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: src/DataMapper/Request/ValueMapper/AbstractRequestValueMapper.php
+
+		-
+			message: '#^Possibly invalid array key type string\|null\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 1
+			path: src/DataMapper/Request/ValueMapper/AbstractRequestValueMapper.php
+
+		-
 			message: '#^Strict comparison using \=\=\= between ''3d_host'' and ''3d_host'' will always evaluate to true\.$#'
 			identifier: identical.alwaysTrue
 			count: 1
