@@ -104,6 +104,13 @@ class IyzicoPosQueryApiHttpClientTest extends TestCase
         $this->client->getApiURL();
     }
 
+    public function testGetApiUrlWithUnsupportedTxTypeThrows(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unsupported transaction type: pay');
+        $this->client->getApiURL(PosInterface::TX_TYPE_PAY_AUTH);
+    }
+
     public function testRequestSendsGetWithQueryParams(): void
     {
         $txType       = PosInterface::TX_TYPE_HISTORY;

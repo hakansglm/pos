@@ -108,6 +108,17 @@ class PosNetV1PosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
+    public function testMapPaymentResponseWithEmptyData(): void
+    {
+        $order    = ['id' => 'order-1', 'currency' => PosInterface::CURRENCY_TRY, 'amount' => 1.01];
+        $txType   = PosInterface::TX_TYPE_PAY_AUTH;
+        $actual   = $this->responseDataMapper->mapPaymentResponse([], $txType, $order);
+
+        $this->assertSame('declined', $actual['status']);
+        $this->assertNull($actual['order_id']);
+        $this->assertNull($actual['proc_return_code']);
+    }
+
     #[DataProvider('threeDPaymentDataProvider')]
     public function testMap3DPaymentData(array $order, string $txType, array $threeDResponseData, array $paymentResponse, array $expectedData): void
     {
@@ -675,6 +686,56 @@ class PosNetV1PosResponseDataMapperTest extends TestCase
                 'installment_count'    => null,
             ],
         ];
+
+        yield 'half_3d_secure' => [
+            'order'              => [
+                'id' => '80603153823',
+            ],
+            'txType'             => PosInterface::TX_TYPE_PAY_AUTH,
+            'threeDResponseData' => [
+                'CCPrefix'            => '540061',
+                'TranType'            => 'Sale',
+                'Amount'              => '175',
+                'OrderId'             => 'ALA_0000080603153823',
+                'MerchantId'          => '6700950031',
+                'CAVV'                => null,
+                'CAVVAlgorithm'       => null,
+                'ECI'                 => '02',
+                'MD'                  => '0161010028947569644',
+                'MdErrorMessage'      => null,
+                'MdStatus'            => '2',
+                'SecureTransactionId' => '1010028947569644',
+                'Mac'                 => 'r21kMm4nMqvJakjq47Jl+3fk2xrFPrDoTJFQGxkgkfk=',
+                'MacParams'           => 'ECI:CAVV:MdStatus:MdErrorMessage:MD:SecureTransactionId',
+                'CurrencyCode'        => '949',
+                'InstalmentCode'      => '0',
+                'VtfCode'             => '',
+                'PointAmount'         => '',
+            ],
+            'paymentData'        => [],
+            'expectedData'       => [
+                'transaction_id'       => null,
+                'transaction_type'     => 'pay',
+                'transaction_time'     => null,
+                'transaction_security' => 'Half 3D Secure',
+                'masked_number'        => '540061',
+                'md_status'            => '2',
+                'md_error_message'     => null,
+                'amount'               => 1.75,
+                'auth_code'            => null,
+                'ref_ret_num'          => null,
+                'batch_num'            => null,
+                'error_code'           => null,
+                'error_message'        => null,
+                'order_id'             => '80603153823',
+                'remote_order_id'      => 'ALA_0000080603153823',
+                'proc_return_code'     => null,
+                'status'               => 'declined',
+                'currency'             => 'TRY',
+                'payment_model'        => '3d',
+                'installment_count'    => null,
+            ],
+        ];
     }
 
 
@@ -737,6 +798,97 @@ class PosNetV1PosResponseDataMapperTest extends TestCase
                 'installment_count' => null,
             ],
         ];
+        yield 'success_no_completed_tx' => [
+            'response' => [
+                'ServiceResponseData' => [
+                    'ResponseCode'        => '0000',
+                    'ResponseDescription' => 'Başarılı',
+                ],
+                'TransactionData'     => [
+                    [
+                        'Amount'            => '1,75',
+                        'AuthCode'          => '',
+                        'CardNo'            => '540061******4581',
+                        'CurrencyCode'      => 'TL',
+                        'HostLogKey'        => '',
+                        'OrderId'           => 'ALB_TST_19091900_test1',
+                        'TransactionDate'   => '2019-11-0813:58:37.909',
+                        'TransactionStatus' => '0',
+                        'TransactionType'   => 'Sale',
+                    ],
+                ],
+            ],
+            'expected' => [
+                'auth_code'         => null,
+                'transaction_id'    => null,
+                'ref_ret_num'       => null,
+                'proc_return_code'  => '0000',
+                'status'            => 'approved',
+                'error_code'        => null,
+                'error_message'     => null,
+                'transaction_time'  => null,
+                'capture_time'      => null,
+                'capture'           => null,
+                'capture_amount'    => null,
+                'currency'          => null,
+                'first_amount'      => null,
+                'masked_number'     => null,
+                'order_id'          => null,
+                'order_status'      => null,
+                'transaction_type'  => null,
+                'cancel_time'       => null,
+                'refund_amount'     => null,
+                'refund_time'       => null,
+                'installment_count' => null,
+            ],
+        ];
+
+        $txTime = new DateTimeImmutable('2019-11-0813:58:37.909');
+        yield 'success_cancel' => [
+            'response' => [
+                'ServiceResponseData' => [
+                    'ResponseCode'        => '0000',
+                    'ResponseDescription' => 'Başarılı',
+                ],
+                'TransactionData'     => [
+                    [
+                        'Amount'            => '1,75',
+                        'AuthCode'          => '628698',
+                        'CardNo'            => '540061******4581',
+                        'CurrencyCode'      => 'TL',
+                        'HostLogKey'        => '022562869890000191',
+                        'OrderId'           => 'ALB_TST_19091900_20a1234',
+                        'TransactionDate'   => '2019-11-0813:58:37.909',
+                        'TransactionStatus' => '1',
+                        'TransactionType'   => 'Cancel',
+                    ],
+                ],
+            ],
+            'expected' => [
+                'order_id'          => 'ALB_TST_19091900_20a1234',
+                'auth_code'         => null,
+                'transaction_id'    => null,
+                'ref_ret_num'       => null,
+                'proc_return_code'  => '0000',
+                'status'            => 'approved',
+                'order_status'      => 'CANCELED',
+                'error_code'        => null,
+                'error_message'     => null,
+                'transaction_time'  => $txTime,
+                'capture_time'      => null,
+                'capture'           => null,
+                'capture_amount'    => null,
+                'transaction_type'  => 'cancel',
+                'currency'          => 'TRY',
+                'first_amount'      => 1.75,
+                'masked_number'     => '540061******4581',
+                'cancel_time'       => $txTime,
+                'refund_amount'     => null,
+                'refund_time'       => null,
+                'installment_count' => null,
+            ],
+        ];
+
         yield 'fail1' => [
             'response' => [
                 'ServiceResponseData' => [

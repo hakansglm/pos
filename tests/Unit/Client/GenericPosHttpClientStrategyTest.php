@@ -15,6 +15,17 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(GenericPosHttpClientStrategy::class)]
 class GenericPosHttpClientStrategyTest extends TestCase
 {
+    public function testGetAllClients(): void
+    {
+        $client1 = $this->createMock(HttpClientInterface::class);
+        $client2 = $this->createMock(HttpClientInterface::class);
+
+        $clients   = ['payment_api' => $client1, 'query_api' => $client2];
+        $strategy  = new GenericPosHttpClientStrategy($clients);
+
+        $this->assertSame($clients, $strategy->getAllClients());
+    }
+
     public function testGetClientSuccess(): void
     {
         $client1 = $this->createMock(HttpClientInterface::class);

@@ -9,6 +9,7 @@ namespace Mews\Pos\Tests\Unit\Gateway;
 use PHPUnit\Framework\Attributes\DataProvider;
 use LogicException;
 use Exception;
+use RuntimeException;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\HttpClientStrategyInterface;
 use Mews\Pos\Crypt\CryptInterface;
@@ -191,6 +192,34 @@ class PosNetPosTest extends TestCase
         $result = $this->pos->get3DFormData($order, PosInterface::MODEL_3D_SECURE, $txType, $this->card);
 
         $this->assertSame($formData, $result);
+    }
+
+    public function testGet3DFormDataMissingOosRequestDataResponse(): void
+    {
+        $txType      = PosInterface::TX_TYPE_PAY_AUTH;
+        $requestData = ['request-data'];
+        $order       = $this->order;
+
+        $this->requestMapperMock->expects(self::once())
+            ->method('create3DFormInitializeRequestData')
+            ->with($this->pos->getAccount(), $order, PosInterface::MODEL_3D_SECURE, $txType, $this->card)
+            ->willReturn($requestData);
+
+        $this->configureClientResponse(
+            $txType,
+            $requestData,
+            ['approved' => '1', 'respCode' => '', 'respText' => ''],
+            $order,
+            PosInterface::MODEL_3D_SECURE,
+        );
+
+        $this->requestMapperMock->expects(self::never())
+            ->method('create3DFormData');
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Beklenmeyen yanıt: oosRequestDataResponse eksik.');
+
+        $this->pos->get3DFormData($order, PosInterface::MODEL_3D_SECURE, $txType, $this->card);
     }
 
 
@@ -801,6 +830,26 @@ class PosNetPosTest extends TestCase
         );
 
         $this->pos->customQuery($requestData, $apiUrl);
+    }
+
+    public function testPaymentWithMissing3DGatewayResponseData(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('3D tür ödeme modelleri için bankadan 3D otorizasyon yanıt verileri gereklidir!');
+        $this->pos->payment(PosInterface::MODEL_3D_SECURE, [], PosInterface::TX_TYPE_PAY_AUTH, null, null);
+    }
+
+    public function testPaymentWithUnsupportedPaymentModel(): void
+    {
+        $this->expectException(UnsupportedPaymentModelException::class);
+        $this->pos->payment('unknown_model', [], PosInterface::TX_TYPE_PAY_AUTH, null, ['data']);
+    }
+
+    public function testMakeRegularPaymentWithInvalidTxType(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Invalid transaction type "cancel" provided');
+        $this->pos->makeRegularPayment([], $this->card, PosInterface::TX_TYPE_CANCEL);
     }
 
     public static function customQueryRequestDataProvider(): array

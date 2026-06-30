@@ -194,6 +194,24 @@ class Param3DHostPosRequestDataMapperTest extends TestCase
         );
     }
 
+    public function testCreate3DFormDataWithNullExtraDataThrows(): void
+    {
+        $this->crypt->expects(self::never())->method('create3DHash');
+        $this->crypt->expects(self::never())->method('generateRandomString');
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->requestDataMapper->create3DFormData(
+            $this->account,
+            [],
+            PosInterface::MODEL_3D_HOST,
+            PosInterface::TX_TYPE_PAY_AUTH,
+            'https://test-pos.param.com.tr/to.ws/Service_Odeme.asmx',
+            null,
+            null
+        );
+    }
+
     public function testCreateStatusRequestData(): void
     {
         $this->expectException(NotImplementedException::class);

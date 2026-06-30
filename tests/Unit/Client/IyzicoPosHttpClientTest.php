@@ -334,8 +334,10 @@ class IyzicoPosHttpClientTest extends TestCase
     public static function getApiUrlThrowsDataProvider(): array
     {
         return [
-            'missing_tx_type'                    => [null, null, null],
-            '3d_host_form_build_missing_order_tx' => [PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, PosInterface::MODEL_3D_HOST, null],
+            'missing_tx_type'                         => [null, null, null],
+            '3d_host_form_build_missing_order_tx'     => [PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, PosInterface::MODEL_3D_HOST, null],
+            '3d_host_form_build_unsupported_order_tx' => [PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, PosInterface::MODEL_3D_HOST, PosInterface::TX_TYPE_CANCEL],
+            'unsupported_tx_type'                     => [PosInterface::TX_TYPE_HISTORY, PosInterface::MODEL_NON_SECURE, null],
         ];
     }
 }

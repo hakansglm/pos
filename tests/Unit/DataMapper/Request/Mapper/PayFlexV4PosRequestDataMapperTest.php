@@ -120,6 +120,59 @@ class PayFlexV4PosRequestDataMapperTest extends TestCase
         );
     }
 
+    public function testCreate3DFormInitializeRequestDataWithSubMerchant(): void
+    {
+        $subMerchantAccount = AccountFactory::createPayFlexPosAccount(
+            'vakifbank',
+            '000000000111111',
+            '3XTgER89as',
+            'VP999999',
+            \Mews\Pos\Model\Account\PayFlexPosAccount::MERCHANT_TYPE_SUB_DEALER,
+            'SUB_MERCHANT_123'
+        );
+
+        $card = CreditCardFactory::create('5555444433332222', '2021', '12', '122', 'ahmet', CreditCardInterface::CARD_TYPE_VISA);
+
+        $this->crypt->expects(self::once())
+            ->method('generateRandomString')
+            ->willReturn('rand123');
+
+        $order = [
+            'amount'      => 100.00,
+            'installment' => 0,
+            'currency'    => PosInterface::CURRENCY_TRY,
+            'success_url' => 'https://domain.com/success',
+            'fail_url'    => 'https://domain.com/fail_url',
+            'ip'          => '127.0.0.1',
+        ];
+
+        $result = $this->requestDataMapper->create3DFormInitializeRequestData(
+            $subMerchantAccount,
+            $order,
+            PosInterface::MODEL_3D_SECURE,
+            PosInterface::TX_TYPE_PAY_AUTH,
+            $card
+        );
+
+        $this->assertArrayHasKey('SubMerchantId', $result);
+        $this->assertSame('SUB_MERCHANT_123', $result['SubMerchantId']);
+    }
+
+    public function testCreate3DFormDataWithNullExtraDataThrows(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->requestDataMapper->create3DFormData(
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        );
+    }
+
     #[DataProvider('createNonSecurePaymentRequestDataDataProvider')]
     public function testCreateNonSecurePaymentRequestData(array $order, CreditCardInterface $creditCard, string $txType, array $expected): void
     {

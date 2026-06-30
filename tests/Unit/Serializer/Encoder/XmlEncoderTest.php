@@ -16,6 +16,22 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder as SymfonyXmlEncoder;
 #[CoversClass(XmlEncoder::class)]
 class XmlEncoderTest extends TestCase
 {
+    public function testConstruct(): void
+    {
+        $encoder = new XmlEncoder('root', 'UTF-8');
+        $result  = $encoder->encode(['key' => 'val']);
+        $this->assertSame(EncodedData::FORMAT_XML, $result->getFormat());
+        $this->assertStringContainsString('<root>', $result->getData());
+    }
+
+    public function testConstructWithOptions(): void
+    {
+        $encoder = new XmlEncoder('root', 'UTF-8', [SymfonyXmlEncoder::ENCODER_IGNORED_NODE_TYPES => [\XML_PI_NODE]]);
+        $result  = $encoder->encode(['k' => 'v']);
+        $this->assertSame(EncodedData::FORMAT_XML, $result->getFormat());
+        $this->assertStringNotContainsString('<?xml', $result->getData());
+    }
+
     #[DataProvider('encodeDataProvider')]
     public function testEncode(XmlEncoder $encoder, array $data, string $expectedData): void
     {
