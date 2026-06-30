@@ -70,7 +70,12 @@ class PayFlexCPV4PosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function create3DFormInitializeRequestData(AbstractPosAccount $posAccount, array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): array
     {
-        $order = $this->preparePaymentOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = array_merge($order, [
+            'installment' => $order['installment'] ?? 0,
+            'currency'    => $order['currency'] ?? PosInterface::CURRENCY_TRY,
+            'amount'      => $order['amount'],
+        ]);
 
         $requestData = [
             'HostMerchantId'       => $posAccount->getMerchantId(),
@@ -216,18 +221,6 @@ class PayFlexCPV4PosRequestDataMapper extends AbstractRequestDataMapper
                 'Ptkn' => $extraData['PaymentToken'],
             ],
         ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function preparePaymentOrder(array $order): array
-    {
-        return array_merge($order, [
-            'installment' => $order['installment'] ?? 0,
-            'currency'    => $order['currency'] ?? PosInterface::CURRENCY_TRY,
-            'amount'      => $order['amount'],
-        ]);
     }
 
     /**

@@ -78,7 +78,7 @@ class ParamPosRequestDataMapper extends AbstractRequestDataMapper
             throw new \InvalidArgumentException('Bu işlem için kredi kartı bilgileri gereklidir.');
         }
 
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         $requestData = $this->getRequestAccountData($posAccount) + [
                 '@xmlns'             => 'https://turkpos.com.tr/',
@@ -119,7 +119,7 @@ class ParamPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createNonSecurePaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, CreditCardInterface $creditCard): array
     {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         $requestData = $this->getRequestAccountData($posAccount) + [
                 '@xmlns'             => 'https://turkpos.com.tr/',
@@ -162,7 +162,12 @@ class ParamPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createNonSecurePostAuthPaymentRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->preparePostPaymentOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = [
+            'id'       => $order['id'],
+            'amount'   => $order['amount'],
+            'currency' => $order['currency'] ?? PosInterface::CURRENCY_TRY,
+        ];
 
         $requestData = $this->getRequestAccountData($posAccount) + [
                 '@xmlns'     => 'https://turkpos.com.tr/',
@@ -181,8 +186,6 @@ class ParamPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createStatusRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->prepareStatusOrder($order);
-
         $requestData = $this->getRequestAccountData($posAccount) + [
                 '@xmlns'     => 'https://turkpos.com.tr/',
                 'Siparis_ID' => $order['id'],
@@ -198,7 +201,12 @@ class ParamPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createCancelRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->prepareCancelOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = \array_merge($order, [
+            'transaction_type' => $order['transaction_type'],
+            'id'               => $order['id'],
+            'amount'           => $order['amount'] ?? null,
+        ]);
 
         if (PosInterface::TX_TYPE_PAY_PRE_AUTH === $order['transaction_type']) {
             $requestData = $this->getRequestAccountData($posAccount) + [
@@ -226,7 +234,12 @@ class ParamPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createRefundRequestData(AbstractPosAccount $posAccount, array $order, string $refundTxType): array
     {
-        $order = $this->prepareRefundOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = [
+            'id'       => $order['id'],
+            'currency' => $order['currency'] ?? PosInterface::CURRENCY_TRY,
+            'amount'   => $order['amount'],
+        ];
 
         $requestData = $this->getRequestAccountData($posAccount) + [
                 '@xmlns'     => 'https://turkpos.com.tr/',
@@ -254,12 +267,10 @@ class ParamPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createHistoryRequestData(AbstractPosAccount $posAccount, array $data = []): array
     {
-        $order = $this->prepareHistoryOrder($data);
-
         $requestData = $this->getRequestAccountData($posAccount) + [
                 '@xmlns'    => 'https://turkpos.com.tr/',
-                'Tarih_Bas' => $this->valueFormatter->formatDateTime($order['start_date'], 'Tarih_Bas'),
-                'Tarih_Bit' => $this->valueFormatter->formatDateTime($order['end_date'], 'Tarih_Bit'),
+                'Tarih_Bas' => $this->valueFormatter->formatDateTime($data['start_date'], 'Tarih_Bas'),
+                'Tarih_Bit' => $this->valueFormatter->formatDateTime($data['end_date'], 'Tarih_Bit'),
             ];
 
         if (isset($data['order_status'])) {
@@ -351,51 +362,17 @@ class ParamPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @inheritDoc
+     * @param array<string, mixed> $order
+     *
+     * @return array<string, mixed>
      */
-    protected function preparePaymentOrder(array $order): array
+    private function applyPaymentDefaults(array $order): array
     {
         return \array_merge($order, [
             'installment' => $order['installment'] ?? 0,
             'currency'    => $order['currency'] ?? PosInterface::CURRENCY_TRY,
             'amount'      => $order['amount'],
             'ip'          => $order['ip'],
-        ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function preparePostPaymentOrder(array $order): array
-    {
-        return [
-            'id'       => $order['id'],
-            'amount'   => $order['amount'],
-            'currency' => $order['currency'] ?? PosInterface::CURRENCY_TRY,
-        ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareRefundOrder(array $order): array
-    {
-        return [
-            'id'       => $order['id'],
-            'currency' => $order['currency'] ?? PosInterface::CURRENCY_TRY,
-            'amount'   => $order['amount'],
-        ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareCancelOrder(array $order): array
-    {
-        return \array_merge($order, [
-            'transaction_type' => $order['transaction_type'],
-            'id'               => $order['id'],
-            'amount'           => $order['amount'] ?? null,
         ]);
     }
 

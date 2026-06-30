@@ -44,7 +44,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function create3DPaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, array $responseData): array
     {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         $result = $this->getRequestAccountData($posAccount) + [
                 'OkUrl'               => $order['success_url'],
@@ -84,7 +84,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function create3DFormInitializeRequestData(AbstractPosAccount $posAccount, array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): array
     {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         $requestData = $this->getRequestAccountData($posAccount) + [
                 'APIVersion'          => self::API_VERSION,
@@ -119,7 +119,12 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createNonSecurePostAuthPaymentRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->preparePostPaymentOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = \array_merge($order, [
+            'id'              => $order['id'],
+            'remote_order_id' => $order['remote_order_id'],
+            'ip'              => $order['ip'],
+        ]);
 
         $inputs = $this->getRequestAccountData($posAccount) + [
                 'HashPassword'      => $this->crypt->hashString($posAccount->getSecretKey()),
@@ -140,7 +145,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createNonSecurePaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, CreditCardInterface $creditCard): array
     {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         $inputs = $this->getRequestAccountData($posAccount) + [
                 'APIVersion'          => self::API_VERSION,
@@ -170,7 +175,10 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createStatusRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->prepareStatusOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = \array_merge($order, [
+            'id' => $order['id'],
+        ]);
 
         $result = $this->getRequestAccountData($posAccount) + [
                 'MerchantOrderId' => $order['id'],
@@ -188,7 +196,12 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createCancelRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->prepareCancelOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = \array_merge($order, [
+            'id'              => $order['id'],
+            'remote_order_id' => $order['remote_order_id'],
+            'amount'          => $order['amount'],
+        ]);
 
         $result = $this->getRequestAccountData($posAccount) + [
                 'HashPassword'    => $this->crypt->hashString($posAccount->getSecretKey()),
@@ -213,7 +226,12 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createRefundRequestData(AbstractPosAccount $posAccount, array $order, string $refundTxType): array
     {
-        $order = $this->prepareRefundOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = \array_merge($order, [
+            'id'              => $order['id'],
+            'remote_order_id' => $order['remote_order_id'],
+            'amount'          => $order['amount'],
+        ]);
 
         $result = $this->getRequestAccountData($posAccount) + [
                 'HashPassword'    => $this->crypt->hashString($posAccount->getSecretKey()),
@@ -264,7 +282,7 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
             Diğer modeller için banka API hazır HTML string döndürmektedir.');
         }
 
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         $inputs             = [
             'UserName'        => $posAccount->getUsername(),
@@ -292,7 +310,13 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createHistoryRequestData(AbstractPosAccount $posAccount, array $data = []): array
     {
-        $data = $this->prepareHistoryOrder($data);
+        /** @var array<string, mixed> $data */
+        $data = [
+            'start_date' => $data['start_date'],
+            'end_date'   => $data['end_date'],
+            'page'       => $data['page'] ?? 1,
+            'page_size'  => $data['page_size'] ?? 10,
+        ];
 
         $result = $this->getRequestAccountData($posAccount) + [
                 /**
@@ -320,7 +344,12 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createOrderHistoryRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->prepareOrderHistoryOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = [
+            'start_date' => $order['start_date'],
+            'end_date'   => $order['end_date'],
+            'auth_code'  => $order['auth_code'],
+        ];
 
         $result = $this->getRequestAccountData($posAccount) + [
                 'StartDate'   => $this->valueFormatter->formatDateTime($order['start_date'], 'StartDate'),
@@ -339,89 +368,16 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @inheritDoc
+     * @param array<string, mixed> $order
+     *
+     * @return array<string, mixed>
      */
-    protected function preparePaymentOrder(array $order): array
+    private function applyPaymentDefaults(array $order): array
     {
         return \array_merge($order, [
             'installment' => $order['installment'] ?? 0,
             'currency'    => $order['currency'] ?? PosInterface::CURRENCY_TRY,
         ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function preparePostPaymentOrder(array $order): array
-    {
-        return \array_merge($order, [
-            'id'              => $order['id'],
-            'remote_order_id' => $order['remote_order_id'],
-            'ip'              => $order['ip'],
-        ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareStatusOrder(array $order): array
-    {
-        return \array_merge($order, [
-            'id'         => $order['id'],
-        ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareCancelOrder(array $order): array
-    {
-        return \array_merge($order, [
-            'id'              => $order['id'],
-            'remote_order_id' => $order['remote_order_id'],
-            'amount'          => $order['amount'],
-        ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareRefundOrder(array $order): array
-    {
-        return \array_merge($order, [
-            'id'              => $order['id'],
-            'remote_order_id' => $order['remote_order_id'],
-            'amount'          => $order['amount'],
-        ]);
-    }
-
-    /**
-     * @return array{start_date: \DateTimeInterface, end_date: \DateTimeInterface, page: int, page_size: int}
-     *
-     * @inheritDoc
-     */
-    protected function prepareHistoryOrder(array $data): array
-    {
-        return [
-            'start_date' => $data['start_date'],
-            'end_date'   => $data['end_date'],
-            'page'       => $data['page'] ?? 1,
-            'page_size'  => $data['page_size'] ?? 10,
-        ];
-    }
-
-    /**
-     * @return array{start_date: \DateTimeInterface, end_date: \DateTimeInterface, auth_code: string}
-     *
-     * @inheritDoc
-     */
-    protected function prepareOrderHistoryOrder(array $order): array
-    {
-        return [
-            'start_date' => $order['start_date'],
-            'end_date'   => $order['end_date'],
-            'auth_code' => $order['auth_code'],
-        ];
     }
 
     /**

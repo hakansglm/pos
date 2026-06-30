@@ -47,7 +47,7 @@ class InterPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function create3DPaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, array $responseData): array
     {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         return $this->getRequestAccountData($posAccount) + [
                 'TxnType'                 => $this->valueMapper->mapTxType($txType),
@@ -70,7 +70,7 @@ class InterPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createNonSecurePaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, CreditCardInterface $creditCard): array
     {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         return $this->getRequestAccountData($posAccount) + [
                 'TxnType'          => $this->valueMapper->mapTxType($txType),
@@ -95,7 +95,12 @@ class InterPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createNonSecurePostAuthPaymentRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->preparePostPaymentOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = [
+            'id'       => $order['id'],
+            'amount'   => $order['amount'],
+            'currency' => $order['currency'] ?? PosInterface::CURRENCY_TRY,
+        ];
 
         return $this->getRequestAccountData($posAccount) + [
                 'TxnType'     => $this->valueMapper->mapTxType(PosInterface::TX_TYPE_PAY_POST_AUTH),
@@ -115,8 +120,6 @@ class InterPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createStatusRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->prepareStatusOrder($order);
-
         return $this->getRequestAccountData($posAccount) + [
                 'OrderId'    => null, //todo buraya hangi deger verilecek?
                 'orgOrderId' => (string) $order['id'],
@@ -133,8 +136,6 @@ class InterPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createCancelRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->prepareCancelOrder($order);
-
         return $this->getRequestAccountData($posAccount) + [
                 'OrderId'    => null, //todo buraya hangi deger verilecek?
                 'orgOrderId' => (string) $order['id'],
@@ -151,8 +152,7 @@ class InterPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createRefundRequestData(AbstractPosAccount $posAccount, array $order, string $refundTxType): array
     {
-        $order = $this->prepareRefundOrder($order);
-
+        /** @var array<string, mixed> $order */
         return $this->getRequestAccountData($posAccount) + [
                 'OrderId'     => null,
                 'orgOrderId'  => (string) $order['id'],
@@ -194,7 +194,8 @@ class InterPosRequestDataMapper extends AbstractRequestDataMapper
         ?CreditCardInterface $creditCard = null,
         ?array               $extraData = null
     ): array {
-        $order = $this->preparePaymentOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = $this->applyPaymentDefaults($order);
 
         $inputs = [
             'ShopCode'         => $posAccount->getMerchantId(),
@@ -245,26 +246,16 @@ class InterPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @inheritDoc
+     * @param array<string, mixed> $order
+     *
+     * @return array<string, mixed>
      */
-    protected function preparePaymentOrder(array $order): array
+    private function applyPaymentDefaults(array $order): array
     {
         return array_merge($order, [
             'installment' => $order['installment'] ?? 0,
             'currency'    => $order['currency'] ?? PosInterface::CURRENCY_TRY,
         ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function preparePostPaymentOrder(array $order): array
-    {
-        return [
-            'id'       => $order['id'],
-            'amount'   => $order['amount'],
-            'currency' => $order['currency'] ?? PosInterface::CURRENCY_TRY,
-        ];
     }
 
     /**

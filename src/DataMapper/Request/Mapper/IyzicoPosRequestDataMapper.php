@@ -70,7 +70,7 @@ class IyzicoPosRequestDataMapper extends AbstractRequestDataMapper
         string             $txType,
         array              $responseData
     ): array {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         return [
             'locale'         => $this->getLang($order),
@@ -102,6 +102,7 @@ class IyzicoPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createNonSecurePostAuthPaymentRequestData(AbstractPosAccount $posAccount, array $order): array
     {
+        /** @var array<string, mixed> $order */
         return [
             'locale'         => $this->getLang($order),
             'conversationId' => (string) $order['id'],
@@ -117,8 +118,6 @@ class IyzicoPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createStatusRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->prepareStatusOrder($order);
-
         $data = [
             'locale'                => $this->getLang($order),
         ];
@@ -140,6 +139,7 @@ class IyzicoPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createCancelRequestData(AbstractPosAccount $posAccount, array $order): array
     {
+        /** @var array<string, mixed> $order */
         return [
             'locale'         => $this->getLang($order),
             'conversationId' => (string) $order['id'],
@@ -153,8 +153,7 @@ class IyzicoPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createRefundRequestData(AbstractPosAccount $posAccount, array $order, string $refundTxType): array
     {
-        $order = $this->prepareRefundOrder($order);
-
+        /** @var array<string, mixed> $order */
         return [
             'locale'         => $this->getLang($order),
             'conversationId' => (string) $order['id'],
@@ -170,6 +169,7 @@ class IyzicoPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createOrderHistoryRequestData(AbstractPosAccount $posAccount, array $order): array
     {
+        /** @var array<string, mixed> $data */
         $data = [
             'locale'                => $this->getLang($order),
         ];
@@ -191,7 +191,9 @@ class IyzicoPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createHistoryRequestData(AbstractPosAccount $posAccount, array $data = []): array
     {
-        $order = $this->prepareHistoryOrder($data);
+        $order = array_merge($data, [
+            'page' => $data['page'] ?? 1,
+        ]);
 
         return [
             'locale'          => $this->getLang($order),
@@ -216,6 +218,7 @@ class IyzicoPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function create3DHostPaymentStatusRequestData(array $responseData, array $order): array
     {
+        /** @var array<string, mixed> $order */
         return [
             'locale'         => $this->getLang($order),
             'conversationId' => (string) $order['id'],
@@ -225,23 +228,15 @@ class IyzicoPosRequestDataMapper extends AbstractRequestDataMapper
 
 
     /**
-     * @inheritDoc
+     * @param array<string, mixed> $order
+     *
+     * @return array<string, mixed>
      */
-    protected function preparePaymentOrder(array $order): array
+    private function applyPaymentDefaults(array $order): array
     {
         return \array_merge($order, [
             'installment' => $order['installment'] ?? 1,
             'currency'    => $order['currency'] ?? PosInterface::CURRENCY_TRY,
-        ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareHistoryOrder(array $data): array
-    {
-        return array_merge($data, [
-            'page' => $data['page'] ?? 1,
         ]);
     }
 
@@ -261,7 +256,7 @@ class IyzicoPosRequestDataMapper extends AbstractRequestDataMapper
         string               $paymentModel,
         ?CreditCardInterface $creditCard
     ): array {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         $request = [
             'locale'          => $this->getLang($order),

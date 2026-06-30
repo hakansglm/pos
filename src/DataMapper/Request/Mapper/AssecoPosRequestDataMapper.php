@@ -35,7 +35,7 @@ class AssecoPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function create3DPaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, array $responseData): array
     {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         $requestData = $this->getRequestAccountData($posAccount) + [
                 'Type'                    => $this->valueMapper->mapTxType($txType),
@@ -65,7 +65,7 @@ class AssecoPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createNonSecurePaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, CreditCardInterface $creditCard): array
     {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         $requestData = $this->getRequestAccountData($posAccount) + [
                 'Type'      => $this->valueMapper->mapTxType($txType),
@@ -94,7 +94,12 @@ class AssecoPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createNonSecurePostAuthPaymentRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->preparePostPaymentOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = [
+            'id'              => $order['id'],
+            'amount'          => $order['amount'] ?? null,
+            'pre_auth_amount' => $order['pre_auth_amount'] ?? null,
+        ];
 
         $requestData = $this->getRequestAccountData($posAccount) + [
                 'Type'    => $this->valueMapper->mapTxType(PosInterface::TX_TYPE_PAY_POST_AUTH),
@@ -121,8 +126,6 @@ class AssecoPosRequestDataMapper extends AbstractRequestDataMapper
                 ],
             ];
 
-        $order = $this->prepareStatusOrder($order);
-
         if (isset($order['id'])) {
             $statusRequestData['OrderId'] = $order['id'];
         } elseif (isset($order['recurringId'])) {
@@ -137,8 +140,6 @@ class AssecoPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createCancelRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->prepareCancelOrder($order);
-
         $orderData = [];
         if (isset($order['recurringOrderInstallmentNumber'])) {
             // this method cancels only pending recurring orders, it will not cancel already fulfilled transactions
@@ -170,7 +171,12 @@ class AssecoPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createRefundRequestData(AbstractPosAccount $posAccount, array $order, string $refundTxType): array
     {
-        $order = $this->prepareRefundOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = [
+            'id'       => $order['id'],
+            'currency' => $order['currency'] ?? PosInterface::CURRENCY_TRY,
+            'amount'   => $order['amount'],
+        ];
 
         $requestData = [
             'OrderId'  => (string) $order['id'],
@@ -192,7 +198,9 @@ class AssecoPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createOrderHistoryRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->prepareOrderHistoryOrder($order);
+        $order = [
+            'id' => $order['id'],
+        ];
 
         $requestData = [
             'OrderId' => (string) $order['id'],
@@ -224,7 +232,7 @@ class AssecoPosRequestDataMapper extends AbstractRequestDataMapper
         ?CreditCardInterface $creditCard = null,
         ?array               $extraData = null
     ): array {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         $inputs = [
             'hashAlgorithm' => 'ver3',
@@ -277,49 +285,17 @@ class AssecoPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @inheritDoc
+     * @param array<string, mixed> $order
+     *
+     * @return array<string, mixed>
      */
-    protected function preparePaymentOrder(array $order): array
+    private function applyPaymentDefaults(array $order): array
     {
         return array_merge($order, [
             'installment' => $order['installment'] ?? 0,
             'currency'    => $order['currency'] ?? PosInterface::CURRENCY_TRY,
             'ip'          => $order['ip'],
         ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function preparePostPaymentOrder(array $order): array
-    {
-        return [
-            'id'              => $order['id'],
-            'amount'          => $order['amount'] ?? null,
-            'pre_auth_amount' => $order['pre_auth_amount'] ?? null,
-        ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareRefundOrder(array $order): array
-    {
-        return [
-            'id'       => $order['id'],
-            'currency' => $order['currency'] ?? PosInterface::CURRENCY_TRY,
-            'amount'   => $order['amount'],
-        ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareOrderHistoryOrder(array $order): array
-    {
-        return [
-            'id' => $order['id'],
-        ];
     }
 
     /**

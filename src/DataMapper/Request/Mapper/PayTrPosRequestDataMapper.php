@@ -34,7 +34,7 @@ class PayTrPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function create3DFormInitializeRequestData(AbstractPosAccount $posAccount, array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): array
     {
-        $order       = $this->preparePaymentOrder($order);
+        $order       = $this->applyPaymentDefaults($order);
         $installment = $this->valueFormatter->formatInstallment(max(0, (int) $order['installment']));
 
         $requestData = [
@@ -68,7 +68,7 @@ class PayTrPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createNonSecurePaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, CreditCardInterface $creditCard): array
     {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         $requestData                = $this->buildDirectPaymentData($posAccount, $order, PosInterface::MODEL_NON_SECURE, $creditCard);
         $requestData['paytr_token'] = $this->crypt->createHash($posAccount, $requestData);
@@ -97,8 +97,6 @@ class PayTrPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createStatusRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->prepareStatusOrder($order);
-
         $requestData = [
             'merchant_id'  => $posAccount->getMerchantId(),
             'merchant_oid' => (string) $order['id'],
@@ -122,7 +120,11 @@ class PayTrPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createRefundRequestData(AbstractPosAccount $posAccount, array $order, string $refundTxType): array
     {
-        $order = $this->prepareRefundOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = [
+            'id'     => $order['id'],
+            'amount' => $order['amount'],
+        ];
 
         $requestData = [
             'merchant_id'   => $posAccount->getMerchantId(),
@@ -150,8 +152,7 @@ class PayTrPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createHistoryRequestData(AbstractPosAccount $posAccount, array $data = []): array
     {
-        $data = $this->prepareHistoryOrder($data);
-
+        /** @var array<string, mixed> $data */
         $requestData = [
             'merchant_id' => $posAccount->getMerchantId(),
             'start_date'  => $this->valueFormatter->formatDateTime($data['start_date'], 'start_date'),
@@ -202,7 +203,7 @@ class PayTrPosRequestDataMapper extends AbstractRequestDataMapper
         }
 
         // MODEL_3D_PAY — build a full POST form with card data
-        $preparedOrder = $this->preparePaymentOrder($order);
+        $preparedOrder = $this->applyPaymentDefaults($order);
 
         $inputs                = $this->buildDirectPaymentData($posAccount, $preparedOrder, $paymentModel, $creditCard);
         $inputs['paytr_token'] = $this->crypt->create3DHash($posAccount, $inputs);
@@ -214,8 +215,12 @@ class PayTrPosRequestDataMapper extends AbstractRequestDataMapper
         ];
     }
 
-    /** @inheritDoc */
-    protected function preparePaymentOrder(array $order): array
+    /**
+     * @param array<string, mixed> $order
+     *
+     * @return array<string, mixed>
+     */
+    private function applyPaymentDefaults(array $order): array
     {
         return \array_merge($order, [
             'installment'     => $order['installment'] ?? 0,
@@ -226,15 +231,6 @@ class PayTrPosRequestDataMapper extends AbstractRequestDataMapper
             'billing_address' => $order['billing_address'] ?? [],
             'basket_items'    => $order['basket_items'] ?? [],
         ]);
-    }
-
-    /** @inheritDoc */
-    protected function prepareRefundOrder(array $order): array
-    {
-        return [
-            'id'     => $order['id'],
-            'amount' => $order['amount'],
-        ];
     }
 
     /**

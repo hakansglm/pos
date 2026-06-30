@@ -6,7 +6,6 @@
 
 namespace Mews\Pos\DataMapper\Request\Mapper;
 
-use DateTimeInterface;
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Account\AkbankPosAccount;
 use Mews\Pos\Model\Card\CreditCardInterface;
@@ -39,7 +38,7 @@ class AkbankPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function create3DPaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, array $responseData): array
     {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         return $this->getRequestAccountData($posAccount) + [
                 'version'           => self::API_VERSION,
@@ -74,7 +73,7 @@ class AkbankPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createNonSecurePaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, CreditCardInterface $creditCard): array
     {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         $requestData = $this->getRequestAccountData($posAccount) + [
                 'version'         => self::API_VERSION,
@@ -121,7 +120,14 @@ class AkbankPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createNonSecurePostAuthPaymentRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->preparePostPaymentOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = [
+            'id'               => $order['id'],
+            'amount'           => $order['amount'],
+            'currency'         => $order['currency'],
+            'ip'               => $order['ip'],
+            'transaction_time' => $this->createDateTime(),
+        ];
 
         return $this->getRequestAccountData($posAccount) + [
                 'version'         => self::API_VERSION,
@@ -158,7 +164,12 @@ class AkbankPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createCancelRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->prepareCancelOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = \array_merge($order, [
+            'id'               => $order['id'] ?? null,
+            'recurring_id'     => $order['recurring_id'] ?? null,
+            'transaction_time' => $this->createDateTime(),
+        ]);
 
         $requestData = $this->getRequestAccountData($posAccount) + [
                 'txnCode'         => $this->valueMapper->mapTxType(PosInterface::TX_TYPE_CANCEL),
@@ -209,7 +220,14 @@ class AkbankPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createRefundRequestData(AbstractPosAccount $posAccount, array $order, string $refundTxType): array
     {
-        $order = $this->prepareRefundOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = \array_merge($order, [
+            'id'               => $order['id'] ?? null,
+            'recurring_id'     => $order['recurring_id'] ?? null,
+            'currency'         => $order['currency'] ?? PosInterface::CURRENCY_TRY,
+            'amount'           => $order['amount'],
+            'transaction_time' => $this->createDateTime(),
+        ]);
 
         $requestData = $this->getRequestAccountData($posAccount) + [
                 'version'         => self::API_VERSION,
@@ -250,7 +268,11 @@ class AkbankPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createOrderHistoryRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->prepareOrderHistoryOrder($order);
+        $order = \array_merge($order, [
+            'id'               => $order['id'] ?? null,
+            'recurring_id'     => $order['recurring_id'] ?? null,
+            'transaction_time' => $this->createDateTime(),
+        ]);
 
         $result = $this->getRequestAccountData($posAccount) + [
                 'version'         => self::API_VERSION,
@@ -280,7 +302,14 @@ class AkbankPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createHistoryRequestData(AbstractPosAccount $posAccount, array $data = []): array
     {
-        $order = $this->prepareHistoryOrder($data);
+        if (isset($data['batch_num'])) {
+            $order = ['batch_num' => $data['batch_num']];
+        } else {
+            $order = [
+                'start_date' => $data['start_date'],
+                'end_date'   => $data['end_date'],
+            ];
+        }
 
         $requestData = $this->getRequestAccountData($posAccount) + [
                 'randomNumber' => $this->crypt->generateRandomString(),
@@ -315,7 +344,7 @@ class AkbankPosRequestDataMapper extends AbstractRequestDataMapper
         ?CreditCardInterface $creditCard = null,
         ?array               $extraData = null
     ): array {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         $inputs = [
             'paymentModel'    => $this->valueMapper->mapSecureType($paymentModel),
@@ -387,9 +416,11 @@ class AkbankPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @inheritDoc
+     * @param array<string, mixed> $order
+     *
+     * @return array<string, mixed>
      */
-    protected function preparePaymentOrder(array $order): array
+    private function applyPaymentDefaults(array $order): array
     {
         if (isset($order['recurring'])) {
             $order['installment'] = 0;
@@ -403,83 +434,6 @@ class AkbankPosRequestDataMapper extends AbstractRequestDataMapper
             'currency'         => $order['currency'] ?? PosInterface::CURRENCY_TRY,
             'transaction_time' => $this->createDateTime(),
         ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function preparePostPaymentOrder(array $order): array
-    {
-        return [
-            'id'               => $order['id'],
-            'amount'           => $order['amount'],
-            'currency'         => $order['currency'],
-            'ip'               => $order['ip'],
-            'transaction_time' => $this->createDateTime(),
-        ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareOrderHistoryOrder(array $order): array
-    {
-        return \array_merge($order, [
-            'id'               => $order['id'] ?? null,
-            'recurring_id'     => $order['recurring_id'] ?? null,
-            'transaction_time' => $this->createDateTime(),
-        ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareRefundOrder(array $order): array
-    {
-        return \array_merge($order, [
-            'id'               => $order['id'] ?? null,
-            'recurring_id'     => $order['recurring_id'] ?? null,
-            'currency'         => $order['currency'] ?? PosInterface::CURRENCY_TRY,
-            'amount'           => $order['amount'],
-            'transaction_time' => $this->createDateTime(),
-        ]);
-    }
-
-    /**
-     * prepares order for cancel request
-     *
-     * @param array<string, mixed> $order
-     *
-     * @return non-empty-array<string, mixed>
-     */
-    protected function prepareCancelOrder(array $order): array
-    {
-        return \array_merge($order, [
-            'id'               => $order['id'] ?? null,
-            'recurring_id'     => $order['recurring_id'] ?? null,
-            'transaction_time' => $this->createDateTime(),
-        ]);
-    }
-
-    /**
-     * prepares history request
-     *
-     * @param array<string, mixed> $data
-     *
-     * @return array{batch_num?: int, start_date?: DateTimeInterface, end_date?: DateTimeInterface}
-     */
-    protected function prepareHistoryOrder(array $data): array
-    {
-        if (isset($data['batch_num'])) {
-            return [
-                'batch_num' => $data['batch_num'],
-            ];
-        }
-
-        return [
-            'start_date' => $data['start_date'],
-            'end_date'   => $data['end_date'],
-        ];
     }
 
     /**

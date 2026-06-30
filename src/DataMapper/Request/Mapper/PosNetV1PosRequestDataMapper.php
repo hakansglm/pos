@@ -46,7 +46,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function create3DPaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, array $responseData): array
     {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         $requestData = [
             'ApiType'               => 'JSON',
@@ -89,7 +89,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createNonSecurePaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, CreditCardInterface $creditCard): array
     {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         $requestData = [
             'ApiType'                => 'JSON',
@@ -139,7 +139,14 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createNonSecurePostAuthPaymentRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->preparePostPaymentOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = [
+            'id'          => $order['id'],
+            'amount'      => $order['amount'],
+            'installment' => $order['installment'] ?? 0,
+            'currency'    => $order['currency'] ?? PosInterface::CURRENCY_TRY,
+            'ref_ret_num' => $order['ref_ret_num'],
+        ];
 
         $requestData = [
             'ApiType'                => 'JSON',
@@ -174,7 +181,11 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createStatusRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->prepareStatusOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = [
+            'id'            => $order['id'],
+            'payment_model' => $order['payment_model'] ?? PosInterface::MODEL_3D_SECURE,
+        ];
 
         $requestData = [
             'ApiType'                => 'JSON',
@@ -201,7 +212,13 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createCancelRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->prepareCancelOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = [
+            'id'               => $order['id'] ?? null,
+            'payment_model'    => $order['payment_model'] ?? PosInterface::MODEL_3D_SECURE,
+            'ref_ret_num'      => $order['ref_ret_num'] ?? null,
+            'transaction_type' => $order['transaction_type'] ?? PosInterface::TX_TYPE_PAY_AUTH,
+        ];
 
         $requestData = [
             'ApiType'                => 'JSON',
@@ -236,7 +253,15 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createRefundRequestData(AbstractPosAccount $posAccount, array $order, string $refundTxType): array
     {
-        $order = $this->prepareRefundOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = [
+            'id'               => $order['id'] ?? null,
+            'payment_model'    => $order['payment_model'] ?? PosInterface::MODEL_3D_SECURE,
+            'ref_ret_num'      => $order['ref_ret_num'] ?? null,
+            'transaction_type' => $order['transaction_type'] ?? PosInterface::TX_TYPE_PAY_AUTH,
+            'amount'           => $order['amount'],
+            'currency'         => $order['currency'] ?? PosInterface::CURRENCY_TRY,
+        ];
 
         $requestData = [
             'ApiType'                => 'JSON',
@@ -323,7 +348,7 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
         ?CreditCardInterface $creditCard = null,
         ?array               $extraData = null
     ): array {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         $inputs = [
             'MerchantNo'        => $posAccount->getMerchantId(),
@@ -385,9 +410,11 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @inheritDoc
+     * @param array<string, mixed> $order
+     *
+     * @return array<string, mixed>
      */
-    protected function preparePaymentOrder(array $order): array
+    private function applyPaymentDefaults(array $order): array
     {
         return array_merge($order, [
             'id'          => $order['id'],
@@ -395,60 +422,5 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
             'amount'      => $order['amount'],
             'currency'    => $order['currency'] ?? PosInterface::CURRENCY_TRY,
         ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function preparePostPaymentOrder(array $order): array
-    {
-        return [
-            'id'          => $order['id'],
-            'amount'      => $order['amount'],
-            'installment' => $order['installment'] ?? 0,
-            'currency'    => $order['currency'] ?? PosInterface::CURRENCY_TRY,
-            'ref_ret_num' => $order['ref_ret_num'],
-        ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareStatusOrder(array $order): array
-    {
-        return [
-            'id'            => $order['id'],
-            'payment_model' => $order['payment_model'] ?? PosInterface::MODEL_3D_SECURE,
-        ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareCancelOrder(array $order): array
-    {
-        return [
-            //id or ref_ret_num
-            'id'               => $order['id'] ?? null,
-            'payment_model'    => $order['payment_model'] ?? PosInterface::MODEL_3D_SECURE,
-            'ref_ret_num'      => $order['ref_ret_num'] ?? null,
-            'transaction_type' => $order['transaction_type'] ?? PosInterface::TX_TYPE_PAY_AUTH,
-        ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareRefundOrder(array $order): array
-    {
-        return [
-            //id or ref_ret_num
-            'id'               => $order['id'] ?? null,
-            'payment_model'    => $order['payment_model'] ?? PosInterface::MODEL_3D_SECURE,
-            'ref_ret_num'      => $order['ref_ret_num'] ?? null,
-            'transaction_type' => $order['transaction_type'] ?? PosInterface::TX_TYPE_PAY_AUTH,
-            'amount'           => $order['amount'],
-            'currency'         => $order['currency'] ?? PosInterface::CURRENCY_TRY,
-        ];
     }
 }

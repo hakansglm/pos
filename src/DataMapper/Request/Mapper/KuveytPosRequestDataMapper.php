@@ -46,7 +46,7 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function create3DPaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, array $responseData): array
     {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         $result = $this->getRequestAccountData($posAccount) + [
                 'APIVersion'                   => self::API_VERSION,
@@ -88,7 +88,7 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function create3DFormInitializeRequestData(AbstractPosAccount $posAccount, array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): array
     {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         if (!isset($order['payment_channel'])) {
             throw new \InvalidArgumentException('payment_channel is required in $order');
@@ -161,7 +161,7 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createNonSecurePaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, CreditCardInterface $creditCard): array
     {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         $requestData = $this->getRequestAccountData($posAccount) + [
                 'APIVersion'          => self::API_VERSION,
@@ -192,7 +192,13 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createStatusRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->prepareStatusOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = \array_merge($order, [
+            'id'         => $order['id'],
+            'currency'   => $order['currency'] ?? PosInterface::CURRENCY_TRY,
+            'start_date' => $order['start_date'] ?? date_create('-360 day'),
+            'end_date'   => $order['end_date'] ?? date_create(),
+        ]);
 
         $result = [
             'IsFromExternalNetwork' => true,
@@ -254,7 +260,16 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createCancelRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->prepareCancelOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = \array_merge($order, [
+            'id'              => $order['id'],
+            'remote_order_id' => $order['remote_order_id'],
+            'ref_ret_num'     => $order['ref_ret_num'],
+            'auth_code'       => $order['auth_code'],
+            'transaction_id'  => $order['transaction_id'],
+            'amount'          => $order['amount'],
+            'currency'        => $order['currency'] ?? PosInterface::CURRENCY_TRY,
+        ]);
 
         $result = [
             'IsFromExternalNetwork' => true,
@@ -305,7 +320,16 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createRefundRequestData(AbstractPosAccount $posAccount, array $order, string $refundTxType): array
     {
-        $order = $this->prepareRefundOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = \array_merge($order, [
+            'id'              => $order['id'],
+            'remote_order_id' => $order['remote_order_id'],
+            'ref_ret_num'     => $order['ref_ret_num'],
+            'auth_code'       => $order['auth_code'],
+            'transaction_id'  => $order['transaction_id'],
+            'amount'          => $order['amount'],
+            'currency'        => $order['currency'] ?? PosInterface::CURRENCY_TRY,
+        ]);
 
         $result = [
             'IsFromExternalNetwork' => true,
@@ -390,58 +414,15 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @inheritDoc
+     * @param array<string, mixed> $order
+     *
+     * @return array<string, mixed>
      */
-    protected function preparePaymentOrder(array $order): array
+    private function applyPaymentDefaults(array $order): array
     {
         return \array_merge($order, [
             'installment' => $order['installment'] ?? 0,
             'currency'    => $order['currency'] ?? PosInterface::CURRENCY_TRY,
-        ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareStatusOrder(array $order): array
-    {
-        return \array_merge($order, [
-            'id'         => $order['id'],
-            'currency'   => $order['currency'] ?? PosInterface::CURRENCY_TRY,
-            'start_date' => $order['start_date'] ?? date_create('-360 day'),
-            'end_date'   => $order['end_date'] ?? date_create(),
-        ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareCancelOrder(array $order): array
-    {
-        return \array_merge($order, [
-            'id'              => $order['id'],
-            'remote_order_id' => $order['remote_order_id'],
-            'ref_ret_num'     => $order['ref_ret_num'],
-            'auth_code'       => $order['auth_code'],
-            'transaction_id'  => $order['transaction_id'],
-            'amount'          => $order['amount'],
-            'currency'        => $order['currency'] ?? PosInterface::CURRENCY_TRY,
-        ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareRefundOrder(array $order): array
-    {
-        return \array_merge($order, [
-            'id'              => $order['id'],
-            'remote_order_id' => $order['remote_order_id'],
-            'ref_ret_num'     => $order['ref_ret_num'],
-            'auth_code'       => $order['auth_code'],
-            'transaction_id'  => $order['transaction_id'],
-            'amount'          => $order['amount'],
-            'currency'        => $order['currency'] ?? PosInterface::CURRENCY_TRY,
         ]);
     }
 

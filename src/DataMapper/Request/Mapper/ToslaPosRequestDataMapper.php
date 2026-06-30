@@ -36,7 +36,7 @@ class ToslaPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function create3DFormInitializeRequestData(AbstractPosAccount $posAccount, array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): array
     {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         $requestData = $this->getRequestAccountData($posAccount) + [
             'callbackUrl'      => (string) $order['success_url'],
@@ -66,7 +66,7 @@ class ToslaPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createNonSecurePaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, CreditCardInterface $creditCard): array
     {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         $requestData = $this->getRequestAccountData($posAccount) + [
             'orderId'          => (string) $order['id'],
@@ -91,7 +91,12 @@ class ToslaPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createNonSecurePostAuthPaymentRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->preparePostPaymentOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = [
+            'id'        => $order['id'],
+            'amount'    => $order['amount'],
+            'time_span' => $order['time_span'] ?? $this->newTimeSpan(),
+        ];
 
         $requestData = $this->getRequestAccountData($posAccount) + [
             'orderId'  => (string) $order['id'],
@@ -110,7 +115,11 @@ class ToslaPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createStatusRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->prepareStatusOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = \array_merge($order, [
+            'id'        => $order['id'],
+            'time_span' => $order['time_span'] ?? $this->newTimeSpan(),
+        ]);
 
         $requestData = $this->getRequestAccountData($posAccount) + [
             'orderId'  => (string) $order['id'],
@@ -128,7 +137,11 @@ class ToslaPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createCancelRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->prepareCancelOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = \array_merge($order, [
+            'id'        => $order['id'],
+            'time_span' => $order['time_span'] ?? $this->newTimeSpan(),
+        ]);
 
         $requestData = $this->getRequestAccountData($posAccount) + [
             'orderId'  => (string) $order['id'],
@@ -146,7 +159,12 @@ class ToslaPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createRefundRequestData(AbstractPosAccount $posAccount, array $order, string $refundTxType): array
     {
-        $order = $this->prepareRefundOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = [
+            'id'        => $order['id'],
+            'amount'    => $order['amount'],
+            'time_span' => $order['time_span'] ?? $this->newTimeSpan(),
+        ];
 
         $requestData = $this->getRequestAccountData($posAccount) + [
             'orderId'  => (string) $order['id'],
@@ -165,7 +183,14 @@ class ToslaPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createOrderHistoryRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order       = $this->prepareOrderHistoryOrder($order);
+        /** @var array<string, mixed> $order */
+        $order       = [
+            'id'               => $order['id'],
+            'transaction_date' => $order['transaction_date'],
+            'page'             => $order['page'] ?? 1,
+            'page_size'        => $order['page_size'] ?? 10,
+            'time_span'        => $order['time_span'] ?? $this->newTimeSpan(),
+        ];
         $requestData = $this->getRequestAccountData($posAccount) + [
             'orderId'         => (string) $order['id'],
             'transactionDate' => $this->valueFormatter->formatDateTime($order['transaction_date'], 'transactionDate'),
@@ -246,75 +271,17 @@ class ToslaPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @inheritDoc
+     * @param array<string, mixed> $order
+     *
+     * @return array<string, mixed>
      */
-    protected function preparePaymentOrder(array $order): array
+    private function applyPaymentDefaults(array $order): array
     {
         return \array_merge($order, [
             'installment' => $order['installment'] ?? 0,
             'currency'    => $order['currency'] ?? PosInterface::CURRENCY_TRY,
             'time_span'   => $order['time_span'] ?? $this->newTimeSpan(),
         ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function preparePostPaymentOrder(array $order): array
-    {
-        return [
-            'id'        => $order['id'],
-            'amount'    => $order['amount'],
-            'time_span' => $order['time_span'] ?? $this->newTimeSpan(),
-        ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareStatusOrder(array $order): array
-    {
-        return \array_merge($order, [
-            'id'        => $order['id'],
-            'time_span' => $order['time_span'] ?? $this->newTimeSpan(),
-        ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareCancelOrder(array $order): array
-    {
-        return \array_merge($order, [
-            'id'        => $order['id'],
-            'time_span' => $order['time_span'] ?? $this->newTimeSpan(),
-        ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareRefundOrder(array $order): array
-    {
-        return [
-            'id'        => $order['id'],
-            'amount'    => $order['amount'],
-            'time_span' => $order['time_span'] ?? $this->newTimeSpan(),
-        ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareOrderHistoryOrder(array $order): array
-    {
-        return [
-            'id'               => $order['id'],
-            'transaction_date' => $order['transaction_date'],
-            'page'             => $order['page'] ?? 1,
-            'page_size'        => $order['page_size'] ?? 10,
-            'time_span'        => $order['time_span'] ?? $this->newTimeSpan(),
-        ];
     }
 
     /**

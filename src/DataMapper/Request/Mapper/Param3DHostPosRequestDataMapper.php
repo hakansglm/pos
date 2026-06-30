@@ -61,7 +61,13 @@ class Param3DHostPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function create3DFormInitializeRequestData(AbstractPosAccount $posAccount, array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): array
     {
-        $order = $this->preparePaymentOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = \array_merge($order, [
+            'installment' => $order['installment'] ?? 0,
+            'currency'    => $order['currency'] ?? PosInterface::CURRENCY_TRY,
+            'amount'      => $order['amount'],
+            'ip'          => $order['ip'],
+        ]);
 
         $requestData = [
             '@xmlns'           => 'https://turkodeme.com.tr/',
@@ -197,19 +203,6 @@ class Param3DHostPosRequestDataMapper extends AbstractRequestDataMapper
     public function createCustomQueryRequestData(AbstractPosAccount $posAccount, array $requestData): array
     {
         throw new NotImplementedException();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function preparePaymentOrder(array $order): array
-    {
-        return \array_merge($order, [
-            'installment' => $order['installment'] ?? 0,
-            'currency'    => $order['currency'] ?? PosInterface::CURRENCY_TRY,
-            'amount'      => $order['amount'],
-            'ip'          => $order['ip'],
-        ]);
     }
 
     /**

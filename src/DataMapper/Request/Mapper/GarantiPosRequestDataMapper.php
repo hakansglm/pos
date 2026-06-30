@@ -57,7 +57,7 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function create3DPaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, array $responseData): array
     {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         $result = [
             'Mode'        => $this->getMode(),
@@ -101,7 +101,7 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createNonSecurePaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, CreditCardInterface $creditCard): array
     {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         $result = [
             'Mode'        => $this->getMode(),
@@ -140,7 +140,14 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createNonSecurePostAuthPaymentRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->preparePostPaymentOrder($order);
+        /** @var array<string, mixed> $order */
+        $order = [
+            'id'          => $order['id'],
+            'ref_ret_num' => $order['ref_ret_num'],
+            'currency'    => $order['currency'] ?? PosInterface::CURRENCY_TRY,
+            'amount'      => $order['amount'],
+            'ip'          => $order['ip'],
+        ];
 
         $result = [
             'Mode'        => $this->getMode(),
@@ -172,7 +179,7 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createStatusRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->prepareStatusOrder($order);
+        $order = $this->applyStatusDefaults($order);
 
         $result = [
             'Mode'        => $this->getMode(),
@@ -206,7 +213,7 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createCancelRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->prepareCancelOrder($order);
+        $order = $this->applyCancelDefaults($order);
 
         $result = [
             'Mode'        => $this->getMode(),
@@ -241,7 +248,10 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createRefundRequestData(AbstractPosAccount $posAccount, array $order, string $refundTxType): array
     {
-        $order = $this->prepareRefundOrder($order);
+        /** @var array<string, mixed> $order */
+        $refundAmount = $order['amount'];
+        $order        = $this->applyCancelDefaults($order);
+        $order['amount'] = $refundAmount;
 
         $result = [
             'Mode'        => $this->getMode(),
@@ -276,7 +286,7 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
      */
     public function createOrderHistoryRequestData(AbstractPosAccount $posAccount, array $order): array
     {
-        $order = $this->prepareOrderHistoryOrder($order);
+        $order = $this->applyStatusDefaults($order);
 
         $result = [
             'Mode'        => $this->getMode(),
@@ -311,7 +321,12 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
     public function createHistoryRequestData(AbstractPosAccount $posAccount, array $data = []): array
     {
         $txType = PosInterface::TX_TYPE_HISTORY;
-        $order = $this->prepareHistoryOrder($data);
+        $order  = [
+            'start_date' => $data['start_date'],
+            'end_date'   => $data['end_date'],
+            'page'       => $data['page'] ?? 1,
+            'ip'         => $data['ip'],
+        ];
 
         $result = [
             'Mode'        => $this->getMode(),
@@ -364,7 +379,7 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
         ?CreditCardInterface $creditCard = null,
         ?array               $extraData = null
     ): array {
-        $order = $this->preparePaymentOrder($order);
+        $order = $this->applyPaymentDefaults($order);
 
         $inputs = [
             'secure3dsecuritylevel' => $this->valueMapper->mapSecureType($paymentModel),
@@ -431,9 +446,11 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @inheritDoc
+     * @param array<string, mixed> $order
+     *
+     * @return array<string, mixed>
      */
-    protected function preparePaymentOrder(array $order): array
+    private function applyPaymentDefaults(array $order): array
     {
         return array_merge($order, [
             'installment' => $order['installment'] ?? 0,
@@ -444,23 +461,11 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @inheritDoc
+     * @param array<string, mixed> $order
+     *
+     * @return array<string, mixed>
      */
-    protected function preparePostPaymentOrder(array $order): array
-    {
-        return [
-            'id'          => $order['id'],
-            'ref_ret_num' => $order['ref_ret_num'],
-            'currency'    => $order['currency'] ?? PosInterface::CURRENCY_TRY,
-            'amount'      => $order['amount'],
-            'ip'          => $order['ip'],
-        ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareStatusOrder(array $order): array
+    private function applyStatusDefaults(array $order): array
     {
         return [
             'id'          => $order['id'],
@@ -472,30 +477,11 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @inheritDoc
+     * @param array<string, mixed> $order
+     *
+     * @return array<string, mixed>
      */
-    protected function prepareOrderHistoryOrder(array $order): array
-    {
-        return $this->prepareStatusOrder($order);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareHistoryOrder(array $data): array
-    {
-        return [
-            'start_date' => $data['start_date'],
-            'end_date'   => $data['end_date'],
-            'page'       => $data['page'] ?? 1,
-            'ip'         => $data['ip'],
-        ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareCancelOrder(array $order): array
+    private function applyCancelDefaults(array $order): array
     {
         return [
             'id'          => $order['id'],
@@ -505,18 +491,6 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
             'ip'          => $order['ip'] ?? '',
             'installment' => 0,
         ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareRefundOrder(array $order): array
-    {
-        $refundOrder = $this->prepareCancelOrder($order);
-        // just checking if amount is exist
-        $refundOrder['amount'] = $order['amount'];
-
-        return $refundOrder;
     }
 
     /**
