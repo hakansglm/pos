@@ -316,12 +316,6 @@ class ToslaPosResponseDataMapperTest extends TestCase
         $this->responseDataMapper->map3DPaymentData([], [], PosInterface::TX_TYPE_PAY_AUTH, []);
     }
 
-    public function testMapHistoryResponse(): void
-    {
-        $this->expectException(NotImplementedException::class);
-        $this->responseDataMapper->mapHistoryResponse([]);
-    }
-
     public static function paymentDataProvider(): iterable
     {
         yield 'success1' => [

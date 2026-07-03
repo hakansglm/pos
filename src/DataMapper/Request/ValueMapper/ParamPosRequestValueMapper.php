@@ -9,6 +9,7 @@ namespace Mews\Pos\DataMapper\Request\ValueMapper;
 use Mews\Pos\Gateway\Param3DHostPos;
 use Mews\Pos\Gateway\ParamPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 
 /**
  * @internal
@@ -19,22 +20,24 @@ class ParamPosRequestValueMapper extends AbstractRequestValueMapper
      * {@inheritDoc}
      */
     protected array $txTypeMappings = [
-        PosInterface::TX_TYPE_PAY_AUTH       => [
+        PosInterface::TX_TYPE_PAY_AUTH                  => [
             PosInterface::MODEL_NON_SECURE => 'TP_WMD_UCD',
             PosInterface::MODEL_3D_SECURE  => 'TP_WMD_UCD',
             PosInterface::MODEL_3D_PAY     => 'Pos_Odeme',
             PosInterface::MODEL_3D_HOST    => 'TO_Pre_Encrypting_OOS',
         ],
-        PosInterface::TX_TYPE_PAY_PRE_AUTH   => [
+        PosInterface::TX_TYPE_PAY_PRE_AUTH              => [
             PosInterface::MODEL_NON_SECURE => 'TP_Islem_Odeme_OnProv_WMD',
             PosInterface::MODEL_3D_SECURE  => 'TP_Islem_Odeme_OnProv_WMD',
         ],
-        PosInterface::TX_TYPE_PAY_POST_AUTH  => 'TP_Islem_Odeme_OnProv_Kapa',
-        PosInterface::TX_TYPE_REFUND         => 'TP_Islem_Iptal_Iade_Kismi2',
-        PosInterface::TX_TYPE_REFUND_PARTIAL => 'TP_Islem_Iptal_Iade_Kismi2',
-        PosInterface::TX_TYPE_CANCEL         => 'TP_Islem_Iptal_Iade_Kismi2',
-        PosInterface::TX_TYPE_STATUS         => 'TP_Islem_Sorgulama4',
-        PosInterface::TX_TYPE_HISTORY        => 'TP_Islem_Izleme',
+        PosInterface::TX_TYPE_PAY_POST_AUTH             => 'TP_Islem_Odeme_OnProv_Kapa',
+        PosInterface::TX_TYPE_REFUND                    => 'TP_Islem_Iptal_Iade_Kismi2',
+        PosInterface::TX_TYPE_REFUND_PARTIAL            => 'TP_Islem_Iptal_Iade_Kismi2',
+        PosInterface::TX_TYPE_CANCEL                    => 'TP_Islem_Iptal_Iade_Kismi2',
+        PosInterface::TX_TYPE_STATUS                    => 'TP_Islem_Sorgulama4',
+        PosQueryInterface::QUERY_TYPE_HISTORY           => 'TP_Islem_Izleme',
+        PosQueryInterface::QUERY_TYPE_INSTALLMENT_RATES => 'TP_Ozel_Oran_SK_Liste',
+        PosQueryInterface::QUERY_TYPE_BIN_LIST          => 'BIN_SanalPos',
     ];
 
     /**

@@ -11,6 +11,7 @@ use Mews\Pos\DataMapper\Response\ValueFormatter\GarantiPosResponseValueFormatter
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\GarantiPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
@@ -57,8 +58,8 @@ class GarantiPosResponseValueFormatterTest extends TestCase
             ['0', '', 0],
             [null, PosInterface::TX_TYPE_PAY_AUTH, 0],
             [null, '', 0],
-            ['1', PosInterface::TX_TYPE_HISTORY, 0],
-            ['Pesin', PosInterface::TX_TYPE_HISTORY, 0],
+            ['1', PosQueryInterface::QUERY_TYPE_HISTORY, 0],
+            ['Pesin', PosQueryInterface::QUERY_TYPE_HISTORY, 0],
         ];
     }
 

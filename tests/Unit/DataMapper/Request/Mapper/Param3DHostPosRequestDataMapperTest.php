@@ -235,18 +235,6 @@ class Param3DHostPosRequestDataMapperTest extends TestCase
         );
     }
 
-    public function testCreateHistoryRequestData(): void
-    {
-        $this->expectException(NotImplementedException::class);
-        $this->requestDataMapper->createHistoryRequestData($this->account, []);
-    }
-
-    public function testCreateCustomQueryRequestData(): void
-    {
-        $this->expectException(NotImplementedException::class);
-        $this->requestDataMapper->createCustomQueryRequestData($this->account, []);
-    }
-
     public static function paymentRegisterRequestDataProvider(): array
     {
         $order = [

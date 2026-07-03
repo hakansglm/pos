@@ -3,7 +3,8 @@
 require __DIR__.'/../_main_config.php';
 
 $bankTestsUrl = $hostUrl.'/asseco';
-$posClass = \Mews\Pos\Gateway\AssecoPos::class;
+$posClass      = \Mews\Pos\Gateway\AssecoPos::class;
+$posQueryClass = \Mews\Pos\Factory\PosQueryFactory::getPosQueryClassForGateway($posClass);
 
 $testCards = [
     'visa2' => [

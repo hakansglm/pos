@@ -6,12 +6,13 @@
 
 namespace Mews\Pos\Client;
 
-use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Exception\UnsupportedTransactionTypeException;
+use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use Mews\Pos\Serializer\Decoder\DecoderInterface;
-use Mews\Pos\Serializer\Encoder\EncoderInterface;
 use Mews\Pos\Serializer\EncodedData;
+use Mews\Pos\Serializer\Encoder\EncoderInterface;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -49,9 +50,9 @@ abstract class AbstractHttpClient implements HttpClientInterface
     }
 
     /**
-     * @param PosInterface::TX_TYPE_*|null     $txType
-     * @param PosInterface::MODEL_* |null      $paymentModel
-     * @param PosInterface::TX_TYPE_PAY_*|null $orderTxType
+     * @param PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_*|null $txType
+     * @param PosInterface::MODEL_* |null                                  $paymentModel
+     * @param PosInterface::TX_TYPE_PAY_*|null                             $orderTxType
      *
      * @return non-empty-string
      *
@@ -92,13 +93,13 @@ abstract class AbstractHttpClient implements HttpClientInterface
     }
 
     /**
-     * @param PosInterface::TX_TYPE_*          $txType
-     * @param PosInterface::MODEL_*            $paymentModel
-     * @param EncodedData                      $content
-     * @param array<string, mixed>             $order
-     * @param non-empty-string|null            $url
-     * @param AbstractPosAccount|null          $account
-     * @param PosInterface::TX_TYPE_PAY_*|null $orderTxType
+     * @param PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_* $txType
+     * @param PosInterface::MODEL_*                                   $paymentModel
+     * @param EncodedData                                             $content
+     * @param array<string, mixed>                                    $order
+     * @param non-empty-string|null                                   $url
+     * @param AbstractPosAccount|null                                 $account
+     * @param PosInterface::TX_TYPE_PAY_*|null                        $orderTxType
      *
      * @return ($decode is true ? array<string, mixed> : string)
      *
@@ -123,7 +124,7 @@ abstract class AbstractHttpClient implements HttpClientInterface
         } catch (\Exception $e) {
             $msg = \sprintf('%s işlemi için API URL oluşturulamadı! API URL sağlayıp deneyiniz.', $txType);
             $this->logger->error($msg, [
-                'api_url'       => $url,
+                'api_url'      => $url,
                 'txType'       => $txType,
                 'paymentModel' => $paymentModel,
                 'orderTxType'  => $orderTxType,
@@ -177,10 +178,10 @@ abstract class AbstractHttpClient implements HttpClientInterface
     }
 
     /**
-     * @param non-empty-string        $url
-     * @param EncodedData             $content
-     * @param PosInterface::TX_TYPE_* $txType
-     * @param AbstractPosAccount|null $account
+     * @param non-empty-string                                        $url
+     * @param EncodedData                                             $content
+     * @param PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_* $txType
+     * @param AbstractPosAccount|null                                 $account
      *
      * @return RequestInterface
      */
@@ -189,9 +190,9 @@ abstract class AbstractHttpClient implements HttpClientInterface
     /**
      * Checks API response before decoding it.
      *
-     * @param PosInterface::TX_TYPE_* $txType
-     * @param ResponseInterface       $response
-     * @param array<string, mixed>    $order
+     * @param PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_* $txType
+     * @param ResponseInterface                                       $response
+     * @param array<string, mixed>                                    $order
      *
      * @throws \RuntimeException when request fails
      */
@@ -212,10 +213,10 @@ abstract class AbstractHttpClient implements HttpClientInterface
     /**
      * Checks API response data after decoding it.
      *
-     * @param PosInterface::TX_TYPE_* $txType
-     * @param ResponseInterface       $response
-     * @param array<string, mixed>    $responseData
-     * @param array<string, mixed>    $order
+     * @param PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_* $txType
+     * @param ResponseInterface                                       $response
+     * @param array<string, mixed>                                    $responseData
+     * @param array<string, mixed>                                    $order
      *
      * @throws \RuntimeException when response is not successful
      */

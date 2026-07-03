@@ -7,6 +7,7 @@
 namespace Mews\Pos\DataMapper\Response\ValueMapper;
 
 use Mews\Pos\Gateway\ToslaPos;
+use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\PosInterface;
 
 /**
@@ -52,6 +53,56 @@ class ToslaPosResponseValueMapper extends AbstractResponseValueMapper
     public static function supports(string $gatewayClass): bool
     {
         return ToslaPos::class === $gatewayClass;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function mapCardType(?string $cardType): ?string
+    {
+        if (null === $cardType) {
+            return null;
+        }
+
+        return match (\strtolower($cardType)) {
+            'visa'                                        => CreditCardInterface::CARD_TYPE_VISA,
+            'mastercard', 'master card'                   => CreditCardInterface::CARD_TYPE_MASTERCARD,
+            'amex', 'americanexpress', 'american express' => CreditCardInterface::CARD_TYPE_AMEX,
+            'troy'                                        => CreditCardInterface::CARD_TYPE_TROY,
+            default                                       => null,
+        };
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function mapCardFamilyName(?string $name): ?string
+    {
+        if (null === $name) {
+            return null;
+        }
+
+        return match ($name) {
+            'Card Finans' => CreditCardInterface::CARD_FAMILY_CARDFINANS,
+            default       => $name,
+        };
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function mapCardClass(?string $cardClass): ?string
+    {
+        if (null === $cardClass) {
+            return null;
+        }
+
+        return match ($cardClass) {
+            'Kredi Kartı'     => CreditCardInterface::CARD_CLASS_CREDIT,
+            'Banka Kartı'     => CreditCardInterface::CARD_CLASS_DEBIT,
+            'Ön Ödemeli Kart' => CreditCardInterface::CARD_CLASS_PREPAID,
+            default           => null,
+        };
     }
 
     /**

@@ -148,43 +148,6 @@ class PayTrPosRequestDataMapper extends AbstractRequestDataMapper
     /**
      * {@inheritDoc}
      *
-     * @param array{start_date?: \DateTimeInterface, end_date?: \DateTimeInterface} $data
-     */
-    public function createHistoryRequestData(AbstractPosAccount $posAccount, array $data = []): array
-    {
-        /** @var array<string, mixed> $data */
-        $requestData = [
-            'merchant_id' => $posAccount->getMerchantId(),
-            'start_date'  => $this->valueFormatter->formatDateTime($data['start_date'], 'start_date'),
-            'end_date'    => $this->valueFormatter->formatDateTime($data['end_date'], 'end_date'),
-        ];
-
-        if ($this->testMode) {
-            $requestData['dummy'] = 1;
-        }
-
-        $requestData['paytr_token'] = $this->crypt->createHash($posAccount, $requestData);
-
-        return $requestData;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function createCustomQueryRequestData(AbstractPosAccount $posAccount, array $requestData): array
-    {
-        $requestData['merchant_id'] ??= $posAccount->getMerchantId();
-
-        if (!isset($requestData['paytr_token'])) {
-            $requestData['paytr_token'] = $this->crypt->createHash($posAccount, $requestData);
-        }
-
-        return $requestData;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
      * MODEL_3D_HOST: returns an iframe embed URL (GET, no inputs) after token is obtained.
      * MODEL_3D_PAY:  returns a POST form with all card and payment fields for Direct API.
      *

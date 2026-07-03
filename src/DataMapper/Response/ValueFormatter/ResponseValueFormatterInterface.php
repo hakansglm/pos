@@ -7,6 +7,7 @@
 namespace Mews\Pos\DataMapper\Response\ValueFormatter;
 
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 
 /**
  * Formats values according to API requirements
@@ -23,8 +24,8 @@ interface ResponseValueFormatterInterface
     public static function supports(string $gatewayClass): bool;
 
     /**
-     * @param string|null             $installment
-     * @param PosInterface::TX_TYPE_* $txType      transaction type of the API request
+     * @param string|null                                             $installment
+     * @param PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_* $txType      transaction type of the API request
      *
      * @return int<2, max>|0
      */
@@ -34,16 +35,16 @@ interface ResponseValueFormatterInterface
     /**
      * formats purchase amount
      *
-     * @param string|float            $amount
-     * @param PosInterface::TX_TYPE_* $txType transaction type of the API request
+     * @param string|float                                            $amount
+     * @param PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_* $txType transaction type of the API request
      *
      * @return float
      */
     public function formatAmount($amount, string $txType): float;
 
     /**
-     * @param string                  $dateTime
-     * @param PosInterface::TX_TYPE_* $txType   transaction type of the API request
+     * @param string                                                  $dateTime
+     * @param PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_* $txType   transaction type of the API request
      *
      * @return \DateTimeImmutable formatted date time
      */

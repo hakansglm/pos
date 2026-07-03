@@ -14,6 +14,7 @@ use Mews\Pos\DataMapper\Response\ValueFormatter\IyzicoPosResponseValueFormatter;
 use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Gateway\IyzicoPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
@@ -64,7 +65,7 @@ class IyzicoPosResponseValueFormatterTest extends TestCase
         return [
             'tx_type_history_iso_string'       => [
                 '2026-06-11 23:17:51',
-                PosInterface::TX_TYPE_HISTORY,
+                PosQueryInterface::QUERY_TYPE_HISTORY,
                 new DateTimeImmutable('2026-06-11 23:17:51'),
             ],
             'tx_type_order_history_iso_string' => [

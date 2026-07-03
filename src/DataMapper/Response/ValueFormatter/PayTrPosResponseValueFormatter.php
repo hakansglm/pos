@@ -8,6 +8,7 @@ namespace Mews\Pos\DataMapper\Response\ValueFormatter;
 
 use Mews\Pos\Gateway\PayTrPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 
 /**
  * @internal
@@ -28,7 +29,7 @@ class PayTrPosResponseValueFormatter extends AbstractResponseValueFormatter
      */
     public function formatAmount($amount, string $txType): float
     {
-        if (\in_array($txType, [PosInterface::TX_TYPE_STATUS, PosInterface::TX_TYPE_HISTORY], true)) {
+        if (\in_array($txType, [PosInterface::TX_TYPE_STATUS, PosQueryInterface::QUERY_TYPE_HISTORY], true)) {
             // "1,16" => 1.16
             return (float) \str_replace(',', '.', (string) $amount);
         }

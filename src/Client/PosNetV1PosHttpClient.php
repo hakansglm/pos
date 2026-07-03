@@ -11,6 +11,7 @@ use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Exception\UnsupportedTransactionTypeException;
 use Mews\Pos\Gateway\PosNetV1Pos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use Mews\Pos\Serializer\Decoder\JsonDecoder;
 use Mews\Pos\Serializer\EncodedData;
 use Mews\Pos\Serializer\Encoder\JsonEncoder;
@@ -63,7 +64,7 @@ class PosNetV1PosHttpClient extends AbstractHttpClient
      */
     public function supportsTx(string $txType, string $paymentModel, ?string $orderTxType = null): bool
     {
-        if (PosInterface::TX_TYPE_CUSTOM_QUERY === $txType) {
+        if (PosQueryInterface::QUERY_TYPE_CUSTOM_QUERY === $txType) {
             return true;
         }
 
@@ -106,7 +107,7 @@ class PosNetV1PosHttpClient extends AbstractHttpClient
     }
 
     /**
-     * @phpstan-param PosInterface::TX_TYPE_* $txType
+     * @phpstan-param PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_* $txType
      *
      * @return string
      *

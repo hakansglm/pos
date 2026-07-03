@@ -195,6 +195,22 @@ class PayTrPosCryptTest extends TestCase
                 ],
                 'expected' => 'mIFJNpzMuo/gd9pcPNBinujmMVlEkR3DHZ6stLoQo/s=',
             ],
+            // Installment rates (request_id branch):
+            'installment_rates' => [
+                'requestData' => [
+                    'merchant_id' => '123456',
+                    'request_id'  => 'REQ12345',
+                ],
+                'expected' => 'dx7O59UIbRaErFkP72oGXtQb/TgwFs8l/Qznl06iLls=',
+            ],
+            // BIN query (bin_number branch): bin_number + merchant_id + salt, no separator
+            'bin_query' => [
+                'requestData' => [
+                    'merchant_id' => '123456',
+                    'bin_number'  => '415956',
+                ],
+                'expected' => 'lAB6uLq369TxD4S7VDGIzOYt6Fy3XKicfn15Xy1TiBM=',
+            ],
         ];
     }
 }

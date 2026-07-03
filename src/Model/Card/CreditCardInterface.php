@@ -23,6 +23,39 @@ interface CreditCardInterface
     /** @var string */
     public const CARD_TYPE_TROY = 'troy';
 
+    /** @var string */
+    public const CARD_CLASS_CREDIT = 'credit';
+
+    /** @var string */
+    public const CARD_CLASS_DEBIT = 'debit';
+
+    /** @var string */
+    public const CARD_CLASS_PREPAID = 'prepaid';
+
+    /** @var string */
+    public const CARD_FAMILY_WORLD = 'world';
+
+    /** @var string */
+    public const CARD_FAMILY_AXESS = 'axess';
+
+    /** @var string */
+    public const CARD_FAMILY_CARDFINANS = 'cardfinans';
+
+    /** @var string */
+    public const CARD_FAMILY_PARAF = 'paraf';
+
+    /** @var string */
+    public const CARD_FAMILY_ADVANTAGE = 'advantage';
+
+    /** @var string */
+    public const CARD_FAMILY_BONUS = 'bonus';
+
+    /** @var string */
+    public const CARD_FAMILY_MAXIMUM = 'maximum';
+
+    /** @var string */
+    public const CARD_FAMILY_SAGLAMKART = 'saglamkart';
+
     /**
      * returns card number without white spaces
      *

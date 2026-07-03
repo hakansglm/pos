@@ -6,7 +6,6 @@
 
 namespace Mews\Pos\DataMapper\Response\Mapper;
 
-use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\PosInterface;
 
@@ -429,14 +428,6 @@ class AssecoPosResponseDataMapper extends AbstractResponseDataMapper
             'status'           => $status,
             'all'              => $rawResponseData,
         ];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function mapHistoryResponse(array $rawResponseData): array
-    {
-        throw new NotImplementedException();
     }
 
     /**

@@ -5,7 +5,8 @@ use Mews\Pos\Model\Card\CreditCardInterface;
 require __DIR__.'/../_main_config.php';
 
 $bankTestsUrl = $hostUrl.'/payflex-cp-v4';
-$posClass = \Mews\Pos\Gateway\PayFlexCPV4Pos::class;
+$posClass      = \Mews\Pos\Gateway\PayFlexCPV4Pos::class;
+$posQueryClass = \Mews\Pos\Factory\PosQueryFactory::getPosQueryClassForGateway($posClass);
 
 $testCards = [
     'visa1' => [

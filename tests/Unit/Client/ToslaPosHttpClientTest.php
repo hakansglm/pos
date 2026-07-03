@@ -20,6 +20,7 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateway\PosNetPos;
 use Mews\Pos\Gateway\ToslaPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -111,9 +112,9 @@ class ToslaPosHttpClientTest extends TestCase
     public static function supportsTxDataProvider(): array
     {
         return [
-            'custom_query'        => [PosInterface::TX_TYPE_CUSTOM_QUERY, PosInterface::MODEL_NON_SECURE, true],
+            'custom_query'        => [PosQueryInterface::QUERY_TYPE_CUSTOM_QUERY, PosInterface::MODEL_NON_SECURE, true],
             'supported_tx_type'   => [PosInterface::TX_TYPE_PAY_AUTH, PosInterface::MODEL_NON_SECURE, true],
-            'unsupported_tx_type' => [PosInterface::TX_TYPE_HISTORY, PosInterface::MODEL_NON_SECURE, false],
+            'unsupported_tx_type' => [PosQueryInterface::QUERY_TYPE_HISTORY, PosInterface::MODEL_NON_SECURE, false],
         ];
     }
 
@@ -276,7 +277,7 @@ class ToslaPosHttpClientTest extends TestCase
 
         $this->expectException(UnsupportedTransactionTypeException::class);
         $this->client->request(
-            PosInterface::TX_TYPE_HISTORY,
+            PosQueryInterface::QUERY_TYPE_HISTORY,
             PosInterface::MODEL_NON_SECURE,
             ['request-data'],
             ['id' => 123]
@@ -348,7 +349,7 @@ class ToslaPosHttpClientTest extends TestCase
     {
         return [
             [
-                'txType'          => PosInterface::TX_TYPE_HISTORY,
+                'txType'          => PosQueryInterface::QUERY_TYPE_HISTORY,
                 'paymentModel'    => PosInterface::MODEL_NON_SECURE,
                 'exception_class' => UnsupportedTransactionTypeException::class,
             ],

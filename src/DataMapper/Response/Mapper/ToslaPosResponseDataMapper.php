@@ -9,6 +9,7 @@ namespace Mews\Pos\DataMapper\Response\Mapper;
 use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Gateway\ToslaPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 
 /**
  * maps the response of Tosla API requests
@@ -266,14 +267,6 @@ class ToslaPosResponseDataMapper extends AbstractResponseDataMapper
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function mapHistoryResponse(array $rawResponseData): array
-    {
-        throw new NotImplementedException();
-    }
-
-    /**
      * @inheritDoc
      */
     public function is3dAuthSuccess(?string $mdStatus): bool
@@ -296,7 +289,7 @@ class ToslaPosResponseDataMapper extends AbstractResponseDataMapper
      */
     public function mapSingleHistoryResponse(array $rawResponseData): array
     {
-        $txType          = PosInterface::TX_TYPE_HISTORY;
+        $txType          = PosQueryInterface::QUERY_TYPE_HISTORY;
         $procReturnCode = $this->getProcReturnCode($rawResponseData);
         $errorCode      = $rawResponseData['Code'];
         $status         = self::TX_DECLINED;

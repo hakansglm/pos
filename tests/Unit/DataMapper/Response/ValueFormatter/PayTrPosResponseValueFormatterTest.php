@@ -12,6 +12,7 @@ use Mews\Pos\DataMapper\Response\ValueFormatter\PayTrPosResponseValueFormatter;
 use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Gateway\PayTrPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -58,8 +59,8 @@ class PayTrPosResponseValueFormatterTest extends TestCase
             'status_dot_decimal'   => ['10.01',  PosInterface::TX_TYPE_STATUS,       10.01],
             'status_comma_decimal' => ['1,16',   PosInterface::TX_TYPE_STATUS,       1.16],
             'status_whole'         => ['100.00', PosInterface::TX_TYPE_STATUS,       100.0],
-            'history_dot_decimal'  => ['10.00',  PosInterface::TX_TYPE_HISTORY,      10.0],
-            'history_comma_decimal' => ['1,16',   PosInterface::TX_TYPE_HISTORY,      1.16],
+            'history_dot_decimal'  => ['10.00',  PosQueryInterface::QUERY_TYPE_HISTORY,      10.0],
+            'history_comma_decimal' => ['1,16',   PosQueryInterface::QUERY_TYPE_HISTORY,      1.16],
             'refund_decimal'       => ['6.00',   PosInterface::TX_TYPE_REFUND,       6.0],
             'refund_zero'          => ['0.00',   PosInterface::TX_TYPE_REFUND,       0.0],
             'callback_cents'       => ['1001',   PosInterface::TX_TYPE_PAY_AUTH,     10.01],

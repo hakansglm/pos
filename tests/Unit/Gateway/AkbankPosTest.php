@@ -27,6 +27,7 @@ use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateway\AbstractGateway;
 use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -507,35 +508,6 @@ class AkbankPosTest extends TestCase
         $this->pos->get3DFormData($order, $paymentModel, $txType, $card, $createWithoutCard, $formFormat);
     }
 
-    #[DataProvider('historyRequestDataProvider')]
-    public function testHistoryRequest(array $order): void
-    {
-        $account     = $this->pos->getAccount();
-        $txType      = PosInterface::TX_TYPE_HISTORY;
-        $requestData = ['createHistoryRequestData'];
-
-        $this->requestMapperMock->expects(self::once())
-            ->method('createHistoryRequestData')
-            ->with($account, $order)
-            ->willReturn($requestData);
-
-        $decodedResponse = ['decodedData'];
-        $this->configureClientResponse(
-            $txType,
-            $requestData,
-            $decodedResponse,
-            $order,
-            PosInterface::MODEL_NON_SECURE
-        );
-
-        $this->responseMapperMock->expects(self::once())
-            ->method('mapHistoryResponse')
-            ->with($decodedResponse)
-            ->willReturn(['result']);
-
-        $this->pos->history($order);
-    }
-
     #[DataProvider('orderHistoryDataProvider')]
     public function testOrderHistory(
         array $order,
@@ -710,50 +682,6 @@ class AkbankPosTest extends TestCase
             ->willReturn(['result']);
 
         $this->pos->refund($order);
-    }
-
-    #[DataProvider('customQueryRequestDataProvider')]
-    public function testCustomQueryRequest(array $requestData, ?string $apiUrl): void
-    {
-        $account = $this->pos->getAccount();
-        $txType  = PosInterface::TX_TYPE_CUSTOM_QUERY;
-
-        $updatedRequestData = $requestData + [
-                'abc' => 'def',
-            ];
-        $this->requestMapperMock->expects(self::once())
-            ->method('createCustomQueryRequestData')
-            ->with($account, $requestData)
-            ->willReturn($updatedRequestData);
-
-        $this->configureClientResponse(
-            $txType,
-            $updatedRequestData,
-            ['decodedResponse'],
-            $requestData,
-            PosInterface::MODEL_NON_SECURE,
-            $apiUrl
-        );
-
-        $this->pos->customQuery($requestData, $apiUrl);
-    }
-
-    public static function customQueryRequestDataProvider(): array
-    {
-        return [
-            [
-                'requestData' => [
-                    'id' => '2020110828BC',
-                ],
-                'api_url'     => 'https://apipre.akbank.com/api/v1/payment/virtualpos/xxxx',
-            ],
-            [
-                'requestData' => [
-                    'id' => '2020110828BC',
-                ],
-                'api_url'     => 'https://apipre.akbank.com/api/v1/payment/virtualpos/transaction/process',
-            ],
-        ];
     }
 
     public static function makeRegularPaymentDataProvider(): array
@@ -931,7 +859,7 @@ class AkbankPosTest extends TestCase
             'non_payment_tx_type'       => [
                 'order'                  => ['id' => '2020110828BC'],
                 'paymentModel'           => PosInterface::MODEL_3D_PAY,
-                'txType'                 => PosInterface::TX_TYPE_HISTORY,
+                'txType'                 => PosQueryInterface::QUERY_TYPE_HISTORY,
                 'isWithCard'             => false,
                 'create_with_card'       => false,
                 'expectedExceptionClass' => LogicException::class,
@@ -1073,17 +1001,6 @@ class AkbankPosTest extends TestCase
                 'gatewayResponseData' => ['orderId' => '2024041898FD', 'responseCode' => 'VPS-0000'],
                 'expected'            => ['status' => 'approved'],
                 'isSuccess'           => true,
-            ],
-        ];
-    }
-
-    public static function historyRequestDataProvider(): array
-    {
-        return [
-            [
-                'order' => [
-                    'batch_num' => 123,
-                ],
             ],
         ];
     }

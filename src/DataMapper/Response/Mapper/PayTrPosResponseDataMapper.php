@@ -227,33 +227,6 @@ class PayTrPosResponseDataMapper extends AbstractResponseDataMapper
         throw new NotImplementedException();
     }
 
-    /** {@inheritDoc} */
-    public function mapHistoryResponse(array $rawResponseData): array
-    {
-        $procReturnCode = $this->getProcReturnCode($rawResponseData);
-        $status         = self::TX_DECLINED;
-        if (self::PROCEDURE_SUCCESS_CODE === $procReturnCode) {
-            $status = self::TX_APPROVED;
-        }
-
-        $transactions = [];
-        if (self::TX_APPROVED === $status) {
-            foreach ($rawResponseData['list'] ?? [] as $rawTx) {
-                $transactions[] = $this->mapSingleHistoryTransaction($rawTx);
-            }
-        }
-
-        return [
-            'proc_return_code' => $procReturnCode,
-            'error_code'       => self::TX_APPROVED === $status ? null : ($rawResponseData['err_no'] ?? $procReturnCode),
-            'error_message'    => self::TX_APPROVED === $status ? null : ($rawResponseData['err_msg'] ?? null),
-            'trans_count'      => \count($transactions),
-            'transactions'     => $transactions,
-            'status'           => $status,
-            'all'              => $rawResponseData,
-        ];
-    }
-
     /**
      * PayTR does not send an mdStatus field; 3D auth success is determined by status="success".
      *
@@ -281,54 +254,6 @@ class PayTrPosResponseDataMapper extends AbstractResponseDataMapper
     protected function getProcReturnCode(array $response): ?string
     {
         return $response['status'] ?? null;
-    }
-
-    /**
-     * @param array<string, mixed> $rawTx
-     *
-     * @return array<string, mixed>
-     */
-    private function mapSingleHistoryTransaction(array $rawTx): array
-    {
-        $txType = PosInterface::TX_TYPE_HISTORY;
-
-        $transactionType = isset($rawTx['islem_tipi'])
-            ? $this->valueMapper->mapTxType($rawTx['islem_tipi'])
-            : null;
-
-        $currency = isset($rawTx['para_birimi'])
-            ? $this->valueMapper->mapCurrency($rawTx['para_birimi'], $txType)
-            : null;
-
-        $transactionTime = isset($rawTx['islem_tarihi'])
-            ? $this->valueFormatter->formatDateTime($rawTx['islem_tarihi'], $txType)
-            : null;
-
-        $amount = isset($rawTx['islem_tutari'])
-            ? $this->valueFormatter->formatAmount($rawTx['islem_tutari'], $txType)
-            : null;
-
-        $captureAmount = isset($rawTx['odeme_tutari'])
-            ? $this->valueFormatter->formatAmount($rawTx['odeme_tutari'], $txType)
-            : null;
-
-        $installmentCount = isset($rawTx['taksit'])
-            ? $this->valueFormatter->formatInstallment((string) $rawTx['taksit'], $txType)
-            : null;
-
-        $defaultResponse = $this->getDefaultOrderHistoryTxResponse();
-
-        return $this->mergeArraysPreferNonNullValues($defaultResponse, [
-            'order_id'          => $rawTx['siparis_no'] ?? null,
-            'transaction_type'  => $transactionType,
-            'transaction_time'  => $transactionTime,
-            'first_amount'      => $amount,
-            'capture_amount'    => $captureAmount,
-            'currency'          => $currency,
-            'masked_number'     => $rawTx['kart_no'] ?? null,
-            'installment_count' => $installmentCount,
-            'status'            => self::TX_APPROVED,
-        ]);
     }
 
     /**

@@ -12,6 +12,7 @@ use Mews\Pos\DataMapper\Response\ValueMapper\AbstractResponseValueMapper;
 use Mews\Pos\DataMapper\Response\ValueMapper\ToslaPosResponseValueMapper;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\ToslaPos;
+use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -66,6 +67,43 @@ class ToslaPosResponseValueMapperTest extends TestCase
         $this->mapper->mapSecureType('3D', PosInterface::TX_TYPE_PAY_AUTH);
     }
 
+    #[DataProvider('mapCardTypeDataProvider')]
+    public function testMapCardType(?string $input, ?string $expected): void
+    {
+        $this->assertSame($expected, $this->mapper->mapCardType($input));
+    }
+
+    public static function mapCardTypeDataProvider(): array
+    {
+        return [
+            [null,               null],
+            ['visa',             CreditCardInterface::CARD_TYPE_VISA],
+            ['mastercard',       CreditCardInterface::CARD_TYPE_MASTERCARD],
+            ['master card',      CreditCardInterface::CARD_TYPE_MASTERCARD],
+            ['amex',             CreditCardInterface::CARD_TYPE_AMEX],
+            ['americanexpress',  CreditCardInterface::CARD_TYPE_AMEX],
+            ['american express', CreditCardInterface::CARD_TYPE_AMEX],
+            ['troy',             CreditCardInterface::CARD_TYPE_TROY],
+            ['unknown',          null],
+        ];
+    }
+
+    #[DataProvider('mapCardFamilyNameDataProvider')]
+    public function testMapCardFamilyName(?string $input, ?string $expected): void
+    {
+        $this->assertSame($expected, $this->mapper->mapCardFamilyName($input));
+    }
+
+    public static function mapCardFamilyNameDataProvider(): array
+    {
+        return [
+            [null,          null],
+            ['Card Finans', CreditCardInterface::CARD_FAMILY_CARDFINANS],
+            ['Paraf',       'Paraf'],
+            ['unknown',     'unknown'],
+        ];
+    }
+
     public static function mapCurrencyDataProvider(): array
     {
         return [
@@ -103,6 +141,23 @@ class ToslaPosResponseValueMapperTest extends TestCase
             [3, PosInterface::PAYMENT_STATUS_PARTIALLY_REFUNDED],
             [4, PosInterface::PAYMENT_STATUS_FULLY_REFUNDED],
             ['blabla', 'blabla'],
+        ];
+    }
+
+    #[DataProvider('mapCardClassDataProvider')]
+    public function testMapCardClass(?string $input, ?string $expected): void
+    {
+        $this->assertSame($expected, $this->mapper->mapCardClass($input));
+    }
+
+    public static function mapCardClassDataProvider(): array
+    {
+        return [
+            [null,              null],
+            ['Kredi Kartı',     CreditCardInterface::CARD_CLASS_CREDIT],
+            ['Banka Kartı',     CreditCardInterface::CARD_CLASS_DEBIT],
+            ['Ön Ödemeli Kart', CreditCardInterface::CARD_CLASS_PREPAID],
+            ['Bilinmeyen',      null],
         ];
     }
 }

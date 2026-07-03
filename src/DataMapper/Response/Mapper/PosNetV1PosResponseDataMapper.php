@@ -212,14 +212,6 @@ class PosNetV1PosResponseDataMapper extends AbstractResponseDataMapper
     /**
      * {@inheritDoc}
      */
-    public function mapHistoryResponse(array $rawResponseData): array
-    {
-        throw new NotImplementedException();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function mapOrderHistoryResponse(array $rawResponseData): array
     {
         throw new NotImplementedException();

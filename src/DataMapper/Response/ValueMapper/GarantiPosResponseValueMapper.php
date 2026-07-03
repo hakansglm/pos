@@ -7,7 +7,9 @@
 namespace Mews\Pos\DataMapper\Response\ValueMapper;
 
 use Mews\Pos\Gateway\GarantiPos;
+use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 
 /**
  * @internal
@@ -24,17 +26,17 @@ class GarantiPosResponseValueMapper extends AbstractResponseValueMapper
         '643' => PosInterface::CURRENCY_RUB,
     ];
 
-    /** @var array<PosInterface::TX_TYPE_*, string> */
+    /** @var array<PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_*, string> */
     protected array $txTypeMappings = [
-        PosInterface::TX_TYPE_PAY_AUTH       => 'sales',
-        PosInterface::TX_TYPE_PAY_PRE_AUTH   => 'preauth',
-        PosInterface::TX_TYPE_PAY_POST_AUTH  => 'postauth',
-        PosInterface::TX_TYPE_CANCEL         => 'void',
-        PosInterface::TX_TYPE_REFUND         => 'refund',
-        PosInterface::TX_TYPE_REFUND_PARTIAL => 'refund',
-        PosInterface::TX_TYPE_ORDER_HISTORY  => 'orderhistoryinq',
-        PosInterface::TX_TYPE_HISTORY        => 'orderlistinq',
-        PosInterface::TX_TYPE_STATUS         => 'orderinq',
+        PosInterface::TX_TYPE_PAY_AUTH        => 'sales',
+        PosInterface::TX_TYPE_PAY_PRE_AUTH    => 'preauth',
+        PosInterface::TX_TYPE_PAY_POST_AUTH   => 'postauth',
+        PosInterface::TX_TYPE_CANCEL          => 'void',
+        PosInterface::TX_TYPE_REFUND          => 'refund',
+        PosInterface::TX_TYPE_REFUND_PARTIAL  => 'refund',
+        PosInterface::TX_TYPE_ORDER_HISTORY   => 'orderhistoryinq',
+        PosQueryInterface::QUERY_TYPE_HISTORY => 'orderlistinq',
+        PosInterface::TX_TYPE_STATUS          => 'orderinq',
     ];
 
     /** @var array<string, PosInterface::MODEL_*> */
@@ -88,7 +90,7 @@ class GarantiPosResponseValueMapper extends AbstractResponseValueMapper
      */
     public function mapSecureType($securityType, ?string $apiRequestTxType = null): ?string
     {
-        if (PosInterface::TX_TYPE_HISTORY === $apiRequestTxType) {
+        if (PosQueryInterface::QUERY_TYPE_HISTORY === $apiRequestTxType) {
             // mappings for the field SafeType of history response
             // 3D Secure => 3D
             // 3D Pay => 3D
@@ -110,9 +112,44 @@ class GarantiPosResponseValueMapper extends AbstractResponseValueMapper
     /**
      * @inheritDoc
      */
+    public function mapCardType(?string $cardType): ?string
+    {
+        if (null === $cardType) {
+            return null;
+        }
+
+        return match ($cardType) {
+            'VISA' => CreditCardInterface::CARD_TYPE_VISA,
+            'MASTER', 'MASTERCARD' => CreditCardInterface::CARD_TYPE_MASTERCARD,
+            'AMEX', 'AMERICAN EXPRESS' => CreditCardInterface::CARD_TYPE_AMEX,
+            'TROY' => CreditCardInterface::CARD_TYPE_TROY,
+            default => null,
+        };
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function mapCardClass(?string $cardClass): ?string
+    {
+        if (null === $cardClass) {
+            return null;
+        }
+
+        return match ($cardClass) {
+            'C' => CreditCardInterface::CARD_CLASS_CREDIT,
+            'D' => CreditCardInterface::CARD_CLASS_DEBIT,
+            'M' => CreditCardInterface::CARD_CLASS_PREPAID,
+            default => null,
+        };
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function mapCurrency($currency, ?string $apiRequestTxType = null): ?string
     {
-        if (PosInterface::TX_TYPE_HISTORY === $apiRequestTxType) {
+        if (PosQueryInterface::QUERY_TYPE_HISTORY === $apiRequestTxType) {
             return $this->historyResponseCurrencyMapping[$currency] ?? null;
         }
 
@@ -120,8 +157,8 @@ class GarantiPosResponseValueMapper extends AbstractResponseValueMapper
     }
 
     /**
-     * @param PosInterface::TX_TYPE_*|null $requestTxType request transaction type
-     * @param PosInterface::TX_TYPE_*|null $txType        txType of the transaction that is being processed
+     * @param PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_*|null $requestTxType request transaction type
+     * @param PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_*|null $txType        txType of the transaction that is being processed
      *
      * @inheritDoc
      */
@@ -140,7 +177,7 @@ class GarantiPosResponseValueMapper extends AbstractResponseValueMapper
             return $orderStatus;
         }
 
-        if (PosInterface::TX_TYPE_HISTORY === $requestTxType) {
+        if (PosQueryInterface::QUERY_TYPE_HISTORY === $requestTxType) {
             if (null === $txType) {
                 return $orderStatus;
             }

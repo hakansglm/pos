@@ -242,47 +242,6 @@ class ParamPosResponseDataMapperTest extends TestCase
         $this->responseDataMapper->mapOrderHistoryResponse([]);
     }
 
-    #[DataProvider('historyTestDataProviderFail')]
-    public function testMapHistoryResponseFail(array $responseData, array $expectedData): void
-    {
-        $actualData = $this->responseDataMapper->mapHistoryResponse($responseData);
-
-        $this->assertCount($actualData['trans_count'], $actualData['transactions']);
-
-        $this->assertArrayHasKey('all', $actualData);
-        $this->assertIsArray($actualData['all']);
-        $this->assertNotEmpty($actualData['all']);
-        $this->assertArrayHasKey('all', $actualData);
-        $this->assertIsArray($actualData['all']);
-        $this->assertNotEmpty($actualData['all']);
-        unset($actualData['all']);
-
-        $this->assertSame($expectedData, $actualData);
-    }
-
-    #[DataProvider('historyTestDataProviderSuccess')]
-    public function testMapHistoryResponseSuccess(array $responseData, array $expectedData): void
-    {
-        $actualData = $this->responseDataMapper->mapHistoryResponse($responseData);
-
-        $actualData = \json_decode(\json_encode($actualData), true);
-
-        $this->assertSame(
-            json_encode($expectedData),
-            json_encode($actualData)
-        );
-
-        if (count($actualData['transactions']) > 1
-            && null !== $actualData['transactions'][0]['transaction_time']
-            && null !== $actualData['transactions'][1]['transaction_time']
-        ) {
-            $this->assertGreaterThan(
-                $actualData['transactions'][0]['transaction_time'],
-                $actualData['transactions'][1]['transaction_time']
-            );
-        }
-    }
-
     public static function paymentTestDataProvider(): iterable
     {
         yield 'success_foreign_currency' => [
@@ -1217,46 +1176,6 @@ class ParamPosResponseDataMapperTest extends TestCase
         ];
     }
 
-    public static function historyTestDataProviderFail(): iterable
-    {
-        yield 'fail' => [
-            'responseData' => [
-                'TP_Islem_IzlemeResponse' => [
-                    'TP_Islem_IzlemeResult' => [
-                        'Sonuc'     => '-1',
-                        'Sonuc_Str' => 'Başarısız',
-                    ],
-                ],
-            ],
-            'expectedData' => [
-                'proc_return_code' => -1,
-                'error_code'       => -1,
-                'error_message'    => 'Başarısız',
-                'status'           => 'declined',
-                'trans_count'      => 0,
-                'transactions'     => [],
-            ],
-        ];
-
-        yield 'fail_date_range' => [
-            'responseData' => [
-                'TP_Islem_IzlemeResponse' => [
-                    'TP_Islem_IzlemeResult' => [
-                        'Sonuc'     => '-222',
-                        'Sonuc_Str' => 'Tarih aralığı 7 günden fazla olamaz.',
-                    ],
-                ],
-            ],
-            'expectedData' => [
-                'proc_return_code' => -222,
-                'error_code'       => -222,
-                'error_message'    => 'Tarih aralığı 7 günden fazla olamaz.',
-                'status'           => 'declined',
-                'trans_count'      => 0,
-                'transactions'     => [],
-            ],
-        ];
-    }
 
     public static function threeDPayPaymentDataProvider(): array
     {
@@ -1452,15 +1371,6 @@ class ParamPosResponseDataMapperTest extends TestCase
                     'transaction_security' => null,
                 ],
             ],
-        ];
-    }
-
-
-    public static function historyTestDataProviderSuccess(): iterable
-    {
-        yield 'success' => [
-            'responseData' => \json_decode(file_get_contents(__DIR__.'/../../../test_data/parampos/history_response_1.json'), true),
-            'expectedData' => \json_decode(file_get_contents(__DIR__.'/../../../test_data/parampos/history_response_1_expected.json'), true),
         ];
     }
 }

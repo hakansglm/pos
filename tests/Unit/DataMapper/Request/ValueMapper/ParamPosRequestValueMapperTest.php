@@ -16,6 +16,7 @@ use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\Param3DHostPos;
 use Mews\Pos\Gateway\ParamPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
@@ -103,7 +104,7 @@ class ParamPosRequestValueMapperTest extends TestCase
 
     public function testGetTxTypeMappings(): void
     {
-        $this->assertCount(8, $this->valueMapper->getTxTypeMappings());
+        $this->assertCount(10, $this->valueMapper->getTxTypeMappings());
     }
 
     public function testGetSecureTypeMappings(): void
@@ -143,7 +144,8 @@ class ParamPosRequestValueMapperTest extends TestCase
             [PosInterface::TX_TYPE_CANCEL, PosInterface::MODEL_NON_SECURE, null, 'TP_Islem_Iptal_Iade_Kismi2'],
             [PosInterface::TX_TYPE_CANCEL, PosInterface::MODEL_3D_SECURE, ['transaction_type' => PosInterface::TX_TYPE_PAY_PRE_AUTH], 'TP_Islem_Iptal_OnProv'],
             [PosInterface::TX_TYPE_STATUS, PosInterface::MODEL_NON_SECURE, null, 'TP_Islem_Sorgulama4'],
-            [PosInterface::TX_TYPE_HISTORY, PosInterface::MODEL_NON_SECURE, null, 'TP_Islem_Izleme'],
+            [PosQueryInterface::QUERY_TYPE_HISTORY,  PosInterface::MODEL_NON_SECURE, null, 'TP_Islem_Izleme'],
+            [PosQueryInterface::QUERY_TYPE_BIN_LIST, PosInterface::MODEL_NON_SECURE, null, 'BIN_SanalPos'],
         ];
     }
 

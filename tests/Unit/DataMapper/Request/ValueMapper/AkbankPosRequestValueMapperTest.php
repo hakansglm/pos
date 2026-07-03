@@ -115,6 +115,12 @@ class AkbankPosRequestValueMapperTest extends TestCase
         $this->assertCount(0, $this->valueMapper->getCardTypeMappings());
     }
 
+    public function testMapCardClass(): void
+    {
+        $this->expectException(\LogicException::class);
+        $this->valueMapper->mapCardClass(null);
+    }
+
     public static function mapSecureTypeDataProvider(): array
     {
         return [

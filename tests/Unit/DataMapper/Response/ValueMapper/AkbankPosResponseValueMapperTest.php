@@ -13,6 +13,7 @@ use Mews\Pos\DataMapper\Response\ValueMapper\AkbankPosResponseValueMapper;
 use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
@@ -95,7 +96,7 @@ class AkbankPosResponseValueMapperTest extends TestCase
             ['1002', PosInterface::TX_TYPE_REFUND],
             ['1003', PosInterface::TX_TYPE_CANCEL],
             ['1010', PosInterface::TX_TYPE_ORDER_HISTORY],
-            ['1009', PosInterface::TX_TYPE_HISTORY],
+            ['1009', PosQueryInterface::QUERY_TYPE_HISTORY],
         ];
     }
 
@@ -118,5 +119,23 @@ class AkbankPosResponseValueMapperTest extends TestCase
             ['blabla', null, true, 'blabla'],
             ['blabla', null, false, 'blabla'],
         ];
+    }
+
+    public function testMapCardFamilyName(): void
+    {
+        $this->assertSame('paraf', $this->mapper->mapCardFamilyName('paraf'));
+        $this->assertNull($this->mapper->mapCardFamilyName(null));
+    }
+
+    public function testMapCardClass(): void
+    {
+        $this->assertNull($this->mapper->mapCardClass(null));
+        $this->assertNull($this->mapper->mapCardClass('CREDIT_CARD'));
+    }
+
+    public function testMapCardType(): void
+    {
+        $this->assertNull($this->mapper->mapCardType(null));
+        $this->assertNull($this->mapper->mapCardType('VISA'));
     }
 }

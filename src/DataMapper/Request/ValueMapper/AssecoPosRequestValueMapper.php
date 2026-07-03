@@ -33,7 +33,7 @@ class AssecoPosRequestValueMapper extends AbstractRequestValueMapper
         PosInterface::TX_TYPE_REFUND         => 'Credit',
         PosInterface::TX_TYPE_REFUND_PARTIAL => 'Credit',
         PosInterface::TX_TYPE_STATUS         => 'ORDERSTATUS',
-        PosInterface::TX_TYPE_HISTORY        => 'ORDERHISTORY',
+        PosInterface::TX_TYPE_ORDER_HISTORY  => 'ORDERHISTORY',
     ];
 
     /**

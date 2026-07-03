@@ -49,9 +49,7 @@ class PayFlexCPV4Pos extends AbstractGateway
         PosInterface::TX_TYPE_CANCEL         => false,
         PosInterface::TX_TYPE_REFUND         => false,
         PosInterface::TX_TYPE_REFUND_PARTIAL => false,
-        PosInterface::TX_TYPE_HISTORY        => false,
         PosInterface::TX_TYPE_ORDER_HISTORY  => false,
-        PosInterface::TX_TYPE_CUSTOM_QUERY   => true,
     ];
 
     /** @return PayFlexPosAccount */
@@ -152,14 +150,6 @@ class PayFlexCPV4Pos extends AbstractGateway
      * @inheritDoc
      */
     public function cancel(array $order): array
-    {
-        throw new UnsupportedTransactionTypeException();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function history(array $data): array
     {
         throw new UnsupportedTransactionTypeException();
     }

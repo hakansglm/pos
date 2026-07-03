@@ -227,33 +227,6 @@ class IyzicoPosTest extends TestCase
         $this->assertSame($expected, $this->pos->getResponse());
     }
 
-    public function testCustomQuery(): void
-    {
-        $txType       = PosInterface::TX_TYPE_CUSTOM_QUERY;
-        $requestData  = ['custom' => 'data'];
-        $prepared     = ['custom' => 'data'];
-        $bankResponse = ['result' => 'ok'];
-
-        $this->requestMapperMock->expects(self::once())
-            ->method('createCustomQueryRequestData')
-            ->with($this->account, $requestData)
-            ->willReturn($prepared);
-
-        $this->configureClientResponse(
-            $txType,
-            $bankResponse,
-            $requestData,
-            PosInterface::MODEL_NON_SECURE,
-            null,
-            $this->account
-        );
-
-        $result = $this->pos->customQuery($requestData);
-
-        $this->assertSame($bankResponse, $result);
-        $this->assertSame($bankResponse, $this->pos->getResponse());
-    }
-
     public function testMake3DPayPaymentThrows(): void
     {
         $this->expectException(UnsupportedTransactionTypeException::class);
@@ -705,37 +678,6 @@ class IyzicoPosTest extends TestCase
             ->willReturn($expected);
 
         $result = $this->pos->refund($this->order);
-
-        $this->assertSame($expected, $result);
-    }
-
-    public function testHistory(): void
-    {
-        $txType       = PosInterface::TX_TYPE_HISTORY;
-        $requestData  = ['history-request'];
-        $bankResponse = ['items' => []];
-        $expected     = ['mapped-history'];
-
-        $this->requestMapperMock->expects(self::once())
-            ->method('createHistoryRequestData')
-            ->with($this->account, $this->order)
-            ->willReturn($requestData);
-
-        $this->configureClientResponse(
-            $txType,
-            $bankResponse,
-            $this->order,
-            PosInterface::MODEL_NON_SECURE,
-            null,
-            $this->account
-        );
-
-        $this->responseMapperMock->expects(self::once())
-            ->method('mapHistoryResponse')
-            ->with($bankResponse)
-            ->willReturn($expected);
-
-        $result = $this->pos->history($this->order);
 
         $this->assertSame($expected, $result);
     }

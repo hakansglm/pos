@@ -253,14 +253,6 @@ class PosNetPosResponseDataMapper extends AbstractResponseDataMapper
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function mapHistoryResponse(array $rawResponseData): array
-    {
-        throw new NotImplementedException();
-    }
-
-    /**
      * @inheritDoc
      */
     public function is3dAuthSuccess(?string $mdStatus): bool

@@ -8,6 +8,7 @@ namespace Mews\Pos\DataMapper\Response\ValueMapper;
 
 use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 
 /**
  * @internal
@@ -24,7 +25,7 @@ class AkbankPosResponseValueMapper extends AbstractResponseValueMapper
         643 => PosInterface::CURRENCY_RUB,
     ];
 
-    /** @var array<PosInterface::TX_TYPE_*, string|array<PosInterface::MODEL_*, string>> */
+    /** @var array<PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_*, string|array<PosInterface::MODEL_*, string>> */
     protected array $txTypeMappings = [
         PosInterface::TX_TYPE_PAY_AUTH      => [
             PosInterface::MODEL_NON_SECURE => '1000',
@@ -43,7 +44,7 @@ class AkbankPosResponseValueMapper extends AbstractResponseValueMapper
         PosInterface::TX_TYPE_REFUND_PARTIAL => '1002',
         PosInterface::TX_TYPE_CANCEL         => '1003',
         PosInterface::TX_TYPE_ORDER_HISTORY  => '1010',
-        PosInterface::TX_TYPE_HISTORY        => '1009',
+        PosQueryInterface::QUERY_TYPE_HISTORY   => '1009',
     ];
 
     /**

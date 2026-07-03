@@ -20,6 +20,7 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Gateway\IyzicoPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -113,7 +114,7 @@ class IyzicoPosQueryApiHttpClientTest extends TestCase
 
     public function testRequestSendsGetWithQueryParams(): void
     {
-        $txType       = PosInterface::TX_TYPE_HISTORY;
+        $txType       = PosQueryInterface::QUERY_TYPE_HISTORY;
         $paymentModel = PosInterface::MODEL_NON_SECURE;
         $requestData  = ['transactionDate' => '2024-01-01', 'page' => 1];
         $order        = [];
@@ -158,7 +159,7 @@ class IyzicoPosQueryApiHttpClientTest extends TestCase
 
     public function testRequestHandles204Response(): void
     {
-        $txType       = PosInterface::TX_TYPE_HISTORY;
+        $txType       = PosQueryInterface::QUERY_TYPE_HISTORY;
         $paymentModel = PosInterface::MODEL_NON_SECURE;
         $requestData  = ['transactionDate' => '2024-01-01'];
         $apiUrl       = self::BASE_URL . '/transactions';
@@ -195,7 +196,7 @@ class IyzicoPosQueryApiHttpClientTest extends TestCase
 
     public function testRequestFailsWith500(): void
     {
-        $txType       = PosInterface::TX_TYPE_HISTORY;
+        $txType       = PosQueryInterface::QUERY_TYPE_HISTORY;
         $paymentModel = PosInterface::MODEL_NON_SECURE;
         $requestData  = ['transactionDate' => '2024-01-01'];
         $apiUrl       = self::BASE_URL . '/transactions';
@@ -231,7 +232,7 @@ class IyzicoPosQueryApiHttpClientTest extends TestCase
 
     public function testRequestWithNonIyzicoAccountThrows(): void
     {
-        $txType      = PosInterface::TX_TYPE_HISTORY;
+        $txType      = PosQueryInterface::QUERY_TYPE_HISTORY;
         $paymentModel = PosInterface::MODEL_NON_SECURE;
 
         $wrongAccount = $this->createMock(AbstractPosAccount::class);
@@ -243,7 +244,7 @@ class IyzicoPosQueryApiHttpClientTest extends TestCase
     public static function supportsTxDataProvider(): array
     {
         return [
-            [PosInterface::TX_TYPE_HISTORY,       true],
+            [PosQueryInterface::QUERY_TYPE_HISTORY,       true],
             [PosInterface::TX_TYPE_ORDER_HISTORY, true],
             [PosInterface::TX_TYPE_PAY_AUTH,      false],
             [PosInterface::TX_TYPE_CANCEL,        false],
@@ -253,7 +254,7 @@ class IyzicoPosQueryApiHttpClientTest extends TestCase
     public static function getApiUrlDataProvider(): array
     {
         return [
-            [PosInterface::TX_TYPE_HISTORY,       self::BASE_URL . '/transactions'],
+            [PosQueryInterface::QUERY_TYPE_HISTORY,       self::BASE_URL . '/transactions'],
             [PosInterface::TX_TYPE_ORDER_HISTORY, self::BASE_URL . '/details'],
         ];
     }

@@ -167,14 +167,6 @@ class InterPosRequestDataMapper extends AbstractRequestDataMapper
     /**
      * {@inheritDoc}
      */
-    public function createHistoryRequestData(AbstractPosAccount $posAccount, array $data = []): array
-    {
-        throw new NotImplementedException();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function createOrderHistoryRequestData(AbstractPosAccount $posAccount, array $order): array
     {
         throw new NotImplementedException();
@@ -235,14 +227,6 @@ class InterPosRequestDataMapper extends AbstractRequestDataMapper
             'method'  => 'POST',
             'inputs'  => $inputs,
         ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function createCustomQueryRequestData(AbstractPosAccount $posAccount, array $requestData): array
-    {
-        return $requestData + $this->getRequestAccountData($posAccount);
     }
 
     /**

@@ -323,7 +323,48 @@ if (is_string($formData)) {
 
 Bu kontrol zaten `docs/THREED-PAYMENT-EXAMPLE.md` örnek kodunda yer almaktadır.
 
-### 6e. `setTestMode()` artık genel arayüzde yok
+### 6g. PosQuery — `history()` ve `customQuery()` taşındı
+
+`PosInterface::history()` ve `PosInterface::customQuery()` metotları **kaldırıldı**.
+Bu işlemler artık `PosQueryInterface` üzerinden yürütülüyor.
+
+#### Sabit adı değişiklikleri
+
+| v1 / eski v2 sabiti | Yeni sabit |
+|---|---|
+| `PosInterface::TX_TYPE_HISTORY` | `PosQueryInterface::QUERY_TYPE_HISTORY` |
+| `PosInterface::TX_TYPE_CUSTOM_QUERY` | `PosQueryInterface::QUERY_TYPE_CUSTOM_QUERY` |
+
+#### Kullanım
+
+`PosQueryFactory::create()` ile bir `PosQueryInterface` örneği oluşturun:
+
+```php
+use Mews\Pos\Factory\PosQueryFactory;
+
+$posQuery = PosQueryFactory::create(
+    $account,         // AbstractPosAccount — PosFactory'de kullandığınızın aynısı
+    $config,          // pos_test.php / pos_production.php dizisi
+    $eventDispatcher, // PSR-14 EventDispatcherInterface
+    null,             // ?LoggerInterface — isteğe bağlı
+);
+```
+
+```php
+// Genel işlem geçmişi
+// v1 / eski v2: $pos->history($data)
+$response = $posQuery->history([
+    'start_date' => new \DateTime('-1 month'),
+    'end_date'   => new \DateTime(),
+]);
+
+// Ham API çağrısı
+// v1 / eski v2: $pos->customQuery($requestData, $apiUrl)
+$response = $posQuery->customQuery($requestData, $apiUrl);
+```
+---
+
+### 6h. `setTestMode()` artık genel arayüzde yok
 
 `setTestMode()` metodu artık dışarıdan çağrılamıyor.
 Test modunu config dosyasından ayarlayın (bkz. [Bölüm 9](#9-config-dosyası-değişiklikleri)).
@@ -731,3 +772,7 @@ $response = $pos->status($order);
 - [ ] `PosFactory::createPosGateway()` çağrısında 4. parametre `null` (veya `HttpClientStrategyInterface`), 5. parametre `null` (veya PSR-18 `ClientInterface`) olarak güncellendi mi?
 - [ ] `getBank()` → `getBankName()`, `getClientId()` → `getMerchantId()`, `getStoreKey()` → `getSecretKey()` güncellendi mi?
 - [ ] `getLang()` çağrıları kaldırıldı mı?
+- [ ] `$pos->history(...)` → `PosQueryFactory::create(...)->history(...)` olarak güncellendi mi?
+- [ ] `$pos->customQuery(...)` → `PosQueryFactory::create(...)->customQuery(...)` olarak güncellendi mi?
+- [ ] `PosInterface::TX_TYPE_HISTORY` → `PosQueryInterface::QUERY_TYPE_HISTORY` olarak güncellendi mi?
+- [ ] `PosInterface::TX_TYPE_CUSTOM_QUERY` → `PosQueryInterface::QUERY_TYPE_CUSTOM_QUERY` olarak güncellendi mi?

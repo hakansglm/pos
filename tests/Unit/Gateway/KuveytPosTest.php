@@ -422,12 +422,6 @@ class KuveytPosTest extends TestCase
         $this->assertSame($isSuccess, $this->pos->isSuccess());
     }
 
-    public function testHistoryRequest(): void
-    {
-        $this->expectException(UnsupportedTransactionTypeException::class);
-        $this->pos->history([]);
-    }
-
     public function testOrderHistoryRequest(): void
     {
         $this->expectException(UnsupportedTransactionTypeException::class);
@@ -448,12 +442,6 @@ class KuveytPosTest extends TestCase
 
         $this->expectException(UnsupportedPaymentModelException::class);
         $this->pos->payment(PosInterface::MODEL_3D_PAY, [], $txType, null, ['abc']);
-    }
-
-    public function testCustomQueryRequest(): void
-    {
-        $this->expectException(UnsupportedTransactionTypeException::class);
-        $this->pos->customQuery([]);
     }
 
     public static function make3DPaymentDataProvider(): array

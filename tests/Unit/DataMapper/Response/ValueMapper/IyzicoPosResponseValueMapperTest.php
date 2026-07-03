@@ -11,6 +11,7 @@ use Mews\Pos\DataMapper\Response\ValueMapper\AbstractResponseValueMapper;
 use Mews\Pos\DataMapper\Response\ValueMapper\IyzicoPosResponseValueMapper;
 use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Gateway\IyzicoPos;
+use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -95,6 +96,45 @@ class IyzicoPosResponseValueMapperTest extends TestCase
         ];
     }
 
+    #[DataProvider('mapCardTypeDataProvider')]
+    public function testMapCardType(?string $input, ?string $expected): void
+    {
+        $this->assertSame($expected, $this->mapper->mapCardType($input));
+    }
+
+    public static function mapCardTypeDataProvider(): array
+    {
+        return [
+            [null,               null],
+            ['MASTER_CARD',      CreditCardInterface::CARD_TYPE_MASTERCARD],
+            ['VISA',             CreditCardInterface::CARD_TYPE_VISA],
+            ['TROY',             CreditCardInterface::CARD_TYPE_TROY],
+            ['AMERICAN_EXPRESS', CreditCardInterface::CARD_TYPE_AMEX],
+            ['UNKNOWN',          null],
+        ];
+    }
+
+    #[DataProvider('mapCardFamilyNameDataProvider')]
+    public function testMapCardFamilyName(?string $input, ?string $expected): void
+    {
+        $this->assertSame($expected, $this->mapper->mapCardFamilyName($input));
+    }
+
+    public static function mapCardFamilyNameDataProvider(): array
+    {
+        return [
+            [null,         null],
+            ['Paraf',      CreditCardInterface::CARD_FAMILY_PARAF],
+            ['Axess',      CreditCardInterface::CARD_FAMILY_AXESS],
+            ['Bonus',      CreditCardInterface::CARD_FAMILY_BONUS],
+            ['World',      CreditCardInterface::CARD_FAMILY_WORLD],
+            ['Maximum',    CreditCardInterface::CARD_FAMILY_MAXIMUM],
+            ['CardFinans', CreditCardInterface::CARD_FAMILY_CARDFINANS],
+            ['Advantage',  CreditCardInterface::CARD_FAMILY_ADVANTAGE],
+            ['unknown',    'unknown'],
+        ];
+    }
+
     public static function mapCurrencyDataProvider(): array
     {
         return [
@@ -105,6 +145,23 @@ class IyzicoPosResponseValueMapperTest extends TestCase
             ['JPY', PosInterface::CURRENCY_JPY],
             ['RUB', PosInterface::CURRENCY_RUB],
             ['XYZ', null],
+        ];
+    }
+
+    #[DataProvider('mapCardClassDataProvider')]
+    public function testMapCardClass(?string $input, ?string $expected): void
+    {
+        $this->assertSame($expected, $this->mapper->mapCardClass($input));
+    }
+
+    public static function mapCardClassDataProvider(): array
+    {
+        return [
+            [null,           null],
+            ['CREDIT_CARD',  CreditCardInterface::CARD_CLASS_CREDIT],
+            ['DEBIT_CARD',   CreditCardInterface::CARD_CLASS_DEBIT],
+            ['PREPAID_CARD', CreditCardInterface::CARD_CLASS_PREPAID],
+            ['UNKNOWN',      null],
         ];
     }
 }

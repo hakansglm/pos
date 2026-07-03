@@ -20,7 +20,6 @@ use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exception\HashMismatchException;
 use Mews\Pos\Exception\UnsupportedFormFormatException;
-use Mews\Pos\Exception\UnsupportedTransactionTypeException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateway\AbstractGateway;
@@ -398,12 +397,6 @@ class AssecoPosTest extends TestCase
         $this->assertSame($isSuccess, $this->pos->isSuccess());
     }
 
-    public function testHistoryRequest(): void
-    {
-        $this->expectException(UnsupportedTransactionTypeException::class);
-        $this->pos->history([]);
-    }
-
     #[DataProvider('orderHistoryDataProvider')]
     public function testOrderHistory(array $bankResponse, array $expectedData, bool $isSuccess): void
     {
@@ -725,51 +718,6 @@ class AssecoPosTest extends TestCase
             ->willReturn(['result']);
 
         $this->pos->payment(PosInterface::MODEL_NON_SECURE, $order, $txType);
-    }
-
-    #[DataProvider('customQueryRequestDataProvider')]
-    public function testCustomQueryRequest(array $requestData, ?string $apiUrl): void
-    {
-        $account = $this->pos->getAccount();
-        $txType  = PosInterface::TX_TYPE_CUSTOM_QUERY;
-
-        $updatedRequestData = $requestData + [
-                'abc' => 'def',
-            ];
-        $this->requestMapperMock->expects(self::once())
-            ->method('createCustomQueryRequestData')
-            ->with($account, $requestData)
-            ->willReturn($updatedRequestData);
-
-        $this->configureClientResponse(
-            $txType,
-            $updatedRequestData,
-            ['decodedResponse'],
-            $requestData,
-            PosInterface::MODEL_NON_SECURE,
-            $apiUrl,
-            $this->account
-        );
-
-        $this->pos->customQuery($requestData, $apiUrl);
-    }
-
-    public static function customQueryRequestDataProvider(): array
-    {
-        return [
-            [
-                'requestData' => [
-                    'id' => '2020110828BC',
-                ],
-                'api_url'     => 'https://entegrasyon.asseco-see.com.tr/fim/api/xxxx',
-            ],
-            [
-                'requestData' => [
-                    'id' => '2020110828BC',
-                ],
-                'api_url'     => null,
-            ],
-        ];
     }
 
     public static function make3DPaymentDataProvider(): array

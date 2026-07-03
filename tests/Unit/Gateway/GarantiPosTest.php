@@ -8,7 +8,6 @@ namespace Mews\Pos\Tests\Unit\Gateway;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use LogicException;
-use DateTimeImmutable;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\HttpClientStrategyInterface;
 use Mews\Pos\Crypt\CryptInterface;
@@ -550,37 +549,6 @@ class GarantiPosTest extends TestCase
         $this->pos->refund($order);
     }
 
-    #[DataProvider('historyRequestDataProvider')]
-    public function testHistoryRequest(array $order): void
-    {
-        $account     = $this->pos->getAccount();
-        $txType      = PosInterface::TX_TYPE_HISTORY;
-        $requestData = ['createHistoryRequestData'];
-
-        $this->requestMapperMock->expects(self::once())
-            ->method('createHistoryRequestData')
-            ->with($account, $order)
-            ->willReturn($requestData);
-
-        $decodedResponse = ['decodedData'];
-        $this->configureClientResponse(
-            $txType,
-            $requestData,
-            $decodedResponse,
-            $order,
-            PosInterface::MODEL_NON_SECURE,
-            null,
-            $this->account
-        );
-
-        $this->responseMapperMock->expects(self::once())
-            ->method('mapHistoryResponse')
-            ->with($decodedResponse)
-            ->willReturn(['result']);
-
-        $this->pos->history($order);
-    }
-
     #[DataProvider('orderHistoryRequestDataProvider')]
     public function testOrderHistoryRequest(array $order): void
     {
@@ -610,51 +578,6 @@ class GarantiPosTest extends TestCase
             ->willReturn(['result']);
 
         $this->pos->orderHistory($order);
-    }
-
-    #[DataProvider('customQueryRequestDataProvider')]
-    public function testCustomQueryRequest(array $requestData, ?string $apiUrl): void
-    {
-        $account = $this->pos->getAccount();
-        $txType  = PosInterface::TX_TYPE_CUSTOM_QUERY;
-
-        $updatedRequestData = $requestData + [
-                'abc' => 'def',
-            ];
-        $this->requestMapperMock->expects(self::once())
-            ->method('createCustomQueryRequestData')
-            ->with($account, $requestData)
-            ->willReturn($updatedRequestData);
-
-        $this->configureClientResponse(
-            $txType,
-            $updatedRequestData,
-            ['decodedResponse'],
-            $requestData,
-            PosInterface::MODEL_NON_SECURE,
-            $apiUrl,
-            $this->account
-        );
-
-        $this->pos->customQuery($requestData, $apiUrl);
-    }
-
-    public static function customQueryRequestDataProvider(): array
-    {
-        return [
-            [
-                'requestData' => [
-                    'id' => '2020110828BC',
-                ],
-                'api_url'     => 'https://sanalposprovtest.garantibbva.com.tr/VPServlet/xxxx',
-            ],
-            [
-                'requestData' => [
-                    'id' => '2020110828BC',
-                ],
-                'api_url'     => null,
-            ],
-        ];
     }
 
     public static function make3DPaymentDataProvider(): array
@@ -925,19 +848,6 @@ class GarantiPosTest extends TestCase
         ];
     }
 
-
-    public static function historyRequestDataProvider(): array
-    {
-        return [
-            [
-                'order' => [
-                    'ip'         => '127.0.0.1',
-                    'start_date' => new DateTimeImmutable(),
-                    'end_date'   => new DateTimeImmutable(),
-                ],
-            ],
-        ];
-    }
 
     private function createGateway(array $config, ?AbstractPosAccount $account = null): PosInterface
     {

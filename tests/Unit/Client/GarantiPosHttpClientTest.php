@@ -17,6 +17,7 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Gateway\GarantiPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -227,7 +228,7 @@ class GarantiPosHttpClientTest extends TestCase
                 'expected'     => 'https://sanalposprovtest.garantibbva.com.tr/VPServlet',
             ],
             [
-                'txType'       => PosInterface::TX_TYPE_HISTORY,
+                'txType'       => PosQueryInterface::QUERY_TYPE_HISTORY,
                 'paymentModel' => PosInterface::MODEL_NON_SECURE,
                 'expected'     => 'https://sanalposprovtest.garantibbva.com.tr/VPServlet',
             ],

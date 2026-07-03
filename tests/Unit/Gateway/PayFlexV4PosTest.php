@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Gateway;
 
+use Mews\Pos\Exception\UnsupportedTransactionTypeException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Exception;
 use LogicException;
@@ -22,7 +23,6 @@ use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exception\UnsupportedFormFormatException;
 use Mews\Pos\Exception\UnsupportedPaymentModelException;
-use Mews\Pos\Exception\UnsupportedTransactionTypeException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateway\AbstractGateway;
@@ -540,61 +540,10 @@ class PayFlexV4PosTest extends TestCase
         $this->pos->refund($order);
     }
 
-    public function testHistoryRequest(): void
-    {
-        $this->expectException(UnsupportedTransactionTypeException::class);
-        $this->pos->history([]);
-    }
-
     public function testOrderHistoryRequest(): void
     {
         $this->expectException(UnsupportedTransactionTypeException::class);
         $this->pos->orderHistory([]);
-    }
-
-    #[DataProvider('customQueryRequestDataProvider')]
-    public function testCustomQueryRequest(array $requestData, ?string $apiUrl): void
-    {
-        $account = $this->pos->getAccount();
-        $txType  = PosInterface::TX_TYPE_CUSTOM_QUERY;
-
-        $updatedRequestData = $requestData + [
-                'abc' => 'def',
-            ];
-        $this->requestMapperMock->expects(self::once())
-            ->method('createCustomQueryRequestData')
-            ->with($account, $requestData)
-            ->willReturn($updatedRequestData);
-
-        $this->configureClientResponse(
-            $txType,
-            $updatedRequestData,
-            ['decodedResponse'],
-            $requestData,
-            PosInterface::MODEL_NON_SECURE,
-            $apiUrl,
-            $account
-        );
-
-        $this->pos->customQuery($requestData, $apiUrl);
-    }
-
-    public static function customQueryRequestDataProvider(): array
-    {
-        return [
-            [
-                'requestData' => [
-                    'id' => '2020110828BC',
-                ],
-                'api_url'     => 'https://onlineodemetest.vakifbank.com.tr:4443/VposService/v3/Vposreq.aspx/xxx',
-            ],
-            [
-                'requestData' => [
-                    'id' => '2020110828BC',
-                ],
-                'api_url'     => null,
-            ],
-        ];
     }
 
     public static function enrollmentFailResponseDataProvider(): array

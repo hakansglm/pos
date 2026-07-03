@@ -12,7 +12,6 @@ use Mews\Pos\DataMapper\Response\Mapper\AssecoPosResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\ResponseDataMapperInterface;
 use Mews\Pos\DataMapper\Response\ValueFormatter\ResponseValueFormatterInterface;
 use Mews\Pos\DataMapper\Response\ValueMapper\ResponseValueMapperInterface;
-use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Factory\ResponseValueFormatterFactory;
 use Mews\Pos\Factory\ResponseValueMapperFactory;
 use Mews\Pos\Gateway\AkbankPos;
@@ -441,12 +440,6 @@ class AssecoPosResponseDataMapperTest extends TestCase
         \ksort($expectedData);
         \ksort($actualData);
         $this->assertSame($expectedData, $actualData);
-    }
-
-    public function testMapHistoryResponse(): void
-    {
-        $this->expectException(NotImplementedException::class);
-        $this->responseDataMapper->mapHistoryResponse([]);
     }
 
     public static function paymentTestDataProvider(): iterable

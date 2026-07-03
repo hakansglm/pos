@@ -242,38 +242,6 @@ class IyzicoPosResponseDataMapper extends AbstractResponseDataMapper
     }
 
     /**
-     * @param array<string, mixed> $rawResponseData
-     *
-     * @return array<string, mixed>
-     */
-    public function mapHistoryResponse(array $rawResponseData): array
-    {
-        $status = self::TX_DECLINED;
-        if (self::PROCEDURE_SUCCESS_CODE === ($rawResponseData['status'] ?? null)) {
-            $status = self::TX_APPROVED;
-        }
-
-        $transactions = [];
-        if (self::TX_APPROVED === $status) {
-            foreach ($rawResponseData['transactions'] ?? [] as $rawTx) {
-                $transactions[] = $this->mapSingleHistoryTransaction($rawTx);
-            }
-        }
-
-        return [
-            'proc_return_code' => $rawResponseData['status'] ?? null,
-            'error_code'       => self::TX_APPROVED === $status ? null : ($rawResponseData['errorCode'] ?? null),
-            'error_message'    => self::TX_APPROVED === $status ? null : ($rawResponseData['errorMessage'] ?? null),
-            'trans_count'      => \count($transactions),
-            'transactions'     => $transactions,
-            'current_page'     => $rawResponseData['currentPage'] ?? null,
-            'total_pages'      => $rawResponseData['totalPageCount'] ?? null,
-            'status'           => $status,
-            'all'              => $rawResponseData,
-        ];
-    }
-
-    /**
      * IyziCo'da mdStatus 0 ve 4 ile de başarılı ödeme yapılabilir.
      * 0 değer aslında fail sayılması gerekiyor...
      *
@@ -416,67 +384,6 @@ class IyzicoPosResponseDataMapper extends AbstractResponseDataMapper
 
         if (isset($rawPayment['cancels']) && count($rawPayment['cancels']) > 0) {
             $transaction['cancel_time'] = $this->valueFormatter->formatDateTime((string) $rawPayment['cancels'][0]['createdDate'], $txType);
-        }
-
-        return $transaction;
-    }
-
-    /**
-     * @param array<string, mixed> $rawTx
-     *
-     * @return array<string, mixed>
-     */
-    private function mapSingleHistoryTransaction(array $rawTx): array
-    {
-        $txType            = PosInterface::TX_TYPE_HISTORY;
-        $transactionStatus = $rawTx['transactionStatus'] ?? null;
-
-        $transactionType   = $rawTx['transactionType'] ?? null;
-
-        $transaction                   = $this->getDefaultOrderHistoryTxResponse();
-        $transaction['transaction_type']  = null !== $transactionType
-            ? $this->valueMapper->mapTxType($transactionType)
-            : null;
-
-        if ($transaction['transaction_type'] === PosInterface::TX_TYPE_PAY_AUTH) {
-            $txStatus          = \in_array($transactionStatus, [1, 2], true) ? self::TX_APPROVED : self::TX_DECLINED;
-            $transaction['capture']           = self::TX_APPROVED === $txStatus;
-            $transaction['capture_amount']    = isset($rawTx['paidPrice'])
-                ? $this->valueFormatter->formatAmount($rawTx['paidPrice'], $txType)
-                : null;
-        } else {
-            $txStatus = self::TX_APPROVED;
-        }
-
-        $transaction['transaction_id'] = $rawTx['transactionId'] ?? null;
-        $transaction['auth_code']      = $rawTx['authCode'] ?? null;
-        $transaction['ref_ret_num']    = $rawTx['hostReference'] ?? null;
-        $transaction['payment_model']  = $this->valueMapper->mapSecureType($rawTx['threeDS'], $txType);
-
-        $transaction['status']            = $txStatus;
-
-        $transaction['first_amount']      = isset($rawTx['price'])
-            ? $this->valueFormatter->formatAmount($rawTx['price'], $txType)
-            : null;
-        $transaction['currency']          = isset($rawTx['transactionCurrency'])
-            ? $this->valueMapper->mapCurrency($rawTx['transactionCurrency'], $txType)
-            : null;
-        $transaction['transaction_time']  = isset($rawTx['transactionDate'])
-            ? $this->valueFormatter->formatDateTime((string) $rawTx['transactionDate'], $txType)
-            : null;
-
-        $transaction['installment_count'] = isset($rawTx['installment'])
-            ? $this->valueFormatter->formatInstallment((string) $rawTx['installment'], $txType)
-            : null;
-
-        if (self::TX_DECLINED === $txStatus) {
-            $transaction['order_status'] = PosInterface::PAYMENT_STATUS_ERROR;
-        } elseif ($transaction['transaction_type'] === PosInterface::TX_TYPE_PAY_AUTH) {
-            $transaction['order_status'] = PosInterface::PAYMENT_STATUS_PAYMENT_COMPLETED;
-        } elseif ($transaction['transaction_type'] === PosInterface::TX_TYPE_CANCEL) {
-            $transaction['order_status'] = PosInterface::PAYMENT_STATUS_CANCELED;
-        } elseif ($transaction['transaction_type'] === PosInterface::TX_TYPE_REFUND) {
-            $transaction['order_status'] = PosInterface::PAYMENT_STATUS_FULLY_REFUNDED;
         }
 
         return $transaction;

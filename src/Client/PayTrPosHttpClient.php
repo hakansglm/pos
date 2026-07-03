@@ -6,9 +6,10 @@
 
 namespace Mews\Pos\Client;
 
-use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Gateway\PayTrPos;
+use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use Mews\Pos\Serializer\Decoder\JsonDecoder;
 use Mews\Pos\Serializer\EncodedData;
 use Mews\Pos\Serializer\Encoder\FormEncoder;
@@ -74,11 +75,17 @@ class PayTrPosHttpClient extends AbstractHttpClient
             PosInterface::TX_TYPE_STATUS === $txType
             => $this->baseApiUrl.'/odeme/durum-sorgu',
 
-            \in_array($txType, [PosInterface::TX_TYPE_PAY_AUTH, PosInterface::TX_TYPE_CUSTOM_QUERY], true)
+            \in_array($txType, [PosInterface::TX_TYPE_PAY_AUTH, PosQueryInterface::QUERY_TYPE_CUSTOM_QUERY], true)
                 => $this->baseApiUrl.'/odeme',
 
-            PosInterface::TX_TYPE_HISTORY === $txType
-            => $this->baseApiUrl.'/rapor/islem-dokumu',
+            PosQueryInterface::QUERY_TYPE_HISTORY === $txType
+                => $this->baseApiUrl.'/rapor/islem-dokumu',
+
+            PosQueryInterface::QUERY_TYPE_INSTALLMENT_RATES === $txType
+                => $this->baseApiUrl.'/odeme/taksit-oranlari',
+
+            PosQueryInterface::QUERY_TYPE_BIN_LIST === $txType
+                => $this->baseApiUrl.'/odeme/api/bin-detail',
 
             default => throw new \Mews\Pos\Exception\UnsupportedTransactionTypeException(),
         };

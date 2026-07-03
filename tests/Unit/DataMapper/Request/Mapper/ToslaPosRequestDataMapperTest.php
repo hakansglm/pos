@@ -8,7 +8,6 @@ namespace Mews\Pos\Tests\Unit\DataMapper\Request\Mapper;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use Mews\Pos\Exception\NotImplementedException;
-use Generator;
 use DateTimeImmutable;
 use DateTime;
 use Mews\Pos\Crypt\CryptInterface;
@@ -252,68 +251,6 @@ class ToslaPosRequestDataMapperTest extends TestCase
             PosInterface::TX_TYPE_PAY_AUTH,
             []
         );
-    }
-
-    public function testCreateHistoryRequestData(): void
-    {
-        $this->expectException(NotImplementedException::class);
-        $this->requestDataMapper->createHistoryRequestData($this->account);
-    }
-
-    #[DataProvider('createCustomQueryRequestDataDataProvider')]
-    public function testCreateCustomQueryRequestData(array $requestData, array $expectedData): void
-    {
-        $this->crypt->expects(self::once())
-            ->method('generateRandomString')
-            ->willReturn($expectedData['rnd']);
-        if (!isset($requestData['hash'])) {
-            $this->crypt->expects(self::once())
-                ->method('createHash')
-                ->willReturn($expectedData['hash']);
-        }
-
-        $actual = $this->requestDataMapper->createCustomQueryRequestData($this->account, $requestData);
-        $this->assertSame(14, \strlen((string) $actual['timeSpan']));
-        unset($actual['timeSpan'], $expectedData['timeSpan']);
-
-        \ksort($actual);
-        \ksort($expectedData);
-        $this->assertSame($expectedData, $actual);
-    }
-
-    public static function createCustomQueryRequestDataDataProvider(): Generator
-    {
-        yield 'without_account_data_installment_option_inquiry' => [
-            'request_data' => [
-                'bin' => 415956,
-            ],
-            'expected'     => [
-                'apiUser'  => 'POS_ENT_Test_001',
-                'bin'      => 415956,
-                'clientId' => '1000000494',
-                'hash'     => '12fsdfdsfsfs',
-                'rnd'      => 'rndsfldfls',
-                'timeSpan' => new DateTimeImmutable('2024-11-03 14:43:02'),
-            ],
-        ];
-
-        yield 'with_account_data_installment_option_inquiry' => [
-            'request_data' => [
-                'apiUser'  => 'POS_ENT_Test_001xxx',
-                'bin'      => 415956,
-                'clientId' => '1000000494xx',
-                'hash'     => '12fsdfdsfsfsxxx',
-                'rnd'      => 'rndsfldfls',
-            ],
-            'expected'     => [
-                'apiUser'  => 'POS_ENT_Test_001xxx',
-                'bin'      => 415956,
-                'clientId' => '1000000494xx',
-                'hash'     => '12fsdfdsfsfsxxx',
-                'rnd'      => 'rndsfldfls',
-                'timeSpan' => new DateTimeImmutable('2024-11-03 14:43:02'),
-            ],
-        ];
     }
 
     public static function statusRequestDataProvider(): array

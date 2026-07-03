@@ -12,16 +12,16 @@ sistemlerinin kullanılabilmesidir.
 
 | Gateway                                                    | Desktekleyen<br/>bankalar                                                      | Desteklenen<br/>Ödeme Tipleri                                                                               | Desteklenen Sorgular                                                                                                        |
 |------------------------------------------------------------|--------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
-| Tosla<br><sup>(eski AKÖde)</sup>                           | ?                                                                              | NonSecure<br/>3DPay<br/>3DHost                                                                              | İptal<br/>İade<br/>Durum sorgulama<br/>Sipariş Tarihçesini sorgulama<br/>Özel Sorgu                                         |
-| ParamPos                                                   | ?                                                                              | NonSecure<br/>3DSecure<br/>3DPay<br/><sup>(test edilmesi gerekiyor)</sup>                                   | İptal<br/>İade<br/>Durum sorgulama<br/>Geçmiş İşlemleri sorgulama<br/>Özel Sorgu                                            |
-| IyzicoPos                                                  | Iyzico                                                                         | NonSecure<br/>3DSecure<br/>3DHost                                                                           | İptal<br/>İade (v2 API)<br/>Durum sorgulama<br/>Sipariş Tarihçesini sorgulama<br/>Geçmiş İşlemleri sorgulama<br/>Özel Sorgu |
-| PayTrPos                                                   | PayTr                                                                          | NonSecure<br/>3DPay<sup>(Direkt API)</sup><br/>3DHost<sup>(iFrame API)</sup>                                | İade<br/>Durum sorgulama<br/>Geçmiş İşlemleri sorgulama<br/>Özel Sorgu                                                      |
+| Tosla<br><sup>(eski AKÖde)</sup>                           | ?                                                                              | NonSecure<br/>3DPay<br/>3DHost                                                                              | İptal<br/>İade<br/>Durum sorgulama<br/>Sipariş Tarihçesini sorgulama<br/>Özel Sorgu<br/>Taksit Oranları<br/>Taksit Fiyatları |
+| ParamPos                                                   | ?                                                                              | NonSecure<br/>3DSecure<br/>3DPay<br/><sup>(test edilmesi gerekiyor)</sup>                                   | İptal<br/>İade<br/>Durum sorgulama<br/>Geçmiş İşlemleri sorgulama<br/>Özel Sorgu<br/>Taksit Oranları<br/>BIN Sorgulama      |
+| IyzicoPos                                                  | Iyzico                                                                         | NonSecure<br/>3DSecure<br/>3DHost                                                                           | İptal<br/>İade (v2 API)<br/>Durum sorgulama<br/>Sipariş Tarihçesini sorgulama<br/>Geçmiş İşlemleri sorgulama<br/>Özel Sorgu<br/>Taksit Fiyatları<br/>BIN Sorgulama |
+| PayTrPos                                                   | PayTr                                                                          | NonSecure<br/>3DPay<sup>(Direkt API)</sup><br/>3DHost<sup>(iFrame API)</sup>                                | İade<br/>Durum sorgulama<br/>Geçmiş İşlemleri sorgulama<br/>Özel Sorgu<br/>Taksit Oranları<br/>BIN Sorgulama                |
 | Param3DHostPos                                             | ?                                                                              | 3DHost<br/><sup>(test edilmesi gerekiyor)</sup>                                                             |                                                                                                                             |
 | AkbankPos <br/><sup>(Akbank'ın yeni altyapısı)</sup>       | Akbank                                                                         | NonSecure<br/>3DSecure<br/>3DPay<br/>3DHost<br/>Tekrarlanan Ödeme                                            | İptal<br/>İade<br/>Sipariş Tarihçesini sorgulama<br/>Geçmiş İşlemleri sorgulama<br/>Özel Sorgu                              |
 | AssecoPos<br/><sup>(Asseco/Payten)</sup><br/>eski EstV3Pos | Akbank<br/>TEB<br/>İşbank<br/>Şekerbank<br/>Halkbank<br/>Finansbank<br/>Ziraat | NonSecure<br/>3DSecure<br/>3DPay<br/>3DHost<br/>3DPayHost<br/>Tekrarlanan Ödeme                             | İptal<br/>İade<br/>Durum sorgulama<br/>Sipariş Tarihçesini sorgulama<br/>Özel Sorgu                                         |
 | PayFlex MPI VPOS V4                                        | Ziraat<br/>Vakıfbank VPOS 7/24<br/>İşbank                                      | NonSecure<br/>3DSecure<br/>Tekrarlanan Ödeme                                                                | İptal<br/>İade<br/>Durum sorgulama<br/>Özel Sorgu                                                                           |
 | PayFlex<br/>Common Payment V4<br/><sup>(Ortak Ödeme)</sup> | Ziraat<br/>Vakıfbank<br/>İşbank                                                | 3DPay<br/>3DHost                                                                                            | Özel Sorgu                                                                                                                  |
-| Garanti Virtual POS                                        | Garanti                                                                        | NonSecure<br/>3DSecure<br/>3DPay<br/>3DHost<br/>Tekrarlanan Ödeme                                           | İptal<br/>İade<br/>Durum sorgulama<br/>Sipariş Tarihçesini sorgulama<br/>Geçmiş İşlemleri sorgulama<br/>Özel Sorgu          |
+| Garanti Virtual POS                                        | Garanti                                                                        | NonSecure<br/>3DSecure<br/>3DPay<br/>3DHost<br/>Tekrarlanan Ödeme                                           | İptal<br/>İade<br/>Durum sorgulama<br/>Sipariş Tarihçesini sorgulama<br/>Geçmiş İşlemleri sorgulama<br/>Özel Sorgu<br/>BIN Sorgulama |
 | PosNet                                                     | YapıKredi                                                                      | NonSecure<br/>3DSecure<br/>                                                                                 | İptal<br/>İade<br/>Durum sorgulama<br/>Özel Sorgu                                                                           |
 | PosNetV1<br/><sup>(JSON API)</sup>                         | Albaraka Türk                                                                  | NonSecure<br/>3DSecure                                                                                      | İptal<br/>İade<br/>Durum sorgulama<br/>Özel Sorgu                                                                           |
 | PayFor                                                     | Finansbank<br/>Enpara<br>Ziraat Katılım                                        | NonSecure<br/>3DSecure<br/>3DPay<br/>3DHost                                                                 | İptal<br/>İade<br/>Durum sorgulama<br/>Sipariş Tarihçesini sorgulama<br/>Geçmiş İşlemleri sorgulama<br/>Özel Sorgu          |
@@ -48,7 +48,10 @@ sistemlerinin kullanılabilmesidir.
     - [Ödeme İptal](./docs/CANCEL-EXAMPLE.md)
     - [Ödeme İade](./docs/REFUND-EXAMPLE.md)
     - [Ödeme Durum Sorgulama](./docs/STATUS-EXAMPLE.md)
+    - [Tarihçe Sorgulama](./docs/HISTORY-EXAMPLE.md)
     - [Özel Sorgular](./docs/CUSTOM-QUERY-EXAMPLE.md)
+    - [Taksit Oranları ve Fiyatları Sorgulama](./docs/INSTALLMENT-RATES-PRICES-EXAMPLE.md)
+    - [BIN Sorgulama](./docs/BIN-LIST-EXAMPLE.md)
 
 - [Popup Window'da veya iframe içinde ödeme yapma](#popup-windowda-veya-iframe-içinde-ödeme-yapma)
 - [Troubleshoots](#troubleshoots)
@@ -63,12 +66,22 @@ sistemlerinin kullanılabilmesidir.
 - 3D Host modeliyle ödeme (`PosInterface::MODEL_3D_HOST`)
 - Sipariş/Ödeme durum sorgulama (`PosInterface::TX_TYPE_STATUS`)
 - Sipariş Tarihçesini sorgulama (`PosInterface::TX_TYPE_ORDER_HISTORY`)
-- Geçmiş işlemleri sorgulama (`PosInterface::TX_TYPE_HISTORY`)
 - Sipariş/Para iadesi yapma (`PosInterface::TX_TYPE_REFUND`
   ve `PosInterface::TX_TYPE_PARTIAL_REFUND`)
 - Sipariş iptal etme (`PosInterface::TX_TYPE_CANCEL`)
-- Özel Sorgular (`PosInterface::TX_TYPE_CUSTOM_QUERY`)
+- Geçmiş işlemleri sorgulama (`PosQueryInterface::TX_TYPE_HISTORY`)
+- Özel Sorgular (`PosQueryInterface::TX_TYPE_CUSTOM_QUERY`)
+- Taksit oranları sorgulama (`PosQueryInterface::TX_TYPE_INSTALLMENT_RATES`)
+- Taksit fiyatları hesaplama (`PosQueryInterface::TX_TYPE_INSTALLMENT_PRICES`)
+- BIN sorgulama (`PosQueryInterface::QUERY_TYPE_BIN_LIST`)
 - API istek verilerinin gateway API'na gönderilmeden önce değiştirebilme
+
+> **Not:** `TX_TYPE_HISTORY`, `TX_TYPE_CUSTOM_QUERY`, `TX_TYPE_INSTALLMENT_RATES`,
+> `TX_TYPE_INSTALLMENT_PRICES` ve `QUERY_TYPE_BIN_LIST` işlemleri `PosQueryInterface`
+> arayüzü üzerinden yapılır.
+> Bu işlemler için `PosQueryFactory::create()` ile bir `PosQueryInterface` nesnesi
+> oluşturmanız gerekmektedir.
+
 - Farklı Para birimler ile ödeme desteği
 - Tekrarlanan (Recurring) ödeme talimatları
 - [PSR-3](https://www.php-fig.org/psr/psr-3/) logger desteği

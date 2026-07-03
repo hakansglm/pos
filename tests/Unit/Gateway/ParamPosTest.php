@@ -8,7 +8,6 @@ namespace Mews\Pos\Tests\Unit\Gateway;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
-use DateTimeImmutable;
 use LogicException;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\HttpClientStrategyInterface;
@@ -655,86 +654,10 @@ class ParamPosTest extends TestCase
         $this->pos->refund($order);
     }
 
-    #[DataProvider('historyRequestDataProvider')]
-    public function testHistoryRequest(array $order): void
-    {
-        $account     = $this->pos->getAccount();
-        $txType      = PosInterface::TX_TYPE_HISTORY;
-        $requestData = ['createHistoryRequestData'];
-
-        $this->requestMapperMock->expects(self::once())
-            ->method('createHistoryRequestData')
-            ->with($account, $order)
-            ->willReturn($requestData);
-
-        $decodedResponse = ['decodedData'];
-        $this->configureClientResponse(
-            $txType,
-            $requestData,
-            $decodedResponse,
-            $order,
-            PosInterface::MODEL_NON_SECURE,
-            null,
-            $this->account
-        );
-
-        $this->responseMapperMock->expects(self::once())
-            ->method('mapHistoryResponse')
-            ->with($decodedResponse)
-            ->willReturn(['result']);
-
-        $this->pos->history($order);
-    }
-
     public function testOrderHistoryRequest(): void
     {
         $this->expectException(UnsupportedTransactionTypeException::class);
         $this->pos->orderHistory([]);
-    }
-
-    #[DataProvider('customQueryRequestDataProvider')]
-    public function testCustomQueryRequest(array $requestData, ?string $apiUrl): void
-    {
-        $account = $this->pos->getAccount();
-        $txType  = PosInterface::TX_TYPE_CUSTOM_QUERY;
-
-        $updatedRequestData = $requestData + [
-                'abc' => 'def',
-            ];
-        $this->requestMapperMock->expects(self::once())
-            ->method('createCustomQueryRequestData')
-            ->with($account, $requestData)
-            ->willReturn($updatedRequestData);
-
-        $this->configureClientResponse(
-            $txType,
-            $updatedRequestData,
-            ['decodedResponse'],
-            $requestData,
-            PosInterface::MODEL_NON_SECURE,
-            $apiUrl,
-            $this->account
-        );
-
-        $this->pos->customQuery($requestData, $apiUrl);
-    }
-
-    public static function customQueryRequestDataProvider(): array
-    {
-        return [
-            [
-                'requestData' => [
-                    'id' => '2020110828BC',
-                ],
-                'api_url'     => 'https://test-dmz.param.com.tr/turkpos.ws/service_turkpos_test.asmx/abc',
-            ],
-            [
-                'requestData' => [
-                    'id' => '2020110828BC',
-                ],
-                'api_url'     => null,
-            ],
-        ];
     }
 
     public static function make3DPaymentDataProvider(): array
@@ -913,20 +836,6 @@ class ParamPosTest extends TestCase
             [
                 'order' => [
                     'id' => '2020110828BC',
-                ],
-            ],
-        ];
-    }
-
-    public static function historyRequestDataProvider(): array
-    {
-        $txTime = new DateTimeImmutable();
-
-        return [
-            [
-                'order' => [
-                    'start_date' => $txTime->modify('-23 hour'),
-                    'end_date'   => $txTime,
                 ],
             ],
         ];

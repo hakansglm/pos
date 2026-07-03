@@ -9,6 +9,7 @@ namespace Mews\Pos\DataMapper\Request\ValueMapper;
 use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Exception\UnsupportedTransactionTypeException;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 
 /**
  * Maps order/request values to values that are expected by the POS API.
@@ -30,9 +31,9 @@ interface RequestValueMapperInterface
     public function getTxTypeMappings(): array;
 
     /**
-     * @param PosInterface::TX_TYPE_* $txType
-     * @param PosInterface::MODEL_*   $paymentModel
-     * @param array<string, mixed>    $order
+     * @param PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_* $txType
+     * @param PosInterface::MODEL_*                                   $paymentModel
+     * @param array<string, mixed>                                    $order
      *
      * @return string
      *
@@ -104,4 +105,14 @@ interface RequestValueMapperInterface
      * @return string
      */
     public function mapCardType(string $cardType): string;
+
+    /**
+     * Maps a unified card class constant to the bank-specific filter string.
+     * Returns the bank's "all" value when no class is specified or when the class has no dedicated filter.
+     *
+     * @param CreditCardInterface::CARD_CLASS_*|null $cardClass
+     *
+     * @return string
+     */
+    public function mapCardClass(?string $cardClass): string;
 }

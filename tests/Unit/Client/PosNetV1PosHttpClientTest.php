@@ -20,6 +20,7 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateway\PosNetPos;
 use Mews\Pos\Gateway\PosNetV1Pos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -122,7 +123,7 @@ class PosNetV1PosHttpClientTest extends TestCase
         $this->requestValueMapper->expects($this->never())
             ->method('mapTxType');
 
-        $this->assertTrue($this->client->supportsTx(PosInterface::TX_TYPE_CUSTOM_QUERY, PosInterface::MODEL_NON_SECURE));
+        $this->assertTrue($this->client->supportsTx(PosQueryInterface::QUERY_TYPE_CUSTOM_QUERY, PosInterface::MODEL_NON_SECURE));
     }
 
     #[DataProvider('supportsTxWithUnsupportedTxDataProvider')]

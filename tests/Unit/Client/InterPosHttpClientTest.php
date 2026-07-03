@@ -17,6 +17,7 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Gateway\InterPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use Mews\Pos\Serializer\Decoder\InterPosDecoder;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -242,7 +243,7 @@ class InterPosHttpClientTest extends TestCase
                 'expected'     => 'https://test.inter-vpos.com.tr/mpi/Default.aspx',
             ],
             [
-                'txType'       => PosInterface::TX_TYPE_HISTORY,
+                'txType'       => PosQueryInterface::QUERY_TYPE_HISTORY,
                 'paymentModel' => PosInterface::MODEL_NON_SECURE,
                 'expected'     => 'https://test.inter-vpos.com.tr/mpi/Default.aspx',
             ],

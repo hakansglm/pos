@@ -12,6 +12,7 @@ use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Event\Before3DFormHashCalculatedEvent;
 use Mews\Pos\Gateway\PayForPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 
 /**
  * Creates request data for PayForPos Gateway requests
@@ -179,44 +180,11 @@ class PayForPosRequestDataMapper extends AbstractRequestDataMapper
         $requestData = [
             'SecureType' => 'Report',
             'OrderId'    => $order['id'],
-            'TxnType'    => $this->valueMapper->mapTxType(PosInterface::TX_TYPE_HISTORY),
+            'TxnType'    => $this->valueMapper->mapTxType(PosQueryInterface::QUERY_TYPE_HISTORY),
             'Lang'       => $this->getLang($order),
         ];
 
         return $this->getRequestAccountData($posAccount) + $requestData;
-    }
-
-    /**
-     * @param PayForPosAccount                            $posAccount
-     * @param array{transaction_date: \DateTimeInterface} $data
-     *
-     * {@inheritDoc}
-     */
-    public function createHistoryRequestData(AbstractPosAccount $posAccount, array $data = []): array
-    {
-        /** @var array<string, mixed> $order */
-        $order = [
-            'transaction_date' => $data['transaction_date'],
-        ];
-
-        $requestData = [
-            'SecureType' => 'Report',
-            'ReqDate'    => $this->valueFormatter->formatDateTime($data['transaction_date'], 'ReqDate'),
-            'TxnType'    => $this->valueMapper->mapTxType(PosInterface::TX_TYPE_HISTORY),
-            'Lang'       => $this->getLang($order),
-        ];
-
-        return $this->getRequestAccountData($posAccount) + $requestData;
-    }
-
-    /**
-     * @param PayForPosAccount $posAccount
-     *
-     * @inheritDoc
-     */
-    public function createCustomQueryRequestData(AbstractPosAccount $posAccount, array $requestData): array
-    {
-        return $requestData + $this->getRequestAccountData($posAccount);
     }
 
     /**

@@ -48,8 +48,6 @@ class PayTrPos extends AbstractGateway
         PosInterface::TX_TYPE_STATUS         => true,
         PosInterface::TX_TYPE_REFUND         => true,
         PosInterface::TX_TYPE_REFUND_PARTIAL => true,
-        PosInterface::TX_TYPE_CUSTOM_QUERY   => true,
-        PosInterface::TX_TYPE_HISTORY        => true,
     ];
 
     /** @return PayTrPosAccount */

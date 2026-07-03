@@ -6,10 +6,11 @@
 
 namespace Mews\Pos\Client;
 
-use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Exception\UnsupportedTransactionTypeException;
 use Mews\Pos\Gateway\ToslaPos;
+use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use Mews\Pos\Serializer\Decoder\JsonDecoder;
 use Mews\Pos\Serializer\EncodedData;
 use Mews\Pos\Serializer\Encoder\JsonEncoder;
@@ -55,7 +56,7 @@ class ToslaPosHttpClient extends AbstractHttpClient
      */
     public function supportsTx(string $txType, string $paymentModel, ?string $orderTxType = null): bool
     {
-        if (PosInterface::TX_TYPE_CUSTOM_QUERY === $txType) {
+        if (PosQueryInterface::QUERY_TYPE_CUSTOM_QUERY === $txType) {
             return true;
         }
 
@@ -97,8 +98,8 @@ class ToslaPosHttpClient extends AbstractHttpClient
     }
 
     /**
-     * @phpstan-param PosInterface::TX_TYPE_* $txType
-     * @phpstan-param PosInterface::MODEL_*   $paymentModel
+     * @phpstan-param PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_* $txType
+     * @phpstan-param PosInterface::MODEL_*                                $paymentModel
      *
      * @return string
      *
@@ -107,21 +108,23 @@ class ToslaPosHttpClient extends AbstractHttpClient
     private function getRequestURIByTransactionType(string $txType, string $paymentModel): string
     {
         $arr = [
-            PosInterface::TX_TYPE_PAY_AUTH       => [
+            PosInterface::TX_TYPE_PAY_AUTH               => [
                 PosInterface::MODEL_NON_SECURE => 'Payment',
                 PosInterface::MODEL_3D_PAY     => 'threeDPayment',
                 PosInterface::MODEL_3D_HOST    => 'threeDPayment',
             ],
-            PosInterface::TX_TYPE_PAY_PRE_AUTH   => [
+            PosInterface::TX_TYPE_PAY_PRE_AUTH           => [
                 PosInterface::MODEL_3D_PAY  => 'threeDPreAuth',
                 PosInterface::MODEL_3D_HOST => 'threeDPreAuth',
             ],
-            PosInterface::TX_TYPE_PAY_POST_AUTH  => 'postAuth',
-            PosInterface::TX_TYPE_CANCEL         => 'void',
-            PosInterface::TX_TYPE_REFUND         => 'refund',
-            PosInterface::TX_TYPE_REFUND_PARTIAL => 'refund',
-            PosInterface::TX_TYPE_STATUS         => 'inquiry',
-            PosInterface::TX_TYPE_ORDER_HISTORY  => 'history',
+            PosInterface::TX_TYPE_PAY_POST_AUTH          => 'postAuth',
+            PosInterface::TX_TYPE_CANCEL                 => 'void',
+            PosInterface::TX_TYPE_REFUND                 => 'refund',
+            PosInterface::TX_TYPE_REFUND_PARTIAL         => 'refund',
+            PosInterface::TX_TYPE_STATUS                  => 'inquiry',
+            PosInterface::TX_TYPE_ORDER_HISTORY           => 'history',
+            PosQueryInterface::QUERY_TYPE_INSTALLMENT_RATES  => 'GetCommissionAndInstallmentInfo',
+            PosQueryInterface::QUERY_TYPE_INSTALLMENT_PRICES => 'GetInstallmentOptions',
         ];
 
         if (!isset($arr[$txType])) {

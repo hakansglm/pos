@@ -187,30 +187,6 @@ class IyzicoPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function createHistoryRequestData(AbstractPosAccount $posAccount, array $data = []): array
-    {
-        $order = array_merge($data, [
-            'page' => $data['page'] ?? 1,
-        ]);
-
-        return [
-            'locale'          => $this->getLang($order),
-            'transactionDate' => $this->valueFormatter->formatDateTime($data['transaction_date'], 'transactionDate'),
-            'page'            => $order['page'],
-        ];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function createCustomQueryRequestData(AbstractPosAccount $posAccount, array $requestData): array
-    {
-        return $requestData;
-    }
-
-    /**
      * @param array{token: string}                 $responseData
      * @param array<string, string|int|float|null> $order
      *

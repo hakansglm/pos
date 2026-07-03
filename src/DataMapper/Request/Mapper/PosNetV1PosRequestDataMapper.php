@@ -295,35 +295,6 @@ class PosNetV1PosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param PosNetPosAccount $posAccount
-     *
-     * @inheritDoc
-     */
-    public function createCustomQueryRequestData(AbstractPosAccount $posAccount, array $requestData): array
-    {
-        $requestData += [
-            'ApiType'    => 'JSON',
-            'ApiVersion' => self::API_VERSION,
-            'MerchantNo' => $posAccount->getMerchantId(),
-            'TerminalNo' => $posAccount->getTerminalId(),
-        ];
-
-        if (!isset($requestData['MAC'])) {
-            $requestData['MAC'] = $this->crypt->hashFromParams($posAccount, $requestData, $requestData['MACParams'], ':');
-        }
-
-        return $requestData;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function createHistoryRequestData(AbstractPosAccount $posAccount, array $data = []): array
-    {
-        throw new NotImplementedException();
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function createOrderHistoryRequestData(AbstractPosAccount $posAccount, array $order): array

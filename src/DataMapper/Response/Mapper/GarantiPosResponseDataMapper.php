@@ -249,42 +249,6 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function mapHistoryResponse(array $rawResponseData): array
-    {
-        $rawResponseData = $this->emptyStringsToNull($rawResponseData);
-        $procReturnCode  = $this->getProcReturnCode($rawResponseData);
-        $status          = self::TX_DECLINED;
-        if (self::PROCEDURE_SUCCESS_CODE === $procReturnCode) {
-            $status = self::TX_APPROVED;
-        }
-
-        $mappedTransactions = [];
-        if (self::TX_APPROVED === $status) {
-            $rawTransactions = $rawResponseData['Order']['OrderListInqResult']['OrderTxnList']['OrderTxn'];
-            if (\count($rawTransactions) !== \count($rawTransactions, COUNT_RECURSIVE)) {
-                foreach ($rawTransactions as $transaction) {
-                    $mappedTransaction    = $this->mapSingleHistoryTransaction($transaction);
-                    $mappedTransactions[] = $mappedTransaction;
-                }
-            } else {
-                $mappedTransactions[] = $this->mapSingleHistoryTransaction($rawTransactions);
-            }
-        }
-
-        return [
-            'proc_return_code' => $procReturnCode,
-            'error_code'       => self::TX_DECLINED === $status ? $procReturnCode : null,
-            'error_message'    => self::TX_DECLINED === $status ? ($rawResponseData['Transaction']['Response']['ErrorMsg'] ?? null) : null,
-            'status'           => $status,
-            'trans_count'      => \count($mappedTransactions),
-            'transactions'     => $mappedTransactions,
-            'all'              => $rawResponseData,
-        ];
-    }
-
-    /**
      * @inheritDoc
      */
     public function is3dAuthSuccess(?string $mdStatus): bool
@@ -424,49 +388,6 @@ class GarantiPosResponseDataMapper extends AbstractResponseDataMapper
             $defaultResponse['first_amount']     = null !== $firstAmount ? $this->valueFormatter->formatAmount($firstAmount, $txType) : null;
             $defaultResponse['capture']          = $defaultResponse['first_amount'] > 0 ? $defaultResponse['capture_amount'] === $defaultResponse['first_amount'] : null;
             $defaultResponse['currency']         = '0' !== $rawTx['CurrencyCode'] && null !== $rawTx['CurrencyCode'] ? $this->valueMapper->mapCurrency($rawTx['CurrencyCode'], $txType) : null;
-        }
-
-        return $defaultResponse;
-    }
-
-    /**
-     * @param array<string, string|null> $rawTx
-     *
-     * @return array<string, mixed>
-     */
-    private function mapSingleHistoryTransaction(array $rawTx): array
-    {
-        $txType         = PosInterface::TX_TYPE_HISTORY;
-        $procReturnCode = $rawTx['ResponseCode'];
-        $status         = self::TX_DECLINED;
-        if (self::PROCEDURE_SUCCESS_CODE === $procReturnCode) {
-            $status = self::TX_APPROVED;
-        }
-
-        $defaultResponse                     = $this->getDefaultOrderHistoryTxResponse();
-        $defaultResponse['auth_code']        = $rawTx['AuthCode'] ?? null;
-        $defaultResponse['ref_ret_num']      = $rawTx['RetrefNum'] ?? null;
-        $defaultResponse['order_id']         = $rawTx['OrderID'];
-        $defaultResponse['batch_num']        = $rawTx['BatchNum'];
-        $defaultResponse['proc_return_code'] = $procReturnCode;
-        $defaultResponse['transaction_type'] = null !== $rawTx['TrxType'] ? $this->valueMapper->mapTxType($rawTx['TrxType']) : null;
-        $defaultResponse['order_status']     = null !== $rawTx['Status'] ? $this->valueMapper->mapOrderStatus($rawTx['Status'], $txType, $defaultResponse['transaction_type']) : null;
-        $defaultResponse['status']           = $status;
-        $defaultResponse['error_code']       = self::TX_APPROVED === $status ? null : $procReturnCode;
-        $defaultResponse['error_message']    = self::TX_APPROVED === $status ? null : $rawTx['SysErrMsg'];
-
-        $defaultResponse['payment_model']    = $this->valueMapper->mapSecureType($rawTx['SafeType'] ?? '', $txType);
-        $defaultResponse['transaction_time'] = null !== $rawTx['LastTrxDate'] ? $this->valueFormatter->formatDateTime($rawTx['LastTrxDate'], $txType) : null;
-        if (self::TX_APPROVED === $status) {
-            $defaultResponse['masked_number']     = $rawTx['CardNumberMasked'];
-            $defaultResponse['installment_count'] = $this->valueFormatter->formatInstallment($rawTx['InstallmentCnt'], $txType);
-            $defaultResponse['currency']          = null !== $rawTx['CurrencyCode'] ? $this->valueMapper->mapCurrency($rawTx['CurrencyCode'], $txType) : null;
-            $defaultResponse['first_amount']      = null !== $rawTx['AuthAmount'] ? $this->valueFormatter->formatAmount($rawTx['AuthAmount'], $txType) : null;
-            if ($defaultResponse['order_status'] === PosInterface::PAYMENT_STATUS_PAYMENT_COMPLETED) {
-                $defaultResponse['capture_amount'] = $defaultResponse['first_amount'];
-                $defaultResponse['capture']        = $defaultResponse['first_amount'] > 0 ? $defaultResponse['capture_amount'] === $defaultResponse['first_amount'] : null;
-                $defaultResponse['capture_time']   = $defaultResponse['transaction_time'];
-            }
         }
 
         return $defaultResponse;

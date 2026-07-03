@@ -7,7 +7,6 @@
 namespace Mews\Pos\Tests\Unit\Gateway;
 
 use PHPUnit\Framework\Attributes\DataProvider;
-use InvalidArgumentException;
 use LogicException;
 use Exception;
 use Mews\Pos\Client\HttpClientInterface;
@@ -475,37 +474,6 @@ class VakifKatilimTest extends TestCase
     }
 
 
-    #[DataProvider('historyRequestDataProvider')]
-    public function testHistoryRequest(array $order): void
-    {
-        $account     = $this->pos->getAccount();
-        $txType      = PosInterface::TX_TYPE_HISTORY;
-        $requestData = ['createHistoryRequestData'];
-
-        $this->requestMapperMock->expects(self::once())
-            ->method('createHistoryRequestData')
-            ->with($account, $order)
-            ->willReturn($requestData);
-
-        $decodedResponse = ['decodedData'];
-        $this->configureClientResponse(
-            $txType,
-            $requestData,
-            $decodedResponse,
-            $order,
-            PosInterface::MODEL_NON_SECURE,
-            null,
-            $account
-        );
-
-        $this->responseMapperMock->expects(self::once())
-            ->method('mapHistoryResponse')
-            ->with($decodedResponse)
-            ->willReturn(['result']);
-
-        $this->pos->history($order);
-    }
-
     #[DataProvider('orderHistoryRequestDataProvider')]
     public function testOrderHistoryRequest(array $order): void
     {
@@ -535,53 +503,6 @@ class VakifKatilimTest extends TestCase
             ->willReturn(['result']);
 
         $this->pos->orderHistory($order);
-    }
-
-    #[DataProvider('customQueryRequestDataProvider')]
-    public function testCustomQueryRequest(array $requestData, ?string $apiUrl): void
-    {
-        $account = $this->pos->getAccount();
-        $txType  = PosInterface::TX_TYPE_CUSTOM_QUERY;
-
-        $updatedRequestData = $requestData + [
-                'abc' => 'def',
-            ];
-        $this->requestMapperMock->expects(self::once())
-            ->method('createCustomQueryRequestData')
-            ->with($account, $requestData)
-            ->willReturn($updatedRequestData);
-
-        $this->configureClientResponse(
-            $txType,
-            $updatedRequestData,
-            ['decodedResponse'],
-            $requestData,
-            PosInterface::MODEL_NON_SECURE,
-            $apiUrl,
-            $account
-        );
-
-        $this->pos->customQuery($requestData, $apiUrl);
-    }
-
-
-    public function testCustomQueryRequestWithoutAPIurl(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->pos->customQuery(['ac' => 'aas']);
-    }
-
-    public static function customQueryRequestDataProvider(): array
-    {
-        return [
-            [
-                'requestData' => [
-                    'id' => '2020110828BC',
-                ],
-                'api_url'     => 'https://boa.vakifkatilim.com.tr/VirtualPOS.Gateway/Home/MailOrderSale',
-            ],
-        ];
     }
 
     public static function make3DPaymentDataProvider(): array
@@ -731,17 +652,6 @@ class VakifKatilimTest extends TestCase
                     'transaction_type' => PosInterface::TX_TYPE_PAY_AUTH,
                 ],
                 'txType' => PosInterface::TX_TYPE_REFUND_PARTIAL,
-            ],
-        ];
-    }
-
-    public static function historyRequestDataProvider(): array
-    {
-        return [
-            [
-                'order' => [
-                    'id' => '2020110828BC',
-                ],
             ],
         ];
     }

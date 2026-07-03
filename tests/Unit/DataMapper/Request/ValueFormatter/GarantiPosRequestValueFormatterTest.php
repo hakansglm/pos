@@ -14,6 +14,7 @@ use Mews\Pos\DataMapper\Request\ValueFormatter\GarantiPosRequestValueFormatter;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\GarantiPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
@@ -89,7 +90,7 @@ class GarantiPosRequestValueFormatterTest extends TestCase
             'StartDate_with_history_txType_uses_datetime_format' => [
                 $dateTime,
                 'StartDate',
-                PosInterface::TX_TYPE_HISTORY,
+                PosQueryInterface::QUERY_TYPE_HISTORY,
                 '14/04/2024 16:45',
             ],
             'StartDate_without_txType_uses_date_only_format' => [

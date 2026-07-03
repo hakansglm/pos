@@ -14,7 +14,6 @@ use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exception\HashMismatchException;
 use Mews\Pos\Exception\UnsupportedFormFormatException;
-use Mews\Pos\Exception\UnsupportedTransactionTypeException;
 use Mews\Pos\PosInterface;
 
 /**
@@ -48,8 +47,6 @@ class AssecoPos extends AbstractGateway
         PosInterface::TX_TYPE_REFUND         => true,
         PosInterface::TX_TYPE_REFUND_PARTIAL => true,
         PosInterface::TX_TYPE_ORDER_HISTORY  => true,
-        PosInterface::TX_TYPE_CUSTOM_QUERY   => true,
-        PosInterface::TX_TYPE_HISTORY        => false,
     ];
 
 
@@ -188,13 +185,5 @@ class AssecoPos extends AbstractGateway
             $this->get3DGatewayURL($paymentModel),
             $creditCard
         );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function history(array $data): array
-    {
-        throw new UnsupportedTransactionTypeException();
     }
 }

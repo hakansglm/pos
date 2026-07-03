@@ -53,9 +53,7 @@ class PosNetPos extends AbstractGateway
         PosInterface::TX_TYPE_CANCEL         => true,
         PosInterface::TX_TYPE_REFUND         => true,
         PosInterface::TX_TYPE_REFUND_PARTIAL => true,
-        PosInterface::TX_TYPE_HISTORY        => false,
         PosInterface::TX_TYPE_ORDER_HISTORY  => false,
-        PosInterface::TX_TYPE_CUSTOM_QUERY   => true,
     ];
 
     /**
@@ -227,14 +225,6 @@ class PosNetPos extends AbstractGateway
     public function getAccount(): AbstractPosAccount
     {
         return $this->account;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function history(array $data): array
-    {
-        throw new UnsupportedTransactionTypeException();
     }
 
     /**

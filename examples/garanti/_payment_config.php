@@ -3,7 +3,8 @@
 require __DIR__.'/../_main_config.php';
 
 $bankTestsUrl = $hostUrl.'/garanti';
-$posClass = \Mews\Pos\Gateway\GarantiPos::class;
+$posClass      = \Mews\Pos\Gateway\GarantiPos::class;
+$posQueryClass = \Mews\Pos\Factory\PosQueryFactory::getPosQueryClassForGateway($posClass);
 
 $testCards = [
     'visa1' => [

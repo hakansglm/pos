@@ -55,6 +55,7 @@ $installments = [
 
 $paymentModel  = null;
 $posClass      = null;
+$posQueryClass = null;
 $transaction   = null;
 
 function doPayment(PosInterface $pos, string $paymentModel, string $transaction, array $order, ?\Mews\Pos\Model\Card\CreditCardInterface $card): array
@@ -103,6 +104,16 @@ function doPayment(PosInterface $pos, string $paymentModel, string $transaction,
     }
 
     throw new \LogicException('Hatalı işlem');
+}
+
+function getPosQuery(
+    \Mews\Pos\Model\Account\AbstractPosAccount    $account,
+    \Psr\EventDispatcher\EventDispatcherInterface $eventDispatcher
+): \Mews\Pos\PosQuery\PosQueryInterface {
+    $config = require __DIR__.'/../config/pos_test.php';
+    global $logger;
+
+    return \Mews\Pos\Factory\PosQueryFactory::create($account, $config, $eventDispatcher, null, $logger);
 }
 
 function getGateway(\Mews\Pos\Model\Account\AbstractPosAccount $account, \Psr\EventDispatcher\EventDispatcherInterface $eventDispatcher): ?PosInterface

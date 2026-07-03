@@ -292,43 +292,6 @@ class AkbankPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * İşlem cevabında, sadece 9999 adet işlem sorgulanabilir.
-     * Tarih aralığında, 9999 adet işlemden daha fazla işlem olması durumunda,
-     * “VPS-2235” - "Toplam kayıt sayısı aşıldı. Batch No girerek ilerleyiniz.” hatası verilecektir.
-     *
-     * @param AkbankPosAccount $posAccount
-     *
-     * {@inheritDoc}
-     */
-    public function createHistoryRequestData(AbstractPosAccount $posAccount, array $data = []): array
-    {
-        if (isset($data['batch_num'])) {
-            $order = ['batch_num' => $data['batch_num']];
-        } else {
-            $order = [
-                'start_date' => $data['start_date'],
-                'end_date'   => $data['end_date'],
-            ];
-        }
-
-        $requestData = $this->getRequestAccountData($posAccount) + [
-                'randomNumber' => $this->crypt->generateRandomString(),
-            ];
-        if (isset($order['batch_num'])) {
-            $requestData['report'] = [
-                'batchNumber'   => $order['batch_num'],
-            ];
-        } elseif (isset($order['start_date'], $order['end_date'])) {
-            $requestData['report'] = [
-                'startDateTime' => $this->valueFormatter->formatDateTime($order['start_date'], 'startDateTime'),
-                'endDateTime'   => $this->valueFormatter->formatDateTime($order['end_date'], 'endDateTime'),
-            ];
-        }
-
-        return $requestData;
-    }
-
-    /**
      * @param AkbankPosAccount $posAccount
      *
      * @return array{gateway: string, method: 'POST', inputs: array<string, string>}
@@ -391,28 +354,6 @@ class AkbankPosRequestDataMapper extends AbstractRequestDataMapper
         $data['inputs']['hash'] = $this->crypt->create3DHash($posAccount, $data['inputs']);
 
         return $data;
-    }
-
-    /**
-     * @param AkbankPosAccount $posAccount
-     *
-     * @inheritDoc
-     */
-    public function createCustomQueryRequestData(AbstractPosAccount $posAccount, array $requestData): array
-    {
-        if (isset($requestData['requestDateTime'])) {
-            $dateTime = $requestData['requestDateTime'];
-        } else {
-            $dateTime = $this->valueFormatter->formatDateTime($this->createDateTime(), 'requestDateTime');
-        }
-
-        return $requestData
-            + $this->getRequestAccountData($posAccount)
-            + [
-                'version'         => self::API_VERSION,
-                'requestDateTime' => $dateTime,
-                'randomNumber'    => $this->crypt->generateRandomString(),
-            ];
     }
 
     /**

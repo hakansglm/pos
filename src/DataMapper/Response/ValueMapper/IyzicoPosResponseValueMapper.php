@@ -7,6 +7,7 @@
 namespace Mews\Pos\DataMapper\Response\ValueMapper;
 
 use Mews\Pos\Gateway\IyzicoPos;
+use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\PosInterface;
 
 /**
@@ -70,6 +71,62 @@ class IyzicoPosResponseValueMapper extends AbstractResponseValueMapper
     public static function supports(string $gatewayClass): bool
     {
         return IyzicoPos::class === $gatewayClass;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function mapCardFamilyName(?string $name): ?string
+    {
+        if (null === $name) {
+            return null;
+        }
+
+        return match ($name) {
+            'Paraf'      => CreditCardInterface::CARD_FAMILY_PARAF,
+            'Axess'      => CreditCardInterface::CARD_FAMILY_AXESS,
+            'Bonus'      => CreditCardInterface::CARD_FAMILY_BONUS,
+            'World'      => CreditCardInterface::CARD_FAMILY_WORLD,
+            'Maximum'    => CreditCardInterface::CARD_FAMILY_MAXIMUM,
+            'CardFinans' => CreditCardInterface::CARD_FAMILY_CARDFINANS,
+            'Advantage'  => CreditCardInterface::CARD_FAMILY_ADVANTAGE,
+            default      => $name,
+        };
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function mapCardType(?string $cardType): ?string
+    {
+        if (null === $cardType) {
+            return null;
+        }
+
+        return match ($cardType) {
+            'MASTER_CARD'       => CreditCardInterface::CARD_TYPE_MASTERCARD,
+            'VISA'              => CreditCardInterface::CARD_TYPE_VISA,
+            'TROY'              => CreditCardInterface::CARD_TYPE_TROY,
+            'AMERICAN_EXPRESS'  => CreditCardInterface::CARD_TYPE_AMEX,
+            default             => null,
+        };
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function mapCardClass(?string $cardClass): ?string
+    {
+        if (null === $cardClass) {
+            return null;
+        }
+
+        return match ($cardClass) {
+            'CREDIT_CARD'  => CreditCardInterface::CARD_CLASS_CREDIT,
+            'DEBIT_CARD'   => CreditCardInterface::CARD_CLASS_DEBIT,
+            'PREPAID_CARD' => CreditCardInterface::CARD_CLASS_PREPAID,
+            default        => null,
+        };
     }
 
     /**

@@ -7,7 +7,7 @@
 namespace Mews\Pos\DataMapper\Request\ValueFormatter;
 
 use Mews\Pos\Gateway\GarantiPos;
-use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 
 /**
  * @internal
@@ -72,7 +72,7 @@ class GarantiPosRequestValueFormatter implements RequestValueFormatterInterface
      */
     public function formatDateTime(\DateTimeInterface $dateTime, ?string $fieldName = null, ?string $txType = null): string
     {
-        if (PosInterface::TX_TYPE_HISTORY === $txType) {
+        if (PosQueryInterface::QUERY_TYPE_HISTORY === $txType) {
             return $dateTime->format('d/m/Y H:i');
         }
 

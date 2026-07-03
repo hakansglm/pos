@@ -8,7 +8,6 @@ namespace Mews\Pos\Tests\Unit\DataMapper\Request\Mapper;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use Mews\Pos\Exception\NotImplementedException;
-use Generator;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\Request\Mapper\AbstractRequestDataMapper;
 use Mews\Pos\DataMapper\Request\Mapper\PayFlexCPV4PosRequestDataMapper;
@@ -180,55 +179,11 @@ class PayFlexCPV4PosRequestDataMapperTest extends TestCase
         );
     }
 
-    public function testCreateHistoryRequestData(): void
-    {
-        $this->expectException(NotImplementedException::class);
-        $this->requestDataMapper->createHistoryRequestData($this->account);
-    }
-
     public function testCreateOrderHistoryRequestData(): void
     {
         $this->expectException(NotImplementedException::class);
         $this->requestDataMapper->createOrderHistoryRequestData($this->account, []);
     }
-
-    #[DataProvider('createCustomQueryRequestDataDataProvider')]
-    public function testCreateCustomQueryRequestData(array $requestData, array $expectedData): void
-    {
-        $actual = $this->requestDataMapper->createCustomQueryRequestData($this->account, $requestData);
-
-        \ksort($actual);
-        \ksort($expectedData);
-        $this->assertSame($expectedData, $actual);
-    }
-
-    public static function createCustomQueryRequestDataDataProvider(): Generator
-    {
-        yield 'without_account_data_bin_inquiry' => [
-            'request_data' => [
-                'abc' => 'abc',
-            ],
-            'expected'     => [
-                'abc'            => 'abc',
-                'HostMerchantId' => '000000000111111',
-                'Password'       => '3XTgER89as',
-            ],
-        ];
-
-        yield 'with_account_data_bin_inquiry' => [
-            'request_data' => [
-                'abc'            => 'abc',
-                'HostMerchantId' => '000000000111111xxx',
-                'Password'       => '3XTgER89asxxx',
-            ],
-            'expected'     => [
-                'abc'            => 'abc',
-                'HostMerchantId' => '000000000111111xxx',
-                'Password'       => '3XTgER89asxxx',
-            ],
-        ];
-    }
-
 
     public static function registerDataProvider(): iterable
     {

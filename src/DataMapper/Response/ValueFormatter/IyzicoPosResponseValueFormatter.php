@@ -8,6 +8,7 @@ namespace Mews\Pos\DataMapper\Response\ValueFormatter;
 
 use Mews\Pos\Gateway\IyzicoPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 
 /**
  * @internal
@@ -30,7 +31,7 @@ class IyzicoPosResponseValueFormatter extends AbstractResponseValueFormatter
      */
     public function formatDateTime(string $dateTime, string $txType): \DateTimeImmutable
     {
-        if (PosInterface::TX_TYPE_HISTORY === $txType || PosInterface::TX_TYPE_ORDER_HISTORY === $txType) {
+        if (PosQueryInterface::QUERY_TYPE_HISTORY === $txType || PosInterface::TX_TYPE_ORDER_HISTORY === $txType) {
             return new \DateTimeImmutable($dateTime);
         }
 

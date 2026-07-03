@@ -306,22 +306,10 @@ class Param3DHostPosTest extends TestCase
         $this->pos->refund([]);
     }
 
-    public function testHistoryRequest(): void
-    {
-        $this->expectException(UnsupportedTransactionTypeException::class);
-        $this->pos->history([]);
-    }
-
     public function testOrderHistoryRequest(): void
     {
         $this->expectException(UnsupportedTransactionTypeException::class);
         $this->pos->orderHistory([]);
-    }
-
-    public function testCustomQueryRequest(): void
-    {
-        $this->expectException(UnsupportedTransactionTypeException::class);
-        $this->pos->customQuery([]);
     }
 
     public static function threeDFormDataBadInputsProvider(): array

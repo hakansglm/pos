@@ -300,14 +300,6 @@ class AkbankPosResponseDataMapperTest extends TestCase
         $this->responseDataMapper->mapStatusResponse([]);
     }
 
-    #[DataProvider('historyDataProvider')]
-    public function testMapHistoryResponse(array $response, int $expectedTxCount): void
-    {
-        $actual = $this->responseDataMapper->mapHistoryResponse($response);
-
-        $this->assertCount($expectedTxCount, $actual['transactions']);
-    }
-
     public static function paymentDataProvider(): iterable
     {
         yield 'success1' => [

@@ -8,6 +8,7 @@ namespace Mews\Pos\DataMapper\Response\ValueMapper;
 
 use Mews\Pos\Gateway\PayFlexCPV4Pos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 
 /**
  * @internal
@@ -24,7 +25,7 @@ class PayFlexCPV4PosResponseValueMapper extends AbstractResponseValueMapper
         '643' => PosInterface::CURRENCY_RUB,
     ];
 
-    /** @var array<PosInterface::TX_TYPE_*, string> */
+    /** @var array<PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_*, string> */
     protected array $txTypeMappings = [
         PosInterface::TX_TYPE_PAY_AUTH       => 'Sale',
         PosInterface::TX_TYPE_PAY_PRE_AUTH   => 'Auth',
@@ -32,7 +33,7 @@ class PayFlexCPV4PosResponseValueMapper extends AbstractResponseValueMapper
         PosInterface::TX_TYPE_CANCEL         => 'Cancel',
         PosInterface::TX_TYPE_REFUND         => 'Refund',
         PosInterface::TX_TYPE_REFUND_PARTIAL => 'Refund',
-        PosInterface::TX_TYPE_HISTORY        => 'TxnHistory',
+        PosQueryInterface::QUERY_TYPE_HISTORY   => 'TxnHistory',
         PosInterface::TX_TYPE_STATUS         => 'OrderInquiry',
     ];
 

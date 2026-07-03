@@ -317,49 +317,6 @@ class PayForPosResponseDataMapper extends AbstractResponseDataMapper
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function mapHistoryResponse(array $rawResponseData): array
-    {
-        $rawResponseData = $this->emptyStringsToNull($rawResponseData);
-
-        $mappedTransactions = [];
-        $procReturnCode     = null;
-        $status             = null;
-        $paymentRequest     = [];
-        if (isset($rawResponseData['PaymentRequestExtended']['PaymentRequest'])) {
-            $paymentRequest = $rawResponseData['PaymentRequestExtended']['PaymentRequest'];
-            $procReturnCode = $this->getProcReturnCode($paymentRequest);
-            $status         = self::TX_DECLINED;
-            if (self::PROCEDURE_SUCCESS_CODE === $procReturnCode) {
-                $status               = self::TX_APPROVED;
-                $mappedTransactions[] = $this->mapSingleHistoryTransaction($paymentRequest);
-            }
-        } else {
-            foreach ($rawResponseData['PaymentRequestExtended'] as $tx) {
-                $mappedTransactions[] = $this->mapSingleHistoryTransaction($tx['PaymentRequest']);
-            }
-        }
-
-        $result = [
-            'proc_return_code' => $procReturnCode,
-            'error_code'       => null,
-            'error_message'    => null,
-            'status'           => $status,
-            'trans_count'      => \count($mappedTransactions),
-            'transactions'     => $mappedTransactions,
-            'all'              => $rawResponseData,
-        ];
-
-        if (null !== $procReturnCode && self::PROCEDURE_SUCCESS_CODE !== $procReturnCode) {
-            $result['error_code']    = $procReturnCode;
-            $result['error_message'] = $paymentRequest['ErrMsg'];
-        }
-
-        return $result;
-    }
-
-    /**
      * @inheritDoc
      */
     public function is3dAuthSuccess(?string $mdStatus): bool
@@ -536,18 +493,5 @@ class PayForPosResponseDataMapper extends AbstractResponseDataMapper
         }
 
         return $defaultResponse;
-    }
-
-    /**
-     * @param array<string, string|null> $rawTx
-     *
-     * @return array<string, int|string|null|float|bool|\DateTimeImmutable>
-     */
-    private function mapSingleHistoryTransaction(array $rawTx): array
-    {
-        $mappedTx             = $this->mapSingleOrderHistoryTransaction($rawTx);
-        $mappedTx['order_id'] = $rawTx['OrderId'];
-
-        return $mappedTx;
     }
 }

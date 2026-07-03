@@ -254,46 +254,6 @@ class VakifKatilimPosResponseDataMapper extends AbstractResponseDataMapper
     /**
      * {@inheritDoc}
      */
-    public function mapHistoryResponse(array $rawResponseData): array
-    {
-        $rawResponseData = $this->emptyStringsToNull($rawResponseData);
-
-        $mappedTransactions = [];
-        $procReturnCode     = $this->getProcReturnCode($rawResponseData);
-        $status             = self::TX_DECLINED;
-        if (self::PROCEDURE_SUCCESS_CODE === $procReturnCode) {
-            $status = self::TX_APPROVED;
-        }
-
-        if (isset($rawResponseData['VPosOrderData']['OrderContract'])) {
-            foreach ($rawResponseData['VPosOrderData']['OrderContract'] as $tx) {
-                $mappedTransactions[] = $this->mapSingleHistoryTransaction($tx, PosInterface::TX_TYPE_HISTORY);
-            }
-        }
-
-        $mappedTransactions = \array_reverse($mappedTransactions);
-
-        $result = [
-            'proc_return_code' => $procReturnCode,
-            'error_code'       => null,
-            'error_message'    => null,
-            'status'           => $status,
-            'trans_count'      => \count($mappedTransactions),
-            'transactions'     => $mappedTransactions,
-            'all'              => $rawResponseData,
-        ];
-
-        if (null !== $procReturnCode && self::PROCEDURE_SUCCESS_CODE !== $procReturnCode) {
-            $result['error_code']    = $procReturnCode;
-            $result['error_message'] = $rawResponseData['ResponseMessage'];
-        }
-
-        return $result;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function mapOrderHistoryResponse(array $rawResponseData): array
     {
         $rawResponseData = $this->emptyStringsToNull($rawResponseData);

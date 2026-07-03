@@ -59,9 +59,7 @@ class IyzicoPos extends AbstractGateway
          * Örneğin iptal/iade edildiği bilgisi yer almaz.
          */
         PosInterface::TX_TYPE_STATUS         => true,
-        PosInterface::TX_TYPE_HISTORY        => true,
         PosInterface::TX_TYPE_ORDER_HISTORY  => true,
-        PosInterface::TX_TYPE_CUSTOM_QUERY   => true,
     ];
 
     /** @return IyzicoPosAccount */

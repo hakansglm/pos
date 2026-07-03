@@ -10,6 +10,7 @@ use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use Mews\Pos\Serializer\Decoder\AkbankPosJsonDecoder;
 use Mews\Pos\Serializer\EncodedData;
 use Mews\Pos\Serializer\Encoder\JsonEncoder;
@@ -114,14 +115,14 @@ class AkbankPosHttpClient extends AbstractHttpClient
     }
 
     /**
-     * @param PosInterface::TX_TYPE_* $txType
+     * @param PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_* $txType
      *
      * @return string
      */
     private function getRequestURIByTransactionType(string $txType): string
     {
         $arr = [
-            PosInterface::TX_TYPE_HISTORY => 'portal/report/transaction',
+            PosQueryInterface::QUERY_TYPE_HISTORY => 'portal/report/transaction',
         ];
 
         return $arr[$txType] ?? 'transaction/process';

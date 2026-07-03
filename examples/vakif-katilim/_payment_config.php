@@ -5,7 +5,8 @@ use Mews\Pos\Model\Card\CreditCardInterface;
 require __DIR__.'/../_main_config.php';
 
 $bankTestsUrl = $hostUrl.'/vakif-katilim';
-$posClass     = \Mews\Pos\Gateway\VakifKatilimPos::class;
+$posClass      = \Mews\Pos\Gateway\VakifKatilimPos::class;
+$posQueryClass = \Mews\Pos\Factory\PosQueryFactory::getPosQueryClassForGateway($posClass);
 
 $testCards = [
     'visa1' => [

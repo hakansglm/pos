@@ -245,25 +245,6 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @param BoaPosAccount $posAccount
-     *
-     * @inheritDoc
-     */
-    public function createCustomQueryRequestData(AbstractPosAccount $posAccount, array $requestData): array
-    {
-        $requestData += $this->getRequestAccountData($posAccount) + [
-                'APIVersion'   => self::API_VERSION,
-                'HashPassword' => $this->crypt->hashString($posAccount->getSecretKey()),
-            ];
-
-        if (!isset($requestData['HashData'])) {
-            $requestData['HashData'] = $this->crypt->createHash($posAccount, $requestData);
-        }
-
-        return $requestData;
-    }
-
-    /**
      * {@inheritDoc}
      *
      * @return array{gateway: string, method: 'POST', inputs: array<string, string>}
@@ -301,40 +282,6 @@ class VakifKatilimPosRequestDataMapper extends AbstractRequestDataMapper
             'method'  => 'POST',
             'inputs'  => $inputs,
         ];
-    }
-
-    /**
-     * @phpstan-param BoaPosAccount $posAccount
-     *
-     * {@inheritDoc}
-     */
-    public function createHistoryRequestData(AbstractPosAccount $posAccount, array $data = []): array
-    {
-        /** @var array<string, mixed> $data */
-        $data = [
-            'start_date' => $data['start_date'],
-            'end_date'   => $data['end_date'],
-            'page'       => $data['page'] ?? 1,
-            'page_size'  => $data['page_size'] ?? 10,
-        ];
-
-        $result = $this->getRequestAccountData($posAccount) + [
-                /**
-                 * Tarih aralığı maksimum 90 gün olabilir.
-                 */
-                'StartDate'   => $this->valueFormatter->formatDateTime($data['start_date'], 'StartDate'),
-                'EndDate'     => $this->valueFormatter->formatDateTime($data['end_date'], 'EndDate'),
-                'LowerLimit'  => ($data['page'] - 1) * $data['page_size'],
-                'UpperLimit'  => $data['page_size'],
-                'ProvNumber'  => null,
-                'OrderStatus' => null,
-                'TranResult'  => null,
-                'OrderNo'     => null,
-            ];
-
-        $result['HashData'] = $this->crypt->createHash($posAccount, $result);
-
-        return $result;
     }
 
     /**

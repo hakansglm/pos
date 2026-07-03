@@ -7,7 +7,6 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\Mapper;
 
 use PHPUnit\Framework\Attributes\DataProvider;
-use Mews\Pos\Exception\NotImplementedException;
 use Generator;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\Request\Mapper\AbstractRequestDataMapper;
@@ -260,12 +259,6 @@ class AssecoPosRequestDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public function testCreateHistoryRequestData(): void
-    {
-        $this->expectException(NotImplementedException::class);
-        $this->requestDataMapper->createHistoryRequestData($this->account);
-    }
-
     #[DataProvider('threeDPaymentRequestDataDataProvider')]
     public function testCreate3DPaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, array $responseData, array $expected): void
     {
@@ -289,66 +282,6 @@ class AssecoPosRequestDataMapperTest extends TestCase
         \ksort($actual);
         \ksort($expectedData);
         $this->assertSame($expectedData, $actual);
-    }
-
-    #[DataProvider('createCustomQueryRequestDataDataProvider')]
-    public function testCreateCustomQueryRequestData(array $requestData, array $expectedData): void
-    {
-        $actual = $this->requestDataMapper->createCustomQueryRequestData($this->account, $requestData);
-
-        \ksort($actual);
-        \ksort($expectedData);
-        $this->assertSame($expectedData, $actual);
-    }
-
-    public static function createCustomQueryRequestDataDataProvider(): Generator
-    {
-        yield 'without_account_data' => [
-            'request_data' => [
-                'Type'     => 'Query',
-                'Number'   => '4111111111111111',
-                'Expires'  => '10.2025',
-                'Extra'    => [
-                    'IMECECARDQUERY' => null,
-                ],
-            ],
-            'expected' => [
-                'Name'     => 'ZIRAATAPI',
-                'Password' => 'ZIRAAT19',
-                'ClientId' => '190100000',
-                'Type'     => 'Query',
-                'Number'   => '4111111111111111',
-                'Expires'  => '10.2025',
-                'Extra'    => [
-                    'IMECECARDQUERY' => null,
-                ],
-            ],
-        ];
-
-        yield 'with_account_data' => [
-            'request_data' => [
-                'Name'     => 'ACCOUNTNAME',
-                'Password' => 'ACCOUNTPASSWORD',
-                'ClientId' => 'ACCCOUNTCLIENTID',
-                'Type'     => 'Query',
-                'Number'   => '4111111111111111',
-                'Expires'  => '10.2025',
-                'Extra'    => [
-                    'IMECECARDQUERY' => null,
-                ],
-            ],
-            'expected' => [
-                'Name'     => 'ACCOUNTNAME',
-                'Password' => 'ACCOUNTPASSWORD',
-                'ClientId' => 'ACCCOUNTCLIENTID',
-                'Type'     => 'Query',
-                'Number'   => '4111111111111111',
-                'Expires'  => '10.2025',
-                'Extra'    => [
-                    'IMECECARDQUERY' => null,
-                ],
-            ],
-        ];
     }
 
     public static function threeDPaymentRequestDataDataProvider(): Generator

@@ -5,7 +5,8 @@ use Mews\Pos\Model\Card\CreditCardInterface;
 require __DIR__.'/../_main_config.php';
 
 $bankTestsUrl = $hostUrl.'/tosla';
-$posClass     = \Mews\Pos\Gateway\ToslaPos::class;
+$posClass      = \Mews\Pos\Gateway\ToslaPos::class;
+$posQueryClass = \Mews\Pos\Factory\PosQueryFactory::getPosQueryClassForGateway($posClass);
 
 $testCards = [
     'visa1'  => [

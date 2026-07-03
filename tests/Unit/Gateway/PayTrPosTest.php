@@ -7,7 +7,6 @@
 namespace Mews\Pos\Tests\Unit\Gateway;
 
 use RuntimeException;
-use DateTimeImmutable;
 use LogicException;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\HttpClientStrategyInterface;
@@ -510,65 +509,6 @@ class PayTrPosTest extends TestCase
         $result = $this->pos->refund($order);
 
         $this->assertSame($expectedResponse, $result);
-    }
-
-    public function testHistoryRequest(): void
-    {
-        $order       = ['start_date' => new DateTimeImmutable('2026-06-01'), 'end_date' => new DateTimeImmutable('2026-06-03')];
-        $txType      = PosInterface::TX_TYPE_HISTORY;
-        $requestData = ['merchant_id' => '123456', 'start_date' => '2026-06-01 00:00:00'];
-
-        $this->requestMapperMock->expects(self::once())
-            ->method('createHistoryRequestData')
-            ->with($this->account, $order)
-            ->willReturn($requestData);
-
-        $decodedResponse  = ['status' => 'success', 'list' => []];
-        $expectedResponse = ['status' => 'approved', 'transactions' => []];
-
-        $this->configureClientResponse(
-            $txType,
-            $decodedResponse,
-            $order,
-            PosInterface::MODEL_NON_SECURE,
-            null,
-            $this->account,
-        );
-
-        $this->responseMapperMock->expects(self::once())
-            ->method('mapHistoryResponse')
-            ->with($decodedResponse)
-            ->willReturn($expectedResponse);
-
-        $result = $this->pos->history($order);
-
-        $this->assertSame($expectedResponse, $result);
-    }
-
-    #[TestWith([null])]
-    #[TestWith(['https://www.paytr.com/odeme/durum-sorgu'])]
-    public function testCustomQueryRequest(?string $apiUrl): void
-    {
-        $requestData        = ['merchant_id' => '123456', 'merchant_oid' => 'order-cq'];
-        $updatedRequestData = $requestData + ['paytr_token' => 'computed-token'];
-        $txType             = PosInterface::TX_TYPE_CUSTOM_QUERY;
-
-        $this->requestMapperMock->expects(self::once())
-            ->method('createCustomQueryRequestData')
-            ->with($this->account, $requestData)
-            ->willReturn($updatedRequestData);
-
-        $decodedResponse = ['status' => 'success'];
-        $this->configureClientResponse(
-            $txType,
-            $decodedResponse,
-            $requestData,
-            PosInterface::MODEL_NON_SECURE,
-            $apiUrl,
-            $this->account,
-        );
-
-        $this->pos->customQuery($requestData, $apiUrl);
     }
 
     public static function refundRequestDataProvider(): array

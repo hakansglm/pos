@@ -13,7 +13,7 @@ use DateTimeInterface;
 use Mews\Pos\DataMapper\Request\ValueFormatter\VakifKatilimPosRequestValueFormatter;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\VakifKatilimPos;
-use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
@@ -97,13 +97,13 @@ class VakifKatilimPosRequestValueFormatterTest extends TestCase
             [
                 new DateTime('2024-04-14T16:45:30.000'),
                 'StartDate',
-                PosInterface::TX_TYPE_HISTORY,
+                PosQueryInterface::QUERY_TYPE_HISTORY,
                 '2024-04-14',
             ],
             [
                 new DateTime('2024-04-14T16:45:30.000'),
                 'EndDate',
-                PosInterface::TX_TYPE_HISTORY,
+                PosQueryInterface::QUERY_TYPE_HISTORY,
                 '2024-04-14',
             ],
         ];

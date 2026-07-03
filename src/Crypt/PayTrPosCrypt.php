@@ -61,9 +61,10 @@ class PayTrPosCrypt extends AbstractCrypt
      *
      * Builds paytr_token for payment requests.
      * Detects the correct formula by inspecting which keys exist in $requestData:
-     *  - iFrame token:    no_installment present
-     *  - Direct payment:  non_3d present
-     *  - Refund:          return_amount present
+     *  - iFrame token:         no_installment present
+     *  - Direct payment:       non_3d present
+     *  - Refund:               return_amount present
+     *  - Installment rates:    request_id present (without order fields)
      */
     public function createHash(AbstractPosAccount $posAccount, array $requestData): string
     {
@@ -79,6 +80,14 @@ class PayTrPosCrypt extends AbstractCrypt
         } elseif (isset($requestData['no_installment']) || isset($requestData['max_installment'])) {
             // iFrame token:
             $hashParamKeyValue = 'merchant_id:user_ip:merchant_oid:email:payment_amount:user_basket:no_installment:max_installment:currency:test_mode';
+        } elseif (isset($requestData['request_id'])) {
+            // Installment rates:
+            $hashParamKeyValue = 'merchant_id:request_id';
+        } elseif (isset($requestData['bin_number'])) {
+            // BIN query: bin_number + merchant_id + salt (no separator between values)
+            $hashStr = $requestData['bin_number'].$requestData['merchant_id'].$posAccount->getPassword();
+
+            return $this->hashString($hashStr, $posAccount->getSecretKey());
         } else {
             // order status
             $hashParamKeyValue = 'merchant_id:merchant_oid';

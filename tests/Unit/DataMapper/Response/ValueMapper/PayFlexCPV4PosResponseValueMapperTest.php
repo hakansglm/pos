@@ -13,6 +13,7 @@ use Mews\Pos\DataMapper\Response\ValueMapper\PayFlexCPV4PosResponseValueMapper;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\PayFlexCPV4Pos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
@@ -83,7 +84,7 @@ class PayFlexCPV4PosResponseValueMapperTest extends TestCase
             ['Capture', PosInterface::TX_TYPE_PAY_POST_AUTH],
             ['Cancel', PosInterface::TX_TYPE_CANCEL],
             ['Refund', PosInterface::TX_TYPE_REFUND],
-            ['TxnHistory', PosInterface::TX_TYPE_HISTORY],
+            ['TxnHistory', PosQueryInterface::QUERY_TYPE_HISTORY],
             ['OrderInquiry', PosInterface::TX_TYPE_STATUS],
             ['', null],
         ];

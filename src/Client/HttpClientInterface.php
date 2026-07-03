@@ -6,9 +6,10 @@
 
 namespace Mews\Pos\Client;
 
-use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Exception\UnsupportedTransactionTypeException;
+use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use Psr\Http\Client\ClientExceptionInterface;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
@@ -35,9 +36,9 @@ interface HttpClientInterface
     public const API_NAME_GATEWAY_3D_API = 'gateway_3d';
 
     /**
-     * @param PosInterface::TX_TYPE_*      $txType
-     * @param PosInterface::MODEL_*        $paymentModel
-     * @param PosInterface::TX_TYPE_*|null $orderTxType
+     * @param PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_* $txType
+     * @param PosInterface::MODEL_*                                   $paymentModel
+     * @param PosInterface::TX_TYPE_*|null                            $orderTxType
      *
      * @return bool
      */
@@ -57,14 +58,14 @@ interface HttpClientInterface
      *
      * $orderTxType is mostly set when $txType value is an internal Transaction Type.
      *
-     * @param PosInterface::TX_TYPE_*          $txType       Transaction type to be used to decide to which endpoint the request will be send to.
-     * @param PosInterface::MODEL_*            $paymentModel
-     * @param array<string, mixed>             $requestData
-     * @param array<string, mixed>             $order
-     * @param non-empty-string|null            $url
-     * @param AbstractPosAccount|null          $account
-     * @param PosInterface::TX_TYPE_PAY_*|null $orderTxType  In some cases $txType alone is not enough to determine API endpoint.
-     *                                                       Transaction type of the order is used in this case.
+     * @param PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_* $txType       Transaction type to be used to decide to which endpoint the request will be send to.
+     * @param PosInterface::MODEL_*                                   $paymentModel
+     * @param array<string, mixed>                                    $requestData
+     * @param array<string, mixed>                                    $order
+     * @param non-empty-string|null                                   $url
+     * @param AbstractPosAccount|null                                 $account
+     * @param PosInterface::TX_TYPE_PAY_*|null                        $orderTxType  In some cases $txType alone is not enough to determine API endpoint.
+     *                                                                              Transaction type of the order is used in this case.
      *
      * @return array<string, mixed>|string
      *

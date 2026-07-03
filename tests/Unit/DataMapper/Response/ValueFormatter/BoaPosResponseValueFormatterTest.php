@@ -12,6 +12,7 @@ use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\KuveytPos;
 use Mews\Pos\Gateway\VakifKatilimPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
@@ -50,7 +51,7 @@ class BoaPosResponseValueFormatterTest extends TestCase
             ['101', '', 1.01],
             ['101', PosInterface::TX_TYPE_PAY_AUTH, 1.01],
             ['101', PosInterface::TX_TYPE_STATUS, 101],
-            ['101', PosInterface::TX_TYPE_HISTORY, 101],
+            ['101', PosQueryInterface::QUERY_TYPE_HISTORY, 101],
             ['101', PosInterface::TX_TYPE_ORDER_HISTORY, 101],
         ];
     }

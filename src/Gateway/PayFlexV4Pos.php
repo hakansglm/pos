@@ -11,13 +11,13 @@ use Mews\Pos\DataMapper\Request\Mapper\PayFlexV4PosRequestDataMapper;
 use Mews\Pos\DataMapper\Request\Mapper\RequestDataMapperInterface;
 use Mews\Pos\DataMapper\Response\Mapper\PayFlexV4PosResponseDataMapper;
 use Mews\Pos\DataMapper\Response\Mapper\ResponseDataMapperInterface;
+use Mews\Pos\Exception\UnsupportedTransactionTypeException;
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Account\PayFlexPosAccount;
 use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exception\UnsupportedFormFormatException;
 use Mews\Pos\Exception\UnsupportedPaymentModelException;
-use Mews\Pos\Exception\UnsupportedTransactionTypeException;
 use Mews\Pos\PosInterface;
 
 /**
@@ -55,9 +55,7 @@ class PayFlexV4Pos extends AbstractGateway
         PosInterface::TX_TYPE_CANCEL         => true,
         PosInterface::TX_TYPE_REFUND         => true,
         PosInterface::TX_TYPE_REFUND_PARTIAL => true,
-        PosInterface::TX_TYPE_HISTORY        => false,
         PosInterface::TX_TYPE_ORDER_HISTORY  => false,
-        PosInterface::TX_TYPE_CUSTOM_QUERY   => true,
     ];
 
     /** @return PayFlexPosAccount */
@@ -135,14 +133,6 @@ class PayFlexV4Pos extends AbstractGateway
     public function make3DHostPayment(array $gatewayResponseData, array $order, string $txType): array
     {
         throw new UnsupportedPaymentModelException();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function history(array $data): array
-    {
-        throw new UnsupportedTransactionTypeException();
     }
 
     /**

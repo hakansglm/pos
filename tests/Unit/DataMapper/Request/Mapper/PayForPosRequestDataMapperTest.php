@@ -7,7 +7,6 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\Mapper;
 
 use PHPUnit\Framework\Attributes\DataProvider;
-use Generator;
 use DateTime;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\Request\Mapper\PayForPosRequestDataMapper;
@@ -134,17 +133,6 @@ class PayForPosRequestDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    #[DataProvider('historyRequestDataProvider')]
-    public function testCreateHistoryRequestData(string $account, array $data, array $expectedData): void
-    {
-        $actualData = $this->requestDataMapper->createHistoryRequestData($this->accounts[$account], $data);
-
-        \ksort($expectedData);
-        \ksort($actualData);
-
-        $this->assertSame($expectedData, $actualData);
-    }
-
     #[DataProvider('create3DPaymentRequestDataDataProvider')]
     public function testCreate3DPaymentRequestData(string $account, array $order, array $responseData, array $expected): void
     {
@@ -248,89 +236,6 @@ class PayForPosRequestDataMapperTest extends TestCase
         \ksort($expectedData);
         \ksort($actual);
         $this->assertSame($expectedData, $actual);
-    }
-
-    #[DataProvider('createCustomQueryRequestDataDataProvider')]
-    public function testCreateCustomQueryRequestData(string $account, array $requestData, array $expectedData): void
-    {
-        $actual = $this->requestDataMapper->createCustomQueryRequestData($this->accounts[$account], $requestData);
-
-        \ksort($actual);
-        \ksort($expectedData);
-        $this->assertSame($expectedData, $actual);
-    }
-
-    public static function createCustomQueryRequestDataDataProvider(): Generator
-    {
-        yield 'without_account_data_point_inquiry' => [
-            'account'      => 'finansbank',
-            'request_data' => [
-                'SecureType'     => 'Inquiry',
-                'TxnType'        => 'ParaPuanInquiry',
-                'Pan'            => '4155650100416111',
-                'Expiry'         => '0125',
-                'Cvv2'           => '123',
-            ],
-            'expected'     => [
-                'Cvv2'           => '123',
-                'Expiry'         => '0125',
-                'MbrId'          => '5',
-                'MerchantId'     => '085300000009704',
-                'Pan'            => '4155650100416111',
-                'SecureType'     => 'Inquiry',
-                'TxnType'        => 'ParaPuanInquiry',
-                'UserCode'       => 'QNB_API_KULLANICI_3DPAY',
-                'UserPass'       => 'UcBN0',
-            ],
-        ];
-
-        yield 'with_account_data_point_inquiry' => [
-            'account'      => 'finansbank',
-            'request_data' => [
-                'Cvv2'           => '123',
-                'Expiry'         => '0125',
-                'MbrId'          => '5',
-                'MerchantId'     => '085300000009704',
-                'Pan'            => '4155650100416111',
-                'SecureType'     => 'Inquiry',
-                'TxnType'        => 'ParaPuanInquiry',
-                'UserCode'       => 'QNB_API_KULLANICI_3DPAYxxx',
-                'UserPass'       => 'UcBN0xxx',
-            ],
-            'expected'     => [
-                'Cvv2'           => '123',
-                'Expiry'         => '0125',
-                'MbrId'          => '5',
-                'MerchantId'     => '085300000009704',
-                'Pan'            => '4155650100416111',
-                'SecureType'     => 'Inquiry',
-                'TxnType'        => 'ParaPuanInquiry',
-                'UserCode'       => 'QNB_API_KULLANICI_3DPAYxxx',
-                'UserPass'       => 'UcBN0xxx',
-            ],
-        ];
-
-        yield 'without_account_data_point_inquiry_ziraat_katilim' => [
-            'account'      => 'ziraat_katilim',
-            'request_data' => [
-                'SecureType'     => 'Inquiry',
-                'TxnType'        => 'ParaPuanInquiry',
-                'Pan'            => '4155650100416111',
-                'Expiry'         => '0125',
-                'Cvv2'           => '123',
-            ],
-            'expected'     => [
-                'Cvv2'           => '123',
-                'Expiry'         => '0125',
-                'MbrId'          => '12',
-                'MerchantId'     => '085300000009704',
-                'Pan'            => '4155650100416111',
-                'SecureType'     => 'Inquiry',
-                'TxnType'        => 'ParaPuanInquiry',
-                'UserCode'       => 'ZIRAATKATILIM_API_KULLANICI_3DPAY',
-                'UserPass'       => 'UcBN0',
-            ],
-        ];
     }
 
     public static function create3DPaymentRequestDataDataProvider(): array

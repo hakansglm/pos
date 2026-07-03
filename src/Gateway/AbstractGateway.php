@@ -432,53 +432,6 @@ abstract class AbstractGateway implements PosInterface
     /**
      * @inheritDoc
      */
-    public function history(array $data): array
-    {
-        $txType       = PosInterface::TX_TYPE_HISTORY;
-        $paymentModel = PosInterface::MODEL_NON_SECURE;
-        $requestData  = $this->requestDataMapper->createHistoryRequestData($this->account, $data);
-
-        $event = new RequestDataPreparedEvent(
-            $requestData,
-            $this->account->getBankName(),
-            $txType,
-            static::class,
-            $data,
-            $paymentModel
-        );
-        /** @var RequestDataPreparedEvent $event */
-        $event = $this->eventDispatcher->dispatch($event);
-        if ($requestData !== $event->getRequestData()) {
-            $this->logger->debug('Request data is changed via listeners', [
-                'tx_type'      => $event->getTxType(),
-                'bank_name'    => $event->getBankName(),
-                'initial_data' => $requestData,
-                'updated_data' => $event->getRequestData(),
-            ]);
-            $requestData = $event->getRequestData();
-        }
-
-        /** @var array<string, mixed> $bankResponse */
-        $bankResponse = $this->clientStrategy->getClient(
-            $txType,
-            $paymentModel,
-        )->request(
-            $txType,
-            $paymentModel,
-            $requestData,
-            $data,
-            null,
-            $this->account
-        );
-
-        $this->response = $this->responseDataMapper->mapHistoryResponse($bankResponse);
-
-        return $this->response;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function orderHistory(array $order): array
     {
         $txType       = PosInterface::TX_TYPE_ORDER_HISTORY;
@@ -519,54 +472,6 @@ abstract class AbstractGateway implements PosInterface
         );
 
         $this->response = $this->responseDataMapper->mapOrderHistoryResponse($bankResponse);
-
-        return $this->response;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function customQuery(array $requestData, ?string $apiUrl = null): array
-    {
-        $txType             = PosInterface::TX_TYPE_CUSTOM_QUERY;
-        $paymentModel       = PosInterface::MODEL_NON_SECURE;
-        $updatedRequestData = $this->requestDataMapper->createCustomQueryRequestData($this->account, $requestData);
-
-        $event = new RequestDataPreparedEvent(
-            $updatedRequestData,
-            $this->account->getBankName(),
-            $txType,
-            static::class,
-            $requestData,
-            $paymentModel
-        );
-
-        /** @var RequestDataPreparedEvent $event */
-        $event = $this->eventDispatcher->dispatch($event);
-        if ($updatedRequestData !== $event->getRequestData()) {
-            $this->logger->debug('Request data is changed via listeners', [
-                'tx_type'      => $event->getTxType(),
-                'bank_name'    => $event->getBankName(),
-                'initial_data' => $requestData,
-                'updated_data' => $event->getRequestData(),
-            ]);
-            $updatedRequestData = $event->getRequestData();
-        }
-
-        /** @var array<string, mixed> $bankResponse */
-        $bankResponse = $this->clientStrategy->getClient(
-            $txType,
-            $paymentModel,
-        )->request(
-            $txType,
-            $paymentModel,
-            $updatedRequestData,
-            $requestData,
-            $apiUrl,
-            $this->account
-        );
-
-        $this->response = $bankResponse;
 
         return $this->response;
     }

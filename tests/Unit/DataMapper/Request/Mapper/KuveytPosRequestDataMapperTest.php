@@ -233,54 +233,6 @@ class KuveytPosRequestDataMapperTest extends TestCase
         $this->requestDataMapper->createOrderHistoryRequestData($this->account, []);
     }
 
-    public function testCreateHistoryRequestData(): void
-    {
-        $this->expectException(NotImplementedException::class);
-        $this->requestDataMapper->createHistoryRequestData($this->account, []);
-    }
-
-    public function testCreateCustomQueryRequestData(): void
-    {
-        $this->expectException(NotImplementedException::class);
-        $this->requestDataMapper->createCustomQueryRequestData($this->account, []);
-    }
-
-    public static function createCustomQueryRequestDataDataProvider(): Generator
-    {
-        yield 'without_account_data' => [
-            'request_data' => [
-                'abc' => 'abc',
-            ],
-            'expected'     => [
-                'abc'        => 'abc',
-                'MerchantId' => '80',
-                'CustomerId' => '400235',
-                'UserName'   => 'apiuser',
-                'APIVersion' => 'TDV2.0.0',
-                'HashData'   => 'hasshhh',
-            ],
-        ];
-
-        yield 'with_account_data' => [
-            'request_data' => [
-                'abc'         => 'abc',
-                'MerchantId' => '802',
-                'CustomerId' => '4002352',
-                'UserName'   => 'apiuser2',
-                'APIVersion' => 'TDV1.0.0',
-                'HashData'   => 'hasshhh22',
-            ],
-            'expected'     => [
-                'abc'        => 'abc',
-                'MerchantId' => '802',
-                'CustomerId' => '4002352',
-                'UserName'   => 'apiuser2',
-                'APIVersion' => 'TDV1.0.0',
-                'HashData'   => 'hasshhh22',
-            ],
-        ];
-    }
-
     public static function create3DPaymentRequestDataDataProvider(): array
     {
         $order = [

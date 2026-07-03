@@ -8,6 +8,7 @@ namespace Mews\Pos\DataMapper\Request\ValueMapper;
 
 use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 
 /**
  * @internal
@@ -35,7 +36,7 @@ class AkbankPosRequestValueMapper extends AbstractRequestValueMapper
         PosInterface::TX_TYPE_REFUND_PARTIAL => '1002',
         PosInterface::TX_TYPE_CANCEL         => '1003',
         PosInterface::TX_TYPE_ORDER_HISTORY  => '1010',
-        PosInterface::TX_TYPE_HISTORY        => '1009',
+        PosQueryInterface::QUERY_TYPE_HISTORY   => '1009',
     ];
 
     /**

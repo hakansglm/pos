@@ -24,7 +24,6 @@ use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exception\HashMismatchException;
 use Mews\Pos\Exception\UnsupportedFormFormatException;
 use Mews\Pos\Exception\UnsupportedPaymentModelException;
-use Mews\Pos\Exception\UnsupportedTransactionTypeException;
 use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\Gateway\AbstractGateway;
@@ -531,12 +530,6 @@ class ToslaPosTest extends TestCase
         $this->assertSame($result, $mappedResponse);
     }
 
-    public function testHistoryRequest(): void
-    {
-        $this->expectException(UnsupportedTransactionTypeException::class);
-        $this->pos->history([]);
-    }
-
     #[DataProvider('orderHistoryDataProvider')]
     public function testOrderHistory(
         array  $order,
@@ -572,51 +565,6 @@ class ToslaPosTest extends TestCase
 
         $this->assertSame($isSuccess, $this->pos->isSuccess());
         $this->assertSame($result, $mappedResponse);
-    }
-
-    #[DataProvider('customQueryRequestDataProvider')]
-    public function testCustomQueryRequest(array $requestData, ?string $apiUrl): void
-    {
-        $account = $this->pos->getAccount();
-        $txType  = PosInterface::TX_TYPE_CUSTOM_QUERY;
-
-        $updatedRequestData = $requestData + [
-                'abc' => 'def',
-            ];
-        $this->requestMapperMock->expects(self::once())
-            ->method('createCustomQueryRequestData')
-            ->with($account, $requestData)
-            ->willReturn($updatedRequestData);
-
-        $this->configureClientResponse(
-            $txType,
-            $updatedRequestData,
-            ['decodedResponse'],
-            $requestData,
-            PosInterface::MODEL_NON_SECURE,
-            $apiUrl,
-            $account
-        );
-
-        $this->pos->customQuery($requestData, $apiUrl);
-    }
-
-    public static function customQueryRequestDataProvider(): array
-    {
-        return [
-            [
-                'requestData' => [
-                    'id' => '2020110828BC',
-                ],
-                'api_url'     => 'https://prepentegrasyon.tosla.com/api/Payment/GetCommissionAndInstallmentInfo',
-            ],
-            [
-                'requestData' => [
-                    'id' => '2020110828BC',
-                ],
-                'api_url'     => null,
-            ],
-        ];
     }
 
     public static function statusDataProvider(): iterable

@@ -10,6 +10,7 @@ use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Exception\UnsupportedTransactionTypeException;
 use Mews\Pos\Gateway\KuveytPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use Mews\Pos\Serializer\Decoder\XmlDecoder;
 use Mews\Pos\Serializer\EncodedData;
 use Mews\Pos\Serializer\Encoder\XmlEncoder;
@@ -121,7 +122,7 @@ class KuveytPosHttpClient extends AbstractHttpClient
     }
 
     /**
-     * @phpstan-param PosInterface::TX_TYPE_* $txType
+     * @phpstan-param PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_* $txType
      * @phpstan-param PosInterface::MODEL_*   $paymentModel
      *
      * @return string

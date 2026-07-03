@@ -86,7 +86,7 @@
         </nav>
 </header>
 <div id="wrapper">
-    <div class="container" style="max-width: 720px;">
+    <div class="container" style="max-width: 992px;">
         <h2 class="text-center"><?= $templateTitle; ?></h2>
         <hr>
         <?php if (isset($posClass)): ?>
@@ -140,19 +140,34 @@
                                     <a class="nav-link <?= $transaction === \Mews\Pos\PosInterface::TX_TYPE_ORDER_HISTORY ? 'active' : ''; ?>" href="<?= $bankTestsUrl ?>/regular/order_history.php">Order History</a>
                                 </li>
                             <?php endif; ?>
-                            <?php if ($posClass::isSupportedTransaction(\Mews\Pos\PosInterface::TX_TYPE_HISTORY, \Mews\Pos\PosInterface::MODEL_NON_SECURE)): ?>
-                                <li class="nav-item">
-                                    <a class="nav-link <?= $transaction === \Mews\Pos\PosInterface::TX_TYPE_HISTORY ? 'active' : ''; ?>" href="<?= $bankTestsUrl ?>/regular/history.php">History</a>
-                                </li>
-                            <?php endif; ?>
-                            <?php if ($posClass::isSupportedTransaction(\Mews\Pos\PosInterface::TX_TYPE_CUSTOM_QUERY, \Mews\Pos\PosInterface::MODEL_NON_SECURE)): ?>
-                                <li class="nav-item">
-                                    <a class="nav-link <?= $transaction === \Mews\Pos\PosInterface::TX_TYPE_CUSTOM_QUERY ? 'active' : ''; ?>" href="<?= $bankTestsUrl ?>/regular/custom_query.php">Custom Query</a>
-                                </li>
-                            <?php endif; ?>
                             <?php if ($posClass === \Mews\Pos\Gateway\PayForPos::class): ?>
                                 <li class="nav-item">
                                     <a class="nav-link" href="<?= $bankTestsUrl ?>/qr/index.php">QR Payment</a>
+                                </li>
+                            <?php endif; ?>
+                            <?php if ($posQueryClass !== null && $posQueryClass::isSupportedQuery(\Mews\Pos\PosQuery\PosQueryInterface::QUERY_TYPE_CUSTOM_QUERY)): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link <?= $transaction === \Mews\Pos\PosQuery\PosQueryInterface::QUERY_TYPE_CUSTOM_QUERY ? 'active' : ''; ?>" href="<?= $bankTestsUrl ?>/queries/custom_query.php">Custom Query</a>
+                                </li>
+                            <?php endif; ?>
+                            <?php if ($posQueryClass !== null && $posQueryClass::isSupportedQuery(\Mews\Pos\PosQuery\PosQueryInterface::QUERY_TYPE_HISTORY)): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link <?= $transaction === \Mews\Pos\PosQuery\PosQueryInterface::QUERY_TYPE_HISTORY ? 'active' : ''; ?>" href="<?= $bankTestsUrl ?>/queries/history.php">History</a>
+                                </li>
+                            <?php endif; ?>
+                            <?php if ($posQueryClass !== null && $posQueryClass::isSupportedQuery(\Mews\Pos\PosQuery\PosQueryInterface::QUERY_TYPE_INSTALLMENT_RATES)): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link <?= $transaction === \Mews\Pos\PosQuery\PosQueryInterface::QUERY_TYPE_INSTALLMENT_RATES ? 'active' : ''; ?>" href="<?= $bankTestsUrl ?>/queries/installment_rates.php">Taksit Oranları</a>
+                                </li>
+                            <?php endif; ?>
+                            <?php if ($posQueryClass !== null && $posQueryClass::isSupportedQuery(\Mews\Pos\PosQuery\PosQueryInterface::QUERY_TYPE_INSTALLMENT_PRICES)): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link <?= $transaction === \Mews\Pos\PosQuery\PosQueryInterface::QUERY_TYPE_INSTALLMENT_PRICES ? 'active' : ''; ?>" href="<?= $bankTestsUrl ?>/queries/installment_prices.php">Taksit Fiyatları</a>
+                                </li>
+                            <?php endif; ?>
+                            <?php if ($posQueryClass !== null && $posQueryClass::isSupportedQuery(\Mews\Pos\PosQuery\PosQueryInterface::QUERY_TYPE_BIN_LIST)): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link <?= $transaction === \Mews\Pos\PosQuery\PosQueryInterface::QUERY_TYPE_BIN_LIST ? 'active' : ''; ?>" href="<?= $bankTestsUrl ?>/queries/bin_list.php">BIN Sorgusu</a>
                                 </li>
                             <?php endif; ?>
                         </ul>

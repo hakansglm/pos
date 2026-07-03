@@ -8,6 +8,7 @@ namespace Mews\Pos\DataMapper\Request\ValueMapper;
 
 use Mews\Pos\Gateway\PayForPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 
 /**
  * @internal
@@ -32,7 +33,7 @@ class PayForPosRequestValueMapper extends AbstractRequestValueMapper
         PosInterface::TX_TYPE_CANCEL         => 'Void',
         PosInterface::TX_TYPE_REFUND         => 'Refund',
         PosInterface::TX_TYPE_REFUND_PARTIAL => 'Refund',
-        PosInterface::TX_TYPE_HISTORY        => 'TxnHistory',
+        PosQueryInterface::QUERY_TYPE_HISTORY   => 'TxnHistory',
         PosInterface::TX_TYPE_STATUS         => 'OrderInquiry',
     ];
 

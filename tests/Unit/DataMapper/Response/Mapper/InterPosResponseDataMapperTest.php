@@ -274,12 +274,6 @@ class InterPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    public function testMapHistoryResponse(): void
-    {
-        $this->expectException(NotImplementedException::class);
-        $this->responseDataMapper->mapHistoryResponse([]);
-    }
-
     public function testMapOrderHistoryResponse(): void
     {
         $this->expectException(NotImplementedException::class);

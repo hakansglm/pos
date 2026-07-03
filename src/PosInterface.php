@@ -49,9 +49,6 @@ interface PosInterface
     /** @var string */
     public const TX_TYPE_ORDER_HISTORY = 'order_history';
 
-    /** @var string */
-    public const TX_TYPE_HISTORY = 'history';
-
     /**
      * It is used when building 3D/3D Host/3D Pay form data
      * in case Payment Gateway requires an API call to generate 3D form data.
@@ -67,9 +64,6 @@ interface PosInterface
      * @var string
      */
     public const TX_TYPE_INTERNAL_3D_PAYMENT_STATUS = '3d_payment_status';
-
-    /** @var string */
-    public const TX_TYPE_CUSTOM_QUERY = 'custom_query';
 
     /** @var string */
     public const MODEL_3D_SECURE = '3d';
@@ -317,34 +311,6 @@ interface PosInterface
      * @throws ClientExceptionInterface
      */
     public function orderHistory(array $order): array;
-
-    /**
-     * @param array<string, mixed> $data
-     *
-     * @return array<string, mixed>
-     *
-     * @throws UnsupportedTransactionTypeException
-     * @throws ClientExceptionInterface
-     */
-    public function history(array $data): array;
-
-
-    /**
-     * Kütüphanenin desteği olmadığı özel istekleri bu methodla yapabilirsiniz.
-     * requestData içinde API hesap bilgileri, hash verisi ve bazi sabit değerler
-     * eğer zaten bulunmuyorsa kütüphane otomatik ekler.
-     *
-     * Bankadan dönen cevap array'e dönüştürülür,
-     * ancak diğer transaction'larda olduğu gibi mapping/normalization yapılmaz.
-     *
-     * @param array<string, mixed>  $requestData API'a gönderilecek veri.
-     * @param non-empty-string|null $apiUrl
-     *
-     * @return array<string, mixed>
-     *
-     * @throws ClientExceptionInterface
-     */
-    public function customQuery(array $requestData, ?string $apiUrl = null): array;
 
     /**
      * Is success

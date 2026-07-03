@@ -216,28 +216,6 @@ class IyzicoPosResponseDataMapperTest extends TestCase
         $this->assertSame($expectedData, $actualData);
     }
 
-    #[DataProvider('historyTestDataProvider')]
-    public function testMapHistoryResponse(array $responseData, array $expectedData): void
-    {
-        $actualData = $this->responseDataMapper->mapHistoryResponse($responseData);
-
-        $this->assertArrayHasKey('all', $actualData);
-        $this->assertSame($responseData, $actualData['all']);
-        unset($actualData['all']);
-
-        foreach ($actualData['transactions'] as $i => $tx) {
-            $this->assertTransactionTime($expectedData['transactions'][$i], $tx);
-            unset(
-                $actualData['transactions'][$i]['transaction_time'],
-                $expectedData['transactions'][$i]['transaction_time']
-            );
-        }
-
-        \ksort($expectedData);
-        \ksort($actualData);
-        $this->assertSame($expectedData, $actualData);
-    }
-
     // ==================== Data Providers ====================
 
     public static function paymentTestDataProvider(): Generator
@@ -697,105 +675,6 @@ class IyzicoPosResponseDataMapperTest extends TestCase
                         'status'            => 'approved',
                         'error_code'        => null,
                         'capture'           => true,
-                        'currency'          => null,
-                        'masked_number'     => null,
-                        'payment_model'     => PosInterface::MODEL_NON_SECURE,
-                        'installment_count' => null,
-                    ],
-                ],
-                'status'           => 'approved',
-            ],
-        ];
-    }
-
-    public static function historyTestDataProvider(): Generator
-    {
-        yield 'history_success' => [
-            self::loadJson('history/history_success.json'),
-            self::loadExpectedWithTransactionTimes('history/history_success_expected.json'),
-        ];
-
-        yield 'history_failure' => [
-            ['status' => 'failure', 'errorCode' => '10000', 'errorMessage' => 'System Error', 'currentPage' => null, 'totalPageCount' => null],
-            [
-                'proc_return_code' => 'failure',
-                'error_code'       => '10000',
-                'error_message'    => 'System Error',
-                'trans_count'      => 0,
-                'transactions'     => [],
-                'current_page'     => null,
-                'total_pages'      => null,
-                'status'           => 'declined',
-            ],
-        ];
-
-        // PAYMENT with transactionStatus=0 (declined, PAYMENT_STATUS_ERROR, capture=false, capture_amount=null)
-        // and null transactionType (transaction_type=null, txStatus=TX_APPROVED, order_status=null).
-        yield 'history_declined_payment_and_null_type' => [
-            [
-                'status'         => 'success',
-                'currentPage'    => 1,
-                'totalPageCount' => 1,
-                'transactions'   => [
-                    [
-                        'transactionType'   => 'PAYMENT',
-                        'transactionId'     => 1001,
-                        'transactionStatus' => 0,
-                        'threeDS'           => 0,
-                        'price'             => 10.01,
-                        // intentionally no paidPrice → capture_amount = null
-                    ],
-                    [
-                        // no transactionType → transaction_type = null
-                        'transactionId' => 1002,
-                        'threeDS'       => 0,
-                        // no price, transactionCurrency, installment, transactionDate
-                    ],
-                ],
-            ],
-            [
-                'proc_return_code' => 'success',
-                'error_code'       => null,
-                'error_message'    => null,
-                'trans_count'      => 2,
-                'current_page'     => 1,
-                'total_pages'      => 1,
-                'transactions'     => [
-                    [
-                        'auth_code'         => null,
-                        'proc_return_code'  => null,
-                        'transaction_id'    => 1001,
-                        'transaction_time'  => null,
-                        'capture_time'      => null,
-                        'error_message'     => null,
-                        'ref_ret_num'       => null,
-                        'order_status'      => PosInterface::PAYMENT_STATUS_ERROR,
-                        'transaction_type'  => PosInterface::TX_TYPE_PAY_AUTH,
-                        'first_amount'      => 10.01,
-                        'capture_amount'    => null,
-                        'status'            => 'declined',
-                        'error_code'        => null,
-                        'capture'           => false,
-                        'currency'          => null,
-                        'masked_number'     => null,
-                        'payment_model'     => PosInterface::MODEL_NON_SECURE,
-                        'installment_count' => null,
-                    ],
-                    [
-                        'auth_code'         => null,
-                        'proc_return_code'  => null,
-                        'transaction_id'    => 1002,
-                        'transaction_time'  => null,
-                        'capture_time'      => null,
-                        'error_message'     => null,
-                        'ref_ret_num'       => null,
-                        'order_status'      => null,
-                        'transaction_type'  => null,
-                        'first_amount'      => null,
-                        'capture_amount'    => null,
-                        'status'            => 'approved',
-                        'error_code'        => null,
-                        'capture'           => null,
                         'currency'          => null,
                         'masked_number'     => null,
                         'payment_model'     => PosInterface::MODEL_NON_SECURE,

@@ -56,9 +56,7 @@ class InterPos extends AbstractGateway
         PosInterface::TX_TYPE_CANCEL         => true,
         PosInterface::TX_TYPE_REFUND         => true,
         PosInterface::TX_TYPE_REFUND_PARTIAL => true,
-        PosInterface::TX_TYPE_HISTORY        => false,
         PosInterface::TX_TYPE_ORDER_HISTORY  => false,
-        PosInterface::TX_TYPE_CUSTOM_QUERY   => true,
     ];
 
     /** @return InterPosAccount */
@@ -148,16 +146,6 @@ class InterPos extends AbstractGateway
         $this->response = $this->responseDataMapper->map3DHostResponseData($gatewayResponseData, $txType, $order);
 
         return $this->response;
-    }
-
-    /**
-     * Deniz bank dokumantasyonunda history sorgusu ile alakali hic bir bilgi yok
-     *
-     * @inheritDoc
-     */
-    public function history(array $data): array
-    {
-        throw new UnsupportedTransactionTypeException();
     }
 
     /**

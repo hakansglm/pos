@@ -7,7 +7,6 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\Mapper;
 
 use PHPUnit\Framework\Attributes\DataProvider;
-use DateTimeImmutable;
 use Generator;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\Request\Mapper\AbstractRequestDataMapper;
@@ -157,22 +156,6 @@ class IyzicoPosRequestDataMapperTest extends TestCase
         $actual = $this->requestDataMapper->createNonSecurePostAuthPaymentRequestData($this->account, $order);
 
         $this->assertSame($expected, $actual);
-    }
-
-    #[DataProvider('createHistoryRequestDataProvider')]
-    public function testCreateHistoryRequestData(array $data, array $expected): void
-    {
-        $actual = $this->requestDataMapper->createHistoryRequestData($this->account, $data);
-
-        $this->assertSame($expected, $actual);
-    }
-
-    public function testCreateCustomQueryRequestData(): void
-    {
-        $requestData = ['custom' => 'data'];
-        $actual      = $this->requestDataMapper->createCustomQueryRequestData($this->account, $requestData);
-
-        $this->assertSame($requestData, $actual);
     }
 
     #[DataProvider('create3DHostPaymentStatusRequestDataProvider')]
@@ -367,33 +350,6 @@ class IyzicoPosRequestDataMapperTest extends TestCase
                     'paidPrice'      => 100.0,
                     'ip'             => '127.0.0.1',
                     'currency'       => 'TRY',
-                ],
-            ],
-        ];
-    }
-
-    public static function createHistoryRequestDataProvider(): array
-    {
-        return [
-            'default_page' => [
-                'data'     => [
-                    'transaction_date' => new DateTimeImmutable('2024-06-01'),
-                ],
-                'expected' => [
-                    'locale'          => 'tr',
-                    'transactionDate' => '2024-06-01',
-                    'page'            => 1,
-                ],
-            ],
-            'custom_page'  => [
-                'data'     => [
-                    'transaction_date' => new DateTimeImmutable('2024-06-01'),
-                    'page'             => 3,
-                ],
-                'expected' => [
-                    'locale'          => 'tr',
-                    'transactionDate' => '2024-06-01',
-                    'page'            => 3,
                 ],
             ],
         ];

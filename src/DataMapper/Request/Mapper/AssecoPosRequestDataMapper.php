@@ -9,7 +9,6 @@ namespace Mews\Pos\DataMapper\Request\Mapper;
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Event\Before3DFormHashCalculatedEvent;
-use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\PosInterface;
 
@@ -205,19 +204,11 @@ class AssecoPosRequestDataMapper extends AbstractRequestDataMapper
         $requestData = [
             'OrderId' => (string) $order['id'],
             'Extra'   => [
-                $this->valueMapper->mapTxType(PosInterface::TX_TYPE_HISTORY) => 'QUERY',
+                $this->valueMapper->mapTxType(PosInterface::TX_TYPE_ORDER_HISTORY) => 'QUERY',
             ],
         ];
 
         return $this->getRequestAccountData($posAccount) + $requestData;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function createHistoryRequestData(AbstractPosAccount $posAccount, array $data = []): array
-    {
-        throw new NotImplementedException();
     }
 
     /**
@@ -273,15 +264,6 @@ class AssecoPosRequestDataMapper extends AbstractRequestDataMapper
             'method'  => 'POST',
             'inputs'  => $inputs,
         ];
-    }
-
-
-    /**
-     * @inheritDoc
-     */
-    public function createCustomQueryRequestData(AbstractPosAccount $posAccount, array $requestData): array
-    {
-        return $requestData + $this->getRequestAccountData($posAccount);
     }
 
     /**

@@ -206,31 +206,6 @@ class ToslaPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @inheritDoc
-     */
-    public function createCustomQueryRequestData(AbstractPosAccount $posAccount, array $requestData): array
-    {
-        $requestData += $this->getRequestAccountData($posAccount) + [
-                'rnd'      => $this->crypt->generateRandomString(),
-                'timeSpan' => $this->valueFormatter->formatDateTime($this->newTimeSpan(), 'timeSpan'),
-            ];
-
-        if (!isset($requestData['hash'])) {
-            $requestData['hash'] = $this->crypt->createHash($posAccount, $requestData);
-        }
-
-        return $requestData;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function createHistoryRequestData(AbstractPosAccount $posAccount, array $data = []): array
-    {
-        throw new NotImplementedException();
-    }
-
-    /**
      * {@inheritDoc}
      *
      * @return array{gateway: string, method: 'POST'|'GET', inputs: array<string, string>}

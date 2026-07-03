@@ -335,12 +335,6 @@ class KuveytPosResponseDataMapperTest extends TestCase
         $this->responseDataMapper->map3DHostResponseData([], PosInterface::TX_TYPE_PAY_AUTH, []);
     }
 
-    public function testMapHistoryResponse(): void
-    {
-        $this->expectException(NotImplementedException::class);
-        $this->responseDataMapper->mapHistoryResponse([]);
-    }
-
     public function testMapOrderHistoryResponse(): void
     {
         $this->expectException(NotImplementedException::class);

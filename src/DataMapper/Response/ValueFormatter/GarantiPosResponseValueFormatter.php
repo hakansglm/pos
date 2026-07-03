@@ -7,7 +7,7 @@
 namespace Mews\Pos\DataMapper\Response\ValueFormatter;
 
 use Mews\Pos\Gateway\GarantiPos;
-use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 
 /**
  * @internal
@@ -32,7 +32,7 @@ class GarantiPosResponseValueFormatter extends AbstractResponseValueFormatter
         }
 
         // history response
-        if (PosInterface::TX_TYPE_HISTORY === $txType && ('Pesin' === $installment || '1' === $installment)) {
+        if (PosQueryInterface::QUERY_TYPE_HISTORY === $txType && ('Pesin' === $installment || '1' === $installment)) {
             return 0;
         }
 

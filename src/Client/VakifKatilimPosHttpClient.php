@@ -6,10 +6,11 @@
 
 namespace Mews\Pos\Client;
 
-use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Exception\UnsupportedTransactionTypeException;
 use Mews\Pos\Gateway\VakifKatilimPos;
+use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use Mews\Pos\Serializer\Decoder\VakifKatilimPosXmlDecoder;
 use Mews\Pos\Serializer\EncodedData;
 use Mews\Pos\Serializer\Encoder\XmlEncoder;
@@ -121,9 +122,9 @@ class VakifKatilimPosHttpClient extends AbstractHttpClient
     }
 
     /**
-     * @phpstan-param PosInterface::TX_TYPE_*     $txType
-     * @phpstan-param PosInterface::MODEL_*       $paymentModel
-     * @phpstan-param PosInterface::TX_TYPE_PAY_* $orderTxType
+     * @phpstan-param PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_* $txType
+     * @phpstan-param PosInterface::MODEL_*                                $paymentModel
+     * @phpstan-param PosInterface::TX_TYPE_PAY_*                          $orderTxType
      *
      * @return non-empty-string
      *
@@ -135,34 +136,34 @@ class VakifKatilimPosHttpClient extends AbstractHttpClient
 
         $arr = [
             PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD => 'ThreeDModelPayGate',
-            PosInterface::TX_TYPE_PAY_AUTH       => [
+            PosInterface::TX_TYPE_PAY_AUTH               => [
                 PosInterface::MODEL_NON_SECURE => 'Non3DPayGate',
                 PosInterface::MODEL_3D_SECURE  => 'ThreeDModelProvisionGate',
             ],
-            PosInterface::TX_TYPE_PAY_PRE_AUTH   => [
+            PosInterface::TX_TYPE_PAY_PRE_AUTH           => [
                 PosInterface::MODEL_NON_SECURE => 'PreAuthorizaten',
             ],
-            PosInterface::TX_TYPE_PAY_POST_AUTH  => 'PreAuthorizatenClose',
-            PosInterface::TX_TYPE_CANCEL         => [
+            PosInterface::TX_TYPE_PAY_POST_AUTH          => 'PreAuthorizatenClose',
+            PosInterface::TX_TYPE_CANCEL                 => [
                 PosInterface::MODEL_NON_SECURE => [
                     PosInterface::TX_TYPE_PAY_AUTH     => 'SaleReversal',
                     PosInterface::TX_TYPE_PAY_PRE_AUTH => 'PreAuthorizationReversal',
                 ],
             ],
-            PosInterface::TX_TYPE_REFUND         => [
+            PosInterface::TX_TYPE_REFUND                 => [
                 PosInterface::MODEL_NON_SECURE => [
                     PosInterface::TX_TYPE_PAY_AUTH     => 'DrawBack',
                     PosInterface::TX_TYPE_PAY_PRE_AUTH => 'PreAuthorizationDrawBack',
                 ],
             ],
-            PosInterface::TX_TYPE_REFUND_PARTIAL => [
+            PosInterface::TX_TYPE_REFUND_PARTIAL         => [
                 PosInterface::MODEL_NON_SECURE => [
                     PosInterface::TX_TYPE_PAY_AUTH => 'PartialDrawBack',
                 ],
             ],
-            PosInterface::TX_TYPE_STATUS         => 'SelectOrderByMerchantOrderId',
-            PosInterface::TX_TYPE_ORDER_HISTORY  => 'SelectOrder',
-            PosInterface::TX_TYPE_HISTORY        => 'SelectOrder',
+            PosInterface::TX_TYPE_STATUS                 => 'SelectOrderByMerchantOrderId',
+            PosInterface::TX_TYPE_ORDER_HISTORY          => 'SelectOrder',
+            PosQueryInterface::QUERY_TYPE_HISTORY           => 'SelectOrder',
         ];
 
         if (!isset($arr[$txType])) {
@@ -178,7 +179,7 @@ class VakifKatilimPosHttpClient extends AbstractHttpClient
         }
 
         if (\is_string($arr[$txType][$paymentModel])) {
-            return  $arr[$txType][$paymentModel];
+            return $arr[$txType][$paymentModel];
         }
 
         if (!isset($arr[$txType][$paymentModel][$orderTxType])) {

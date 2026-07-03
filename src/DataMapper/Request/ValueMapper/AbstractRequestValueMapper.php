@@ -9,6 +9,7 @@ namespace Mews\Pos\DataMapper\Request\ValueMapper;
 use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\Exception\UnsupportedTransactionTypeException;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 
 /**
  * @internal
@@ -21,7 +22,7 @@ abstract class AbstractRequestValueMapper implements RequestValueMapperInterface
     /**
      * Transaction Types
      *
-     * @var array<PosInterface::TX_TYPE_*, string|array<PosInterface::MODEL_*, string>>
+     * @var array<PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_*, string|array<PosInterface::MODEL_*, string>>
      */
     protected array $txTypeMappings = [];
 
@@ -54,7 +55,7 @@ abstract class AbstractRequestValueMapper implements RequestValueMapperInterface
     ];
 
     /**
-     * @return array<PosInterface::TX_TYPE_*, string|array<PosInterface::MODEL_*, string>>
+     * @return array<PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_*, string|array<PosInterface::MODEL_*, string>>
      */
     public function getTxTypeMappings(): array
     {
@@ -176,7 +177,15 @@ abstract class AbstractRequestValueMapper implements RequestValueMapperInterface
     }
 
     /**
-     * @phpstan-param PosInterface::TX_TYPE_*    $txType
+     * @inheritDoc
+     */
+    public function mapCardClass(?string $cardClass): string
+    {
+        throw new \LogicException('Card class mappings are not supported.');
+    }
+
+    /**
+     * @phpstan-param PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_*    $txType
      * @phpstan-param PosInterface::MODEL_*|null $paymentModel
      *
      * @param string      $txType

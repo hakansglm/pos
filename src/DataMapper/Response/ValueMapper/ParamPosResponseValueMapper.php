@@ -8,6 +8,7 @@ namespace Mews\Pos\DataMapper\Response\ValueMapper;
 
 use Mews\Pos\Gateway\Param3DHostPos;
 use Mews\Pos\Gateway\ParamPos;
+use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\PosInterface;
 
 /**
@@ -58,6 +59,60 @@ class ParamPosResponseValueMapper extends AbstractResponseValueMapper
         'İptal' => PosInterface::TX_TYPE_CANCEL,
         'İade'  => PosInterface::TX_TYPE_REFUND,
     ];
+
+    /**
+     * @inheritDoc
+     */
+    public function mapCardType(?string $cardType): ?string
+    {
+        if (null === $cardType) {
+            return null;
+        }
+
+        return match ($cardType) {
+            'VISA' => CreditCardInterface::CARD_TYPE_VISA,
+            'MASTER' => CreditCardInterface::CARD_TYPE_MASTERCARD,
+            'AMEX' => CreditCardInterface::CARD_TYPE_AMEX,
+            'TROY' => CreditCardInterface::CARD_TYPE_TROY,
+            default => null,
+        };
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function mapCardClass(?string $cardClass): ?string
+    {
+        if (null === $cardClass) {
+            return null;
+        }
+
+        return match ($cardClass) {
+            'Kredi Kartı' => CreditCardInterface::CARD_CLASS_CREDIT,
+            'Debit Kart' => CreditCardInterface::CARD_CLASS_DEBIT,
+            'Ön Ödemeli Kart' => CreditCardInterface::CARD_CLASS_PREPAID,
+            default => null,
+        };
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function mapCardFamilyName(?string $name): ?string
+    {
+        if (null === $name) {
+            return null;
+        }
+
+        return match ($name) {
+            'World' => CreditCardInterface::CARD_FAMILY_WORLD,
+            'Axess' => CreditCardInterface::CARD_FAMILY_AXESS,
+            'Bonus' => CreditCardInterface::CARD_FAMILY_BONUS,
+            'Maximum' => CreditCardInterface::CARD_FAMILY_MAXIMUM,
+            'Paraf' => CreditCardInterface::CARD_FAMILY_PARAF,
+            default => $name,
+        };
+    }
 
     /**
      * @inheritDoc

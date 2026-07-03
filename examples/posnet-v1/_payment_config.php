@@ -5,7 +5,8 @@ use Mews\Pos\Model\Card\CreditCardInterface;
 require __DIR__.'/../_main_config.php';
 
 $bankTestsUrl = $hostUrl.'/posnet-v1';
-$posClass = \Mews\Pos\Gateway\PosNetV1Pos::class;
+$posClass      = \Mews\Pos\Gateway\PosNetV1Pos::class;
+$posQueryClass = \Mews\Pos\Factory\PosQueryFactory::getPosQueryClassForGateway($posClass);
 
 $testCards = [
     // 3d onay kodu 34020

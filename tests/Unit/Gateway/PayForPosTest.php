@@ -644,37 +644,6 @@ class PayForPosTest extends TestCase
         $this->pos->refund($order);
     }
 
-    #[DataProvider('historyRequestDataProvider')]
-    public function testHistoryRequest(array $order): void
-    {
-        $account     = $this->pos->getAccount();
-        $txType      = PosInterface::TX_TYPE_HISTORY;
-        $requestData = ['createHistoryRequestData'];
-
-        $this->requestMapperMock->expects(self::once())
-            ->method('createHistoryRequestData')
-            ->with($account, $order)
-            ->willReturn($requestData);
-
-        $decodedResponse = ['decodedData'];
-        $this->configureClientResponse(
-            $txType,
-            $requestData,
-            $decodedResponse,
-            $order,
-            PosInterface::MODEL_NON_SECURE,
-            null,
-            $account
-        );
-
-        $this->responseMapperMock->expects(self::once())
-            ->method('mapHistoryResponse')
-            ->with($decodedResponse)
-            ->willReturn(['result']);
-
-        $this->pos->history($order);
-    }
-
     #[DataProvider('orderHistoryRequestDataProvider')]
     public function testOrderHistoryRequest(array $order): void
     {
@@ -704,51 +673,6 @@ class PayForPosTest extends TestCase
             ->willReturn(['result']);
 
         $this->pos->orderHistory($order);
-    }
-
-    #[DataProvider('customQueryRequestDataProvider')]
-    public function testCustomQueryRequest(array $requestData, ?string $apiUrl): void
-    {
-        $account = $this->pos->getAccount();
-        $txType  = PosInterface::TX_TYPE_CUSTOM_QUERY;
-
-        $updatedRequestData = $requestData + [
-                'abc' => 'def',
-            ];
-        $this->requestMapperMock->expects(self::once())
-            ->method('createCustomQueryRequestData')
-            ->with($account, $requestData)
-            ->willReturn($updatedRequestData);
-
-        $this->configureClientResponse(
-            $txType,
-            $updatedRequestData,
-            ['decodedResponse'],
-            $requestData,
-            PosInterface::MODEL_NON_SECURE,
-            $apiUrl,
-            $account
-        );
-
-        $this->pos->customQuery($requestData, $apiUrl);
-    }
-
-    public static function customQueryRequestDataProvider(): array
-    {
-        return [
-            [
-                'requestData' => [
-                    'id' => '2020110828BC',
-                ],
-                'api_url'     => 'https://vpostest.qnbfinansbank.com/Gateway/XMLGate.aspx/xxxx',
-            ],
-            [
-                'requestData' => [
-                    'id' => '2020110828BC',
-                ],
-                'api_url'     => null,
-            ],
-        ];
     }
 
     public static function make3DPaymentDataProvider(): array
@@ -921,17 +845,6 @@ class PayForPosTest extends TestCase
     }
 
     public static function refundRequestDataProvider(): array
-    {
-        return [
-            [
-                'order' => [
-                    'id' => '2020110828BC',
-                ],
-            ],
-        ];
-    }
-
-    public static function historyRequestDataProvider(): array
     {
         return [
             [

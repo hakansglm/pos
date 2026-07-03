@@ -53,14 +53,12 @@ class ToslaPos extends AbstractGateway
             PosInterface::MODEL_3D_HOST,
         ],
 
-        PosInterface::TX_TYPE_HISTORY        => false,
         PosInterface::TX_TYPE_ORDER_HISTORY  => true,
         PosInterface::TX_TYPE_PAY_POST_AUTH  => true,
         PosInterface::TX_TYPE_CANCEL         => true,
         PosInterface::TX_TYPE_REFUND         => true,
         PosInterface::TX_TYPE_REFUND_PARTIAL => true,
         PosInterface::TX_TYPE_STATUS         => true,
-        PosInterface::TX_TYPE_CUSTOM_QUERY   => true,
     ];
 
 
@@ -151,14 +149,6 @@ class ToslaPos extends AbstractGateway
             $this->get3DGatewayURL($paymentModel),
             $creditCard
         );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function history(array $data): array
-    {
-        throw new UnsupportedTransactionTypeException();
     }
 
     /**

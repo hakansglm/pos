@@ -18,6 +18,7 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Gateway\PayTrPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestWith;
@@ -79,7 +80,7 @@ class PayTrPosHttpClientTest extends TestCase
     public function testSupportsTx(): void
     {
         $this->assertTrue($this->client->supportsTx(PosInterface::TX_TYPE_PAY_AUTH, PosInterface::MODEL_3D_HOST));
-        $this->assertTrue($this->client->supportsTx(PosInterface::TX_TYPE_HISTORY, PosInterface::MODEL_NON_SECURE));
+        $this->assertTrue($this->client->supportsTx(PosQueryInterface::QUERY_TYPE_HISTORY, PosInterface::MODEL_NON_SECURE));
         $this->assertTrue($this->client->supportsTx(PosInterface::TX_TYPE_REFUND, PosInterface::MODEL_NON_SECURE));
     }
 
@@ -165,12 +166,20 @@ class PayTrPosHttpClientTest extends TestCase
                 'expected' => 'https://www.paytr.com/odeme',
             ],
             'custom_query' => [
-                'txType'   => PosInterface::TX_TYPE_CUSTOM_QUERY,
+                'txType'   => PosQueryInterface::QUERY_TYPE_CUSTOM_QUERY,
                 'expected' => 'https://www.paytr.com/odeme',
             ],
             'history' => [
-                'txType'   => PosInterface::TX_TYPE_HISTORY,
+                'txType'   => PosQueryInterface::QUERY_TYPE_HISTORY,
                 'expected' => 'https://www.paytr.com/rapor/islem-dokumu',
+            ],
+            'installment_rates' => [
+                'txType'   => PosQueryInterface::QUERY_TYPE_INSTALLMENT_RATES,
+                'expected' => 'https://www.paytr.com/odeme/taksit-oranlari',
+            ],
+            'bin_list' => [
+                'txType'   => PosQueryInterface::QUERY_TYPE_BIN_LIST,
+                'expected' => 'https://www.paytr.com/odeme/api/bin-detail',
             ],
         ];
     }

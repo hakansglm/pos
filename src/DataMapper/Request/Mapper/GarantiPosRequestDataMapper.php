@@ -316,56 +316,6 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
     /**
      * @param GarantiPosAccount $posAccount
      *
-     * {@inheritDoc}
-     */
-    public function createHistoryRequestData(AbstractPosAccount $posAccount, array $data = []): array
-    {
-        $txType = PosInterface::TX_TYPE_HISTORY;
-        $order  = [
-            'start_date' => $data['start_date'],
-            'end_date'   => $data['end_date'],
-            'page'       => $data['page'] ?? 1,
-            'ip'         => $data['ip'],
-        ];
-
-        $result = [
-            'Mode'        => $this->getMode(),
-            'Version'     => self::API_VERSION,
-            'Terminal'    => $this->getTerminalData($posAccount),
-            'Customer'    => [
-                'IPAddress' => $order['ip'],
-            ],
-            'Order'       => [
-                'OrderID'     => null,
-                'GroupID'     => null,
-                'Description' => null,
-                // Başlangıç ve bitiş tarihleri arasında en fazla 30 gün olabilir
-                'StartDate'   => $this->valueFormatter->formatDateTime($order['start_date'], 'StartDate', $txType),
-                'EndDate'     => $this->valueFormatter->formatDateTime($order['end_date'], 'EndDate', $txType),
-                /**
-                 * 500 adetten fazla işlem olması durumunda ListPageNum alanında diğer 500 lü grupların görüntülenmesi
-                 * için sayfa numarası yazılır.
-                 */
-                'ListPageNum' => $order['page'],
-            ],
-            'Transaction' => [
-                'Type'                  => $this->valueMapper->mapTxType($txType),
-                'Amount'                => $this->valueFormatter->formatAmount(1), //sabit olarak amount 100 gonderilecek
-                'CurrencyCode'          => $this->valueMapper->mapCurrency(PosInterface::CURRENCY_TRY),
-                'CardholderPresentCode' => '0',
-                'MotoInd'               => self::MOTO,
-            ],
-        ];
-
-        $result['Terminal']['HashData'] = $this->crypt->createHash($posAccount, $result);
-
-        return $result;
-    }
-
-
-    /**
-     * @param GarantiPosAccount $posAccount
-     *
      * @return array{gateway: string, method: 'POST', inputs: array<string, string>}
      *
      * {@inheritDoc}
@@ -423,26 +373,6 @@ class GarantiPosRequestDataMapper extends AbstractRequestDataMapper
             'method'  => 'POST',
             'inputs'  => $inputs,
         ];
-    }
-
-    /**
-     * @param GarantiPosAccount $posAccount
-     *
-     * @inheritDoc
-     */
-    public function createCustomQueryRequestData(AbstractPosAccount $posAccount, array $requestData): array
-    {
-        $requestData += [
-            'Mode'     => $this->getMode(),
-            'Version'  => self::API_VERSION,
-            'Terminal' => $this->getTerminalData($posAccount),
-        ];
-
-        if (!isset($requestData['Terminal']['HashData']) || '' === $requestData['Terminal']['HashData']) {
-            $requestData['Terminal']['HashData'] = $this->crypt->createHash($posAccount, $requestData);
-        }
-
-        return $requestData;
     }
 
     /**

@@ -202,12 +202,6 @@ class PayFlexCPV4PosResponseDataMapperTest extends TestCase
         $this->responseDataMapper->mapStatusResponse([]);
     }
 
-    public function testMapHistoryResponse(): void
-    {
-        $this->expectException(NotImplementedException::class);
-        $this->responseDataMapper->mapHistoryResponse([]);
-    }
-
     public function testMapOrderHistoryResponse(): void
     {
         $this->expectException(NotImplementedException::class);

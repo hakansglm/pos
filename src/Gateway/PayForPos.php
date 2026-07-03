@@ -56,9 +56,7 @@ class PayForPos extends AbstractGateway
         PosInterface::TX_TYPE_CANCEL         => true,
         PosInterface::TX_TYPE_REFUND         => true,
         PosInterface::TX_TYPE_REFUND_PARTIAL => true,
-        PosInterface::TX_TYPE_HISTORY        => true,
         PosInterface::TX_TYPE_ORDER_HISTORY  => true,
-        PosInterface::TX_TYPE_CUSTOM_QUERY   => true,
     ];
 
     /** @return PayForPosAccount */
@@ -159,17 +157,6 @@ class PayForPos extends AbstractGateway
     public function refund(array $order): array
     {
         return parent::refund($order);
-    }
-
-    /**
-     * Fetches Transaction history (both failed and successful) for the given date ReqDate
-     * Note: history request to gateway returns JSON response
-     *
-     * @inheritDoc
-     */
-    public function history(array $data): array
-    {
-        return parent::history($data);
     }
 
     /**

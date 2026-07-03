@@ -7,10 +7,11 @@
 namespace Mews\Pos\Client;
 
 use Mews\Pos\Crypt\CryptInterface;
+use Mews\Pos\Gateway\IyzicoPos;
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Account\IyzicoPosAccount;
-use Mews\Pos\Gateway\IyzicoPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use Mews\Pos\Serializer\Decoder\JsonDecoder;
 use Mews\Pos\Serializer\EncodedData;
 use Mews\Pos\Serializer\Encoder\JsonEncoder;
@@ -52,7 +53,7 @@ class IyzicoPosHttpClient extends AbstractIyzicoPosHttpClient
     {
         return !\in_array($txType, [
             PosInterface::TX_TYPE_ORDER_HISTORY,
-            PosInterface::TX_TYPE_HISTORY,
+            PosQueryInterface::QUERY_TYPE_HISTORY,
         ], true);
     }
 
@@ -98,9 +99,9 @@ class IyzicoPosHttpClient extends AbstractIyzicoPosHttpClient
     }
 
     /**
-     * @param PosInterface::TX_TYPE_*|null     $txType
-     * @param PosInterface::MODEL_*|null       $paymentModel
-     * @param PosInterface::TX_TYPE_PAY_*|null $orderTxType
+     * @param PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_*|null $txType
+     * @param PosInterface::MODEL_*|null                                   $paymentModel
+     * @param PosInterface::TX_TYPE_PAY_*|null                             $orderTxType
      *
      * @return string
      *
@@ -147,13 +148,15 @@ class IyzicoPosHttpClient extends AbstractIyzicoPosHttpClient
         }
 
         $txTypePaths = [
-            PosInterface::TX_TYPE_PAY_AUTH       => '/payment/auth',
-            PosInterface::TX_TYPE_PAY_PRE_AUTH   => '/payment/preauth',
-            PosInterface::TX_TYPE_PAY_POST_AUTH  => '/payment/postauth',
-            PosInterface::TX_TYPE_CANCEL         => '/payment/cancel',
-            PosInterface::TX_TYPE_STATUS         => '/payment/detail',
-            PosInterface::TX_TYPE_REFUND         => '/v2/payment/refund',
-            PosInterface::TX_TYPE_REFUND_PARTIAL => '/v2/payment/refund',
+            PosInterface::TX_TYPE_PAY_AUTH                   => '/payment/auth',
+            PosInterface::TX_TYPE_PAY_PRE_AUTH               => '/payment/preauth',
+            PosInterface::TX_TYPE_PAY_POST_AUTH              => '/payment/postauth',
+            PosInterface::TX_TYPE_CANCEL                     => '/payment/cancel',
+            PosInterface::TX_TYPE_STATUS                     => '/payment/detail',
+            PosInterface::TX_TYPE_REFUND                     => '/v2/payment/refund',
+            PosInterface::TX_TYPE_REFUND_PARTIAL             => '/v2/payment/refund',
+            PosQueryInterface::QUERY_TYPE_INSTALLMENT_PRICES => '/payment/iyzipos/installment',
+            PosQueryInterface::QUERY_TYPE_BIN_LIST           => '/payment/bin/check',
         ];
 
         if (!isset($txTypePaths[$txType])) {

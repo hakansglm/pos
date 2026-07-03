@@ -1,4 +1,54 @@
 # Changelog
+
+## [2.0.0] - 2026-07-??
+
+Minimum PHP sürümü **8.0**'a yükseltildi. `symfony/http-foundation` bağımlılığı kaldırıldı.
+
+Geçiş adımları için [UPGRADE-v2.md](./UPGRADE-v2.md) dosyasına bakınız.
+
+### Yeni Gateway'ler
+
+- **IyzicoPos** — NonSecure, 3DSecure, 3DHost
+- **PayTrPos** — 3DPay (Direkt API), 3DHost (iFrame API). Diğer gateway'lerden farklı bir callback akışı vardır; detaylar için [THREED-PAYMENT-PAYTR_EXAMPLE.md](./THREED-PAYMENT-PAYTR_EXAMPLE.md) dosyasına bakınız.
+- **Param3DHostPos** — 3DHost. `ParamPos`'un 3DHost ödeme akışı ayrı bir gateway'e taşındı; bu sayede `ParamPos` yapılandırması basitleşti ve her iki gateway bağımsız olarak konfigure edilebilir hale geldi.
+
+### Breaking Changes
+
+- **Fluent interface kaldırıldı.** `payment()`, `cancel()`, `refund()`, `status()` ve diğer tüm işlem metotları artık doğrudan `array` döndürüyor; `getResponse()` çağrısına gerek kalmadı.
+- **3D callback parametresi değişti.** `make3DPayment()` ve benzeri metotlar artık Symfony `Request` nesnesi değil, düz PHP dizisi (`$_POST` / `$_GET`) kabul ediyor.
+- **`AccountFactory` — `$lang` ve `$model` parametreleri kaldırıldı.** Dil artık `gateway_configs.lang` config anahtarıyla ayarlanıyor; ödeme modeli her işlemde `payment()` çağrısına geçiliyor.
+- **`get3DFormData()` — `$createWithoutCard` varsayılanı `true`'dan `false`'a değişti.**
+- **Gateway'e özel sipariş verileri artık `$order` dizisiyle geçiliyor.** KuveytPos, IyzicoPos ve PayTrPos için alıcı bilgisi (`buyer`), adres ve sepet içeriği gibi ekstra alanlar v1'de `RequestDataPreparedEvent` listener'ı içinde ekleniyordu. v2'de bu veriler doğrudan `$order` dizisine dahil edilerek `payment()` ve `get3DFormData()` metodlarına geçiliyor.
+- **KuveytPos ve VakifKatilimPos `get3DFormData()` artık HTML string döndürüyor.**
+- **`setTestMode()` kaldırıldı.** Test modu artık `gateway_configs.test_mode` config anahtarıyla ayarlanıyor.
+- **`status_detail` response alanı kaldırıldı.** Ödeme, iptal, iade, durum sorgulama ve sipariş tarihçesi response'larından `status_detail` alanı kaldırıldı. 3D ödeme response'larından `md_status_detail` da kaldırıldı.
+- **Config `currencies` anahtarı kaldırıldı.** v1'de config dosyasına üst düzey `currencies` anahtarı eklenerek para birimi eşleştirmeleri özelleştirilebiliyordu.
+- **Config endpoint değişiklikleri.** `ParamPos` yapılandırmasından `payment_api_2` ve `gateway_3d_host` anahtarları kaldırıldı; 3DHost akışı artık ayrı `Param3DHostPos` gateway'i üzerinden yürütülüyor. `KuveytPos`, `VakifKatilimPos` ve `PayFlexCPV4Pos` yapılandırmalarından `gateway_3d` anahtarı kaldırıldı (gateway tarafından dahili olarak türetiliyor); `PayFlexCPV4Pos` için `payment_api` URL'i de kısaltıldı.
+- **Gateway ve namespace yeniden adlandırmaları:** `Gateways` → `Gateway`, `Exceptions` → `Exception`, `Entity` → `Model`; `EstPos`/`EstV3Pos` → `AssecoPos`, `PosNet` → `PosNetPos` ve ilgili account/factory isimleri güncellendi.
+- **`AbstractPosAccount` metot yeniden adlandırmaları:** `getBank()` → `getBankName()`, `getClientId()` → `getMerchantId()`, `getStoreKey()` → `getSecretKey()`, `getLang()` kaldırıldı.
+- **Exception yeniden adlandırmaları:** `BankNotFoundException` → `GatewayConfigNotFoundException`, `BankClassNullException` → `GatewayClassNotConfiguredException`.
+- **`PosFactory::createPosGateway()` → `PosFactory::create()` olarak yeniden adlandırıldı.**
+- **`PosInterface::history()` kaldırıldı.** Sipariş geçmişi sorgusu için yeni `PosQueryInterface::history()` kullanın.
+- **`PosInterface::customQuery()` kaldırıldı.** Ham API çağrıları için yeni `PosQueryInterface::customQuery()` kullanın.
+
+### Changed
+
+- **PosNet — iptal işleminde işlem tipi artık dinamik.** v1'de PosNet iptal isteğinde işlem tipi sabit olarak `sale` gönderiliyordu; bu nedenle ön otorizasyon iptalleri çalışmıyordu. v2'de `$order['transaction_type']` değeri kullanılır; belirtilmezse varsayılan olarak `TX_TYPE_PAY_AUTH` kullanılır.
+
+### New Features
+
+- **`AccountFactory::createForGateway()`** — gateway sınıfı ve kimlik bilgilerinin düz bir dizi olarak geçilmesiyle account oluşturmayı sağlar; framework entegrasyonlarında kullanışlıdır.
+- **`PosException` marker interface** — kütüphaneden fırlatılan tüm exception'lar bu interface'i implement ediyor; tek catch bloğuyla tüm kütüphane hatalarını yakalamak mümkün.
+- **`AbstractGateway::getCrypt()`** — gateway'in dahili crypt nesnesine erişim için yeni public metot; özel sorgu (`customQuery`) imzalamada kullanışlıdır.
+- **`get3DFormData()` — yeni `$formFormat` parametresi** — `FORM_FORMAT_ARRAY` veya `FORM_FORMAT_HTML` seçeneklerinden biri belirtilebilir.
+- **`PosQueryInterface` eklendi** (`src/PosQuery/PosQueryInterface.php`). Sipariş ile ilişkili olmayan banka sorguları
+  (genel geçmiş, ham API çağrıları, taksit oranı/tutarı sorgulama) için yeni giriş noktası. `PosQueryFactory::create()` ile örneklenir.
+- **`PosQueryInterface::getInstallmentRates()`** — verilen BIN numarası için taksit oranı seçeneklerini getirir.
+- **`PosQueryInterface::getInstallmentPrices()`** — verilen BIN ve işlem tutarı için her taksitte ödenecek gerçek tutarları getirir.
+- **`PosQueryInterface::getBinList()`** — verilen BIN numarasına ait kart bilgilerini sorgular. Bkz. [BIN-LIST-EXAMPLE.md](./BIN-LIST-EXAMPLE.md).
+
+---
+
 ## [1.9.0] - 2026-06-21
 
 ### Changed

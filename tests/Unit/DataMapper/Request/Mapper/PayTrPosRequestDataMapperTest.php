@@ -7,7 +7,6 @@
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\Mapper;
 
 use InvalidArgumentException;
-use DateTimeImmutable;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\Request\Mapper\AbstractRequestDataMapper;
 use Mews\Pos\DataMapper\Request\Mapper\PayTrPosRequestDataMapper;
@@ -188,24 +187,6 @@ class PayTrPosRequestDataMapperTest extends TestCase
         $this->requestDataMapper->createOrderHistoryRequestData($this->account, []);
     }
 
-    #[DataProvider('createHistoryRequestDataProvider')]
-    public function testCreateHistoryRequestData(bool $testMode, array $data, array $expectedWithoutToken): void
-    {
-        $this->requestDataMapper->setTestMode($testMode);
-
-        $this->cryptMock->expects(self::once())
-            ->method('createHash')
-            ->with($this->account, $expectedWithoutToken)
-            ->willReturn('mock-token');
-
-        $actual = $this->requestDataMapper->createHistoryRequestData($this->account, $data);
-
-        $this->assertSame(
-            \array_merge($expectedWithoutToken, ['paytr_token' => 'mock-token']),
-            $actual
-        );
-    }
-
     #[DataProvider('createRefundRequestDataProvider')]
     public function testCreateRefundRequestData(array $order, array $expectedWithoutToken): void
     {
@@ -224,39 +205,6 @@ class PayTrPosRequestDataMapperTest extends TestCase
             \array_merge($expectedWithoutToken, ['paytr_token' => 'mock-token']),
             $actual
         );
-    }
-
-    public function testCreateCustomQueryRequestDataWithoutToken(): void
-    {
-        // merchant_id is absent → added from account; paytr_token absent → createHash called
-        $input = ['custom_field' => 'value'];
-
-        $expectedBeforeHash = ['custom_field' => 'value', 'merchant_id' => '123456'];
-
-        $this->cryptMock->expects(self::once())
-            ->method('createHash')
-            ->with($this->account, $expectedBeforeHash)
-            ->willReturn('computed-token');
-
-        $actual = $this->requestDataMapper->createCustomQueryRequestData($this->account, $input);
-
-        $this->assertSame(
-            \array_merge($expectedBeforeHash, ['paytr_token' => 'computed-token']),
-            $actual
-        );
-    }
-
-    public function testCreateCustomQueryRequestDataWithExistingToken(): void
-    {
-        // paytr_token present → createHash must NOT be called
-        $input = ['merchant_id' => 'override', 'paytr_token' => 'existing-token'];
-
-        $this->cryptMock->expects(self::never())
-            ->method('createHash');
-
-        $actual = $this->requestDataMapper->createCustomQueryRequestData($this->account, $input);
-
-        $this->assertSame($input, $actual);
     }
 
     public function testCreate3DFormDataForHostModel(): void
@@ -523,34 +471,6 @@ class PayTrPosRequestDataMapperTest extends TestCase
                     'expiry_month'      => '12',
                     'expiry_year'       => '30',
                     'cvv'               => '000',
-                ],
-            ],
-        ];
-    }
-
-    public static function createHistoryRequestDataProvider(): array
-    {
-        $startDate = new DateTimeImmutable('2026-06-01 00:00:00');
-        $endDate   = new DateTimeImmutable('2026-06-03 23:59:59');
-
-        return [
-            'production_mode' => [
-                'testMode'             => false,
-                'data'                 => ['start_date' => $startDate, 'end_date' => $endDate],
-                'expectedWithoutToken' => [
-                    'merchant_id' => '123456',
-                    'start_date'  => '2026-06-01 00:00:00',
-                    'end_date'    => '2026-06-03 23:59:59',
-                ],
-            ],
-            'test_mode'       => [
-                'testMode'             => true,
-                'data'                 => ['start_date' => $startDate, 'end_date' => $endDate],
-                'expectedWithoutToken' => [
-                    'merchant_id' => '123456',
-                    'start_date'  => '2026-06-01 00:00:00',
-                    'end_date'    => '2026-06-03 23:59:59',
-                    'dummy'       => 1,
                 ],
             ],
         ];

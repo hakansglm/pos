@@ -300,45 +300,6 @@ class ParamPosResponseDataMapper extends AbstractResponseDataMapper
 
 
     /**
-     * {@inheritDoc}
-     */
-    public function mapHistoryResponse(array $rawResponseData): array
-    {
-        $rawResponseData = $this->emptyStringsToNull($rawResponseData);
-
-        $mappedTransactions = [];
-        $rawResult          = $rawResponseData['TP_Islem_IzlemeResponse']['TP_Islem_IzlemeResult'];
-        $procReturnCode     = $this->getProcReturnCode($rawResult);
-        $status             = self::TX_DECLINED;
-        if ($procReturnCode > 0) {
-            $status = self::TX_APPROVED;
-            foreach ($rawResult['DT_Bilgi']['diffgr:diffgram']['NewDataSet']['Temp'] as $rawTx) {
-                $mappedTransactions[] = $this->mapSingleHistoryTransaction($rawTx);
-            }
-        }
-
-        // sort transactions by transaction time
-        $mappedTransactions = \array_reverse($mappedTransactions);
-
-        $result = [
-            'proc_return_code' => $procReturnCode,
-            'error_code'       => null,
-            'error_message'    => null,
-            'status'           => $status,
-            'trans_count'      => \count($mappedTransactions),
-            'transactions'     => $mappedTransactions,
-            'all'              => $rawResponseData,
-        ];
-
-        if (self::TX_APPROVED !== $status) {
-            $result['error_code']    = $procReturnCode;
-            $result['error_message'] = $rawResult['Sonuc_Str'];
-        }
-
-        return $result;
-    }
-
-    /**
      * @inheritDoc
      */
     public function is3dAuthSuccess(?string $mdStatus): bool
@@ -409,56 +370,5 @@ class ParamPosResponseDataMapper extends AbstractResponseDataMapper
         $this->logger->debug('mapped payment response', $mappedResponse);
 
         return $this->mergeArraysPreferNonNullValues($defaultResponse, $mappedResponse);
-    }
-
-    /**
-     * @param array<int, string> $rawTx
-     *
-     * @return array<string, mixed>
-     */
-    private function mapSingleHistoryTransaction(array $rawTx): array
-    {
-        $txType                          = PosInterface::TX_TYPE_HISTORY;
-        $rawTx                           = $this->emptyStringsToNull($rawTx);
-        $transaction                     = $this->getDefaultOrderHistoryTxResponse();
-        $procReturnCode                  = $this->getProcReturnCode($rawTx);
-        $transaction['proc_return_code'] = $procReturnCode;
-        if ($procReturnCode > 0) {
-            $transaction['status'] = self::TX_APPROVED;
-        }
-
-        $dateTime                        = $this->valueFormatter->formatDateTime($rawTx['Tarih'], $txType);
-        $transaction['transaction_type'] = $this->valueMapper->mapTxType($rawTx['Tip_Str']);
-        if (self::TX_APPROVED === $transaction['status']) {
-            $transaction['currency'] = isset($rawTx['PB'])
-                ? $this->valueMapper->mapCurrency($rawTx['PB'], $txType)
-                : null;
-            $amount                  = null === $rawTx['Tutar']
-                ? null : $this->valueFormatter->formatAmount($rawTx['Tutar'], PosInterface::TX_TYPE_HISTORY);
-            if (PosInterface::TX_TYPE_PAY_AUTH === $transaction['transaction_type']) {
-                $transaction['first_amount']   = $amount;
-                $transaction['capture_amount'] = $amount;
-                $transaction['capture']        = true;
-                $transaction['capture_time']   = $dateTime;
-            } elseif (PosInterface::TX_TYPE_CANCEL === $transaction['transaction_type'] && $rawTx['Tutar'] < 0) {
-                $transaction['refund_amount'] = $transaction['first_amount'];
-            }
-
-            if ($rawTx['Toplam_Iade_Tutar'] > 0) {
-                $transaction['refund_amount'] = $this->valueFormatter->formatAmount(
-                    $rawTx['Toplam_Iade_Tutar'],
-                    PosInterface::TX_TYPE_HISTORY
-                );
-            }
-        } else {
-            $transaction['error_code']    = $procReturnCode;
-            $transaction['error_message'] = $rawTx['Sonuc_Str'];
-        }
-
-        $transaction['order_id']         = $rawTx['ORJ_ORDER_ID'];
-        $transaction['payment_model']    = $this->valueMapper->mapSecureType($rawTx['Islem_Guvenlik'], $txType);
-        $transaction['transaction_time'] = $dateTime;
-
-        return $transaction;
     }
 }

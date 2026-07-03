@@ -3,7 +3,8 @@
 require __DIR__.'/../_main_config.php';
 
 $bankTestsUrl = $hostUrl.'/posnet-ykb';
-$posClass     = \Mews\Pos\Gateway\PosNetPos::class;
+$posClass      = \Mews\Pos\Gateway\PosNetPos::class;
+$posQueryClass = \Mews\Pos\Factory\PosQueryFactory::getPosQueryClassForGateway($posClass);
 
 $testCards = [
     'visa1' => [

@@ -52,9 +52,7 @@ class KuveytPos extends AbstractGateway
         PosInterface::TX_TYPE_CANCEL         => true,
         PosInterface::TX_TYPE_REFUND         => true,
         PosInterface::TX_TYPE_REFUND_PARTIAL => true,
-        PosInterface::TX_TYPE_HISTORY        => false,
         PosInterface::TX_TYPE_ORDER_HISTORY  => false,
-        PosInterface::TX_TYPE_CUSTOM_QUERY   => false,
     ];
 
     /** @return BoaPosAccount */
@@ -80,18 +78,6 @@ class KuveytPos extends AbstractGateway
     }
 
     /**
-     * Kuveyt bank dokumantasyonunda history sorgusu ile alakali hic bir bilgi yok
-     *
-     * @inheritDoc
-     */
-    public function history(array $data): array
-    {
-        throw new UnsupportedTransactionTypeException();
-    }
-
-    /**
-     * Kuveyt bank dokumantasyonunda history sorgusu ile alakali hic bir bilgi yok
-     *
      * @inheritDoc
      */
     public function orderHistory(array $order): array
@@ -190,14 +176,6 @@ class KuveytPos extends AbstractGateway
         $this->logger->debug('finished 3D payment', ['mapped_response' => $this->response]);
 
         return $this->response;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function customQuery(array $requestData, ?string $apiUrl = null): array
-    {
-        throw new UnsupportedTransactionTypeException();
     }
 
     /**

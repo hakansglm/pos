@@ -7,6 +7,7 @@
 namespace Mews\Pos\DataMapper\Response\ValueMapper;
 
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 
 /**
  * @internal
@@ -16,7 +17,7 @@ abstract class AbstractResponseValueMapper implements ResponseValueMapperInterfa
     /** @var array<string|int, PosInterface::CURRENCY_*> */
     protected array $currencyMappings = [];
 
-    /** @var array<PosInterface::TX_TYPE_*, string|array<PosInterface::MODEL_*, string>> */
+    /** @var array<PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_*, string|array<PosInterface::MODEL_*, string>> */
     protected array $txTypeMappings = [];
 
     /** @var array<string|int, PosInterface::MODEL_*> */
@@ -79,5 +80,38 @@ abstract class AbstractResponseValueMapper implements ResponseValueMapperInterfa
         }
 
         return $this->orderStatusMappings[$orderStatus] ?? $orderStatus;
+    }
+
+    /**
+     * Default implementation: returns null.
+     * Override in bank-specific subclasses that return card type in their responses.
+     *
+     * @inheritDoc
+     */
+    public function mapCardType(?string $cardType): ?string
+    {
+        return null;
+    }
+
+    /**
+     * Default implementation: pass-through.
+     * Override in bank-specific subclasses that return non-canonical card family names.
+     *
+     * @inheritDoc
+     */
+    public function mapCardFamilyName(?string $name): ?string
+    {
+        return $name;
+    }
+
+    /**
+     * Default implementation: returns null.
+     * Override in bank-specific subclasses that return card class in their responses.
+     *
+     * @inheritDoc
+     */
+    public function mapCardClass(?string $cardClass): ?string
+    {
+        return null;
     }
 }

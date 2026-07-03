@@ -11,6 +11,7 @@ use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Model\Account\IyzicoPosAccount;
 use Mews\Pos\Gateway\IyzicoPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use Mews\Pos\Serializer\Decoder\JsonDecoder;
 use Mews\Pos\Serializer\EncodedData;
 use Mews\Pos\Serializer\Encoder\FormEncoder;
@@ -50,7 +51,7 @@ class IyzicoPosQueryApiHttpClient extends AbstractIyzicoPosHttpClient
      */
     public function supportsTx(string $txType, string $paymentModel, ?string $orderTxType = null): bool
     {
-        return $txType === PosInterface::TX_TYPE_ORDER_HISTORY || $txType === PosInterface::TX_TYPE_HISTORY;
+        return $txType === PosInterface::TX_TYPE_ORDER_HISTORY || $txType === PosQueryInterface::QUERY_TYPE_HISTORY;
     }
 
     /**
@@ -72,7 +73,7 @@ class IyzicoPosQueryApiHttpClient extends AbstractIyzicoPosHttpClient
 
         $txTypePaths = [
             PosInterface::TX_TYPE_ORDER_HISTORY => 'details',
-            PosInterface::TX_TYPE_HISTORY       => 'transactions',
+            PosQueryInterface::QUERY_TYPE_HISTORY       => 'transactions',
         ];
 
         if (!isset($txTypePaths[$txType])) {

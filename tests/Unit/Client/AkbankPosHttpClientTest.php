@@ -19,6 +19,7 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -329,7 +330,7 @@ class AkbankPosHttpClientTest extends TestCase
                 'expected'     => 'https://apipre.akbank.com/api/v1/payment/virtualpos/transaction/process',
             ],
             [
-                'txType'       => PosInterface::TX_TYPE_HISTORY,
+                'txType'       => PosQueryInterface::QUERY_TYPE_HISTORY,
                 'paymentModel' => PosInterface::MODEL_NON_SECURE,
                 'expected'     => 'https://apipre.akbank.com/api/v1/payment/virtualpos/portal/report/transaction',
             ],

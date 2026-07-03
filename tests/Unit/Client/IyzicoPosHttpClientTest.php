@@ -23,6 +23,7 @@ use Mews\Pos\Factory\PosHttpClientFactory;
 use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\Gateway\IyzicoPos;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -307,7 +308,7 @@ class IyzicoPosHttpClientTest extends TestCase
             [PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, true],
             [PosInterface::TX_TYPE_INTERNAL_3D_PAYMENT_STATUS, true],
             [PosInterface::TX_TYPE_ORDER_HISTORY, false],
-            [PosInterface::TX_TYPE_HISTORY, false],
+            [PosQueryInterface::QUERY_TYPE_HISTORY, false],
         ];
     }
 
@@ -328,6 +329,8 @@ class IyzicoPosHttpClientTest extends TestCase
             [PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, PosInterface::MODEL_3D_HOST, PosInterface::TX_TYPE_PAY_AUTH, self::BASE_URL.'/payment/iyzipos/checkoutform/initialize/auth/ecom'],
             [PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, PosInterface::MODEL_3D_HOST, PosInterface::TX_TYPE_PAY_PRE_AUTH, self::BASE_URL.'/payment/iyzipos/checkoutform/initialize/preauth/ecom'],
             [PosInterface::TX_TYPE_INTERNAL_3D_PAYMENT_STATUS, PosInterface::MODEL_3D_HOST, null, self::BASE_URL.'/payment/iyzipos/checkoutform/auth/ecom/detail'],
+            [PosQueryInterface::QUERY_TYPE_INSTALLMENT_PRICES, PosInterface::MODEL_NON_SECURE, null, self::BASE_URL.'/payment/iyzipos/installment'],
+            [PosQueryInterface::QUERY_TYPE_BIN_LIST, PosInterface::MODEL_NON_SECURE, null, self::BASE_URL.'/payment/bin/check'],
         ];
     }
 
@@ -337,7 +340,7 @@ class IyzicoPosHttpClientTest extends TestCase
             'missing_tx_type'                         => [null, null, null],
             '3d_host_form_build_missing_order_tx'     => [PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, PosInterface::MODEL_3D_HOST, null],
             '3d_host_form_build_unsupported_order_tx' => [PosInterface::TX_TYPE_INTERNAL_3D_FORM_BUILD, PosInterface::MODEL_3D_HOST, PosInterface::TX_TYPE_CANCEL],
-            'unsupported_tx_type'                     => [PosInterface::TX_TYPE_HISTORY, PosInterface::MODEL_NON_SECURE, null],
+            'unsupported_tx_type'                     => [PosQueryInterface::QUERY_TYPE_HISTORY, PosInterface::MODEL_NON_SECURE, null],
         ];
     }
 }

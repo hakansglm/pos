@@ -149,14 +149,6 @@ class Param3DHostPosRequestDataMapper extends AbstractRequestDataMapper
 
     /**
      * {@inheritDoc}
-     */
-    public function createHistoryRequestData(AbstractPosAccount $posAccount, array $data = []): array
-    {
-        throw new NotImplementedException();
-    }
-
-    /**
-     * {@inheritDoc}
      *
      * @param array<string, mixed> $extraData
      */
@@ -195,14 +187,6 @@ class Param3DHostPosRequestDataMapper extends AbstractRequestDataMapper
             'method'  => 'GET',
             'inputs'  => $inputs,
         ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function createCustomQueryRequestData(AbstractPosAccount $posAccount, array $requestData): array
-    {
-        throw new NotImplementedException();
     }
 
     /**

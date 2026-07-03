@@ -7,9 +7,9 @@
 namespace Mews\Pos\Factory;
 
 use Mews\Pos\Client\HttpClientStrategyInterface;
-use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Exception\GatewayClassNotConfiguredException;
 use Mews\Pos\Exception\GatewayConfigNotFoundException;
+use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\PosInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Client\ClientInterface;
@@ -80,7 +80,7 @@ class PosFactory
             );
         }
 
-        $logger->debug('creating gateway for bank', ['bankName'   => $posAccount->getBankName()]);
+        $logger->debug('creating gateway for bank', ['bankName' => $posAccount->getBankName()]);
 
         return self::doCreatePosGateway(
             $gatewayClass,
@@ -122,14 +122,15 @@ class PosFactory
         EventDispatcherInterface     $eventDispatcher,
         ?HttpClientStrategyInterface $httpClientStrategy = null,
         ?ClientInterface             $httpClient = null,
-        LoggerInterface              $logger = new NullLogger()
+        ?LoggerInterface             $logger = null,
     ): PosInterface {
+        $logger                ??= new NullLogger();
         $crypt                 = CryptFactory::createForGateway($gatewayClass, $logger);
         $requestValueMapper    = RequestValueMapperFactory::createForGateway($gatewayClass);
         $requestValueFormatter = RequestValueFormatterFactory::createForGateway($gatewayClass);
         $defaultLang           = $apiConfig['gateway_configs']['lang'] ?? PosInterface::LANG_TR;
 
-        $requestDataMapper     = RequestDataMapperFactory::createForGateway(
+        $requestDataMapper = RequestDataMapperFactory::createForGateway(
             $gatewayClass,
             $requestValueMapper,
             $requestValueFormatter,

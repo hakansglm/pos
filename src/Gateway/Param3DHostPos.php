@@ -45,14 +45,12 @@ class Param3DHostPos extends AbstractGateway
         PosInterface::TX_TYPE_PAY_AUTH     => [
             PosInterface::MODEL_3D_HOST,
         ],
-        PosInterface::TX_TYPE_HISTORY        => false,
         PosInterface::TX_TYPE_ORDER_HISTORY  => false,
         PosInterface::TX_TYPE_PAY_POST_AUTH  => false,
         PosInterface::TX_TYPE_CANCEL         => false,
         PosInterface::TX_TYPE_REFUND         => false,
         PosInterface::TX_TYPE_REFUND_PARTIAL => false,
         PosInterface::TX_TYPE_STATUS         => false,
-        PosInterface::TX_TYPE_CUSTOM_QUERY   => false,
     ];
 
     /**
@@ -179,29 +177,9 @@ class Param3DHostPos extends AbstractGateway
     /**
      * @inheritDoc
      */
-    public function history(array $data): array
-    {
-        throw new UnsupportedTransactionTypeException(
-            \sprintf('Bu işlem için %s gateway kullanılmalıdır.', ParamPos::class)
-        );
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function orderHistory(array $order): array
     {
         throw new UnsupportedTransactionTypeException();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function customQuery(array $requestData, ?string $apiUrl = null): array
-    {
-        throw new UnsupportedTransactionTypeException(
-            \sprintf('Bu işlem için %s gateway kullanılmalıdır.', ParamPos::class)
-        );
     }
 
     /**

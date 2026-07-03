@@ -142,27 +142,6 @@ interface RequestDataMapperInterface
     public function createOrderHistoryRequestData(AbstractPosAccount $posAccount, array $order): array;
 
     /**
-     * @param AbstractPosAccount   $posAccount
-     * @param array<string, mixed> $data       bankaya gore degisen ozel degerler
-     *
-     * @return array<string, mixed>
-     *
-     * @throws UnsupportedTransactionTypeException
-     */
-    public function createHistoryRequestData(AbstractPosAccount $posAccount, array $data = []): array;
-
-
-    /**
-     * Adds account information, constant values, calculated hash into $requestData if it is not already set.
-     *
-     * @param AbstractPosAccount   $posAccount
-     * @param array<string, mixed> $requestData user generated request data
-     *
-     * @return array<string, mixed>
-     */
-    public function createCustomQueryRequestData(AbstractPosAccount $posAccount, array $requestData): array;
-
-    /**
      * Builds the request data sent to the bank to initiate or verify a 3D Secure payment step.
      *
      * Depending on the gateway this method serves one of three roles:

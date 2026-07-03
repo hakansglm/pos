@@ -6,15 +6,17 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueMapper;
 
-use PHPUnit\Framework\Attributes\DataProvider;
 use LogicException;
 use Mews\Pos\DataMapper\Request\ValueMapper\AbstractRequestValueMapper;
 use Mews\Pos\DataMapper\Request\ValueMapper\GarantiPosRequestValueMapper;
 use Mews\Pos\Exception\UnsupportedTransactionTypeException;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\GarantiPos;
+use Mews\Pos\Model\Card\CreditCardInterface;
 use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
@@ -100,7 +102,7 @@ class GarantiPosRequestValueMapperTest extends TestCase
 
     public function testGetTxTypeMappings(): void
     {
-        $this->assertCount(9, $this->valueMapper->getTxTypeMappings());
+        $this->assertCount(10, $this->valueMapper->getTxTypeMappings());
     }
 
     public function testGetSecureTypeMappings(): void
@@ -111,6 +113,22 @@ class GarantiPosRequestValueMapperTest extends TestCase
     public function testGetCardTypeMappings(): void
     {
         $this->assertCount(0, $this->valueMapper->getCardTypeMappings());
+    }
+
+    #[DataProvider('mapCardClassDataProvider')]
+    public function testMapCardClass(?string $cardClass, string $expected): void
+    {
+        $this->assertSame($expected, $this->valueMapper->mapCardClass($cardClass));
+    }
+
+    public static function mapCardClassDataProvider(): array
+    {
+        return [
+            [null, 'A'],
+            [CreditCardInterface::CARD_CLASS_CREDIT, 'C'],
+            [CreditCardInterface::CARD_CLASS_DEBIT, 'D'],
+            [CreditCardInterface::CARD_CLASS_PREPAID, 'A'],
+        ];
     }
 
     public static function mapSecureTypeDataProvider(): array
@@ -124,8 +142,10 @@ class GarantiPosRequestValueMapperTest extends TestCase
     public static function mapTxTypeDataProvider(): array
     {
         return [
-            [PosInterface::TX_TYPE_PAY_AUTH,  'sales'],
+            [PosInterface::TX_TYPE_PAY_AUTH, 'sales'],
             [PosInterface::TX_TYPE_PAY_PRE_AUTH, 'preauth'],
+            [PosQueryInterface::QUERY_TYPE_HISTORY, 'orderlistinq'],
+            [PosQueryInterface::QUERY_TYPE_BIN_LIST, 'bininq'],
         ];
     }
 }

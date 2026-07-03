@@ -374,14 +374,6 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
     }
 
     /**
-     * @inheritDoc
-     */
-    public function createCustomQueryRequestData(AbstractPosAccount $posAccount, array $requestData): array
-    {
-        throw new NotImplementedException();
-    }
-
-    /**
      * Küveyt Türk kendisi hazır HTML form gönderiyor.
      * {@inheritDoc}
      */
@@ -394,14 +386,6 @@ class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
         ?CreditCardInterface $creditCard = null,
         ?array               $extraData = null
     ) {
-        throw new NotImplementedException();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function createHistoryRequestData(AbstractPosAccount $posAccount, array $data = []): array
-    {
         throw new NotImplementedException();
     }
 
