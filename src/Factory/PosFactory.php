@@ -51,7 +51,7 @@ class PosFactory
      * @throws GatewayClassNotConfiguredException
      * @throws GatewayConfigNotFoundException
      */
-    public static function createPosGateway(
+    public static function create(
         AbstractPosAccount           $posAccount,
         array                        $config,
         EventDispatcherInterface     $eventDispatcher,

@@ -46,7 +46,7 @@ class AssecoPosTest extends TestCase
         );
         $this->eventDispatcher = new EventDispatcher();
 
-        $this->pos = PosFactory::createPosGateway($account, $config, $this->eventDispatcher);
+        $this->pos = PosFactory::create($account, $config, $this->eventDispatcher);
 
         $this->card = CreditCardFactory::createForGateway(
             $this->pos,

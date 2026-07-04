@@ -384,7 +384,7 @@ PosFactory::createPosGateway(
 );
 
 // v2
-PosFactory::createPosGateway(
+PosFactory::create(
     $account,
     $config,
     $eventDispatcher,
@@ -657,7 +657,7 @@ $account = AccountFactory::createAssecoPosAccount(
     'akbank', $clientId, $user, $pass, $storeKey
 );
 
-$pos = PosFactory::createPosGateway($account, $config, $eventDispatcher);
+$pos = PosFactory::create($account, $config, $eventDispatcher);
 ```
 
 ### NonSecure ödeme
@@ -769,7 +769,8 @@ $response = $pos->status($order);
 - [ ] `setTestMode()` çağrıları kaldırıldı mı?
 - [ ] Catch bloklarındaki `BankNotFoundException` → `GatewayConfigNotFoundException`, `BankClassNullException` → `GatewayClassNotConfiguredException` güncellendi mi?
 - [ ] `HttpClientFactory` kullanımı kaldırıldı mı? (v2'de yok; `PosFactory` bunu dahili olarak yönetiyor)
-- [ ] `PosFactory::createPosGateway()` çağrısında 4. parametre `null` (veya `HttpClientStrategyInterface`), 5. parametre `null` (veya PSR-18 `ClientInterface`) olarak güncellendi mi?
+- [ ] `PosFactory::createPosGateway()` → `PosFactory::create()` olarak yeniden adlandırıldı mı?
+- [ ] `PosFactory::create()` çağrısında 4. parametre `null` (veya `HttpClientStrategyInterface`), 5. parametre `null` (veya PSR-18 `ClientInterface`) olarak güncellendi mi?
 - [ ] `getBank()` → `getBankName()`, `getClientId()` → `getMerchantId()`, `getStoreKey()` → `getSecretKey()` güncellendi mi?
 - [ ] `getLang()` çağrıları kaldırıldı mı?
 - [ ] `$pos->history(...)` → `PosQueryFactory::create(...)->history(...)` olarak güncellendi mi?

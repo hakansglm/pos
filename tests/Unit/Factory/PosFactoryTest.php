@@ -38,8 +38,8 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(PosFactory::class)]
 class PosFactoryTest extends TestCase
 {
-    #[DataProvider('createPosGatewayDataProvider')]
-    public function testCreatePosGateway(array $config, string $configKey, bool $cardTypeMapping, string $expectedGatewayClass): void
+    #[DataProvider('createDataProvider')]
+    public function testCreate(array $config, string $configKey, bool $cardTypeMapping, string $expectedGatewayClass): void
     {
         $account = $this->createMock(AbstractPosAccount::class);
         $account->expects(self::atLeastOnce())
@@ -49,7 +49,7 @@ class PosFactoryTest extends TestCase
         $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
         $logger          = $this->createMock(LoggerInterface::class);
 
-        $gateway = PosFactory::createPosGateway(
+        $gateway = PosFactory::create(
             $account,
             $config,
             $eventDispatcher,
@@ -92,7 +92,7 @@ class PosFactoryTest extends TestCase
 
         $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
 
-        $gateway = PosFactory::createPosGateway(
+        $gateway = PosFactory::create(
             $account,
             $config,
             $eventDispatcher,
@@ -100,8 +100,8 @@ class PosFactoryTest extends TestCase
         $this->assertInstanceOf($gatewayClass, $gateway);
     }
 
-    #[DataProvider('createPosGatewayDataExceptionProvider')]
-    public function testCreatePosGatewayFail(array $config, string $configKey, string $expectedExceptionClass): void
+    #[DataProvider('createDataExceptionProvider')]
+    public function testCreateFail(array $config, string $configKey, string $expectedExceptionClass): void
     {
         $account = $this->createMock(AbstractPosAccount::class);
         $account->expects(self::atLeastOnce())
@@ -111,14 +111,14 @@ class PosFactoryTest extends TestCase
         $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
 
         $this->expectException($expectedExceptionClass);
-        PosFactory::createPosGateway(
+        PosFactory::create(
             $account,
             $config,
             $eventDispatcher,
         );
     }
 
-    public static function createPosGatewayDataExceptionProvider(): Generator
+    public static function createDataExceptionProvider(): Generator
     {
         yield 'missing_gateway_class_in_config' => [
             'config'                   => [
@@ -186,7 +186,7 @@ class PosFactoryTest extends TestCase
         ];
     }
 
-    public static function createPosGatewayDataProvider(): Generator
+    public static function createDataProvider(): Generator
     {
         $gatewayClasses = [
             AkbankPos::class        => false,

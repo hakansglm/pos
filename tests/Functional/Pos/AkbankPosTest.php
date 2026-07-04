@@ -65,9 +65,9 @@ class AkbankPosTest extends TestCase
 
         $this->eventDispatcher = new EventDispatcher();
 
-        $this->pos                  = PosFactory::createPosGateway($account, $config, $this->eventDispatcher);
-        $this->recurringPos         = PosFactory::createPosGateway($recurringAccount, $config, $this->eventDispatcher);
-        $this->instalmentEnabledPos = PosFactory::createPosGateway($installmentEnabledAccount, $config, $this->eventDispatcher);
+        $this->pos                  = PosFactory::create($account, $config, $this->eventDispatcher);
+        $this->recurringPos         = PosFactory::create($recurringAccount, $config, $this->eventDispatcher);
+        $this->instalmentEnabledPos = PosFactory::create($installmentEnabledAccount, $config, $this->eventDispatcher);
 
         $this->card = CreditCardFactory::createForGateway(
             $this->pos,

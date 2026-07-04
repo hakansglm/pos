@@ -73,7 +73,7 @@ class PosQueryFactory
     /**
      * Creates a PosQueryInterface instance for the given account.
      *
-     * Accepts the same $config structure as PosFactory::createPosGateway().
+     * Accepts the same $config structure as PosFactory::create().
      *
      * @phpstan-param array{
      *     banks: array<string, array{
