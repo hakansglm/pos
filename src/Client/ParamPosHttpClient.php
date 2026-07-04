@@ -75,6 +75,22 @@ class ParamPosHttpClient extends AbstractHttpClient
     /**
      * @inheritDoc
      */
+    protected function checkFailResponse(string $txType, ResponseInterface $response, array $order): void
+    {
+        if ($response->getStatusCode() >= 400) {
+            $this->logger->error('Api request failed!', [
+                'status_code' => $response->getStatusCode(),
+                'response'    => $response->getBody()->getContents(),
+                'tx_type'     => $txType,
+                'order'       => $order,
+            ]);
+            throw new \RuntimeException('İstek Başarısız!', $response->getStatusCode());
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     protected function checkFailResponseData(string $txType, ResponseInterface $response, array $responseData, array $order): void
     {
         if (isset($responseData['soap:Fault'])) {

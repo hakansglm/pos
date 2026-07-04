@@ -26,7 +26,6 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
 #[CoversClass(ParamPosHttpClient::class)]
 #[CoversClass(AbstractHttpClient::class)]
@@ -163,7 +162,7 @@ class ParamPosHttpClientTest extends TestCase
             ->method('sendRequest')
             ->willReturn($response);
 
-        $this->expectException(NotEncodableValueException::class);
+        $this->expectException(RuntimeException::class);
         $this->client->request($txType, $paymentModel, $requestData, $order);
     }
 
