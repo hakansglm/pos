@@ -8,7 +8,6 @@ namespace Mews\Pos\Tests\Unit\Factory;
 
 use DomainException;
 use Mews\Pos\Exception\GatewayClassNotConfiguredException;
-use Mews\Pos\Exception\GatewayConfigNotFoundException;
 use Mews\Pos\Factory\PosQueryFactory;
 use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\Gateway\ToslaPos;
@@ -30,23 +29,11 @@ class PosQueryFactoryTest extends TestCase
         parent::setUp();
 
         $this->baseConfig = [
-            'banks' => [
-                'akbank' => [
-                    'name'              => 'Akbank',
-                    'class'             => AssecoPos::class,
-                    'gateway_endpoints' => [
-                        'payment_api' => 'https://entegrasyon.asseco-see.com.tr/fim/api',
-                        'gateway_3d'  => 'https://entegrasyon.asseco-see.com.tr/fim/est3Dgate',
-                    ],
-                ],
-                'tosla' => [
-                    'name'              => 'Tosla',
-                    'class'             => ToslaPos::class,
-                    'gateway_endpoints' => [
-                        'payment_api' => 'https://prepentegrasyon.tosla.com/api/Payment',
-                        'query_api'   => 'https://prepentegrasyon.tosla.com/api/Payment',
-                    ],
-                ],
+            'name'              => 'Akbank',
+            'class'             => AssecoPos::class,
+            'gateway_endpoints' => [
+                'payment_api' => 'https://entegrasyon.asseco-see.com.tr/fim/api',
+                'gateway_3d'  => 'https://entegrasyon.asseco-see.com.tr/fim/est3Dgate',
             ],
         ];
     }
@@ -73,37 +60,26 @@ class PosQueryFactoryTest extends TestCase
 
         $posQuery = PosQueryFactory::create(
             $account,
-            $this->baseConfig,
+            [
+                'name'              => 'Tosla',
+                'class'             => ToslaPos::class,
+                'gateway_endpoints' => [
+                    'payment_api' => 'https://prepentegrasyon.tosla.com/api/Payment',
+                    'query_api'   => 'https://prepentegrasyon.tosla.com/api/Payment',
+                ],
+            ],
             $this->createMock(EventDispatcherInterface::class)
         );
 
         $this->assertInstanceOf(ToslaPosQuery::class, $posQuery);
     }
 
-    public function testCreateThrowsWhenBankNotInConfig(): void
-    {
-        $account = $this->createMock(AbstractPosAccount::class);
-        $account->method('getBankName')->willReturn('nonexistent');
-
-        $this->expectException(GatewayConfigNotFoundException::class);
-
-        PosQueryFactory::create(
-            $account,
-            $this->baseConfig,
-            $this->createMock(EventDispatcherInterface::class)
-        );
-    }
-
     public function testCreateThrowsWhenGatewayClassMissingFromConfig(): void
     {
         $config = [
-            'banks' => [
-                'akbank' => [
-                    'name'              => 'Akbank',
-                    'gateway_endpoints' => [
-                        'payment_api' => 'https://entegrasyon.asseco-see.com.tr/fim/api',
-                    ],
-                ],
+            'name'              => 'Akbank',
+            'gateway_endpoints' => [
+                'payment_api' => 'https://entegrasyon.asseco-see.com.tr/fim/api',
             ],
         ];
 
@@ -122,14 +98,10 @@ class PosQueryFactoryTest extends TestCase
     public function testCreateThrowsWhenNoPosQueryClassForGateway(): void
     {
         $config = [
-            'banks' => [
-                'unknown' => [
-                    'name'              => 'Unknown',
-                    'class'             => \stdClass::class,
-                    'gateway_endpoints' => [
-                        'payment_api' => 'https://example.com',
-                    ],
-                ],
+            'name'              => 'Unknown',
+            'class'             => \stdClass::class,
+            'gateway_endpoints' => [
+                'payment_api' => 'https://example.com',
             ],
         ];
 

@@ -38,7 +38,7 @@ class PayTrPosQueryTest extends TestCase
         );
 
         $this->eventDispatcher = new EventDispatcher();
-        $this->posQuery        = PosQueryFactory::create($account, $config, $this->eventDispatcher);
+        $this->posQuery        = PosQueryFactory::create($account, $config['banks'][$account->getBankName()], $this->eventDispatcher);
     }
 
     #[TestWith(['435508', CreditCardInterface::CARD_TYPE_VISA])]

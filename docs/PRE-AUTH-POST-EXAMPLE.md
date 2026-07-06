@@ -43,7 +43,7 @@ $eventDispatcher = new Symfony\Component\EventDispatcher\EventDispatcher();
 try {
     $config = require __DIR__.'/pos_test_ayarlar.php';
 
-    $pos = \Mews\Pos\Factory\PosFactory::create($account, $config, $eventDispatcher);
+    $pos = \Mews\Pos\Factory\PosFactory::create($account, $config['banks'][$account->getBankName()], $eventDispatcher);
 } catch (\Mews\Pos\Exception\BankNotFoundException | \Mews\Pos\Exception\BankClassNullException $e) {
     var_dump($e));
     exit;

@@ -8,7 +8,6 @@ namespace Mews\Pos\Factory;
 
 use Mews\Pos\Client\HttpClientStrategyInterface;
 use Mews\Pos\Exception\GatewayClassNotConfiguredException;
-use Mews\Pos\Exception\GatewayConfigNotFoundException;
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\PosInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -25,18 +24,16 @@ class PosFactory
      * @template T of PosInterface
      *
      * @phpstan-param array{
-     *     banks: array<string, array{
-     *          name: string,
-     *          class?: class-string<T>,
-     *          gateway_configs?: array{
-     *              lang?: PosInterface::LANG_*,
-     *              test_mode?: bool,
-     *              disable_3d_hash_check?: bool
-     *          },
-     *          gateway_endpoints: array{
-     *              payment_api: non-empty-string,
-     *              query_api?: non-empty-string}
-     *         }>
+     *     name: string,
+     *     class?: class-string<T>,
+     *     gateway_configs?: array{
+     *         lang?: PosInterface::LANG_*,
+     *         test_mode?: bool,
+     *         disable_3d_hash_check?: bool
+     *     },
+     *     gateway_endpoints: array{
+     *         payment_api: non-empty-string,
+     *         query_api?: non-empty-string}
      *     }                                   $config
      *
      * @param AbstractPosAccount               $posAccount
@@ -49,7 +46,6 @@ class PosFactory
      * @return T
      *
      * @throws GatewayClassNotConfiguredException
-     * @throws GatewayConfigNotFoundException
      */
     public static function create(
         AbstractPosAccount           $posAccount,
@@ -63,12 +59,7 @@ class PosFactory
             $logger = new NullLogger();
         }
 
-        // Bank Config Exist
-        if (!\array_key_exists($posAccount->getBankName(), $config['banks'])) {
-            throw new GatewayConfigNotFoundException();
-        }
-
-        $gatewayClass = $config['banks'][$posAccount->getBankName()]['class'] ?? null;
+        $gatewayClass = $config['class'] ?? null;
 
         if (null === $gatewayClass) {
             throw new GatewayClassNotConfiguredException();
@@ -85,7 +76,7 @@ class PosFactory
         return self::doCreatePosGateway(
             $gatewayClass,
             $posAccount,
-            $config['banks'][$posAccount->getBankName()],
+            $config,
             $eventDispatcher,
             $httpClientStrategy,
             $httpClient,

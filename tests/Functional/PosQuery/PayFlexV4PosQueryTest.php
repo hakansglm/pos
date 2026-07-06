@@ -41,7 +41,7 @@ class PayFlexV4PosQueryTest extends TestCase
         $this->eventDispatcher = new EventDispatcher();
         $this->posQuery        = PosQueryFactory::create(
             $account,
-            $config,
+            $config['banks'][$account->getBankName()],
             $this->eventDispatcher,
             $httpClient
         );

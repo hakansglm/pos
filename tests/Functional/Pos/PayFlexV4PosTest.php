@@ -48,7 +48,7 @@ class PayFlexV4PosTest extends TestCase
         $this->eventDispatcher = new EventDispatcher();
 
         $httpClient = new Psr18Client(HttpClient::create(['verify_peer' => false, 'verify_host' => false]));
-        $this->pos  = PosFactory::create($account, $config, $this->eventDispatcher, null, $httpClient);
+        $this->pos  = PosFactory::create($account, $config['banks'][$account->getBankName()], $this->eventDispatcher, null, $httpClient);
 
         $this->card = CreditCardFactory::createForGateway(
             $this->pos,

@@ -50,7 +50,7 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
     try {
         $config = require __DIR__.'/pos_test_ayarlar.php';
 
-        $pos = \Mews\Pos\Factory\PosFactory::create($account, $config, $eventDispatcher);
+        $pos = \Mews\Pos\Factory\PosFactory::create($account, $config['banks'][$account->getBankName()], $eventDispatcher);
     } catch (\Mews\Pos\Exception\BankNotFoundException | \Mews\Pos\Exception\BankClassNullException $e) {
         var_dump($e);
         exit;
@@ -146,7 +146,7 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
         /**
          * NOT!!! event listenerin çalışması için $eventDispatcher objesi $pos objesi oluştururken
          * kullandığınız $eventDıspatcher ile aynısı olması gerekiyor!
-         * $pos = \Mews\Pos\Factory\PosFactory::create($account, $config, $eventDispatcher);
+         * $pos = \Mews\Pos\Factory\PosFactory::create($account, $config['banks'][$account->getBankName()], $eventDispatcher);
          * $eventDispatcher'i tekrardan oluşturursanız, listener çalışmaz!
          */
         /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */

@@ -26,7 +26,8 @@ Geçiş adımları için [UPGRADE-v2.md](./UPGRADE-v2.md) dosyasına bakınız.
 - **Config endpoint değişiklikleri.** `ParamPos` yapılandırmasından `payment_api_2` ve `gateway_3d_host` anahtarları kaldırıldı; 3DHost akışı artık ayrı `Param3DHostPos` gateway'i üzerinden yürütülüyor. `KuveytPos`, `VakifKatilimPos` ve `PayFlexCPV4Pos` yapılandırmalarından `gateway_3d` anahtarı kaldırıldı (gateway tarafından dahili olarak türetiliyor); `PayFlexCPV4Pos` için `payment_api` URL'i de kısaltıldı.
 - **Gateway ve namespace yeniden adlandırmaları:** `Gateways` → `Gateway`, `Exceptions` → `Exception`, `Entity` → `Model`; `EstPos`/`EstV3Pos` → `AssecoPos`, `PosNet` → `PosNetPos` ve ilgili account/factory isimleri güncellendi.
 - **`AbstractPosAccount` metot yeniden adlandırmaları:** `getBank()` → `getBankName()`, `getClientId()` → `getMerchantId()`, `getStoreKey()` → `getSecretKey()`, `getLang()` kaldırıldı.
-- **Exception yeniden adlandırmaları:** `BankNotFoundException` → `GatewayConfigNotFoundException`, `BankClassNullException` → `GatewayClassNotConfiguredException`.
+- **Exception yeniden adlandırması:** `BankClassNullException` → `GatewayClassNotConfiguredException`.
+- `BankNotFoundException` kaldırıldı — `PosFactory::create()` artık bu hatayı fırlatmıyor.
 - **`PosFactory::createPosGateway()` → `PosFactory::create()` olarak yeniden adlandırıldı.**
 - **`PosInterface::history()` kaldırıldı.** Sipariş geçmişi sorgusu için yeni `PosQueryInterface::history()` kullanın.
 - **`PosInterface::customQuery()` kaldırıldı.** Ham API çağrıları için yeni `PosQueryInterface::customQuery()` kullanın.

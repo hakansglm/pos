@@ -343,10 +343,10 @@ Bu işlemler artık `PosQueryInterface` üzerinden yürütülüyor.
 use Mews\Pos\Factory\PosQueryFactory;
 
 $posQuery = PosQueryFactory::create(
-    $account,         // AbstractPosAccount — PosFactory'de kullandığınızın aynısı
-    $config,          // pos_test.php / pos_production.php dizisi
-    $eventDispatcher, // PSR-14 EventDispatcherInterface
-    null,             // ?LoggerInterface — isteğe bağlı
+    $account,                                           // AbstractPosAccount — PosFactory'de kullandığınızın aynısı
+    $config['banks'][$account->getBankName()],          // tek bankanın config dilimi
+    $eventDispatcher,                                   // PSR-14 EventDispatcherInterface
+    null,                                               // ?LoggerInterface — isteğe bağlı
 );
 ```
 
@@ -386,7 +386,7 @@ PosFactory::createPosGateway(
 // v2
 PosFactory::create(
     $account,
-    $config,
+    $config['banks'][$account->getBankName()],  // tek bankanın config dilimi
     $eventDispatcher,
     null,          // ?HttpClientStrategyInterface — null geçin; factory otomatik oluşturur
     null,          // ?ClientInterface (PSR-18) — özel SSL/proxy yapılandırması için geçilebilir
@@ -411,14 +411,14 @@ Catch bloklarınızı güncelleyin:
 | v1 | v2 |
 |---|---|
 | `Mews\Pos\Exception\BankClassNullException` | `Mews\Pos\Exception\GatewayClassNotConfiguredException` |
-| `Mews\Pos\Exception\BankNotFoundException` | `Mews\Pos\Exception\GatewayConfigNotFoundException` |
+| `Mews\Pos\Exception\BankNotFoundException` | removed — `PosFactory::create()` no longer throws it |
 
 ```php
 // v1
 } catch (\Mews\Pos\Exception\BankNotFoundException | \Mews\Pos\Exception\BankClassNullException $e) {
 
-// v2
-} catch (\Mews\Pos\Exception\GatewayConfigNotFoundException | \Mews\Pos\Exception\GatewayClassNotConfiguredException $e) {
+// v2 — only GatewayClassNotConfiguredException remains; BankNotFoundException equivalent is gone
+} catch (\Mews\Pos\Exception\GatewayClassNotConfiguredException $e) {
 ```
 
 ### 8b. Yeni `PosException` marker interface'i
@@ -657,7 +657,7 @@ $account = AccountFactory::createAssecoPosAccount(
     'akbank', $clientId, $user, $pass, $storeKey
 );
 
-$pos = PosFactory::create($account, $config, $eventDispatcher);
+$pos = PosFactory::create($account, $config['banks'][$account->getBankName()], $eventDispatcher);
 ```
 
 ### NonSecure ödeme
@@ -735,9 +735,9 @@ $response = $pos->status($order);
 // v1
 } catch (\Mews\Pos\Exception\BankNotFoundException | \Mews\Pos\Exception\BankClassNullException $e) {
 
-// v2 — isim değişiklikleri veya tüm kütüphane hatalarını yakalamak için PosException
-} catch (\Mews\Pos\Exception\GatewayConfigNotFoundException | \Mews\Pos\Exception\GatewayClassNotConfiguredException $e) {
-// veya:
+// GatewayClassNotConfiguredException veya PosException kullanın
+} catch (\Mews\Pos\Exception\GatewayClassNotConfiguredException $e) {
+// veya tüm kütüphane hatalarını yakalamak için:
 } catch (\Mews\Pos\Exception\PosException $e) {
 ```
 
@@ -767,7 +767,7 @@ $response = $pos->status($order);
 - [ ] `$response['status_detail']` kullanan kod kaldırıldı mı?
 - [ ] 3D ödeme response'larında `$response['md_status_detail']` kullanan kod kaldırıldı mı?
 - [ ] `setTestMode()` çağrıları kaldırıldı mı?
-- [ ] Catch bloklarındaki `BankNotFoundException` → `GatewayConfigNotFoundException`, `BankClassNullException` → `GatewayClassNotConfiguredException` güncellendi mi?
+- [ ] Catch bloklarındaki `BankClassNullException` → `GatewayClassNotConfiguredException` güncellendi mi? (`BankNotFoundException` artık kütüphane tarafından fırlatılmıyor — bu catch bloklarını kaldırın)
 - [ ] `HttpClientFactory` kullanımı kaldırıldı mı? (v2'de yok; `PosFactory` bunu dahili olarak yönetiyor)
 - [ ] `PosFactory::createPosGateway()` → `PosFactory::create()` olarak yeniden adlandırıldı mı?
 - [ ] `PosFactory::create()` çağrısında 4. parametre `null` (veya `HttpClientStrategyInterface`), 5. parametre `null` (veya PSR-18 `ClientInterface`) olarak güncellendi mi?

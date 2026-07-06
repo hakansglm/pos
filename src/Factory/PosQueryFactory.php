@@ -9,7 +9,6 @@ namespace Mews\Pos\Factory;
 use DomainException;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Exception\GatewayClassNotConfiguredException;
-use Mews\Pos\Exception\GatewayConfigNotFoundException;
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\PosInterface;
 use Mews\Pos\PosQuery\AkbankPosQuery;
@@ -71,23 +70,16 @@ class PosQueryFactory
     }
 
     /**
-     * Creates a PosQueryInterface instance for the given account.
-     *
-     * Accepts the same $config structure as PosFactory::create().
-     *
      * @phpstan-param array{
-     *     banks: array<string, array{
-     *          name: string,
-     *          class?: class-string<PosInterface>,
-     *          gateway_configs?: array{
-     *              test_mode?: bool,
-     *              lang?: PosInterface::LANG_*
-     *          },
-     *          gateway_endpoints: array<HttpClientInterface::API_NAME_*, non-empty-string>
-     *     }>
+     *     name: string,
+     *     class?: class-string<PosInterface>,
+     *     gateway_configs?: array{
+     *         test_mode?: bool,
+     *         lang?: PosInterface::LANG_*
+     *     },
+     *     gateway_endpoints: array<HttpClientInterface::API_NAME_*, non-empty-string>
      * } $config
      *
-     * @throws GatewayConfigNotFoundException
      * @throws GatewayClassNotConfiguredException
      * @throws DomainException                    when no PosQuery implementation is registered for this gateway
      */
@@ -102,14 +94,8 @@ class PosQueryFactory
             $logger = new NullLogger();
         }
 
-        if (!\array_key_exists($posAccount->getBankName(), $config['banks'])) {
-            throw new GatewayConfigNotFoundException();
-        }
-
-        $bankConfig = $config['banks'][$posAccount->getBankName()];
-
         /** @var class-string<PosInterface>|null $gatewayClass */
-        $gatewayClass = $bankConfig['class'] ?? null;
+        $gatewayClass = $config['class'] ?? null;
 
         if (null === $gatewayClass) {
             throw new GatewayClassNotConfiguredException();
@@ -130,7 +116,7 @@ class PosQueryFactory
             RequestValueMapperFactory::createForGateway($gatewayClass),
             RequestValueFormatterFactory::createForGateway($gatewayClass),
             $crypt,
-            $bankConfig['gateway_configs']['lang'] ?? PosInterface::LANG_TR
+            $config['gateway_configs']['lang'] ?? PosInterface::LANG_TR
         );
 
         $responseDataMapper = PosQueryResponseMapperFactory::createForGateway(
@@ -142,7 +128,7 @@ class PosQueryFactory
 
         $clientStrategy = PosHttpClientStrategyFactory::createForGateway(
             $gatewayClass,
-            $bankConfig['gateway_endpoints'],
+            $config['gateway_endpoints'],
             $crypt,
             RequestValueMapperFactory::createForGateway($gatewayClass),
             $logger,
@@ -151,7 +137,7 @@ class PosQueryFactory
 
         if ($responseDataMapper !== null) {
             return new $posQueryClass(
-                $bankConfig,
+                $config,
                 $posAccount,
                 $requestDataMapper,
                 $responseDataMapper,
@@ -162,7 +148,7 @@ class PosQueryFactory
         }
 
         return new $posQueryClass(
-            $bankConfig,
+            $config,
             $posAccount,
             $requestDataMapper,
             $clientStrategy,

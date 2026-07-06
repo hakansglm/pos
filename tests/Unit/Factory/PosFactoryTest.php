@@ -29,7 +29,6 @@ use Mews\Pos\Gateway\ToslaPos;
 use Mews\Pos\Gateway\VakifKatilimPos;
 use Mews\Pos\Model\Account\AbstractPosAccount;
 use Mews\Pos\Exception\GatewayClassNotConfiguredException;
-use Mews\Pos\Exception\GatewayConfigNotFoundException;
 use Mews\Pos\Factory\PosFactory;
 use Mews\Pos\PosInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -73,16 +72,12 @@ class PosFactoryTest extends TestCase
     {
         $gatewayClass = AkbankPos::class;
         $config       = [
-            'banks' => [
-                'akbank' => [
-                    'name'              => 'Akbank',
-                    'class'             => $gatewayClass,
-                    'gateway_endpoints' => [
-                        'payment_api'     => 'https://apipre.akbank.com/api/v1/payment/virtualpos',
-                        'gateway_3d'      => 'https://virtualpospaymentgatewaypre.akbank.com/securepay',
-                        'gateway_3d_host' => 'https://virtualpospaymentgatewaypre.akbank.com/payhosting',
-                    ],
-                ],
+            'name'              => 'Akbank',
+            'class'             => $gatewayClass,
+            'gateway_endpoints' => [
+                'payment_api'     => 'https://apipre.akbank.com/api/v1/payment/virtualpos',
+                'gateway_3d'      => 'https://virtualpospaymentgatewaypre.akbank.com/securepay',
+                'gateway_3d_host' => 'https://virtualpospaymentgatewaypre.akbank.com/payhosting',
             ],
         ];
         $account      = $this->createMock(AbstractPosAccount::class);
@@ -104,9 +99,7 @@ class PosFactoryTest extends TestCase
     public function testCreateFail(array $config, string $configKey, string $expectedExceptionClass): void
     {
         $account = $this->createMock(AbstractPosAccount::class);
-        $account->expects(self::atLeastOnce())
-            ->method('getBankName')
-            ->willReturn($configKey);
+        $account->method('getBankName')->willReturn($configKey);
 
         $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
 
@@ -122,15 +115,11 @@ class PosFactoryTest extends TestCase
     {
         yield 'missing_gateway_class_in_config' => [
             'config'                   => [
-                'banks' => [
-                    'akbank' => [
-                        'name'              => 'Akbank',
-                        'gateway_endpoints' => [
-                            'payment_api'     => 'https://apipre.akbank.com/api/v1/payment/virtualpos',
-                            'gateway_3d'      => 'https://virtualpospaymentgatewaypre.akbank.com/securepay',
-                            'gateway_3d_host' => 'https://virtualpospaymentgatewaypre.akbank.com/payhosting',
-                        ],
-                    ],
+                'name'              => 'Akbank',
+                'gateway_endpoints' => [
+                    'payment_api'     => 'https://apipre.akbank.com/api/v1/payment/virtualpos',
+                    'gateway_3d'      => 'https://virtualpospaymentgatewaypre.akbank.com/securepay',
+                    'gateway_3d_host' => 'https://virtualpospaymentgatewaypre.akbank.com/payhosting',
                 ],
             ],
             'config_key'               => 'akbank',
@@ -139,16 +128,12 @@ class PosFactoryTest extends TestCase
 
         yield 'invalid_gateway_class' => [
             'config'                   => [
-                'banks' => [
-                    'akbank' => [
-                        'name'              => 'Akbank',
-                        'class'             => stdClass::class,
-                        'gateway_endpoints' => [
-                            'payment_api'     => 'https://apipre.akbank.com/api/v1/payment/virtualpos',
-                            'gateway_3d'      => 'https://virtualpospaymentgatewaypre.akbank.com/securepay',
-                            'gateway_3d_host' => 'https://virtualpospaymentgatewaypre.akbank.com/payhosting',
-                        ],
-                    ],
+                'name'              => 'Akbank',
+                'class'             => stdClass::class,
+                'gateway_endpoints' => [
+                    'payment_api'     => 'https://apipre.akbank.com/api/v1/payment/virtualpos',
+                    'gateway_3d'      => 'https://virtualpospaymentgatewaypre.akbank.com/securepay',
+                    'gateway_3d_host' => 'https://virtualpospaymentgatewaypre.akbank.com/payhosting',
                 ],
             ],
             'config_key'               => 'akbank',
@@ -157,32 +142,12 @@ class PosFactoryTest extends TestCase
 
         yield 'serializer_not_found' => [
             'config'                   => [
-                'banks' => [
-                    'akbank' => [
-                        'name'              => 'Akbank',
-                        'class'             => AkbankPos::class,
-                        'gateway_endpoints' => [
-                        ],
-                    ],
-                ],
+                'name'              => 'Akbank',
+                'class'             => AkbankPos::class,
+                'gateway_endpoints' => [],
             ],
             'config_key'               => 'akbank',
             'expected_exception_class' => DomainException::class,
-        ];
-
-        yield 'bank_not_found' => [
-            'config'                   => [
-                'banks' => [
-                    'akbank' => [
-                        'name'              => 'Akbank',
-                        'class'             => AkbankPos::class,
-                        'gateway_endpoints' => [
-                        ],
-                    ],
-                ],
-            ],
-            'config_key'               => 'akbank2',
-            'expected_exception_class' => GatewayConfigNotFoundException::class,
         ];
     }
 
@@ -212,21 +177,15 @@ class PosFactoryTest extends TestCase
                 null,
             ]);
             $configKey = 'abcdse';
-            $gatewayEndpoints = [
-                'payment_api'     => 'https://apipre.akbank.com/api/v1/payment/virtualpos',
-                'gateway_3d'      => 'https://virtualpospaymentgatewaypre.akbank.com/securepay',
-                'gateway_3d_host' => 'https://virtualpospaymentgatewaypre.akbank.com/payhosting',
-                'query_api'       => 'https://apipre.akbank.com/api/v1/query_api',
-            ];
-
             $config    = [
-                'banks' => [
-                    $configKey => [
-                        'name'            => 'Akbank',
-                        'class'           => $gatewayClass,
-                        'gateway_configs' => ['lang' => $lang],
-                        'gateway_endpoints' => $gatewayEndpoints,
-                    ],
+                'name'              => 'Akbank',
+                'class'             => $gatewayClass,
+                'gateway_configs'   => ['lang' => $lang],
+                'gateway_endpoints' => [
+                    'payment_api'     => 'https://apipre.akbank.com/api/v1/payment/virtualpos',
+                    'gateway_3d'      => 'https://virtualpospaymentgatewaypre.akbank.com/securepay',
+                    'gateway_3d_host' => 'https://virtualpospaymentgatewaypre.akbank.com/payhosting',
+                    'query_api'       => 'https://apipre.akbank.com/api/v1/query_api',
                 ],
             ];
             yield [

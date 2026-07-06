@@ -48,7 +48,7 @@ try {
     $config = require __DIR__.'/pos_test_ayarlar.php';
 
     // PosQueryInterface nesnesi PosQueryFactory ile oluşturulur
-    $posQuery = \Mews\Pos\Factory\PosQueryFactory::create($account, $config, $eventDispatcher);
+    $posQuery = \Mews\Pos\Factory\PosQueryFactory::create($account, $config['banks'][$account->getBankName()], $eventDispatcher);
 } catch (\Mews\Pos\Exception\BankNotFoundException | \Mews\Pos\Exception\BankClassNullException $e) {
     var_dump($e);
     exit;

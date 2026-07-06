@@ -37,7 +37,7 @@ class PayForPosQueryTest extends TestCase
         );
 
         $this->eventDispatcher = new EventDispatcher();
-        $this->posQuery        = PosQueryFactory::create($account, $config, $this->eventDispatcher);
+        $this->posQuery        = PosQueryFactory::create($account, $config['banks'][$account->getBankName()], $this->eventDispatcher);
     }
 
     public function testCustomQuery(): void

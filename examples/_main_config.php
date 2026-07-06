@@ -113,7 +113,7 @@ function getPosQuery(
     $config = require __DIR__.'/../config/pos_test.php';
     global $logger;
 
-    return \Mews\Pos\Factory\PosQueryFactory::create($account, $config, $eventDispatcher, null, $logger);
+    return \Mews\Pos\Factory\PosQueryFactory::create($account, $config['banks'][$account->getBankName()], $eventDispatcher, null, $logger);
 }
 
 function getGateway(\Mews\Pos\Model\Account\AbstractPosAccount $account, \Psr\EventDispatcher\EventDispatcherInterface $eventDispatcher): ?PosInterface
@@ -127,7 +127,7 @@ function getGateway(\Mews\Pos\Model\Account\AbstractPosAccount $account, \Psr\Ev
         $config = require __DIR__.'/../config/pos_test.php';
         global $logger;
 
-        $pos = \Mews\Pos\Factory\PosFactory::create($account, $config, $eventDispatcher, null, null, $logger);
+        $pos = \Mews\Pos\Factory\PosFactory::create($account, $config['banks'][$account->getBankName()], $eventDispatcher, null, null, $logger);
 
         return $pos;
     } catch (Exception $e) {
