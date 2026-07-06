@@ -4,36 +4,43 @@ use Mews\Pos\Event\Before3DFormHashCalculatedEvent;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\PosInterface;
 
+/** @var string $baseUrl */
+/** @var string $ip */
+/** @var PosInterface::MODEL_3D_* $paymentModel */
+/** @var PosInterface $pos */
+/** @var \Symfony\Component\HttpFoundation\Request $request */
+/** @var \Symfony\Component\HttpFoundation\Session\SessionInterface $session */
+
 /**
  * Bu kod MODEL_3D_SECURE, MODEL_3D_PAY, MODEL_3D_HOST odemeler icin gereken HTML form verisini olusturur.
  * Odeme olmayan (iade, iptal, durum) veya MODEL_NON_SECURE islemlerde kullanilmaz.
  */
 require '../../_templates/_header.php';
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+if ($request->getMethod() !== 'POST') {
     header('Location: '.$baseUrl.'index.php');
     exit();
 }
-$transaction = $_POST['tx'] ?? PosInterface::TX_TYPE_PAY_AUTH;
+$transaction = $request->get('tx', PosInterface::TX_TYPE_PAY_AUTH);
 $order       = createPaymentOrder(
     $pos,
     $paymentModel,
     $baseUrl,
     $ip,
-    $_POST['currency'] ?? PosInterface::CURRENCY_TRY,
-    $_POST['installment'] ?? null,
-    ($_POST['is_recurring'] ?? 0) == 1,
-    $_POST['lang'] ?? PosInterface::LANG_TR
+    $request->get('currency', PosInterface::CURRENCY_TRY),
+    $request->get('installment'),
+    $request->get('is_recurring', 0) == 1,
+    $request->get('lang', PosInterface::LANG_TR)
 );
 
-$_SESSION['order'] = $order;
-$_SESSION['tx'] = $transaction;
+$session->set('order', $order);
+$session->set('tx', $transaction);
 
 if ($paymentModel !== PosInterface::MODEL_3D_HOST) {
-    $card = createCard($pos, $_POST);
+    $card = createCard($pos, $request->request->all());
     if (get_class($pos) === \Mews\Pos\Gateways\PayFlexV4Pos::class) {
         // bu gateway için ödemeyi tamamlarken tekrar kart bilgisi lazım olacak.
-        $_SESSION['card'] = $_POST;
+        $session->set('card', $request->request->all());
     }
 } else {
     $card = null;
@@ -159,7 +166,7 @@ if ($pos instanceof \Mews\Pos\Gateways\PosNet) {
 // OZEL DURUMLAR ICIN KODLAR END
 // ============================================================================================
 
-$flowType = $_POST['payment_flow_type'] ?? null;
+$flowType = $request->request->get('payment_flow_type');
 ?>
 
 
