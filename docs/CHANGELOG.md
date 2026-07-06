@@ -18,12 +18,19 @@ Geçiş adımları için [UPGRADE-v2.md](./UPGRADE-v2.md) dosyasına bakınız.
 - **3D callback parametresi değişti.** `make3DPayment()` ve benzeri metotlar artık Symfony `Request` nesnesi değil, düz PHP dizisi (`$_POST` / `$_GET`) kabul ediyor.
 - **`AccountFactory` — `$lang` ve `$model` parametreleri kaldırıldı.** Dil artık `gateway_configs.lang` config anahtarıyla ayarlanıyor; ödeme modeli her işlemde `payment()` çağrısına geçiliyor.
 - **`get3DFormData()` — `$createWithoutCard` varsayılanı `true`'dan `false`'a değişti.**
-- **Gateway'e özel sipariş verileri artık `$order` dizisiyle geçiliyor.** KuveytPos, IyzicoPos ve PayTrPos için alıcı bilgisi (`buyer`), adres ve sepet içeriği gibi ekstra alanlar v1'de `RequestDataPreparedEvent` listener'ı içinde ekleniyordu. v2'de bu veriler doğrudan `$order` dizisine dahil edilerek `payment()` ve `get3DFormData()` metodlarına geçiliyor.
+- **Gateway'e özel sipariş verileri artık `$order` dizisiyle geçiliyor.** KuveytPos, için alıcı bilgisi (`buyer`),
+  adres ve sepet içeriği gibi ekstra alanlar v1'de `RequestDataPreparedEvent` listener'ı içinde ekleniyordu.
+  v2'de bu veriler doğrudan `$order` dizisine dahil ediliyor.
 - **KuveytPos ve VakifKatilimPos `get3DFormData()` artık HTML string döndürüyor.**
 - **`setTestMode()` kaldırıldı.** Test modu artık `gateway_configs.test_mode` config anahtarıyla ayarlanıyor.
 - **`status_detail` response alanı kaldırıldı.** Ödeme, iptal, iade, durum sorgulama ve sipariş tarihçesi response'larından `status_detail` alanı kaldırıldı. 3D ödeme response'larından `md_status_detail` da kaldırıldı.
-- **Config `currencies` anahtarı kaldırıldı.** v1'de config dosyasına üst düzey `currencies` anahtarı eklenerek para birimi eşleştirmeleri özelleştirilebiliyordu.
-- **Config endpoint değişiklikleri.** `ParamPos` yapılandırmasından `payment_api_2` ve `gateway_3d_host` anahtarları kaldırıldı; 3DHost akışı artık ayrı `Param3DHostPos` gateway'i üzerinden yürütülüyor. `KuveytPos`, `VakifKatilimPos` ve `PayFlexCPV4Pos` yapılandırmalarından `gateway_3d` anahtarı kaldırıldı (gateway tarafından dahili olarak türetiliyor); `PayFlexCPV4Pos` için `payment_api` URL'i de kısaltıldı.
+- **Config**
+  - `currencies` anahtarı kaldırıldı.
+  - `name` anahtarı kaldırıldı. Banka config dosyalarındaki (`pos_test.php`, `pos_production.php`) `name` anahtarı hiçbir zaman kodda kullanılmıyordu ve kaldırıldı.
+  - Endpoint değişiklikleri:
+    - `ParamPos` yapılandırmasından `payment_api_2` ve `gateway_3d_host` anahtarları kaldırıldı; 3DHost akışı artık ayrı `Param3DHostPos` gateway'i üzerinden yürütülüyor.
+    - `KuveytPos`, `VakifKatilimPos` ve `PayFlexCPV4Pos` yapılandırmalarından `gateway_3d` anahtarı kaldırıldı;
+    - `PayFlexCPV4Pos` için `payment_api` URL'i de kısaltıldı.
 - **Gateway ve namespace yeniden adlandırmaları:** `Gateways` → `Gateway`, `Exceptions` → `Exception`, `Entity` → `Model`; `EstPos`/`EstV3Pos` → `AssecoPos`, `PosNet` → `PosNetPos` ve ilgili account/factory isimleri güncellendi.
 - **`AbstractPosAccount` metot yeniden adlandırmaları:** `getBank()` → `getBankName()`, `getClientId()` → `getMerchantId()`, `getStoreKey()` → `getSecretKey()`, `getLang()` kaldırıldı.
 - **Exception yeniden adlandırması:** `BankClassNullException` → `GatewayClassNotConfiguredException`.

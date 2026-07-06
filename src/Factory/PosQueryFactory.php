@@ -71,7 +71,6 @@ class PosQueryFactory
 
     /**
      * @phpstan-param array{
-     *     name: string,
      *     class?: class-string<PosInterface>,
      *     gateway_configs?: array{
      *         test_mode?: bool,

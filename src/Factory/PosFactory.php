@@ -24,7 +24,6 @@ class PosFactory
      * @template T of PosInterface
      *
      * @phpstan-param array{
-     *     name: string,
      *     class?: class-string<T>,
      *     gateway_configs?: array{
      *         lang?: PosInterface::LANG_*,
@@ -90,7 +89,6 @@ class PosFactory
      * @param class-string<T>    $gatewayClass
      * @param AbstractPosAccount $posAccount
      * @param array{
-     *           name: string,
      *           class?: class-string,
      *           gateway_configs?: array{
      *               lang?: PosInterface::LANG_*,

@@ -291,7 +291,7 @@ Gateway'e göre gerekli ekstra alanlar:
 
 | Gateway | Gerekli alanlar |
 |---|---|
-| **KuveytPos** | `payment_channel`, `buyer` (email, gsm_number_cc, gsm_number), `billing_address` (city, country, address, zip_code, state) |
+| **KuveytPos** | `payment_channel`, `buyer` (email, gsm_number_cc, gsm_number), `billing_address` (city, country, address, zip_code, state) — yalnızca `get3DFormData()` için gereklidir |
 | **IyzicoPos** | `buyer`, `billing_address`, `shipping_address`, `basket_items`, `payment_channel` (NonSecure/3DSecure) veya `enabled_installments` (3DHost) |
 | **PayTrPos** | `buyer` (email, name, gsm_number), `billing_address`, `basket_items` |
 
@@ -578,6 +578,20 @@ config'den kaldırıldı. Yapılandırmanızda bu anahtarlar varsa silin.
 ],
 ```
 
+### 9g. `name` config anahtarı kaldırıldı
+
+Banka config dosyalarındaki `name` anahtarı hiçbir zaman kodda kullanılmıyordu ve kaldırıldı.
+Kendi config dosyanızda tanımlıysa silin:
+
+```php
+// v1 / eski yapılandırma — name kaldırın
+'akbank' => [
+    'name'  => 'AKBANK T.A.S.',   // <-- bu satırı silin
+    'class' => \Mews\Pos\Gateway\AssecoPos::class,
+    // ...
+],
+```
+
 ---
 
 ## 10. Response Verisi Değişiklikleri
@@ -607,6 +621,44 @@ $response['proc_return_code']; // örn. "51"
 ---
 
 ## 11. Gateway'e Özel Davranış Değişiklikleri
+
+### KuveytPos — ödeme için zorunlu ekstra `$order` alanları
+
+v1'de KuveytPos ödemeleri için gerekli olan alıcı bilgisi, ödeme kanalı ve fatura adresi
+`RequestDataPreparedEvent` listener'ı içinde API isteğine ekleniyordu; `$order` dizisi bu
+bilgileri taşımıyordu.
+
+v2'de bu ekstra veriler doğrudan `$order` dizisine dahil edilerek `payment()` ve
+`get3DFormData()` metodlarına geçiliyor:
+
+```php
+$order = [
+    'id'              => '...',
+    'amount'          => 1.01,
+    // ... diğer zorunlu alanlar ...
+
+    // KuveytPos zorunlu ekstra alanlar:
+    'payment_channel' => '02', // 01 = Mobil, 02 = Web Browser
+    'buyer'           => [
+        'email'         => 'musteri@example.com',
+        'gsm_number_cc' => '90',        // ülke kodu
+        'gsm_number'    => '5001234567', // abone numarası
+    ],
+    'billing_address' => [
+        'city'     => 'İstanbul',
+        'country'  => '792',  // ISO 3166-1 sayısal (Türkiye = 792)
+        'address'  => 'Örnek Mahallesi, Örnek Caddesi No:1',
+        'zip_code' => '34000',
+        'state'    => '34',   // ISO 3166-2 il kodu
+    ],
+];
+
+$pos->payment(PosInterface::MODEL_3D_SECURE, $order, PosInterface::TX_TYPE_PAY_AUTH, $card);
+```
+
+Bu alanlar yalnızca `get3DFormData()` için gereklidir (3D ödeme formu oluşturma aşaması).
+3D callback sonrası çağrılan `payment()` ve NonSecure `payment()` bu alanları gerektirmez.
+Ayrıntılar için `examples/kuveytpos/_payment_config.php` dosyasına bakınız.
 
 ### PosNet — iptal işleminde işlem tipi artık dinamik
 
@@ -757,6 +809,7 @@ $response = $pos->status($order);
 - [ ] `$pos->payment()` ve diğer metotların dönüş değerleri artık doğrudan kullanılıyor mu? (`getResponse()` kaldırıldı)
 - [ ] 3D callback'lerde `Request` nesnesi yerine `$_POST` / `$_GET` dizisi geçiliyor mu?
 - [ ] `get3DFormData()` çağrılarında `$createWithoutCard` parametresi kontrol edildi mi?
+- [ ] Config dosyalarındaki `name` anahtarı kaldırıldı mı?
 - [ ] Config dosyalarında `test_mode` ve `lang` `gateway_configs` içine taşındı mı?
 - [ ] `ParamPos` yapılandırmasından `payment_api_2` ve `gateway_3d_host` kaldırıldı mı? 3DHost için `Param3DHostPos` eklendi mi?
 - [ ] `KuveytPos` ve `VakifKatilimPos` yapılandırmasından `gateway_3d` kaldırıldı mı?

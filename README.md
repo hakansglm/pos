@@ -183,7 +183,7 @@ return [
     // Banka sanal pos tanımlamaları
     'banks'         => [
         'akbank'    => [
-            'name'  => 'AKBANK T.A.S.',
+            // AKBANK T.A.S.
             'class' => \Mews\Pos\Gateway\AssecoPos::class,
             'lang'  => \Mews\Pos\PosInterface::LANG_TR, // optional
             'gateway_endpoints'  => [
@@ -195,7 +195,7 @@ return [
 
         // Yeni eklenen banka
         'isbank'    => [ // unique bir isim vermeniz gerekir.
-            'name'  => 'İŞ BANKASI .A.S.',
+            // İŞ BANKASI .A.S.
             'class' => \Mews\Pos\Gateway\AssecoPos::class, // Altyapı sınıfı
             'lang'  => \Mews\Pos\PosInterface::LANG_TR, // optional
             'gateway_endpoints'  => [

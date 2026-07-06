@@ -3,7 +3,7 @@
 require '../_payment_config.php';
 
 $account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
-    'payten_v3_hash',
+    'asseco',
     (string) getenv('ASSECO_CLIENT_ID'),
     (string) getenv('ASSECO_USERNAME'),
     (string) getenv('ASSECO_PASSWORD'),
