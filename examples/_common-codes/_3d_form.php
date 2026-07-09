@@ -4,6 +4,11 @@ use Mews\Pos\Event\Before3DFormHashCalculatedEvent;
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\PosInterface;
 
+/** @var string $baseUrl */
+/** @var string $ip */
+/** @var PosInterface::MODEL_3D_* $paymentModel */
+/** @var PosInterface $pos */
+
 /**
  * Bu kod MODEL_3D_SECURE, MODEL_3D_PAY, MODEL_3D_HOST odemeler icin gereken HTML form verisini olusturur.
  * Odeme olmayan (iade, iptal, durum) veya MODEL_NON_SECURE islemlerde kullanilmaz.
