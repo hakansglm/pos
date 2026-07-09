@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.0.0] - 2026-07-??
+## [2.0.0] - 2026-07-09
 
 Minimum PHP sürümü **8.0**'a yükseltildi. `symfony/http-foundation` bağımlılığı kaldırıldı.
 
@@ -41,7 +41,8 @@ Geçiş adımları için [UPGRADE-v2.md](./UPGRADE-v2.md) dosyasına bakınız.
 
 ### Changed
 
-- **PosNet — iptal işleminde işlem tipi artık dinamik.** v1'de PosNet iptal isteğinde işlem tipi sabit olarak `sale` gönderiliyordu; bu nedenle ön otorizasyon iptalleri çalışmıyordu. v2'de `$order['transaction_type']` değeri kullanılır; belirtilmezse varsayılan olarak `TX_TYPE_PAY_AUTH` kullanılır.
+- **PosNet — iptal işleminde işlem tipi artık dinamik.**
+  v1'de PosNet iptal isteğinde işlem tipi sabit olarak `sale` gönderiliyordu;
 
 ### New Features
 
