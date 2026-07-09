@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\PosQuery\Response;
 
+use Generator;
 use Mews\Pos\DataMapper\PosQuery\Response\AbstractQueryResponseDataMapper;
 use Mews\Pos\DataMapper\PosQuery\Response\ToslaPosQueryResponseDataMapper;
 use Mews\Pos\Exception\UnsupportedTransactionTypeException;
@@ -62,7 +63,7 @@ class ToslaPosQueryResponseDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public static function mapInstallmentRatesResponseDataProvider(): \Generator
+    public static function mapInstallmentRatesResponseDataProvider(): Generator
     {
         yield 'success' => [
             'responseData' => [
@@ -181,7 +182,7 @@ class ToslaPosQueryResponseDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public static function mapInstallmentPricesResponseDataProvider(): \Generator
+    public static function mapInstallmentPricesResponseDataProvider(): Generator
     {
         yield 'success' => [
             'responseData' => [

@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\PosQuery\Response;
 
+use Generator;
 use Mews\Pos\DataMapper\PosQuery\Response\AbstractQueryResponseDataMapper;
 use Mews\Pos\DataMapper\PosQuery\Response\VakifKatilimPosQueryResponseDataMapper;
 use Mews\Pos\Factory\ResponseValueFormatterFactory;
@@ -51,7 +52,7 @@ class VakifKatilimPosQueryResponseDataMapperTest extends TestCase
         $this->assertArrayHasKey('all', $actual);
     }
 
-    public static function mapHistoryResponseDataProvider(): \Generator
+    public static function mapHistoryResponseDataProvider(): Generator
     {
         yield 'failed' => [
             'responseData' => [

@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\Factory;
 
+use stdClass;
 use DomainException;
 use Mews\Pos\Exception\GatewayClassNotConfiguredException;
 use Mews\Pos\Factory\PosQueryFactory;
@@ -99,7 +100,7 @@ class PosQueryFactoryTest extends TestCase
     {
         $config = [
             'name'              => 'Unknown',
-            'class'             => \stdClass::class,
+            'class'             => stdClass::class,
             'gateway_endpoints' => [
                 'payment_api' => 'https://example.com',
             ],

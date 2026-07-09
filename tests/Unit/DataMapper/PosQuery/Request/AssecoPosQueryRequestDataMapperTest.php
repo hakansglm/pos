@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\PosQuery\Request;
 
+use Generator;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\PosQuery\Request\AbstractQueryRequestDataMapper;
 use Mews\Pos\DataMapper\PosQuery\Request\AssecoPosQueryRequestDataMapper;
@@ -103,7 +104,7 @@ class AssecoPosQueryRequestDataMapperTest extends TestCase
         $this->mapper->createBinListRequestData($this->account, []);
     }
 
-    public static function createCustomQueryRequestDataDataProvider(): \Generator
+    public static function createCustomQueryRequestDataDataProvider(): Generator
     {
         yield 'without_account_data' => [
             'request_data' => [

@@ -6,6 +6,9 @@
 
 namespace Mews\Pos\Tests\Unit\Factory;
 
+use stdClass;
+use Mews\Pos\DataMapper\Request\ValueMapper\RequestValueMapperInterface;
+use Mews\Pos\DataMapper\Request\ValueFormatter\RequestValueFormatterInterface;
 use DomainException;
 use Mews\Pos\Crypt\CryptInterface;
 use Mews\Pos\DataMapper\PosQuery\Request\AkbankPosQueryRequestDataMapper;
@@ -76,9 +79,9 @@ class PosQueryRequestMapperFactoryTest extends TestCase
         $this->expectException(DomainException::class);
 
         PosQueryRequestMapperFactory::createForGateway(
-            \stdClass::class,
-            $this->createMock(\Mews\Pos\DataMapper\Request\ValueMapper\RequestValueMapperInterface::class),
-            $this->createMock(\Mews\Pos\DataMapper\Request\ValueFormatter\RequestValueFormatterInterface::class),
+            stdClass::class,
+            $this->createMock(RequestValueMapperInterface::class),
+            $this->createMock(RequestValueFormatterInterface::class),
             $this->cryptMock,
             PosInterface::LANG_TR
         );

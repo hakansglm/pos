@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\PosQuery\Response;
 
+use Generator;
 use Mews\Pos\DataMapper\PosQuery\Response\AbstractQueryResponseDataMapper;
 use Mews\Pos\DataMapper\PosQuery\Response\ParamPosQueryResponseDataMapper;
 use Mews\Pos\Factory\ResponseValueFormatterFactory;
@@ -55,7 +56,7 @@ class ParamPosQueryResponseDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public static function mapInstallmentRatesResponseDataProvider(): \Generator
+    public static function mapInstallmentRatesResponseDataProvider(): Generator
     {
         yield 'success_multiple_card_programs' => [
             'responseData' => [
@@ -227,7 +228,7 @@ class ParamPosQueryResponseDataMapperTest extends TestCase
         $this->assertArrayHasKey('all', $actual);
     }
 
-    public static function mapHistoryResponseDataProvider(): \Generator
+    public static function mapHistoryResponseDataProvider(): Generator
     {
         yield 'failed_negative_return_code' => [
             'responseData' => [
@@ -277,7 +278,7 @@ class ParamPosQueryResponseDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public static function mapBinListResponseDataProvider(): \Generator
+    public static function mapBinListResponseDataProvider(): Generator
     {
         yield 'success_single_bin' => [
             'responseData' => [

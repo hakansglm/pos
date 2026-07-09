@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\PosQuery\Response;
 
+use Generator;
 use Mews\Pos\DataMapper\PosQuery\Response\AbstractQueryResponseDataMapper;
 use Mews\Pos\DataMapper\PosQuery\Response\PayTrPosQueryResponseDataMapper;
 use Mews\Pos\Exception\UnsupportedTransactionTypeException;
@@ -62,7 +63,7 @@ class PayTrPosQueryResponseDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public static function mapInstallmentRatesResponseDataProvider(): \Generator
+    public static function mapInstallmentRatesResponseDataProvider(): Generator
     {
         $rates = [
             ['installment' => 2, 'rate' => 7.28, 'constant' => 0.0],
@@ -163,7 +164,7 @@ class PayTrPosQueryResponseDataMapperTest extends TestCase
         $this->assertArrayHasKey('all', $actual);
     }
 
-    public static function mapHistoryResponseDataProvider(): \Generator
+    public static function mapHistoryResponseDataProvider(): Generator
     {
         yield 'failed' => [
             'responseData' => [
@@ -216,7 +217,7 @@ class PayTrPosQueryResponseDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public static function mapBinListResponseDataProvider(): \Generator
+    public static function mapBinListResponseDataProvider(): Generator
     {
         yield 'success_credit_visa' => [
             'responseData' => [

@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueMapper;
 
+use LogicException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use InvalidArgumentException;
 use Mews\Pos\DataMapper\Request\ValueMapper\AbstractRequestValueMapper;
@@ -117,7 +118,7 @@ class AkbankPosRequestValueMapperTest extends TestCase
 
     public function testMapCardClass(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->valueMapper->mapCardClass(null);
     }
 

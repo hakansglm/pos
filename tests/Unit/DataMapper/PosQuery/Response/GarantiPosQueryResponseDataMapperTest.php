@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\PosQuery\Response;
 
+use Generator;
 use DateTimeImmutable;
 use DateTimeZone;
 use Mews\Pos\DataMapper\PosQuery\Response\AbstractQueryResponseDataMapper;
@@ -79,7 +80,7 @@ class GarantiPosQueryResponseDataMapperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public static function mapHistoryResponseDataProvider(): \Generator
+    public static function mapHistoryResponseDataProvider(): Generator
     {
         $expectedRaw = \json_decode(
             \file_get_contents(__DIR__.'/../../../test_data/garanti/history/daily_range_history_expected.json'),

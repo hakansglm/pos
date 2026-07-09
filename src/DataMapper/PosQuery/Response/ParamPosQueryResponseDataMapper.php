@@ -133,7 +133,7 @@ class ParamPosQueryResponseDataMapper extends AbstractQueryResponseDataMapper
     {
         return [
             'bin'         => $rawBin['BIN'] ?? null,
-            'bank_code'   => isset($rawBin['Banka_Kodu']) ? (string) $rawBin['Banka_Kodu'] : null,
+            'bank_code'   => $rawBin['Banka_Kodu'] ?? null,
             'bank_name'   => $rawBin['Kart_Banka'] ?? null,
             'card_type'   => $this->valueMapper->mapCardType($rawBin['Kart_Org'] ?? null),
             'card_class'  => $this->valueMapper->mapCardClass($rawBin['Kart_Tip'] ?? null),

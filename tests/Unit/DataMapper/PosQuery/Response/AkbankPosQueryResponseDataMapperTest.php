@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\DataMapper\PosQuery\Response;
 
+use Generator;
 use Mews\Pos\DataMapper\PosQuery\Response\AbstractQueryResponseDataMapper;
 use Mews\Pos\DataMapper\PosQuery\Response\AkbankPosQueryResponseDataMapper;
 use Mews\Pos\Exception\UnsupportedTransactionTypeException;
@@ -60,7 +61,7 @@ class AkbankPosQueryResponseDataMapperTest extends TestCase
         $this->assertArrayHasKey('all', $actual);
     }
 
-    public static function mapHistoryResponseDataProvider(): \Generator
+    public static function mapHistoryResponseDataProvider(): Generator
     {
         yield 'failed_response' => [
             'responseData' => [

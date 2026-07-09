@@ -20,6 +20,7 @@ class GarantiPosQueryResponseDataMapper extends AbstractQueryResponseDataMapper
 {
     /** @var GarantiPosResponseValueMapper */
     protected ResponseValueMapperInterface $valueMapper;
+
     /**
      * @inheritDoc
      */

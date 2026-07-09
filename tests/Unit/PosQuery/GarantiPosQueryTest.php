@@ -6,6 +6,7 @@
 
 namespace Mews\Pos\Tests\Unit\PosQuery;
 
+use DateTimeImmutable;
 use Mews\Pos\Client\HttpClientInterface;
 use Mews\Pos\Client\HttpClientStrategyInterface;
 use Mews\Pos\DataMapper\PosQuery\Request\QueryRequestDataMapperInterface;
@@ -147,7 +148,7 @@ class GarantiPosQueryTest extends TestCase
     #[DataProvider('historyResponseDataProvider')]
     public function testHistory(array $bankResponse, array $mapped, bool $expectedSuccess): void
     {
-        $data        = ['start_date' => new \DateTimeImmutable()];
+        $data        = ['start_date' => new DateTimeImmutable()];
         $requestData = ['startDate' => '2024-01-01'];
 
         $this->requestMapperMock->expects(self::once())

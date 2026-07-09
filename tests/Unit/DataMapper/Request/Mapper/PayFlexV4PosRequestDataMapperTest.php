@@ -127,7 +127,7 @@ class PayFlexV4PosRequestDataMapperTest extends TestCase
             '000000000111111',
             '3XTgER89as',
             'VP999999',
-            \Mews\Pos\Model\Account\PayFlexPosAccount::MERCHANT_TYPE_SUB_DEALER,
+            PayFlexPosAccount::MERCHANT_TYPE_SUB_DEALER,
             'SUB_MERCHANT_123'
         );
 

@@ -134,7 +134,7 @@ class PosQueryFactory
             $httpClient
         );
 
-        if ($responseDataMapper !== null) {
+        if ($responseDataMapper instanceof \Mews\Pos\DataMapper\PosQuery\Response\QueryResponseDataMapperInterface) {
             return new $posQueryClass(
                 $config,
                 $posAccount,
