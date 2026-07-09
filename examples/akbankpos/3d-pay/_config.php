@@ -3,14 +3,17 @@
 use Mews\Pos\PosInterface;
 
 require '../_payment_config.php';
+/** @var string $bankTestsUrl */
+/** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
+
 
 $baseUrl = $bankTestsUrl.'/3d-pay/';
 
 $account = \Mews\Pos\Factory\AccountFactory::createAkbankPosAccount(
     'akbank-pos',
-    (string) getenv('AKBANKPOS_MERCHANT_ID'),
-    (string) getenv('AKBANKPOS_TERMINAL_ID'),
-    (string) getenv('AKBANKPOS_API_KEY')
+    getRequiredEnv('AKBANKPOS_MERCHANT_ID'),
+    getRequiredEnv('AKBANKPOS_TERMINAL_ID'),
+    getRequiredEnv('AKBANKPOS_API_KEY')
 );
 
 $pos = getGateway($account, $eventDispatcher);

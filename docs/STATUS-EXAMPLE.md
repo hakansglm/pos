@@ -22,10 +22,9 @@ $account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
 );
 
 $eventDispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+$config = require __DIR__.'/pos_test_ayarlar.php';
 
 try {
-    $config = require __DIR__.'/pos_test_ayarlar.php';
-
     $pos = \Mews\Pos\Factory\PosFactory::create($account, $config['banks'][$account->getBankName()], $eventDispatcher);
 } catch (\Mews\Pos\Exception\GatewayClassNotConfiguredException $e) {
     var_dump($e));
@@ -39,6 +38,15 @@ try {
 
 require 'config.php';
 
+/**
+ * Ödeme durumu sorgulama işlemi için gereken istek verileri Gateway'den gateway'e değiştigine göre,
+ * Bu method verilen gateway göre istek verilerini oluşturur.
+ *
+ * @param class-string<\Mews\Pos\PosInterface> $gatewayClass
+ * @param array<string, mixed> $lastResponse ödeme işlemi sonrası Pos kütüphanesinden dönen response verisi
+ *
+ * @return array<string, mixed>
+ */
 function createStatusOrder(string $gatewayClass, array $lastResponse, string $ip): array
 {
     $statusOrder = [
@@ -69,7 +77,7 @@ function createStatusOrder(string $gatewayClass, array $lastResponse, string $ip
     return $statusOrder;
 }
 
-// ödeme işlemi sonrası dönen veriler:
+// ödeme işlemi sonrası dönen veriler
 $_SESSION['last_response'] ?? null
 $ip = '127.0.0.1';
 $order = createStatusOrder(get_class($pos), $lastResponse, $ip);

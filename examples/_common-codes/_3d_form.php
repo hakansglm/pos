@@ -105,8 +105,8 @@ try {
 
 $flowType = $_POST['payment_flow_type'] ?? null;
 
-if (!('by_redirection' === $flowType && $formData['inputs'] === [] && $formData['method'] === 'GET')) {
-    require '../../_templates/_header.php';
+if (is_array($formData) && !('by_redirection' === $flowType && $formData['inputs'] === [] && $formData['method'] === 'GET')) {
+    require __DIR__.'/../_templates/_header.php';
 }
 ?>
 
@@ -133,7 +133,7 @@ if (!('by_redirection' === $flowType && $formData['inputs'] === [] && $formData[
         Submit sonucu kullanıcı banka sayfasıne yönlendirilir, işlem sonucundan ise duruma göre websitinizin
         success veya fail URL'na geri yönlendilir.
     -->
-        <?php require '../../_templates/_redirect_form.php'; ?>
+        <?php require __DIR__.'/../_templates/_redirect_form.php'; ?>
         <script>
             // Formu JS ile otomatik submit ederek kullaniciyi banka gatewayine yonlendiriyoruz.
             let redirectForm = document.querySelector('form.redirect-form');
@@ -151,7 +151,7 @@ if (!('by_redirection' === $flowType && $formData['inputs'] === [] && $formData[
         $gatewayUrl = $formData['gateway'];
     } else {
         ob_start();
-        include('../../_templates/_redirect_iframe_or_popup_window_form.php');
+        include __DIR__.'/../_templates/_redirect_iframe_or_popup_window_form.php';
         $renderedForm = ob_get_clean();
     }
     ?>
@@ -302,4 +302,4 @@ if (!('by_redirection' === $flowType && $formData['inputs'] === [] && $formData[
     </script>
 <?php endif; ?>
 <?php
-require '../../_templates/_footer.php';
+require __DIR__.'/../_templates/_footer.php';

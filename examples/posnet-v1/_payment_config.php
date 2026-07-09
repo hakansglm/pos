@@ -3,6 +3,8 @@
 use Mews\Pos\Model\Card\CreditCardInterface;
 
 require __DIR__.'/../_main_config.php';
+/** @var string $hostUrl */
+
 
 $bankTestsUrl = $hostUrl.'/posnet-v1';
 $posClass      = \Mews\Pos\Gateway\PosNetV1Pos::class;

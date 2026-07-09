@@ -1,6 +1,8 @@
 <?php
 
 require __DIR__.'/../_main_config.php';
+/** @var string $hostUrl */
+
 
 $bankTestsUrl = $hostUrl.'/posnet-ykb';
 $posClass      = \Mews\Pos\Gateway\PosNetPos::class;

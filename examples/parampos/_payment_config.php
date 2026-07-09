@@ -1,6 +1,8 @@
 <?php
 
 require __DIR__.'/../_main_config.php';
+/** @var string $hostUrl */
+
 
 $bankTestsUrl = $hostUrl.'/parampos';
 $posClass      = \Mews\Pos\Gateway\ParamPos::class;

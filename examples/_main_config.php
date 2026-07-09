@@ -58,6 +58,12 @@ $posClass      = null;
 $posQueryClass = null;
 $transaction   = null;
 
+/**
+ * @param PosInterface::MODEL_* $paymentModel
+ * @param PosInterface::TX_TYPE_* $transaction
+ * @param array<string, mixed> $order
+ * @return array<string, mixed>
+ */
 function doPayment(PosInterface $pos, string $paymentModel, string $transaction, array $order, ?\Mews\Pos\Model\Card\CreditCardInterface $card): array
 {
     if (!$pos::isSupportedTransaction($transaction, $paymentModel)) {
@@ -116,10 +122,13 @@ function getPosQuery(
     return \Mews\Pos\Factory\PosQueryFactory::create($account, $config['banks'][$account->getBankName()], $eventDispatcher, null, $logger);
 }
 
-function getGateway(\Mews\Pos\Model\Account\AbstractPosAccount $account, \Psr\EventDispatcher\EventDispatcherInterface $eventDispatcher): ?PosInterface
+function getGateway(
+    \Mews\Pos\Model\Account\AbstractPosAccount $account,
+    \Psr\EventDispatcher\EventDispatcherInterface $eventDispatcher
+): PosInterface
 {
     try {
-/*        $client = new HttpClient(
+/*  $client = new HttpClient(
             new \Http\Client\Curl\Client(),
             new \Slim\Psr7\Factory\RequestFactory(),
             new \Slim\Psr7\Factory\StreamFactory()
@@ -127,14 +136,33 @@ function getGateway(\Mews\Pos\Model\Account\AbstractPosAccount $account, \Psr\Ev
         $config = require __DIR__.'/../config/pos_test.php';
         global $logger;
 
-        $pos = \Mews\Pos\Factory\PosFactory::create($account, $config['banks'][$account->getBankName()], $eventDispatcher, null, null, $logger);
+        /**
+         * @var array{
+         *      class: class-string<PosInterface>,
+         *      gateway_configs?: array{
+         *          lang?: PosInterface::LANG_*,
+         *          test_mode?: bool,
+         *          disable_3d_hash_check?: bool
+         *      },
+         *      gateway_endpoints: array{
+         *          payment_api: non-empty-string,
+         *          query_api?: non-empty-string,
+         *          gateway_3d?: non-empty-string,
+         *          gateway_3d_host?: non-empty-string
+         * }
+         *      } $bankConfig
+         */
+        $bankConfig = $config['banks'][$account->getBankName()];
 
-        return $pos;
+        return \Mews\Pos\Factory\PosFactory::create($account, $bankConfig, $eventDispatcher, null, null, $logger);
     } catch (Exception $e) {
         dd($e);
     }
 }
 
+/**
+ * @param array<string, mixed> $card
+ */
 function createCard(PosInterface $pos, array $card): \Mews\Pos\Model\Card\CreditCardInterface
 {
     try {
@@ -158,6 +186,9 @@ function createCard(PosInterface $pos, array $card): \Mews\Pos\Model\Card\Credit
     }
 }
 
+/**
+ * @return array<string, mixed>
+ */
 function createPaymentOrder(
     PosInterface $pos,
     string $paymentModel,
@@ -170,9 +201,9 @@ function createPaymentOrder(
 ): array {
     if ($tekrarlanan && get_class($pos) === AkbankPos::class) {
         // AkbankPos'ta recurring odemede orderTrackId/orderId en az 36 karakter olmasi gerekiyor
-        $orderId = date('Ymd').strtoupper(substr(uniqid(sha1(time())), 0, 28));
+        $orderId = date('Ymd').strtoupper(substr(uniqid(sha1((string)time())), 0, 28));
     } else {
-        $orderId = date('Ymd').strtoupper(substr(uniqid(sha1(time())), 0, 4));
+        $orderId = date('Ymd').strtoupper(substr(uniqid(sha1((string)time())), 0, 4));
     }
 
     $order = [
@@ -225,6 +256,20 @@ function createPaymentOrder(
     }
 
     return $order;
+}
+
+/**
+ * @return non-empty-string
+ * @throws \RuntimeException if the environment variable is missing or empty
+ */
+function getRequiredEnv(string $name): string
+{
+    $value = getenv($name);
+    if ($value === false || $value === '') {
+        throw new \RuntimeException("Required environment variable \"{$name}\" is not set.");
+    }
+
+    return $value;
 }
 
 function getUserIp(): string

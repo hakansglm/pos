@@ -75,7 +75,9 @@
         "test-functional": "./vendor/bin/phpunit --testsuite=functional --no-coverage",
         "coverage": "XDEBUG_MODE=coverage ./vendor/bin/phpunit --testsuite=unit",
         "phpstan": "php -d memory_limit=256M ./vendor/bin/phpstan",
+        "phpstan-examples": "php -d memory_limit=256M ./vendor/bin/phpstan --configuration=phpstan-examples.neon",
         "baseline": "./vendor/bin/phpstan --generate-baseline",
+        "baseline-examples": "./vendor/bin/phpstan --configuration=phpstan-examples.neon --generate-baseline=phpstan-examples-baseline.neon",
         "rector": "./vendor/bin/rector",
         "rector-tests": "./vendor/bin/rector --config rector-tests.php --clear-cache",
         "cs-fix": "./vendor/bin/php-cs-fixer fix",
@@ -83,6 +85,7 @@
         "do-checks": [
             "@cs-check",
             "@phpstan",
+            "@phpstan-examples",
             "@test"
         ]
     }

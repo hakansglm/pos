@@ -1,11 +1,14 @@
 <?php
 
 require '../_payment_config.php';
+/** @var string $bankTestsUrl */
+/** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
+
 
 $account = \Mews\Pos\Factory\AccountFactory::createIyzicoPosAccount(
     'iyzico',
-    (string) getenv('IYZICO_API_KEY'),
-    (string) getenv('IYZICO_SECRET_KEY'),
+    getRequiredEnv('IYZICO_API_KEY'),
+    getRequiredEnv('IYZICO_SECRET_KEY'),
 );
 
 $posQuery      = getPosQuery($account, $eventDispatcher);

@@ -2,14 +2,22 @@
 
 $templateTitle = 'Order History';
 
-// ilgili bankanin _config.php dosyasi load ediyoruz.
-// ornegin /examples/finansbank-payfor/regular/_config.php
-require_once '_config.php';
+/** @var \Mews\Pos\PosInterface $pos */
+
 $transaction = \Mews\Pos\PosInterface::TX_TYPE_ORDER_HISTORY;
 
 require '../../_templates/_header.php';
 
 
+/**
+ * Ödeme tarihçesini sorgulama işlemi için gereken istek verileri Gateway'den gateway'e değiştigine göre,
+ * Bu method verilen gateway göre istek verilerini oluşturur.
+ *
+ * @param class-string<\Mews\Pos\PosInterface> $gatewayClass
+ * @param array<string, mixed> $lastResponse ödeme işlemi sonrası Pos kütüphanesinden dönen response verisi
+ *
+ * @return array<string, mixed>
+ */
 function createOrderHistoryOrder(string $gatewayClass, array $lastResponse): array
 {
     $order = [];
@@ -69,7 +77,7 @@ function createOrderHistoryOrder(string $gatewayClass, array $lastResponse): arr
 
 $lastResponse = $_SESSION['last_response'] ?? null;
 
-$order = createOrderHistoryOrder(get_class($pos), $lastResponse);
+$order = createOrderHistoryOrder($pos::class, $lastResponse);
 dump($order);
 
 try {

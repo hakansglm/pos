@@ -1,10 +1,11 @@
 <?php
 
+/** @var \Mews\Pos\PosQuery\PosQueryInterface $posQuery */
+
 use Mews\Pos\PosQuery\PosQueryInterface;
 
 $templateTitle = 'Taksit Fiyatları';
 
-require '_config.php';
 $transaction = PosQueryInterface::QUERY_TYPE_INSTALLMENT_PRICES;
 
 require '../../_templates/_header.php';

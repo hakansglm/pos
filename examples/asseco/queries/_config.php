@@ -1,12 +1,15 @@
 <?php
 
 require '../_payment_config.php';
+/** @var string $bankTestsUrl */
+/** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
+
 
 $account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
     'asseco',
-    (string) getenv('ASSECO_CLIENT_ID'),
-    (string) getenv('ASSECO_USERNAME'),
-    (string) getenv('ASSECO_PASSWORD'),
+    getRequiredEnv('ASSECO_CLIENT_ID'),
+    getRequiredEnv('ASSECO_USERNAME'),
+    getRequiredEnv('ASSECO_PASSWORD'),
 );
 
 $posQuery      = getPosQuery($account, $eventDispatcher);

@@ -1,3 +1,4 @@
 <?php
+require '_config.php';
 
 require '../../_templates/_payment_secure_response.php';

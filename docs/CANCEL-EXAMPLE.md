@@ -23,9 +23,8 @@ $account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
 
 $eventDispatcher = new Symfony\Component\EventDispatcher\EventDispatcher();
 
+$config = require __DIR__.'/pos_test_ayarlar.php';
 try {
-    $config = require __DIR__.'/pos_test_ayarlar.php';
-
     $pos = \Mews\Pos\Factory\PosFactory::create($account, $config['banks'][$account->getBankName()], $eventDispatcher);
 } catch (\Mews\Pos\Exception\GatewayClassNotConfiguredException $e) {
     var_dump($e));
@@ -39,6 +38,16 @@ try {
 
 require 'config.php';
 
+/**
+ * İptal işlemi için gereken istek verileri Gateway'den gateway'e değiştigine göre,
+ * Bu method verilen gateway göre istek verilerini oluşturur.
+ *
+ * @param class-string<\Mews\Pos\PosInterface> $gatewayClass
+ * @param array<string, mixed> $lastResponse ödeme işlemi sonrası Pos kütüphanesinden dönen response verisi
+ * @param string $ip
+ *
+ * @return array<string, mixed>
+ */
 function createCancelOrder(string $gatewayClass, array $lastResponse, string $ip): array
 {
     $cancelOrder = [
@@ -106,7 +115,6 @@ function createCancelOrder(string $gatewayClass, array $lastResponse, string $ip
     return $cancelOrder;
 }
 
-// ödeme işlemi sonrası dönen veriler:
 $_SESSION['last_response'] ?? null
 $ip = '127.0.0.1';
 $order = createCancelOrder(get_class($pos), $lastResponse, $ip);

@@ -46,10 +46,8 @@ Kütüphane içersinde ödeme modele göre farklı kodlar çalışacak.
     );
 
     $eventDispatcher = new Symfony\Component\EventDispatcher\EventDispatcher();
-
+    $config = require __DIR__.'/pos_test_ayarlar.php';
     try {
-        $config = require __DIR__.'/pos_test_ayarlar.php';
-
         $pos = \Mews\Pos\Factory\PosFactory::create($account, $config['banks'][$account->getBankName()], $eventDispatcher);
     } catch (\Mews\Pos\Exception\GatewayClassNotConfiguredException $e) {
         var_dump($e);

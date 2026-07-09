@@ -26,10 +26,9 @@ $account = \Mews\Pos\Factory\AccountFactory::createToslaPosAccount(
     'POS_4343223',
 );
 $eventDispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+$config = require __DIR__.'/pos_test_ayarlar.php';
 
 try {
-    $config = require __DIR__.'/pos_test_ayarlar.php';
-
     // PosQueryInterface nesnesi PosQueryFactory ile oluşturulur
     $posQuery = \Mews\Pos\Factory\PosQueryFactory::create($account, $config['banks'][$account->getBankName()], $eventDispatcher);
 } catch (\Mews\Pos\Exception\GatewayClassNotConfiguredException $e) {
@@ -45,8 +44,8 @@ try {
 require 'config.php';
 
 /**
- * requestData içinde API hesap bilgileri, hash verisi ve bazı sabit değerler
- * eğer zaten bulunmuyorsa kütüphane otomatik ekler.
+ * Eğer requestData içinde API hesap bilgileri, hash verisi ve bazı sabit değerler
+ * zaten bulunmuyorsa kütüphane otomatik ekler.
  */
 $requestData = [
     'bin' => 415956,

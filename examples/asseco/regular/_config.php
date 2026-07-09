@@ -3,15 +3,18 @@
 use Mews\Pos\PosInterface;
 
 require '../_payment_config.php';
+/** @var string $bankTestsUrl */
+/** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
+
 
 $baseUrl = $bankTestsUrl.'/regular/';
 
 
 $account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
     'asseco',
-    (string) getenv('ASSECO_CLIENT_ID'),
-    (string) getenv('ASSECO_USERNAME'),
-    (string) getenv('ASSECO_PASSWORD'),
+    getRequiredEnv('ASSECO_CLIENT_ID'),
+    getRequiredEnv('ASSECO_USERNAME'),
+    getRequiredEnv('ASSECO_PASSWORD'),
 );
 
 $pos = getGateway($account, $eventDispatcher);

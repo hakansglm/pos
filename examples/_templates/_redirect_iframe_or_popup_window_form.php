@@ -1,3 +1,6 @@
+<?php
+/** @var array{gateway: string, inputs: array<string, string>, method: 'GET'|'POST'} $formData */
+?>
 <!DOCTYPE HTML>
 <html>
 <head>

@@ -1,8 +1,7 @@
 <?php
 
-// ilgili bankanin _config.php dosyasi load ediyoruz.
-// ornegin /examples/finansbank-payfor/3d-host/_config.php
-require '_config.php';
+/** @var string $baseUrl */
+
 require '../../_templates/_header.php';
 
 $url = $baseUrl.'form.php';

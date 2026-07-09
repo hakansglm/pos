@@ -53,10 +53,8 @@ $account = \Mews\Pos\Factory\AccountFactory::createToslaPosAccount(
 );
 
 $eventDispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
-
+$config = require __DIR__.'/pos_test_ayarlar.php';
 try {
-    $config = require __DIR__.'/pos_test_ayarlar.php';
-
     // PosQueryInterface nesnesi PosQueryFactory ile oluşturulur
     $posQuery = \Mews\Pos\Factory\PosQueryFactory::create($account, $config['banks'][$account->getBankName()], $eventDispatcher);
 } catch (\Mews\Pos\Exception\GatewayClassNotConfiguredException $e) {
@@ -196,7 +194,7 @@ $eventDispatcher->addListener(
     function (\Mews\Pos\Event\PosQueryRequestDataPreparedEvent $event): void {
         if ($event->getTxType() === \Mews\Pos\PosQuery\PosQueryInterface::TX_TYPE_INSTALLMENT_RATES) {
             $data         = $event->getRequestData();
-            $data['lang'] = 'tr';
+            $data['lang'] = \Mews\Pos\PosInterface::LANG_TR;
             $event->setRequestData($data);
         }
     }

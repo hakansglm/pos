@@ -3,16 +3,19 @@
 use Mews\Pos\PosInterface;
 
 require '../_payment_config.php';
+/** @var string $bankTestsUrl */
+/** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
+
 
 $baseUrl = $bankTestsUrl.'/3d-host/';
 
 $account = \Mews\Pos\Factory\AccountFactory::createParamPosAccount(
     'param-3d-host-pos',
-    (string) getenv('PARAMPOS_3DHOST_MERCHANT_ID'),
-    (string) getenv('PARAMPOS_3DHOST_USERNAME'),
-    (string) getenv('PARAMPOS_3DHOST_PASSWORD'),
-    (string) getenv('PARAMPOS_3DHOST_CLIENT_SECRET'),
-    (string) getenv('PARAMPOS_3DHOST_TERMINAL_ID') ?: null,
+    getRequiredEnv('PARAMPOS_3DHOST_MERCHANT_ID'),
+    getRequiredEnv('PARAMPOS_3DHOST_USERNAME'),
+    getRequiredEnv('PARAMPOS_3DHOST_PASSWORD'),
+    getRequiredEnv('PARAMPOS_3DHOST_CLIENT_SECRET'),
+    getRequiredEnv('PARAMPOS_3DHOST_TERMINAL_ID'),
 );
 
 $pos = getGateway($account, $eventDispatcher);

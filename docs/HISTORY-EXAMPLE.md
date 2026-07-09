@@ -25,10 +25,8 @@ $account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
 );
 
 $eventDispatcher = new Symfony\Component\EventDispatcher\EventDispatcher();
-
+$config = require __DIR__.'/pos_test_ayarlar.php';
 try {
-    $config = require __DIR__.'/pos_test_ayarlar.php';
-
     // PosQueryInterface nesnesi PosQueryFactory ile oluşturulur
     $posQuery = \Mews\Pos\Factory\PosQueryFactory::create($account, $config['banks'][$account->getBankName()], $eventDispatcher);
 } catch (\Mews\Pos\Exception\GatewayClassNotConfiguredException $e) {
@@ -43,6 +41,15 @@ try {
 
 require 'config.php';
 
+/**
+ * Tarihçe/Rapor sorgulama işlemi için gereken istek verileri Gateway'den gateway'e değiştigine göre,
+ * Bu method verilen gateway göre istek verilerini oluşturur.
+ *
+ * @param class-string<\Mews\Pos\PosInterface> $gatewayClass
+ * @param string $ip
+ *
+ * @return array<string, mixed>
+ */
 function createHistoryOrder(string $gatewayClass, string $ip): array
 {
     $order  = [];

@@ -1,12 +1,15 @@
 <?php
 
+/** @var \Mews\Pos\PosInterface $pos */
+/** @var array<string, mixed> $order */
+/** @var string $baseUrl */
+/** @var \Mews\Pos\PosInterface::MODEL_* $paymentModel */
+/** @var \Mews\Pos\PosInterface::TX_TYPE_* $transaction */
+
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\PosInterface;
 
-// dinamik olarak ilgili bunkanin regular klasor altindaki _config.php yuklenir
-// ornegin: asseco/regular/_config.php
-require_once '_config.php';
-require '../../_templates/_header.php';
+require __DIR__.'/_header.php';
 
 /**
  * alttaki script

@@ -1,15 +1,23 @@
 <?php
 
-use Mews\Pos\PosInterface;
-
 $templateTitle = 'Order Status';
-// ilgili bankanin _config.php dosyasi load ediyoruz.
-// ornegin /examples/finansbank-payfor/regular/_config.php
-require '_config.php';
-$transaction = PosInterface::TX_TYPE_STATUS;
+
+/** @var \Mews\Pos\PosInterface $pos */
+/** @var string $ip */
+
+$transaction = \Mews\Pos\PosInterface::TX_TYPE_STATUS;
 
 require '../../_templates/_header.php';
 
+/**
+ * Ödeme durumu sorgulama işlemi için gereken istek verileri Gateway'den gateway'e değiştigine göre,
+ * Bu method verilen gateway göre istek verilerini oluşturur.
+ *
+ * @param class-string<\Mews\Pos\PosInterface> $gatewayClass
+ * @param array<string, mixed> $lastResponse ödeme işlemi sonrası Pos kütüphanesinden dönen response verisi
+ *
+ * @return array<string, mixed>
+ */
 function createStatusOrder(string $gatewayClass, array $lastResponse, string $ip): array
 {
     $statusOrder = [
@@ -46,7 +54,7 @@ function createStatusOrder(string $gatewayClass, array $lastResponse, string $ip
 }
 
 $lastResponse = $_SESSION['last_response'] ?? [];
-$order = createStatusOrder(get_class($pos), $lastResponse, $ip);
+$order = createStatusOrder($pos::class, $lastResponse, $ip);
 dump($order);
 
 $response = $pos->status($order);

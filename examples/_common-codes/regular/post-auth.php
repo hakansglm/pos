@@ -2,12 +2,22 @@
 
 use Mews\Pos\PosInterface;
 
-// ilgili bankanin _config.php dosyasi load ediyoruz.
-// ornegin /examples/finansbank-payfor/regular/_config.php
-require '_config.php';
+/** @var \Mews\Pos\PosInterface $pos */
+/** @var string $ip */
 
 $templateTitle = 'Post Auth Order (ön provizyonu kapama)';
 
+/**
+ * Ön provizyon kapama işlemi için gereken istek verileri Gateway'den gateway'e değiştigine göre,
+ * bu method verilen gateway göre istek verilerini oluşturur.
+ *
+ * @param class-string<\Mews\Pos\PosInterface> $gatewayClass
+ * @param array<string, mixed> $lastResponse ön provizyon açma işlemi sonrası Pos kütüphanesinden dönen response verisi
+ * @param string $ip
+ * @param float|null $postAuthAmount ön provizyon başlatılan amount kapatılmak istenen amount'tan farklı olduğunda kullanilir.
+ *
+ * @return array<string, mixed>
+ */
 function createPostPayOrder(string $gatewayClass, array $lastResponse, string $ip, ?float $postAuthAmount = null): array
 {
     $postAuth = [
@@ -37,7 +47,7 @@ $lastResponse = $_SESSION['last_response'] ?? null;
 $preAuthAmount = $lastResponse['amount'];
 // otorizasyon kapama amount'u ön otorizasyon amount'tan daha fazla olabilir.
 $postAuthAmount = $lastResponse['amount'] + 0.20;
-$gatewayClass = get_class($pos);
+$gatewayClass = $pos::class;
 
 $order = createPostPayOrder(
     $gatewayClass,

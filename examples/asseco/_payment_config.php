@@ -1,6 +1,8 @@
 <?php
 
 require __DIR__.'/../_main_config.php';
+/** @var string $hostUrl */
+
 
 $bankTestsUrl = $hostUrl.'/asseco';
 $posClass      = \Mews\Pos\Gateway\AssecoPos::class;

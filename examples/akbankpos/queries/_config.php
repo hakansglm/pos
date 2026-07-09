@@ -1,12 +1,15 @@
 <?php
 
 require '../_payment_config.php';
+/** @var string $bankTestsUrl */
+/** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
+
 
 $account = \Mews\Pos\Factory\AccountFactory::createAkbankPosAccount(
     'akbank-pos',
-    (string) getenv('AKBANKPOS_MERCHANT_ID'),
-    (string) getenv('AKBANKPOS_TERMINAL_ID'),
-    (string) getenv('AKBANKPOS_API_KEY')
+    getRequiredEnv('AKBANKPOS_MERCHANT_ID'),
+    getRequiredEnv('AKBANKPOS_TERMINAL_ID'),
+    getRequiredEnv('AKBANKPOS_API_KEY')
 );
 
 $posQuery      = getPosQuery($account, $eventDispatcher);

@@ -1,16 +1,18 @@
 <?php
 
+/** @var \Mews\Pos\PosQuery\PosQueryInterface $posQuery */
+/** @var string $ip */
+
 use Mews\Pos\PosQuery\PosQueryInterface;
 
 $templateTitle = 'BIN Sorgusu';
 
-require '_config.php';
 $transaction = PosQueryInterface::QUERY_TYPE_BIN_LIST;
 
 require '../../_templates/_header.php';
 
 // BIN numarası GET parametresi ile geçilebilir: ?bin=415956 (opsiyonel)
-$bin = (string) ($_GET['bin'] ?? $defaultBin ?? null);
+$bin = $_GET['bin'] ?? $defaultBin ?? null;
 
 ?>
 

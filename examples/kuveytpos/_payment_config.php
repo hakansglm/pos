@@ -3,6 +3,8 @@
 use Mews\Pos\Model\Card\CreditCardInterface;
 
 require __DIR__.'/../_main_config.php';
+/** @var string $hostUrl */
+
 
 $bankTestsUrl = $hostUrl.'/kuveytpos';
 $posClass = \Mews\Pos\Gateway\KuveytPos::class;
@@ -19,6 +21,9 @@ $testCards = [
     ],
 ];
 
+/**
+ * @return array<string, mixed>
+ */
 function createGatewaySpecificOrderFields(): array
 {
     return [

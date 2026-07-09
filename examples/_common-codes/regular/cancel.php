@@ -1,16 +1,24 @@
 <?php
 
-use Mews\Pos\PosInterface;
-
 $templateTitle = 'Cancel Order';
 
-// ilgili bankanin _config.php dosyasi load ediyoruz.
-// ornegin /examples/finansbank-payfor/regular/_config.php
-require '_config.php';
-$transaction = PosInterface::TX_TYPE_CANCEL;
+/** @var \Mews\Pos\PosInterface $pos */
+/** @var string $ip */
+
+$transaction = \Mews\Pos\PosInterface::TX_TYPE_CANCEL;
 
 require '../../_templates/_header.php';
 
+/**
+ * İptal işlemi için gereken istek verileri Gateway'den gateway'e değiştigine göre,
+ * Bu method verilen gateway göre istek verilerini oluşturur.
+ *
+ * @param class-string<\Mews\Pos\PosInterface> $gatewayClass
+ * @param array<string, mixed> $lastResponse ödeme işlemi sonrası Pos kütüphanesinden dönen response verisi
+ * @param string $ip
+ *
+ * @return array<string, mixed>
+ */
 function createCancelOrder(string $gatewayClass, array $lastResponse, string $ip): array
 {
     $cancelOrder = [
@@ -25,7 +33,7 @@ function createCancelOrder(string $gatewayClass, array $lastResponse, string $ip
     } elseif (\Mews\Pos\Gateway\ParamPos::class === $gatewayClass) {
         $cancelOrder['amount'] = $lastResponse['amount'];
         // on otorizasyon islemin iptali icin PosInterface::TX_TYPE_PAY_PRE_AUTH saglanmasi gerekiyor
-        $cancelOrder['transaction_type'] = $lastResponse['transaction_type'] ?? PosInterface::TX_TYPE_PAY_AUTH;
+        $cancelOrder['transaction_type'] = $lastResponse['transaction_type'] ?? \Mews\Pos\PosInterface::TX_TYPE_PAY_AUTH;
     } elseif (\Mews\Pos\Gateway\KuveytPos::class === $gatewayClass) {
         $cancelOrder['remote_order_id'] = $lastResponse['remote_order_id']; // banka tarafındaki order id
         $cancelOrder['auth_code']       = $lastResponse['auth_code'];
@@ -35,7 +43,7 @@ function createCancelOrder(string $gatewayClass, array $lastResponse, string $ip
         $cancelOrder['remote_order_id'] = $lastResponse['remote_order_id']; // banka tarafındaki order id
         $cancelOrder['amount']          = $lastResponse['amount'];
         // on otorizasyon islemin iptali icin PosInterface::TX_TYPE_PAY_PRE_AUTH saglanmasi gerekiyor
-        $cancelOrder['transaction_type'] = $lastResponse['transaction_type'] ?? PosInterface::TX_TYPE_PAY_AUTH;
+        $cancelOrder['transaction_type'] = $lastResponse['transaction_type'] ?? \Mews\Pos\PosInterface::TX_TYPE_PAY_AUTH;
     } elseif (\Mews\Pos\Gateway\PayFlexV4Pos::class === $gatewayClass || \Mews\Pos\Gateway\PayFlexCPV4Pos::class === $gatewayClass) {
         // çalışmazsa $lastResponse['all']['ReferenceTransactionId']; ile denenmesi gerekiyor.
         $cancelOrder['transaction_id'] = $lastResponse['transaction_id'];
@@ -74,7 +82,7 @@ function createCancelOrder(string $gatewayClass, array $lastResponse, string $ip
 }
 
 
-$order = createCancelOrder(get_class($pos), $_SESSION['last_response'] ?? null, $ip);
+$order = createCancelOrder($pos::class, $_SESSION['last_response'] ?? null, $ip);
 dump($order);
 
 try {

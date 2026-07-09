@@ -41,7 +41,7 @@ sistemlerinin kullanılabilmesidir.
 - [Örnek Kodlar](#örnek-kodlar)
     - [3DSecure, 3DPay ve 3DHost Ödeme Örneği](./docs/THREED-PAYMENT-EXAMPLE.md)
     - [PayTR 3DPay ve 3DHost Ödeme Örneği](./docs/THREED-PAYMENT-PAYTR_EXAMPLE.md)
-    - [3DSecure, 3DPay ve 3DHost Modal Box ile Ödeme Örneği](./docs/THREED-SECURE-AND-PAY-PAYMENT-IN-MODALBOX-EXAMPLE.md)
+    - [3DSecure, 3DPay ve 3DHost Modal Box ile Ödeme Örneği](docs/THREED-PAYMENT-IN-IFRAME-OR-POPUP-EXAMPLE.md)
     - [QR Code ile Ödeme Örneği](./docs/QR-CODE-PAYMENT-EXAMPLE.md)
     - [Non Secure Ödeme Örneği](./docs/NON-SECURE-PAYMENT-EXAMPLE.md)
     - [Ön otorizasyon ve Ön otorizasyon kapama](./docs/PRE-AUTH-POST-EXAMPLE.md)
@@ -74,14 +74,7 @@ sistemlerinin kullanılabilmesidir.
 - Taksit oranları sorgulama (`PosQueryInterface::TX_TYPE_INSTALLMENT_RATES`)
 - Taksit fiyatları hesaplama (`PosQueryInterface::TX_TYPE_INSTALLMENT_PRICES`)
 - BIN sorgulama (`PosQueryInterface::QUERY_TYPE_BIN_LIST`)
-- API istek verilerinin gateway API'na gönderilmeden önce değiştirebilme
-
-> **Not:** `TX_TYPE_HISTORY`, `TX_TYPE_CUSTOM_QUERY`, `TX_TYPE_INSTALLMENT_RATES`,
-> `TX_TYPE_INSTALLMENT_PRICES` ve `QUERY_TYPE_BIN_LIST` işlemleri `PosQueryInterface`
-> arayüzü üzerinden yapılır.
-> Bu işlemler için `PosQueryFactory::create()` ile bir `PosQueryInterface` nesnesi
-> oluşturmanız gerekmektedir.
-
+- API istek verilerinin Listener'lerle gateway API'na gönderilmeden önce değiştirebilme
 - Farklı Para birimler ile ödeme desteği
 - Tekrarlanan (Recurring) ödeme talimatları
 - [PSR-3](https://www.php-fig.org/psr/psr-3/) logger desteği
@@ -161,10 +154,25 @@ gerekir.
 Örnek:
 
 ```php
+// 1. Banka hesabı oluşturunuz (her banka için farklı bir factory metodu vardır)
+$account = \Mews\Pos\Factory\AccountFactory::createAkbankPosAccount(
+    'akbank-pos',
+    'MERCHANT_SAFE_ID',
+    'TERMINAL_SAFE_ID',
+    'SECRET_KEY'
+);
+
+// 2. Event dispatcher oluşturunuz (symfony/event-dispatcher önerilir)
+// Elinizde farklı PSR-14 uygumlu EventDispatcher var ise kullanabilirsiniz.
+$eventDispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+
+// 3. Ayarları yükleyip ilgili bankanın dilimini alınız
 $yeniAyarlar = require __DIR__ . '/pos_prod_ayarlar.php';
 // veya test ortamı için $yeniAyarlar = require __DIR__ . '/pos_test_ayarlar.php';
+$bankAyarlari = $yeniAyarlar['banks'][$account->getBankName()];
 
-$pos = \Mews\Pos\Factory\PosFactory::createPosGateway($account, $yeniAyarlar, $eventDispatcher);
+// 4. Gateway nesnesini oluşturunuz
+$pos = \Mews\Pos\Factory\PosFactory::create($account, $bankAyarlari, $eventDispatcher);
 ```
 
 _Kütüphanede yer alan `pos_production.php` ve `pos_test.php` ayar dosyaları
@@ -211,35 +219,17 @@ return [
 
 Örnekleri `/docs` ve `/examples` dizini içerisinde bulabilirsiniz.
 
-3D ödeme örnek kodlar genel olarak kart bilgilerini website sunucusuna POST
-eder (`index.php` => `form.php`),
-ondan sonra da işlenip gateway'e yönlendiriliyor.
-Bu şekilde farklı bankalar arası implementation değişmemesi sağlanmakta (ortak
-kredi kart formu ve aynı işlem akışı).
-Genel olarak kart bilgilerini, website sunucusuna POST yapmadan,
-direk gateway'e yönlendirecek şekilde kullanılabilinir (genelde, banka örnek
-kodları bu şekilde implement edilmiş).
-Fakat
-
-- birden fazla bank seçeneği olunca veya müşteri banka değiştirmek istediğinde
-  kart bilgi formunu ona göre güncellemeniz gerekecek.
-- üstelik YKB POSNet, Vakıf Katılım ve VakıfBank POS kart bilgilerini website
-  sunucusu
-  tarafından POST edilmesini gerektiriyor.
-
+`/examples` kodları çalıştırmak için [alttaki bölüme](#docker-ile-örnek-kodların-denenmesi)  bakınız.
 ### Popup Window'da veya iframe içinde ödeme yapma
 
 Müşteriyi banka sayfasına redirect etmeden **iframe** üzerinden veya **popup
 window**
 üzerinden ödeme akışı
 [examples'da](./examples)
-ve [/docs'da](./docs/THREED-SECURE-AND-PAY-PAYMENT-IN-MODALBOX-EXAMPLE.md) 3D
+ve [/docs'da](docs/THREED-PAYMENT-IN-IFRAME-OR-POPUP-EXAMPLE.md) 3D
 ödeme ile örnek PHP ve JS kodlar yer almaktadır.
 
-#### Dikkat edilmesi gerekenler
 
-- Popup window taraycı tarafından engellenebilir bu yüzden onun yerine
-  modal box içinde iframe kullanılması tavsiye edilir.
 
 ## Troubleshoots
 
@@ -274,9 +264,9 @@ composer require monolog/monolog
 ```php
 $handler = new \Monolog\Handler\StreamHandler(__DIR__.'/../var/log/pos.log', \Psr\Log\LogLevel::DEBUG);
 $logger = new \Monolog\Logger('pos', [$handler]);
-$pos = \Mews\Pos\Factory\PosFactory::createPosGateway(
+$pos = \Mews\Pos\Factory\PosFactory::create(
     $account,
-    $config,
+    $config['banks'][$account->getBankName()],
     $eventDispatcher,
     null,
     null,
@@ -356,7 +346,7 @@ http://localhost/ URL projenin `examples` klasörünün içine bakar.
 Projenin root klasöründe bu satırı çalıştırmanız gerekiyor
 
 ```sh
-$ composer test
+$ docker compose exec -it web composer test
 ```
 
 > Değerli yorum, öneri ve katkılarınız için teşekkür ederiz.

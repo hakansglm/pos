@@ -1,8 +1,9 @@
 <?php
 
-// ilgili bankanin _config.php dosyasi load ediyoruz.
-// ornegin /examples/finansbank-payfor/3d/_config.php
-require '_config.php';
+/** @var \Mews\Pos\PosInterface $pos */
+/** @var string $baseUrl */
+/** @var array<string, array<string, string>> $testCards */
+
 require '../../_templates/_header.php';
 
 $url = $baseUrl.'form.php';

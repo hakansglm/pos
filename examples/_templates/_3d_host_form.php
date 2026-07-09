@@ -1,3 +1,9 @@
+<?php
+/** @var \Mews\Pos\Gateway\AbstractGateway $pos */
+/** @var array<int, string> $installments */
+/** @var \Mews\Pos\PosInterface::MODEL_* $paymentModel */
+/** @var string $url */
+?>
 <form method="post" action="<?= $url; ?>" role="form">
     <div class="row">
         <div class="row">
@@ -8,7 +14,7 @@
                 <?php endforeach; ?>
                 </select>
             </div>
-            <?php if ([] !== $pos->getCurrencies()): ?>
+            <?php if ([] !== $pos->getCurrencies()): // @phpstan-ignore-line notIdentical.alwaysTrue ?>
                 <div class="mb-3 col-md-4">
                     <select name="currency" id="currency" class="form-select input-lg">
                         <?php foreach ($pos->getCurrencies() as $currency) : ?>
@@ -51,7 +57,7 @@
                 </div>
                 <div class="form-check form-check-inline">
                     <input type="radio" class="form-check-input" name="payment_flow_type" value="by_iframe">
-                    <label class="form-check-label">Modal box'da ödeme</label>
+                    <label class="form-check-label">Modal box'da iFrame ile ödeme</label>
                 </div>
                 <div class="form-check form-check-inline">
                     <input type="radio" class="form-check-input" name="payment_flow_type" value="by_popup_window">

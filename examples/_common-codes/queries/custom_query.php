@@ -1,10 +1,11 @@
 <?php
 
+/** @var \Mews\Pos\PosQuery\PosQueryInterface $posQuery */
+
 use Mews\Pos\PosQuery\PosQueryInterface;
 
 $templateTitle = 'Custom Query';
 
-require '_config.php';
 $transaction = PosQueryInterface::QUERY_TYPE_CUSTOM_QUERY;
 
 require '../../_templates/_header.php';

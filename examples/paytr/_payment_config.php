@@ -1,6 +1,8 @@
 <?php
 
 require __DIR__.'/../_main_config.php';
+/** @var string $hostUrl */
+
 
 $bankTestsUrl = $hostUrl.'/paytr';
 $posClass      = \Mews\Pos\Gateway\PayTrPos::class;
@@ -23,6 +25,9 @@ $testCards = [
     ],
 ];
 
+/**
+ * @return array<string, mixed>
+ */
 function createGatewaySpecificOrderFields(): array
 {
     return [

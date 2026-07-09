@@ -1,3 +1,12 @@
+<?php
+/** @var string $hostUrl */
+/** @var string $bankTestsUrl */
+/** @var string|null $paymentModel */
+/** @var class-string<\Mews\Pos\PosInterface>|null $posClass */
+/** @var class-string<\Mews\Pos\PosQuery\PosQueryInterface>|null $posQueryClass */
+/** @var string $templateTitle */
+/** @var string|null $transaction */
+?>
 <!DOCTYPE HTML>
 <html lang="tr">
 <head>

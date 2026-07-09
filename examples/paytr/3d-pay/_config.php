@@ -4,14 +4,17 @@ use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\PosInterface;
 
 require '../_payment_config.php';
+/** @var string $bankTestsUrl */
+/** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
+
 
 $baseUrl = $bankTestsUrl.'/3d-pay/';
 
 $account = AccountFactory::createPayTrPosAccount(
     'paytr',
-    (string) getenv('PAYTR_MERCHANT_ID'),
-    (string) getenv('PAYTR_MERCHANT_SALT'),
-    (string) getenv('PAYTR_MERCHANT_KEY'),
+    getRequiredEnv('PAYTR_MERCHANT_ID'),
+    getRequiredEnv('PAYTR_MERCHANT_SALT'),
+    getRequiredEnv('PAYTR_MERCHANT_KEY'),
 );
 
 $pos = getGateway($account, $eventDispatcher);

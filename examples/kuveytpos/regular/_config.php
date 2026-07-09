@@ -3,15 +3,18 @@
 use Mews\Pos\PosInterface;
 
 require '../_payment_config.php';
+/** @var string $bankTestsUrl */
+/** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
+
 
 $baseUrl = $bankTestsUrl.'/regular/';
 
 $account = \Mews\Pos\Factory\AccountFactory::createBoaPosAccount(
     'kuveytpos',
-    (string) getenv('KUVEYTPOS_MERCHANT_ID'),
-    (string) getenv('KUVEYTPOS_USERNAME'),
-    (string) getenv('KUVEYTPOS_CUSTOMER_NUMBER'),
-    (string) getenv('KUVEYTPOS_PASSWORD'),
+    getRequiredEnv('KUVEYTPOS_MERCHANT_ID'),
+    getRequiredEnv('KUVEYTPOS_USERNAME'),
+    getRequiredEnv('KUVEYTPOS_CUSTOMER_NUMBER'),
+    getRequiredEnv('KUVEYTPOS_PASSWORD'),
 );
 
 $pos = getGateway($account, $eventDispatcher);

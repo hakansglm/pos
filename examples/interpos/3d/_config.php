@@ -3,15 +3,18 @@
 use Mews\Pos\PosInterface;
 
 require '../_payment_config.php';
+/** @var string $bankTestsUrl */
+/** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
+
 
 $baseUrl = $bankTestsUrl.'/3d/';
 
 $account = \Mews\Pos\Factory\AccountFactory::createInterPosAccount(
     'denizbank',
-    (string) getenv('INTERPOS_SHOP_CODE'),
-    (string) getenv('INTERPOS_USER_CODE'),
-    (string) getenv('INTERPOS_USER_PASS'),
-    (string) getenv('INTERPOS_MERCHANT_PASS')
+    getRequiredEnv('INTERPOS_SHOP_CODE'),
+    getRequiredEnv('INTERPOS_USER_CODE'),
+    getRequiredEnv('INTERPOS_USER_PASS'),
+    getRequiredEnv('INTERPOS_MERCHANT_PASS')
 );
 
 $pos = getGateway($account, $eventDispatcher);

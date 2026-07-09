@@ -2,9 +2,12 @@
 
 use Mews\Pos\PosInterface;
 
-// ilgili bankanin _config.php dosyasi load ediyoruz.
-// ornegin /examples/finansbank-payfor/3d/_config.php
 require '_config.php';
+/** @var \Mews\Pos\PosInterface $pos */
+/** @var string $baseUrl */
+/** @var string $ip */
+/** @var \Mews\Pos\PosInterface::MODEL_* $paymentModel */
+
 
 $transaction = $_POST['tx'] ?? PosInterface::TX_TYPE_PAY_AUTH;
 $order       = createPaymentOrder(
@@ -23,10 +26,11 @@ $_SESSION['tx'] = $transaction;
 try {
     $formData = $pos->get3DFormData(
         $order,
-        PosInterface::MODEL_NON_SECURE,
+        PosInterface::MODEL_NON_SECURE, // @phpstan-ignore-line argument.type
         $transaction
     );
 
+    \assert(\is_array($formData));
     unset($formData['inputs']['Rnd']);
     unset($formData['inputs']['Hash']);
     $formData['inputs']['UserPass'] = $pos->getAccount()->getPassword();

@@ -1,4 +1,5 @@
 <?php
+require '_config.php';
 
 $defaultBin = '54308100';
 

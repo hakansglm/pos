@@ -4,13 +4,22 @@ use Mews\Pos\PosInterface;
 
 $templateTitle = 'Refund Order';
 
-// ilgili bankanin _config.php dosyasi load ediyoruz.
-// ornegin /examples/finansbank-payfor/regular/_config.php
-require '_config.php';
+/** @var \Mews\Pos\PosInterface $pos */
+/** @var string $ip */
+
 $transaction = PosInterface::TX_TYPE_REFUND;
 
 require '../../_templates/_header.php';
 
+/**
+ * İade işlemi için gereken istek verileri Gateway'den gateway'e değiştigine göre,
+ * Bu method verilen gateway göre istek verilerini oluşturur.
+ *
+ * @param class-string<PosInterface> $gatewayClass
+ * @param array<string, mixed> $lastResponse ödeme işlemi sonrası Pos kütüphanesinden dönen response verisi
+ *
+ * @return array<string, mixed>
+ */
 function createRefundOrder(string $gatewayClass, array $lastResponse, string $ip, ?float $refundAmount = null): array
 {
     $refundOrder = [
@@ -66,7 +75,7 @@ $refundAmount = $lastResponse['amount'] - 2;
 
 
 $order = createRefundOrder(
-    get_class($pos),
+    $pos::class,
     $lastResponse,
     $ip,
     $refundAmount

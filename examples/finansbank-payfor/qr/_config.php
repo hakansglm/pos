@@ -3,15 +3,18 @@
 use Mews\Pos\PosInterface;
 
 require '../_payment_config.php';
+/** @var string $bankTestsUrl */
+/** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
+
 
 $baseUrl = $bankTestsUrl.'/qr/';
 
 $account = \Mews\Pos\Factory\AccountFactory::createPayForPosAccount(
     'qnbfinansbank-payfor',
-    (string) getenv('FINANSBANK_QR_MERCHANT_ID'),
-    (string) getenv('FINANSBANK_QR_USERNAME'),
-    (string) getenv('FINANSBANK_QR_PASSWORD'),
-    (string) getenv('FINANSBANK_QR_STORE_KEY'),
+    getRequiredEnv('FINANSBANK_QR_MERCHANT_ID'),
+    getRequiredEnv('FINANSBANK_QR_USERNAME'),
+    getRequiredEnv('FINANSBANK_QR_PASSWORD'),
+    getRequiredEnv('FINANSBANK_QR_STORE_KEY'),
     \Mews\Pos\Model\Account\PayForPosAccount::MBR_ID_FINANSBANK // ya da PayForAccount::MBR_ID_ZIRAAT_KATILIM
 );
 

@@ -1,10 +1,11 @@
 <?php
 
-use Mews\Pos\PosInterface;
+/** @var \Mews\Pos\PosInterface $pos */
+/** @var string $baseUrl */
+/** @var string $ip */
+/** @var PosInterface::MODEL_* $paymentModel */
 
-// ilgili bankanin _config.php dosyasi load ediyoruz.
-// ornegin /examples/finansbank-payfor/regular/_config.php
-require_once '_config.php';
+use Mews\Pos\PosInterface;
 
 $transaction = $_POST['tx'] ?? PosInterface::TX_TYPE_PAY_AUTH;
 

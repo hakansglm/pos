@@ -1,13 +1,16 @@
 <?php
 
 require '../_payment_config.php';
+/** @var string $bankTestsUrl */
+/** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
+
 
 $account = \Mews\Pos\Factory\AccountFactory::createParamPosAccount(
     'param-pos',
-    (string) getenv('PARAMPOS_MERCHANT_ID'),
-    (string) getenv('PARAMPOS_USERNAME'),
-    (string) getenv('PARAMPOS_PASSWORD'),
-    (string) getenv('PARAMPOS_CLIENT_SECRET')
+    getRequiredEnv('PARAMPOS_MERCHANT_ID'),
+    getRequiredEnv('PARAMPOS_USERNAME'),
+    getRequiredEnv('PARAMPOS_PASSWORD'),
+    getRequiredEnv('PARAMPOS_CLIENT_SECRET')
 );
 
 $posQuery      = getPosQuery($account, $eventDispatcher);

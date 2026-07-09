@@ -1,12 +1,12 @@
 <?php
 
+/** @var \Mews\Pos\PosInterface $pos */
+/** @var string $baseUrl */
+/** @var \Mews\Pos\PosInterface::MODEL_* $paymentModel */
+/** @var \Mews\Pos\PosInterface::TX_TYPE_* $transaction */
+
 use Mews\Pos\Event\RequestDataPreparedEvent;
 use Mews\Pos\Exception\HashMismatchException;
-use Mews\Pos\PosInterface;
-
-// ilgili gatewayin payment modele gore configini load ediyoruz
-// ornegin: asseco/3d/_config.php ya da asseco/3d-host/_config.php
-require_once '_config.php';
 
 /**
  * alttaki script
@@ -88,7 +88,7 @@ if (get_class($pos) === \Mews\Pos\Gateway\PayTrPos::class) {
 if ($pos->isSuccess()) {
     $_SESSION['last_response'] = $response;
 }
-require '../../_templates/_header.php';
+require __DIR__.'/_header.php';
 require __DIR__.'/_render_payment_response.php';
 ?>
 
@@ -96,11 +96,11 @@ require __DIR__.'/_render_payment_response.php';
     if (window.opener && window.opener !== window) {
         // you are in a popup
         // send result data to parent window
-        window.opener.parent.postMessage(`<?= base64_encode(json_encode($response)); ?>`);
+        window.opener.parent.postMessage(`<?= base64_encode((string)json_encode($response)); ?>`);
     } else if (window.parent) {
         // you are in iframe
         // send result data to parent window
-        window.parent.postMessage(`<?= base64_encode(json_encode($response)); ?>`);
+        window.parent.postMessage(`<?= base64_encode((string)json_encode($response)); ?>`);
     }
 </script>
 <?php require __DIR__.'/_footer.php'; ?>

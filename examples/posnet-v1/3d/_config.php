@@ -3,14 +3,17 @@
 use Mews\Pos\PosInterface;
 
 require '../_payment_config.php';
+/** @var string $bankTestsUrl */
+/** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
+
 
 $baseUrl = $bankTestsUrl.'/3d/';
 
 $account = \Mews\Pos\Factory\AccountFactory::createPosNetPosAccount(
     'albaraka',
-    (string) getenv('POSNET_V1_MERCHANT_ID'), // 10 haneli üye işyeri numarası
-    (string) getenv('POSNET_V1_TERMINAL_ID'), // 8 haneli üye işyeri terminal numarası
-    (string) getenv('POSNET_V1_POS_ID'), // 16 haneli üye işyeri EPOS numarası.
+    getRequiredEnv('POSNET_V1_MERCHANT_ID'), // 10 haneli üye işyeri numarası
+    getRequiredEnv('POSNET_V1_TERMINAL_ID'), // 8 haneli üye işyeri terminal numarası
+    getRequiredEnv('POSNET_V1_POS_ID'), // 16 haneli üye işyeri EPOS numarası.
     '10,10,10,10,10,10,10,10'
 );
 

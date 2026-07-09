@@ -3,15 +3,18 @@
 use Mews\Pos\PosInterface;
 
 require '../_payment_config.php';
+/** @var string $bankTestsUrl */
+/** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
+
 
 $baseUrl = $bankTestsUrl.'/3d/';
 
 $account = \Mews\Pos\Factory\AccountFactory::createParamPosAccount(
     'param-pos',
-    (string) getenv('PARAMPOS_MERCHANT_ID'), // CLIENT_CODE
-    (string) getenv('PARAMPOS_USERNAME'), // CLIENT_USERNAME Kullanıcı adı
-    (string) getenv('PARAMPOS_PASSWORD'), // CLIENT_PASSWORD Şifre
-    (string) getenv('PARAMPOS_CLIENT_SECRET') // GUID Üye İşyeri ait anahtarı
+    getRequiredEnv('PARAMPOS_MERCHANT_ID'), // CLIENT_CODE
+    getRequiredEnv('PARAMPOS_USERNAME'), // CLIENT_USERNAME Kullanıcı adı
+    getRequiredEnv('PARAMPOS_PASSWORD'), // CLIENT_PASSWORD Şifre
+    getRequiredEnv('PARAMPOS_CLIENT_SECRET') // GUID Üye İşyeri ait anahtarı
 );
 
 $pos = getGateway($account, $eventDispatcher);

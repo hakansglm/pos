@@ -1,0 +1,7 @@
+parameters:
+  level: 8
+  paths:
+    - examples
+  reportUnmatchedIgnoredErrors: false
+includes:
+  - phpstan-examples-baseline.neon

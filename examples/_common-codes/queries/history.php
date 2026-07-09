@@ -1,14 +1,24 @@
 <?php
 
-use Mews\Pos\PosQuery\PosQueryInterface;
+/** @var \Mews\Pos\PosQuery\PosQueryInterface $posQuery */
+/** @var class-string<\Mews\Pos\PosInterface> $posClass */
+/** @var string $ip */
 
 $templateTitle = 'History Request';
 
-require '_config.php';
-$transaction = PosQueryInterface::QUERY_TYPE_HISTORY;
+$transaction = \Mews\Pos\PosQuery\PosQueryInterface::QUERY_TYPE_HISTORY;
 
 require '../../_templates/_header.php';
 
+/**
+ * Tarihçe/Rapor sorgulama işlemi için gereken istek verileri Gateway'den gateway'e değiştigine göre,
+ * Bu method verilen gateway göre istek verilerini oluşturur.
+ *
+ * @param class-string<\Mews\Pos\PosInterface> $gatewayClass
+ * @param string $ip
+ *
+ * @return array<string, mixed>
+ */
 function createHistoryOrder(string $gatewayClass, string $ip): array
 {
     $txTime = new \DateTimeImmutable();

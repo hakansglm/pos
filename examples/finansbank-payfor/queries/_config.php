@@ -1,12 +1,15 @@
 <?php
 
 require '../_payment_config.php';
+/** @var string $bankTestsUrl */
+/** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
+
 
 $account = \Mews\Pos\Factory\AccountFactory::createPayForPosAccount(
     'qnbfinansbank-payfor',
-    (string) getenv('FINANSBANK_MERCHANT_ID'),
-    (string) getenv('FINANSBANK_USERNAME'),
-    (string) getenv('FINANSBANK_PASSWORD'),
+    getRequiredEnv('FINANSBANK_MERCHANT_ID'),
+    getRequiredEnv('FINANSBANK_USERNAME'),
+    getRequiredEnv('FINANSBANK_PASSWORD'),
     null,
     \Mews\Pos\Model\Account\PayForPosAccount::MBR_ID_FINANSBANK
 );
