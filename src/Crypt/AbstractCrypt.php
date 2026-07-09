@@ -6,10 +6,14 @@
 
 namespace Mews\Pos\Crypt;
 
+use Mews\Pos\Model\Account\AbstractPosAccount;
 use Psr\Log\LoggerInterface;
 use RecursiveArrayIterator;
 use RecursiveIteratorIterator;
 
+/**
+ * @internal
+ */
 abstract class AbstractCrypt implements CryptInterface
 {
     /** @var string */
@@ -18,14 +22,11 @@ abstract class AbstractCrypt implements CryptInterface
     /** @var string */
     protected const HASH_SEPARATOR = '';
 
-    protected LoggerInterface $logger;
-
     /**
      * @param LoggerInterface $logger
      */
-    public function __construct(LoggerInterface $logger)
+    public function __construct(protected LoggerInterface $logger)
     {
-        $this->logger = $logger;
     }
 
     /**
@@ -47,21 +48,20 @@ abstract class AbstractCrypt implements CryptInterface
     /**
      * @inheritDoc
      */
-    public function hashFromParams(string $storeKey, array $data, string $hashParamsKey, string $paramSeparator = ':'): string
+    public function hashFromParams(AbstractPosAccount $account, array $data, string $hashParamsValue, string $paramSeparator = ':'): string
     {
-        $hashParams = $this->recursiveFind($data, $hashParamsKey);
-        if ('' === $hashParams) {
-            return '';
+        if ('' === $hashParamsValue) {
+            throw new \InvalidArgumentException('hashParamsValue cannot be empty');
         }
 
-        /**
-         * @var non-empty-string $hashParams ex: "MerchantNo:TerminalNo:ReferenceCode:OrderId"
-         */
-        $hashParamsArr = \explode($paramSeparator, $hashParams);
+        $secretKey = $account->getSecretKey();
 
-        $hashVal = $this->buildHashString($data, $hashParamsArr, '', $storeKey);
+        /** @var non-empty-string $hashParamsValue ex: "MerchantNo:TerminalNo:ReferenceCode:OrderId" */
+        $hashParamsArr = \explode($paramSeparator, $hashParamsValue);
 
-        return $this->hashString($hashVal, $storeKey);
+        $hashVal = $this->buildHashString($data, $hashParamsArr, '', $secretKey);
+
+        return $this->hashString($hashVal, $secretKey);
     }
 
     /**
@@ -87,16 +87,16 @@ abstract class AbstractCrypt implements CryptInterface
      * @param array<string, mixed> $data       data from which the hash string will be built
      * @param string[]             $paramNames parameter names that will be used in hash calculation
      * @param string               $separator  separator between the parameter values
-     * @param string|null          $storeKey   secret key of the API, will be attached to the hash string if provided
+     * @param string|null          $secretKey  secret key of the API, will be attached to the hash string if provided
      *
      * @return string string data to be hashed
      */
-    protected function buildHashString(array $data, array $paramNames, string $separator = '', ?string $storeKey = null): string
+    protected function buildHashString(array $data, array $paramNames, string $separator = '', ?string $secretKey = null): string
     {
         $paramsVal = \implode($separator, $this->buildHashData($data, $paramNames));
 
-        if (null !== $storeKey) {
-            $paramsVal = $this->concatenateHashKey($storeKey, $paramsVal);
+        if (null !== $secretKey) {
+            return $this->concatenateHashKey($secretKey, $paramsVal);
         }
 
         return $paramsVal;

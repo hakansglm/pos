@@ -1,11 +1,14 @@
 <?php
 
-use Mews\Pos\Entity\Card\CreditCardInterface;
+use Mews\Pos\Model\Card\CreditCardInterface;
 
 require __DIR__.'/../_main_config.php';
+/** @var string $hostUrl */
+
 
 $bankTestsUrl = $hostUrl.'/posnet-v1';
-$posClass = \Mews\Pos\Gateways\PosNetV1Pos::class;
+$posClass      = \Mews\Pos\Gateway\PosNetV1Pos::class;
+$posQueryClass = \Mews\Pos\Factory\PosQueryFactory::getPosQueryClassForGateway($posClass);
 
 $testCards = [
     // 3d onay kodu 34020

@@ -4,22 +4,24 @@ use Mews\Pos\Factory\AccountFactory;
 use Mews\Pos\PosInterface;
 
 require '../_payment_config.php';
+/** @var string $bankTestsUrl */
+/** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
+
 
 $baseUrl = $bankTestsUrl.'/3d-pay/';
-//account bilgileri kendi account bilgilerinizle degistiriniz
+
 $account = AccountFactory::createGarantiPosAccount(
     'garanti',
-    '7000679',
-    'PROVAUT',
-    '123qweASD/',
-    '30691298',
-    PosInterface::MODEL_3D_PAY,
-    '12345678'
+    getRequiredEnv('GARANTI_MERCHANT_ID'),
+    getRequiredEnv('GARANTI_USERNAME'),
+    getRequiredEnv('GARANTI_PASSWORD'),
+    getRequiredEnv('GARANTI_TERMINAL_ID'),
+    getRequiredEnv('GARANTI_STORE_KEY')
 );
 
 $pos = getGateway($account, $eventDispatcher);
 
-$transaction = $session->get('tx', PosInterface::TX_TYPE_PAY_AUTH);
+$transaction = $_SESSION['tx'] ?? PosInterface::TX_TYPE_PAY_AUTH;
 
 $templateTitle = '3D Pay Model Payment';
 $paymentModel = PosInterface::MODEL_3D_PAY;

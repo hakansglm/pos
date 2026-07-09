@@ -1,9 +1,12 @@
 <?php
 
 require __DIR__.'/../_main_config.php';
+/** @var string $hostUrl */
+
 
 $bankTestsUrl = $hostUrl.'/akbankpos';
-$posClass = \Mews\Pos\Gateways\AkbankPos::class;
+$posClass      = \Mews\Pos\Gateway\AkbankPos::class;
+$posQueryClass = \Mews\Pos\Factory\PosQueryFactory::getPosQueryClassForGateway($posClass);
 
 $testCards = [
     'visa1' => [

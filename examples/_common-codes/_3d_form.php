@@ -8,100 +8,58 @@ use Mews\Pos\PosInterface;
 /** @var string $ip */
 /** @var PosInterface::MODEL_3D_* $paymentModel */
 /** @var PosInterface $pos */
-/** @var \Symfony\Component\HttpFoundation\Request $request */
-/** @var \Symfony\Component\HttpFoundation\Session\SessionInterface $session */
 
 /**
  * Bu kod MODEL_3D_SECURE, MODEL_3D_PAY, MODEL_3D_HOST odemeler icin gereken HTML form verisini olusturur.
  * Odeme olmayan (iade, iptal, durum) veya MODEL_NON_SECURE islemlerde kullanilmaz.
  */
-require '../../_templates/_header.php';
 
-if ($request->getMethod() !== 'POST') {
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: '.$baseUrl.'index.php');
     exit();
 }
-$transaction = $request->get('tx', PosInterface::TX_TYPE_PAY_AUTH);
+$transaction = $_POST['tx'] ?? PosInterface::TX_TYPE_PAY_AUTH;
 $order       = createPaymentOrder(
     $pos,
     $paymentModel,
     $baseUrl,
     $ip,
-    $request->get('currency', PosInterface::CURRENCY_TRY),
-    $request->get('installment'),
-    $request->get('is_recurring', 0) == 1,
-    $request->get('lang', PosInterface::LANG_TR)
+    $_POST['currency'] ?? PosInterface::CURRENCY_TRY,
+    $_POST['installment'] ?? null,
+    ($_POST['is_recurring'] ?? 0) == 1,
+    $_POST['lang'] ?? PosInterface::LANG_TR
 );
 
-$session->set('order', $order);
-$session->set('tx', $transaction);
+$_SESSION['order'] = $order;
+$_SESSION['tx'] = $transaction;
 
 if ($paymentModel !== PosInterface::MODEL_3D_HOST) {
-    $card = createCard($pos, $request->request->all());
-    if (get_class($pos) === \Mews\Pos\Gateways\PayFlexV4Pos::class) {
+    $card = createCard($pos, $_POST);
+    if (get_class($pos) === \Mews\Pos\Gateway\PayFlexV4Pos::class) {
         // bu gateway için ödemeyi tamamlarken tekrar kart bilgisi lazım olacak.
-        $session->set('card', $request->request->all());
+        $_SESSION['card'] = $_POST;
     }
 } else {
     $card = null;
 }
 
 
-// ============================================================================================
-// OZEL DURUMLAR ICIN KODLAR START
-// ============================================================================================
-
-$formVerisiniOlusturmakIcinApiIstegiGonderenGatewayler = [
-    \Mews\Pos\Gateways\PosNet::class,
-    \Mews\Pos\Gateways\KuveytPos::class,
-    \Mews\Pos\Gateways\ToslaPos::class,
-    \Mews\Pos\Gateways\VakifKatilimPos::class,
-    \Mews\Pos\Gateways\PayFlexV4Pos::class,
-    \Mews\Pos\Gateways\PayFlexCPV4Pos::class,
-];
-if (in_array(get_class($pos), $formVerisiniOlusturmakIcinApiIstegiGonderenGatewayler, true)) {
-    /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
-    $eventDispatcher->addListener(RequestDataPreparedEvent::class, function (RequestDataPreparedEvent $event) {
-        //Burda istek banka API'na gonderilmeden once gonderilecek veriyi degistirebilirsiniz.
-        // Ornek:
-//            if ($event->getTxType() === PosInterface::TX_TYPE_PAY_AUTH) {
-//                $data         = $event->getRequestData();
-//                $data['abcd'] = '1234';
-//                $event->setRequestData($data);
-//            }
-    });
-}
-
-/**
- * Bu Event'i dinleyerek 3D formun hash verisi hesaplanmadan önce formun input array içireğini güncelleyebilirsiniz.
- * Eger ekleyeceginiz veri hash hesaplamada kullanilmiyorsa form verisi olusturduktan sonra da ekleyebilirsiniz.
- */
-$eventDispatcher->addListener(Before3DFormHashCalculatedEvent::class, function (Before3DFormHashCalculatedEvent $event): void {
-    if ($event->getGatewayClass() === \Mews\Pos\Gateways\EstV3Pos::class) {
-        //Örnek 1: İşbank İmece Kart ile ödeme yaparken aşağıdaki verilerin eklenmesi gerekiyor:
-//                $supportedPaymentModels = [
-//                    \Mews\Pos\PosInterface::MODEL_3D_PAY,
-//                    \Mews\Pos\PosInterface::MODEL_3D_PAY_HOSTING,
-//                    \Mews\Pos\PosInterface::MODEL_3D_HOST,
-//                ];
-//                if ($event->getTxType() === PosInterface::TX_TYPE_PAY_AUTH && in_array($event->getPaymentModel(), $supportedPaymentModels, true)) {
-//                    $formInputs           = $event->getFormInputs();
-//                    $formInputs['IMCKOD'] = '9999'; // IMCKOD bilgisi bankadan alınmaktadır.
-//                    $formInputs['FDONEM'] = '5'; // Ödemenin faizsiz ertelenmesini istediğiniz dönem sayısı.
-//                    $event->setFormInputs($formInputs);
-//                }
-    }
-    if ($event->getGatewayClass() === \Mews\Pos\Gateways\EstV3Pos::class) {
-//                // Örnek 2: callbackUrl eklenmesi
-//                $formInputs                = $event->getFormInputs();
-//                $formInputs['callbackUrl'] = $formInputs['failUrl'];
-//                $formInputs['refreshTime'] = '10'; // birim: saniye; callbackUrl sisteminin doğru çalışması için eklenmesi gereken parametre
-//                $event->setFormInputs($formInputs);
-    }
+// İsteğe bağlı: istek bankaya gönderilmeden önce düzenlemek için bu listener'ı kullanın.
+// Banka özelinde örnekler için ilgili bankanın _config.php dosyasına bakınız.
+/** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
+$eventDispatcher->addListener(RequestDataPreparedEvent::class, function (RequestDataPreparedEvent $event): void {
+    // $data = $event->getRequestData();
+    // $data['ozel_alan'] = 'deger';
+    // $event->setRequestData($data);
 });
-// ============================================================================================
-// OZEL DURUMLAR ICIN KODLAR END
-// ============================================================================================
+
+// İsteğe bağlı: 3D form hash hesaplanmadan önce form alanlarını düzenlemek için bu listener'ı kullanın.
+// Banka özelinde örnekler için ilgili bankanın _config.php dosyasına bakınız.
+$eventDispatcher->addListener(Before3DFormHashCalculatedEvent::class, function (Before3DFormHashCalculatedEvent $event): void {
+    // $inputs = $event->getFormInputs();
+    // $inputs['ozel_alan'] = 'deger';
+    // $event->setFormInputs($inputs);
+});
 
 try {
     $formData = $pos->get3DFormData(
@@ -115,6 +73,17 @@ try {
          * Yine de bazı gatewaylerde kartsız form verisi oluşturulamıyor.
          */
         false, // default: false
+        /**
+         * İsteğe bağlı: 3D form verisinin dönüş formatını belirtir.
+         * PosInterface::FORM_FORMAT_ARRAY: gateway URL, HTTP metodu ve form alanlarını içeren dizi döner.
+         * PosInterface::FORM_FORMAT_HTML: hazır HTML form string'i döner.
+         * Belirtilmezse (null) gateway'in varsayılan formatı kullanılır.
+         * Desteklenmeyen format talep edilirse UnsupportedFormFormatException fırlatılır.
+         *
+         * PayForPos'da IP M047 IP kısıtlaması sorunu yaşarsanız PosInterface::FORM_FORMAT_HTML değeri kullanarak sorunu
+         * çözebilirsiniz.
+         */
+        // null // $formFormat, default: null
     );
 } catch (\InvalidArgumentException $e) {
     // örneğin kart bilgisi sağlanmadığında bu exception'i alırsınız.
@@ -127,46 +96,18 @@ try {
 }
 
 
-// ============================================================================================
-// OZEL DURUMLAR ICIN KODLAR START
-// ============================================================================================
+// İsteğe bağlı: banka tarafından sağlanan kampanya kodları; bankadan temin edilir.
+// YapıKredi (PosNetPos):  $formData['inputs']['vftCode']       = 'xxx'; // VFT Kampanya Kodu
+//                         $formData['inputs']['useJokerVadaa'] = '1';   // Joker Vadaa kampanya seçimini açar
+// Albaraka (PosNetV1Pos): $formData['inputs']['VftCode']       = 'xxx';
+//                         $formData['inputs']['UseJokerVadaa'] = '1';
+//                         $formData['inputs']['KOICode']       = 'xxx'; // 1:Ek Taksit 2:Taksit Atlatma 3:Ekstra Puan 4:Kontur Kazanım 5:Ekstre Erteleme 6:Özel Vade Farkı
 
-/**
- * PosNet vftCode - VFT Kampanya kodunu. Vade Farklı işlemler için kullanılacak olan kampanya kodunu belirler.
- * Üye İşyeri için tanımlı olan kampanya kodu, İşyeri Yönetici Ekranlarına giriş
- * yapıldıktan sonra, Üye İşyeri bilgileri sayfasından öğrenilebilinir.
- */
-if ($pos instanceof \Mews\Pos\Gateways\PosNet) {
-    // YapiKredi
-    // $formData['inputs']['vftCode'] = 'xxx';
-}
-if ($pos instanceof \Mews\Pos\Gateways\PosNetV1Pos) {
-    // Albaraka
-    // $formData['inputs']['VftCode'] = 'xxx';
-}
+$flowType = $_POST['payment_flow_type'] ?? null;
 
-/**
- * KOICode - Joker Vadaa Kampanya Kodu.
- * Degerler - 1: Ek Taksit 2: Taksit Atlatma 3: Ekstra Puan 4: Kontur Kazanım 5: Ekstre Erteleme 6: Özel Vade Farkı
- * İşyeri, UseJokerVadaa alanını 1 yaparak bankanın joker vadaa sorgu ve müşteri joker vadaa
- * kampanya seçim ekranının açılmasını ve Joker Vadaa kampanya seçiminin müşteriye bırakılmasını
- * sağlayabilir. İşyeri, müşterilere ortak ödeme sayfasında kampanya sunulmasını istemiyorsa
- * UseJokerVadaa alanını 0 set etmesi gerekir.
- */
-if ($pos instanceof \Mews\Pos\Gateways\PosNetV1Pos) {
-    // Albaraka
-    // $formData['inputs']['UseJokerVadaa'] = '1';
-    // $formData['inputs']['KOICode']       = 'xxx';
+if (is_array($formData) && !('by_redirection' === $flowType && $formData['inputs'] === [] && $formData['method'] === 'GET')) {
+    require __DIR__.'/../_templates/_header.php';
 }
-if ($pos instanceof \Mews\Pos\Gateways\PosNet) {
-    // YapiKredi
-    // $formData['inputs']['useJokerVadaa'] = '1';
-}
-// ============================================================================================
-// OZEL DURUMLAR ICIN KODLAR END
-// ============================================================================================
-
-$flowType = $request->request->get('payment_flow_type');
 ?>
 
 
@@ -192,7 +133,7 @@ $flowType = $request->request->get('payment_flow_type');
         Submit sonucu kullanıcı banka sayfasıne yönlendirilir, işlem sonucundan ise duruma göre websitinizin
         success veya fail URL'na geri yönlendilir.
     -->
-        <?php require '../../_templates/_redirect_form.php'; ?>
+        <?php require __DIR__.'/../_templates/_redirect_form.php'; ?>
         <script>
             // Formu JS ile otomatik submit ederek kullaniciyi banka gatewayine yonlendiriyoruz.
             let redirectForm = document.querySelector('form.redirect-form');
@@ -210,7 +151,7 @@ $flowType = $request->request->get('payment_flow_type');
         $gatewayUrl = $formData['gateway'];
     } else {
         ob_start();
-        include('../../_templates/_redirect_iframe_or_popup_window_form.php');
+        include __DIR__.'/../_templates/_redirect_iframe_or_popup_window_form.php';
         $renderedForm = ob_get_clean();
     }
     ?>
@@ -361,4 +302,4 @@ $flowType = $request->request->get('payment_flow_type');
     </script>
 <?php endif; ?>
 <?php
-require '../../_templates/_footer.php';
+require __DIR__.'/../_templates/_footer.php';

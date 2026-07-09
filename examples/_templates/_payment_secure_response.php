@@ -1,14 +1,12 @@
 <?php
 
-use Mews\Pos\Event\RequestDataPreparedEvent;
-use Mews\Pos\Exceptions\HashMismatchException;
-use Mews\Pos\PosInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+/** @var \Mews\Pos\PosInterface $pos */
+/** @var string $baseUrl */
+/** @var \Mews\Pos\PosInterface::MODEL_* $paymentModel */
+/** @var \Mews\Pos\PosInterface::TX_TYPE_* $transaction */
 
-// ilgili gatewayin payment modele gore configini load ediyoruz
-// ornegin: payten/3d/_config.php ya da payten/3d-host/_config.php
-require_once '_config.php';
-require '../../_templates/_header.php';
+use Mews\Pos\Event\RequestDataPreparedEvent;
+use Mews\Pos\Exception\HashMismatchException;
 
 /**
  * alttaki script
@@ -18,76 +16,54 @@ require '../../_templates/_header.php';
  * Bu script redirectli, iframe'de ve popup'da odemeler icin kullanilabilinir.
  */
 // 3D odemelerde gatewayden genelde POST istek bekleniyor.
-if (($request->getMethod() !== 'POST')
-    // PayFlex-CP GET request ile cevapliyor
-    && ($request->getMethod() === 'GET'
-        && (get_class($pos) !== \Mews\Pos\Gateways\PayFlexCPV4Pos::class || [] === $request->query->all()))
-) {
-    echo new RedirectResponse($baseUrl);
-    exit();
+$requestMethod = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+if ('GET' === $requestMethod) { // PayFlexCP ve PayTr GET request ile cevaplıyor.
+   if (get_class($pos) === \Mews\Pos\Gateway\PayTrPos::class) {
+       // PayTr başarılı durumda hiç bir veri göndermiyor.
+       // Yine de ödeme tamamlanmamış oluyor. Bu yüzden alttaki kodlar çalışmamaı gerekiyor.
+       header('Location: '.$baseUrl);
+       exit();
+       // Bildirim URL'a gelecek sonucu beklememiz gerekiyor.
+       // Başarısız durumda ise $_POST verisi gönderir.
+   } elseif (get_class($pos) !== \Mews\Pos\Gateway\PayFlexCPV4Pos::class) {
+       // Diğer gatewaylerde GET istek ile geçersiz olduğu için alttaki kodlar çalışmaması gerekiyor.
+       header('Location: '.$baseUrl);
+       exit();
+   }
 }
 
-$order = $session->get('order');
-if (!$order) {
-    throw new Exception('Sipariş bulunamadı, session sıfırlanmış olabilir.');
-}
-
-// ============================================================================================
-// OZEL DURUMLAR ICIN KODLAR START
-// ============================================================================================
-/** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
-$eventDispatcher->addListener(RequestDataPreparedEvent::class, function (RequestDataPreparedEvent $event) {
-//         Burda istek banka API'na gonderilmeden once gonderilecek veriyi degistirebilirsiniz.
-//         Ornek:
-//         $data = $event->getRequestData();
-//         $data['abcd'] = '1234';
-//         $event->setRequestData($data);
-    /**
-     * Bu asamada bu Event genellikle 1 kere trigger edilir.
-     * Bir tek PosNet MODEL_3D_SECURE odemede 2 kere API call'i yapildigi icin bu event 2 kere trigger edilir.
-     */
-
-    /**
-     * KOICodes
-     * 1: Ek Taksit
-     * 2: Taksit Atlatma
-     * 3: Ekstra Puan
-     * 4: Kontur Kazanım
-     * 5: Ekstre Erteleme
-     * 6: Özel Vade Farkı
-     */
-    if ($event->getGatewayClass() instanceof \Mews\Pos\Gateways\PosNetV1Pos && $event->getTxType() === PosInterface::TX_TYPE_PAY_AUTH) {
-        // Albaraka PosNet KOICode ekleme
-        // $data            = $event->getRequestData();
-        // $data['KOICode'] = '1';
-        // $event->setRequestData($data);
+if (get_class($pos) !== \Mews\Pos\Gateway\PayTrPos::class) {
+    $order = $_SESSION['order'] ?? null;
+    if (!$order) {
+        throw new Exception('Sipariş bulunamadı, session sıfırlanmış olabilir.');
     }
+}  else {
+    // PayTR callback URL'a istek gönderdi, sunucular arasında iletişim olduğu için
+    // session yok veya boş.
+    $order = [];
+}
+
+// İsteğe bağlı: istek bankaya gönderilmeden önce düzenlemek için bu listener'ı kullanın.
+// Banka özelinde örnekler için ilgili bankanın _config.php dosyasına bakınız.
+/** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
+$eventDispatcher->addListener(RequestDataPreparedEvent::class, function (RequestDataPreparedEvent $event): void {
+    // $data = $event->getRequestData();
+    // $data['ozel_alan'] = 'deger';
+    // $event->setRequestData($data);
 });
 
-
-//  // Isbank İMECE için ekstra alanların eklenme örneği
-    $eventDispatcher->addListener(RequestDataPreparedEvent::class, function (RequestDataPreparedEvent $event) {
-//        if ($event->getPaymentModel() === PosInterface::MODEL_3D_SECURE && $event->getTxType() === PosInterface::TX_TYPE_PAY_AUTH) {
-//            $data                    = $event->getRequestData();
-//            $data['Extra']['IMCKOD'] = '9999'; // IMCKOD bilgisi bankadan alınmaktadır.
-//            $data['Extra']['FDONEM'] = '5'; // Ödemenin faizsiz ertelenmesini istediğiniz dönem sayısı
-//            $event->setRequestData($data);
-//        }
-    });
-
 $card = null;
-if (get_class($pos) === \Mews\Pos\Gateways\PayFlexV4Pos::class) {
-    // bu gateway için ödemeyi tamamlarken tekrar kart bilgisi lazım.
-    $savedCard = $session->get('card');
-    $session->remove('card');
-    $card      = createCard($pos, $savedCard);
+if (get_class($pos) === \Mews\Pos\Gateway\PayFlexV4Pos::class) {
+    // bu gateway ödemeyi tamamlarken tekrar kart bilgisi gerektiriyor.
+    $savedCard = $_SESSION['card'] ?? null;
+    if (isset($_SESSION['card'])) {
+        unset($_SESSION['card']);
+    }
+    $card = createCard($pos, $savedCard);
 }
-// ============================================================================================
-// OZEL DURUMLAR ICIN KODLAR END
-// ============================================================================================
 
 try {
-    doPayment($pos, $paymentModel, $transaction, $order, $card);
+    $response = doPayment($pos, $paymentModel, $transaction, $order, $card);
 } catch (HashMismatchException $e) {
     /**
      * Bankadan gelen verilerin bankaya ait olmadığında bu exception oluşur.
@@ -100,12 +76,19 @@ try {
 } catch (\Exception|\Error $e) {
     dd($e);
 }
-$response = $pos->getResponse();
-
-if ($pos->isSuccess()) {
-    $session->set('last_response', $response);
+if (get_class($pos) === \Mews\Pos\Gateway\PayTrPos::class) {
+    /**
+     * PayTR callback (Bildirim) URL'e response'u gönderdi.
+     * Cevap olarak "OK" göndermemiz gerekiyor.
+     * NOT: PayTR "OK" cevabı alıncaya kadar aynı ödeme işlemi için Bildirim URL birden fazla kez call eder.
+     */
+    echo 'OK';
+    exit;
 }
-
+if ($pos->isSuccess()) {
+    $_SESSION['last_response'] = $response;
+}
+require __DIR__.'/_header.php';
 require __DIR__.'/_render_payment_response.php';
 ?>
 
@@ -113,11 +96,11 @@ require __DIR__.'/_render_payment_response.php';
     if (window.opener && window.opener !== window) {
         // you are in a popup
         // send result data to parent window
-        window.opener.parent.postMessage(`<?= base64_encode(json_encode($response)); ?>`);
+        window.opener.parent.postMessage(`<?= base64_encode((string)json_encode($response)); ?>`);
     } else if (window.parent) {
         // you are in iframe
         // send result data to parent window
-        window.parent.postMessage(`<?= base64_encode(json_encode($response)); ?>`);
+        window.parent.postMessage(`<?= base64_encode((string)json_encode($response)); ?>`);
     }
 </script>
 <?php require __DIR__.'/_footer.php'; ?>

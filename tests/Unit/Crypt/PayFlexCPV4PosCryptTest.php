@@ -1,0 +1,89 @@
+<?php
+
+/**
+ * @license MIT
+ */
+
+namespace Mews\Pos\Tests\Unit\Crypt;
+
+use PHPUnit\Framework\Attributes\DataProvider;
+use Mews\Pos\Crypt\AbstractCrypt;
+use Mews\Pos\Crypt\PayFlexCPV4PosCrypt;
+use Mews\Pos\Model\Account\PayFlexPosAccount;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Factory\AccountFactory;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\PayFlexCPV4Pos;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
+
+#[CoversClass(PayFlexCPV4PosCrypt::class)]
+#[CoversClass(AbstractCrypt::class)]
+class PayFlexCPV4PosCryptTest extends TestCase
+{
+    public PayFlexCPV4PosCrypt $crypt;
+
+    private PayFlexPosAccount $account;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->account = AccountFactory::createPayFlexPosAccount(
+            'vakifbank-cp',
+            '000000000111111',
+            '3XTgER89as',
+            'VP999999'
+        );
+
+        $logger      = $this->createMock(LoggerInterface::class);
+        $this->crypt = new PayFlexCPV4PosCrypt($logger);
+    }
+
+    public function testSupports(): void
+    {
+        $supports = $this->crypt::supports(PayFlexCPV4Pos::class);
+        $this->assertTrue($supports);
+
+        $supports = $this->crypt::supports(AssecoPos::class);
+        $this->assertFalse($supports);
+    }
+
+    public function testCreate3DHash(): void
+    {
+        $this->expectException(NotImplementedException::class);
+
+        $this->crypt->create3DHash($this->account, []);
+    }
+
+    #[DataProvider('hashCreateDataProvider')]
+    public function testCreateHash(array $requestData, string $expected): void
+    {
+        $actual = $this->crypt->createHash($this->account, $requestData);
+
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testCheck3DHash(): void
+    {
+        $this->expectException(NotImplementedException::class);
+
+        $this->crypt->check3DHash($this->account, []);
+    }
+
+    public static function hashCreateDataProvider(): array
+    {
+        return [
+            [
+                'requestData' => [
+                    'HostMerchantId'   => '000000000111111',
+                    'MerchantPassword' => '3XTgER89as',
+                    'AmountCode'       => '949',
+                    'Amount'           => '10.10',
+                ],
+                'expected'    => '/MfLewtkUjpN5e/RY2iuIoT72hk=',
+            ],
+        ];
+    }
+}

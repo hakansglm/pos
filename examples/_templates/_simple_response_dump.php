@@ -1,5 +1,10 @@
 <?php
 
+/** @var \Mews\Pos\PosInterface $pos */
+/** @var string $bankTestsUrl */
+/** @var array<string, mixed> $response */
+/** @var PosInterface::TX_TYPE_* $transaction */
+
 use Mews\Pos\PosInterface;
 
 if (PosInterface::TX_TYPE_CANCEL === $transaction): ?>

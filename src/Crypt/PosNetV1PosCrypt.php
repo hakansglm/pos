@@ -6,8 +6,12 @@
 
 namespace Mews\Pos\Crypt;
 
-use Mews\Pos\Entity\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Gateway\PosNetV1Pos;
 
+/**
+ * @internal
+ */
 class PosNetV1PosCrypt extends AbstractCrypt
 {
     /** @var string */
@@ -15,6 +19,14 @@ class PosNetV1PosCrypt extends AbstractCrypt
 
     /** @var string */
     protected const HASH_SEPARATOR = '';
+
+    /**
+     * @inheritDoc
+     */
+    public static function supports(string $gatewayClass): bool
+    {
+        return PosNetV1Pos::class === $gatewayClass;
+    }
 
     /**
      * {@inheritDoc}
@@ -30,7 +42,7 @@ class PosNetV1PosCrypt extends AbstractCrypt
             $formInputs['ExpiredDate'] ?? null,
 
             $formInputs['Amount'],
-            $posAccount->getStoreKey(),
+            $posAccount->getSecretKey(),
         ];
         $hashStr  = \implode(static::HASH_SEPARATOR, $hashData);
 
@@ -42,11 +54,7 @@ class PosNetV1PosCrypt extends AbstractCrypt
      */
     public function check3DHash(AbstractPosAccount $posAccount, array $data): bool
     {
-        if (null === $posAccount->getStoreKey()) {
-            throw new \LogicException('Account storeKey eksik!');
-        }
-
-        $actualHash = $this->hashFromParams($posAccount->getStoreKey(), $data, 'MacParams', ':');
+        $actualHash = $this->hashFromParams($posAccount, $data, $data['MacParams'], ':');
 
         if ($actualHash !== $data['Mac']) {
             $this->logger->error('hash check failed', [
@@ -64,8 +72,6 @@ class PosNetV1PosCrypt extends AbstractCrypt
     }
 
     /**
-     * @param array<string, string|array<string, string>> $requestData
-     *
      * @inheritDoc
      */
     public function createHash(AbstractPosAccount $posAccount, array $requestData): string
@@ -73,15 +79,14 @@ class PosNetV1PosCrypt extends AbstractCrypt
         /** @var array<string, string> $threeDSecureData */
         $threeDSecureData = $requestData['ThreeDSecureData'];
 
-        /** @var array<string, string> $hashData */
         $hashData = [
-            $requestData['MerchantNo'],
-            $requestData['TerminalNo'],
+            (string) $requestData['MerchantNo'],
+            (string) $requestData['TerminalNo'],
             $threeDSecureData['SecureTransactionId'],
             $threeDSecureData['CavvData'],
             $threeDSecureData['Eci'],
             $threeDSecureData['MdStatus'],
-            $posAccount->getStoreKey() ?? '',
+            $posAccount->getSecretKey(),
         ];
 
         $hashStr = \implode(static::HASH_SEPARATOR, $hashData);

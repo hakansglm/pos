@@ -6,11 +6,23 @@
 
 namespace Mews\Pos\Crypt;
 
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Exceptions\NotImplementedException;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\PayForPos;
 
+/**
+ * @internal
+ */
 class PayForPosCrypt extends AbstractCrypt
 {
+    /**
+     * @inheritDoc
+     */
+    public static function supports(string $gatewayClass): bool
+    {
+        return PayForPos::class === $gatewayClass;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -25,7 +37,7 @@ class PayForPosCrypt extends AbstractCrypt
             $formInputs['TxnType'],
             $formInputs['InstallmentCount'],
             $formInputs['Rnd'],
-            $posAccount->getStoreKey(),
+            $posAccount->getSecretKey(),
         ];
         $hashStr = \implode(static::HASH_SEPARATOR, $hashData);
 
@@ -38,8 +50,8 @@ class PayForPosCrypt extends AbstractCrypt
     public function check3DHash(AbstractPosAccount $posAccount, array $data): bool
     {
         $hashData = [
-            $posAccount->getClientId(),
-            $posAccount->getStoreKey(),
+            $posAccount->getMerchantId(),
+            $posAccount->getSecretKey(),
             $data['OrderId'],
             $data['AuthCode'],
             $data['ProcReturnCode'],
@@ -52,7 +64,7 @@ class PayForPosCrypt extends AbstractCrypt
 
         $hash = $this->hashString($hashStr);
 
-        if ($hash === $data['ResponseHash']) {
+        if (\hash_equals($hash, $data['ResponseHash'])) {
             $this->logger->debug('hash check is successful');
 
             return true;

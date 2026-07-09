@@ -1,16 +1,19 @@
 <?php
 
-use Mews\Pos\Entity\Card\CreditCardInterface;
+use Mews\Pos\Model\Card\CreditCardInterface;
 
 require __DIR__.'/../_main_config.php';
+/** @var string $hostUrl */
+
 
 $bankTestsUrl = $hostUrl.'/finansbank-payfor';
-$posClass = \Mews\Pos\Gateways\PayForPos::class;
+$posClass      = \Mews\Pos\Gateway\PayForPos::class;
+$posQueryClass = \Mews\Pos\Factory\PosQueryFactory::getPosQueryClassForGateway($posClass);
 
 $testCards = [
     'visa1' => [
         'number' => '4155650100416111',
-        'year' => '30',
+        'year' => '28',
         'month' => '1',
         'cvv' => '123',
         'name' => 'John Doe',

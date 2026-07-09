@@ -1,0 +1,130 @@
+<?php
+
+/**
+ * @license MIT
+ */
+
+namespace Mews\Pos\Client;
+
+use Mews\Pos\Crypt\CryptInterface;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Gateway\AkbankPos;
+use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
+use Mews\Pos\Serializer\Decoder\AkbankPosJsonDecoder;
+use Mews\Pos\Serializer\EncodedData;
+use Mews\Pos\Serializer\Encoder\JsonEncoder;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Log\LoggerInterface;
+
+/**
+ * @internal
+ */
+class AkbankPosHttpClient extends AbstractHttpClient
+{
+    public function __construct(
+        string                  $baseApiUrl,
+        ClientInterface         $client,
+        RequestFactoryInterface $requestFactory,
+        StreamFactoryInterface  $streamFactory,
+        LoggerInterface         $logger,
+        private CryptInterface  $crypt
+    ) {
+        parent::__construct(
+            $baseApiUrl,
+            $client,
+            $requestFactory,
+            $streamFactory,
+            new JsonEncoder(),
+            new AkbankPosJsonDecoder(),
+            $logger
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function supportsTx(string $txType, string $paymentModel, ?string $orderTxType = null): bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function supports(string $gatewayClass, string $apiName): bool
+    {
+        return AkbankPos::class === $gatewayClass && HttpClientInterface::API_NAME_PAYMENT_API === $apiName;
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @throws \InvalidArgumentException when a transaction type is not provided
+     */
+    public function getApiURL(?string $txType = null, ?string $paymentModel = null, ?string $orderTxType = null): string
+    {
+        if (null !== $txType) {
+            return $this->baseApiUrl.'/'.$this->getRequestURIByTransactionType($txType);
+        }
+
+        throw new \InvalidArgumentException('Transaction type is required to generate API URL');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function createRequest(string $url, EncodedData $content, string $txType, ?AbstractPosAccount $account = null): RequestInterface
+    {
+        if (!$account instanceof AbstractPosAccount) {
+            throw new \InvalidArgumentException('Account is required to create request hash');
+        }
+
+        $body = $this->streamFactory->createStream($content->getData());
+        $hash = $this->crypt->hashString($content->getData(), $account->getSecretKey());
+
+        $request = $this->requestFactory->createRequest('POST', $url);
+
+        return $request->withHeader('Content-Type', 'application/json')
+            ->withHeader('auth-hash', $hash)
+            ->withBody($body);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function checkFailResponseData(string $txType, ResponseInterface $response, array $responseData, array $order): void
+    {
+        // when the data is sent fails validation checks we get 400 error
+        if ($response->getStatusCode() >= 400) {
+            $this->logger->error('api error', [
+                'status_code' => $response->getStatusCode(),
+                'order'       => $order,
+                'tx_type'     => $txType,
+                'response'   => $response->getBody()->getContents(),
+            ]);
+
+            $response->getBody()->rewind();
+
+            throw new \RuntimeException($responseData['message'], $responseData['code']);
+        }
+    }
+
+    /**
+     * @param PosInterface::TX_TYPE_*|PosQueryInterface::QUERY_TYPE_* $txType
+     *
+     * @return string
+     */
+    private function getRequestURIByTransactionType(string $txType): string
+    {
+        $arr = [
+            PosQueryInterface::QUERY_TYPE_HISTORY => 'portal/report/transaction',
+        ];
+
+        return $arr[$txType] ?? 'transaction/process';
+    }
+}

@@ -1,0 +1,19 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Function createGatewaySpecificOrderFields invoked with 2 parameters, 0 required\.$#'
+			identifier: arguments.count
+			count: 1
+			path: examples/_main_config.php
+
+		-
+			message: '#^Parameter \#3 \$userCode of static method Mews\\Pos\\Factory\\AccountFactory\:\:createInterPosAccount\(\) expects non\-empty\-string, '''' given\.$#'
+			identifier: argument.type
+			count: 1
+			path: examples/interpos/3d-host/_config.php
+
+		-
+			message: '#^Parameter \#4 \$userPass of static method Mews\\Pos\\Factory\\AccountFactory\:\:createInterPosAccount\(\) expects non\-empty\-string, '''' given\.$#'
+			identifier: argument.type
+			count: 1
+			path: examples/interpos/3d-host/_config.php

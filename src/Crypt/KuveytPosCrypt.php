@@ -6,11 +6,26 @@
 
 namespace Mews\Pos\Crypt;
 
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Exceptions\NotImplementedException;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\KuveytPos;
+use Mews\Pos\Gateway\VakifKatilimPos;
 
+/**
+ * @internal
+ */
 class KuveytPosCrypt extends AbstractCrypt
 {
+    /**
+     * @inheritDoc
+     */
+    public static function supports(string $gatewayClass): bool
+    {
+        return KuveytPos::class === $gatewayClass
+            || VakifKatilimPos::class === $gatewayClass
+        ;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -32,11 +47,7 @@ class KuveytPosCrypt extends AbstractCrypt
      */
     public function createHash(AbstractPosAccount $posAccount, array $requestData): string
     {
-        if (null === $posAccount->getStoreKey()) {
-            throw new \LogicException('Account storeKey eksik!');
-        }
-
-        $hashedPassword = $this->hashString($posAccount->getStoreKey());
+        $hashedPassword = $this->hashString($posAccount->getSecretKey());
 
         $hashData = [
             $requestData['MerchantId'],

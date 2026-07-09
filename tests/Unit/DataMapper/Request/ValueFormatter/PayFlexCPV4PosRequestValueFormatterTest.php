@@ -1,0 +1,81 @@
+<?php
+
+/**
+ * @license MIT
+ */
+
+namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueFormatter;
+
+use DateTime;
+use InvalidArgumentException;
+use Mews\Pos\DataMapper\Request\ValueFormatter\PayFlexCPV4PosRequestValueFormatter;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\PayFlexCPV4Pos;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
+use PHPUnit\Framework\TestCase;
+
+#[CoversClass(PayFlexCPV4PosRequestValueFormatter::class)]
+class PayFlexCPV4PosRequestValueFormatterTest extends TestCase
+{
+    private PayFlexCPV4PosRequestValueFormatter $formatter;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->formatter = new PayFlexCPV4PosRequestValueFormatter();
+    }
+
+    public function testSupports(): void
+    {
+        $result = $this->formatter::supports(PayFlexCPV4Pos::class);
+        $this->assertTrue($result);
+
+        $result = $this->formatter::supports(AssecoPos::class);
+        $this->assertFalse($result);
+    }
+
+    #[TestWith([0, '0'])]
+    #[TestWith([1, '0'])]
+    #[TestWith([2, '2'])]
+    public function testFormatInstallment(int $installment, string $expected): void
+    {
+        $actual = $this->formatter->formatInstallment($installment);
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestWith([1, '1.00'])]
+    #[TestWith([1.1, '1.10'])]
+    public function testFormatAmount(float $amount, $expected): void
+    {
+        $actual = $this->formatter->formatAmount($amount);
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestWith(['abc'])]
+    #[TestWith([''])]
+    public function testFormatCreditCardExpDateUnSupportedField(string $fieldName): void
+    {
+        $expDate = new DateTime('2024-04-14T16:45:30.000');
+        $this->expectException(InvalidArgumentException::class);
+        $this->formatter->formatCardExpDate($expDate, $fieldName);
+    }
+
+    #[TestWith(['ExpireMonth', '04'])]
+    #[TestWith(['ExpireYear', '24'])]
+    #[TestWith(['Expiry', '202404'])]
+    public function testFormatCreditCardExpDate(string $fieldName, string $expected): void
+    {
+        $expDate = new DateTime('2024-04-14T16:45:30.000');
+        $actual = $this->formatter->formatCardExpDate($expDate, $fieldName);
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testFormatDateTime(): void
+    {
+        $dateTime = new DateTime('2024-04-14T16:45:30.000');
+        $this->expectException(NotImplementedException::class);
+        $this->formatter->formatDateTime($dateTime);
+    }
+}

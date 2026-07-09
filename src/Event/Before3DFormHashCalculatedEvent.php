@@ -15,43 +15,24 @@ use Mews\Pos\PosInterface;
  */
 class Before3DFormHashCalculatedEvent
 {
-    /** @var array<string, string> */
-    private array $formInputs;
-
-    private string $bank;
-
-    /** @var PosInterface::TX_TYPE_PAY_* */
-    private string $txType;
-
-    /** @var PosInterface::MODEL_3D_* */
-    private string $paymentModel;
-
-    /** @var class-string<PosInterface> */
-    private string $gatewayClass;
-
     /**
      * @phpstan-param PosInterface::TX_TYPE_PAY_* $txType
      * @phpstan-param PosInterface::MODEL_3D_*    $paymentModel
      * @phpstan-param class-string<PosInterface>  $gatewayClass
      *
      * @param array<string, string> $formInputs
-     * @param string                $bank
+     * @param string                $bankName
      * @param string                $txType
      * @param string                $paymentModel
      * @param string                $gatewayClass
      */
     public function __construct(
-        array $formInputs,
-        string $bank,
-        string $txType,
-        string $paymentModel,
-        string $gatewayClass
+        private array  $formInputs,
+        private string $bankName,
+        private string $txType,
+        private string $paymentModel,
+        private string $gatewayClass
     ) {
-        $this->formInputs   = $formInputs;
-        $this->bank         = $bank;
-        $this->txType       = $txType;
-        $this->paymentModel = $paymentModel;
-        $this->gatewayClass = $gatewayClass;
     }
 
     /**
@@ -73,9 +54,9 @@ class Before3DFormHashCalculatedEvent
     /**
      * @return string
      */
-    public function getBank(): string
+    public function getBankName(): string
     {
-        return $this->bank;
+        return $this->bankName;
     }
 
     /**

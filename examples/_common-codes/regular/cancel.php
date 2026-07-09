@@ -1,16 +1,24 @@
 <?php
 
-use Mews\Pos\PosInterface;
-
 $templateTitle = 'Cancel Order';
 
-// ilgili bankanin _config.php dosyasi load ediyoruz.
-// ornegin /examples/finansbank-payfor/regular/_config.php
-require '_config.php';
-$transaction = PosInterface::TX_TYPE_CANCEL;
+/** @var \Mews\Pos\PosInterface $pos */
+/** @var string $ip */
+
+$transaction = \Mews\Pos\PosInterface::TX_TYPE_CANCEL;
 
 require '../../_templates/_header.php';
 
+/**
+ * İptal işlemi için gereken istek verileri Gateway'den gateway'e değiştigine göre,
+ * Bu method verilen gateway göre istek verilerini oluşturur.
+ *
+ * @param class-string<\Mews\Pos\PosInterface> $gatewayClass
+ * @param array<string, mixed> $lastResponse ödeme işlemi sonrası Pos kütüphanesinden dönen response verisi
+ * @param string $ip
+ *
+ * @return array<string, mixed>
+ */
 function createCancelOrder(string $gatewayClass, array $lastResponse, string $ip): array
 {
     $cancelOrder = [
@@ -20,26 +28,28 @@ function createCancelOrder(string $gatewayClass, array $lastResponse, string $ip
         'ip'          => filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? $ip : '127.0.0.1',
     ];
 
-    if (\Mews\Pos\Gateways\GarantiPos::class === $gatewayClass) {
+    if (\Mews\Pos\Gateway\GarantiPos::class === $gatewayClass) {
         $cancelOrder['amount'] = $lastResponse['amount'];
-    } elseif (\Mews\Pos\Gateways\ParamPos::class === $gatewayClass) {
+    } elseif (\Mews\Pos\Gateway\ParamPos::class === $gatewayClass) {
         $cancelOrder['amount'] = $lastResponse['amount'];
         // on otorizasyon islemin iptali icin PosInterface::TX_TYPE_PAY_PRE_AUTH saglanmasi gerekiyor
-        $cancelOrder['transaction_type'] = $lastResponse['transaction_type'] ?? PosInterface::TX_TYPE_PAY_AUTH;
-    } elseif (\Mews\Pos\Gateways\KuveytPos::class === $gatewayClass) {
+        $cancelOrder['transaction_type'] = $lastResponse['transaction_type'] ?? \Mews\Pos\PosInterface::TX_TYPE_PAY_AUTH;
+    } elseif (\Mews\Pos\Gateway\KuveytPos::class === $gatewayClass) {
         $cancelOrder['remote_order_id'] = $lastResponse['remote_order_id']; // banka tarafındaki order id
         $cancelOrder['auth_code']       = $lastResponse['auth_code'];
         $cancelOrder['transaction_id']  = $lastResponse['transaction_id'];
         $cancelOrder['amount']          = $lastResponse['amount'];
-    } elseif (\Mews\Pos\Gateways\VakifKatilimPos::class === $gatewayClass) {
+    } elseif (\Mews\Pos\Gateway\VakifKatilimPos::class === $gatewayClass) {
         $cancelOrder['remote_order_id'] = $lastResponse['remote_order_id']; // banka tarafındaki order id
         $cancelOrder['amount']          = $lastResponse['amount'];
         // on otorizasyon islemin iptali icin PosInterface::TX_TYPE_PAY_PRE_AUTH saglanmasi gerekiyor
-        $cancelOrder['transaction_type'] = $lastResponse['transaction_type'] ?? PosInterface::TX_TYPE_PAY_AUTH;
-    } elseif (\Mews\Pos\Gateways\PayFlexV4Pos::class === $gatewayClass || \Mews\Pos\Gateways\PayFlexCPV4Pos::class === $gatewayClass) {
+        $cancelOrder['transaction_type'] = $lastResponse['transaction_type'] ?? \Mews\Pos\PosInterface::TX_TYPE_PAY_AUTH;
+    } elseif (\Mews\Pos\Gateway\PayFlexV4Pos::class === $gatewayClass || \Mews\Pos\Gateway\PayFlexCPV4Pos::class === $gatewayClass) {
         // çalışmazsa $lastResponse['all']['ReferenceTransactionId']; ile denenmesi gerekiyor.
         $cancelOrder['transaction_id'] = $lastResponse['transaction_id'];
-    } elseif (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNet::class === $gatewayClass) {
+    } elseif (\Mews\Pos\Gateway\IyzicoPos::class === $gatewayClass) {
+        $cancelOrder['transaction_id'] = $lastResponse['transaction_id'];
+    }  elseif (\Mews\Pos\Gateway\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateway\PosNetPos::class === $gatewayClass) {
         /**
          * payment_model: siparis olusturulurken kullanilan odeme modeli.
          * orderId'yi dogru şekilde formatlamak icin zorunlu.
@@ -52,30 +62,19 @@ function createCancelOrder(string $gatewayClass, array $lastResponse, string $ip
 
     if (isset($lastResponse['recurring_id'])) {
         // tekrarlanan odemeyi iptal etmek icin:
-        if (\Mews\Pos\Gateways\EstPos::class === $gatewayClass || \Mews\Pos\Gateways\EstV3Pos::class === $gatewayClass) {
+        if (\Mews\Pos\Gateway\AssecoPos::class === $gatewayClass) {
             $cancelOrder += [
                 'recurringOrderInstallmentNumber' => 1, // hangi taksidi iptal etmek istiyoruz?
             ];
-        } elseif (\Mews\Pos\Gateways\AkbankPos::class === $gatewayClass) {
-            // odemesi gerceklesmis recurring taksidin iptali:
-//            $cancelOrder += [
-//                'recurring_id'                    => $lastResponse['recurring_id'],
-//                'recurringOrderInstallmentNumber' => 1,
-//            ];
-
-            // odemesi henuz gerceklesmemis recurring taksidin iptali:
+        } elseif (\Mews\Pos\Gateway\AkbankPos::class === $gatewayClass) {
+            // Henüz tahsil edilmemiş bir taksiti iptal etmek için:
+            // Tahsil edilmiş taksit için 'recurring_payment_is_pending' => false kullanın.
+            // Tüm bekleyen taksitleri iptal etmek için 'recurringOrderInstallmentNumber' => null kullanın.
             $cancelOrder += [
                 'recurring_id'                    => $lastResponse['recurring_id'],
                 'recurringOrderInstallmentNumber' => 2,
                 'recurring_payment_is_pending'    => true,
             ];
-
-            // odemesi henuz gerceklesmemis recurring işlem talimatlarının tamamı iptal edilmek isteniyorsa
-//            $cancelOrder += [
-//                'recurring_id'                    => $lastResponse['recurring_id'],
-//                'recurringOrderInstallmentNumber' => null,
-//                'recurring_payment_is_pending'    => true,
-//            ];
         }
     }
 
@@ -83,16 +82,14 @@ function createCancelOrder(string $gatewayClass, array $lastResponse, string $ip
 }
 
 
-$order = createCancelOrder(get_class($pos), $session->get('last_response'), $ip);
+$order = createCancelOrder($pos::class, $_SESSION['last_response'] ?? null, $ip);
 dump($order);
 
 try {
-    $pos->cancel($order);
+    $response = $pos->cancel($order);
 } catch (Exception $e) {
     dd($e);
 }
-
-$response = $pos->getResponse();
 
 require '../../_templates/_simple_response_dump.php';
 require '../../_templates/_footer.php';

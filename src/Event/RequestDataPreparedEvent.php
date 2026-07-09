@@ -14,49 +14,26 @@ use Mews\Pos\PosInterface;
  */
 class RequestDataPreparedEvent
 {
-    /** @var array<string, mixed> */
-    private array $requestData;
-
-    /** @var array<string, mixed> */
-    private array $order;
-
-    private string $bank;
-
-    /** @var PosInterface::TX_TYPE_* */
-    private string $txType;
-
-    /** @var PosInterface::MODEL_* */
-    private string $paymentModel;
-
-    /** @var class-string<PosInterface> */
-    private string $gatewayClass;
-
     /**
      * @phpstan-param PosInterface::TX_TYPE_*    $txType
      * @phpstan-param PosInterface::MODEL_*      $paymentModel
      * @phpstan-param class-string<PosInterface> $gatewayClass
      *
      * @param array<string, mixed> $requestData
-     * @param string               $bank
+     * @param string               $bankName
      * @param string               $txType
      * @param string               $gatewayClass
      * @param array<string, mixed> $order
      * @param string               $paymentModel
      */
     public function __construct(
-        array  $requestData,
-        string $bank,
-        string $txType,
-        string $gatewayClass,
-        array  $order,
-        string $paymentModel
+        private array  $requestData,
+        private string $bankName,
+        private string $txType,
+        private string $gatewayClass,
+        private array  $order,
+        private string $paymentModel
     ) {
-        $this->requestData  = $requestData;
-        $this->bank         = $bank;
-        $this->txType       = $txType;
-        $this->gatewayClass = $gatewayClass;
-        $this->order        = $order;
-        $this->paymentModel = $paymentModel;
     }
 
     /**
@@ -106,9 +83,9 @@ class RequestDataPreparedEvent
     /**
      * @return string
      */
-    public function getBank(): string
+    public function getBankName(): string
     {
-        return $this->bank;
+        return $this->bankName;
     }
 
     /**

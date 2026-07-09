@@ -6,34 +6,35 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
+use Mews\Pos\Crypt\AbstractCrypt;
+use InvalidArgumentException;
 use Mews\Pos\Crypt\PosNetV1PosCrypt;
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\PosNetAccount;
+use Mews\Pos\Model\Account\PosNetPosAccount;
 use Mews\Pos\Factory\AccountFactory;
-use Mews\Pos\PosInterface;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\PosNetV1Pos;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Crypt\PosNetV1PosCrypt
- * @covers \Mews\Pos\Crypt\AbstractCrypt
- */
+#[CoversClass(PosNetV1PosCrypt::class)]
+#[CoversClass(AbstractCrypt::class)]
 class PosNetV1PosCryptTest extends TestCase
 {
     public PosNetV1PosCrypt $crypt;
 
-    private PosNetAccount $account;
+    private PosNetPosAccount $account;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->account = AccountFactory::createPosNetAccount(
+        $this->account = AccountFactory::createPosNetPosAccount(
             'albaraka',
             '6700950031',
             '67540050',
             '1010272261352072',
-            PosInterface::MODEL_3D_SECURE,
             '10,10,10,10,10,10,10,10'
         );
 
@@ -41,28 +42,29 @@ class PosNetV1PosCryptTest extends TestCase
         $this->crypt = new PosNetV1PosCrypt($logger);
     }
 
-    /**
-     * @dataProvider hashFromParamsDataProvider
-     */
-    public function testHashFromParams(string $storeKey, array $data, string $expected): void
+    public function testSupports(): void
     {
-        $this->assertSame($expected, $this->crypt->hashFromParams($storeKey, $data, 'MACParams', ':'));
+        $supports = $this->crypt::supports(PosNetV1Pos::class);
+        $this->assertTrue($supports);
+
+        $supports = $this->crypt::supports(AssecoPos::class);
+        $this->assertFalse($supports);
+    }
+
+    #[DataProvider('hashFromParamsDataProvider')]
+    public function testHashFromParams(array $data, string $expected): void
+    {
+        $this->assertSame($expected, $this->crypt->hashFromParams($this->account, $data, $data['MACParams'], ':'));
     }
 
     public function testHashFromParamsWhenNotFound(): void
     {
-        $data = self::hashFromParamsDataProvider()[0];
-        $this->assertSame('', $this->crypt->hashFromParams(
-            $data['storeKey'],
-            $data,
-            'NonExistingField',
-            ':'
-        ));
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('hashParamsValue cannot be empty');
+        $this->crypt->hashFromParams($this->account, [], '', ':');
     }
 
-    /**
-     * @dataProvider hashCreateDataProvider
-     */
+    #[DataProvider('hashCreateDataProvider')]
     public function testCreateHash(array $requestData, string $expected): void
     {
         $actual = $this->crypt->createHash($this->account, $requestData);
@@ -70,9 +72,7 @@ class PosNetV1PosCryptTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider threeDHashCreateDataProvider
-     */
+    #[DataProvider('threeDHashCreateDataProvider')]
     public function testCreate3DHash(array $requestData, string $expected): void
     {
         $actual = $this->crypt->create3DHash($this->account, $requestData);
@@ -80,19 +80,10 @@ class PosNetV1PosCryptTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider threeDHashCheckDataProvider
-     */
+    #[DataProvider('threeDHashCheckDataProvider')]
     public function testCheck3DHash(bool $expected, array $responseData): void
     {
         $this->assertSame($expected, $this->crypt->check3DHash($this->account, $responseData));
-    }
-
-    public function testCheck3DHashException(): void
-    {
-        $account = $this->createMock(AbstractPosAccount::class);
-        $this->expectException(\LogicException::class);
-        $this->crypt->check3DHash($account, []);
     }
 
     public static function threeDHashCreateDataProvider(): array
@@ -116,8 +107,7 @@ class PosNetV1PosCryptTest extends TestCase
     {
         return [
             [
-                'storeKey' => '10,10,10,10,10,10,10,10',
-                'data '    => [
+                'data'     => [
                     'MACParams'     => 'MerchantNo:TerminalNo:ReferenceCode:OrderId',
                     'MerchantNo'    => '6700950031',
                     'TerminalNo'    => '67540050',
@@ -127,8 +117,7 @@ class PosNetV1PosCryptTest extends TestCase
                 'expected' => 'qhLo/2Ro+vT81i0SMV/VHifDV9VzQQgK+7d8hlId9YM=',
             ],
             [
-                'storeKey'    => '10,10,10,10,10,10,10,10',
-                'requestData' => [
+                'data'     => [
                     'MerchantNo'          => '6700950031',
                     'TerminalNo'          => '67540050',
                     'MACParams'           => 'MerchantNo:TerminalNo:CardNo:Cvc2:ExpireDate:Amount',
@@ -139,7 +128,7 @@ class PosNetV1PosCryptTest extends TestCase
                         'Cvc2'       => '056',
                     ],
                 ],
-                'expected'    => 'xuhPbpcPJ6kVs7JeIXS8f06Cv0mb9cNPMfjp1HiB7Ew=',
+                'expected' => 'xuhPbpcPJ6kVs7JeIXS8f06Cv0mb9cNPMfjp1HiB7Ew=',
             ],
         ];
     }

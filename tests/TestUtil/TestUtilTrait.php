@@ -18,6 +18,7 @@ trait TestUtilTrait
                 self::recursiveKsort($value);
             }
         }
+
         unset($value); // prevent reference side-effects
         ksort($array);
     }

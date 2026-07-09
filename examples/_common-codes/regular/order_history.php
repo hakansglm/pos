@@ -2,22 +2,34 @@
 
 $templateTitle = 'Order History';
 
-// ilgili bankanin _config.php dosyasi load ediyoruz.
-// ornegin /examples/finansbank-payfor/regular/_config.php
-require_once '_config.php';
+/** @var \Mews\Pos\PosInterface $pos */
+
 $transaction = \Mews\Pos\PosInterface::TX_TYPE_ORDER_HISTORY;
 
 require '../../_templates/_header.php';
 
 
+/**
+ * Ödeme tarihçesini sorgulama işlemi için gereken istek verileri Gateway'den gateway'e değiştigine göre,
+ * Bu method verilen gateway göre istek verilerini oluşturur.
+ *
+ * @param class-string<\Mews\Pos\PosInterface> $gatewayClass
+ * @param array<string, mixed> $lastResponse ödeme işlemi sonrası Pos kütüphanesinden dönen response verisi
+ *
+ * @return array<string, mixed>
+ */
 function createOrderHistoryOrder(string $gatewayClass, array $lastResponse): array
 {
     $order = [];
-    if (\Mews\Pos\Gateways\EstPos::class === $gatewayClass || \Mews\Pos\Gateways\EstV3Pos::class === $gatewayClass) {
+    if (
+        \Mews\Pos\Gateway\AssecoPos::class === $gatewayClass
+        || \Mews\Pos\Gateway\IyzicoPos::class === $gatewayClass
+        || \Mews\Pos\Gateway\PayForPos::class === $gatewayClass
+    ) {
         $order = [
             'id' => $lastResponse['order_id'],
         ];
-    } elseif (\Mews\Pos\Gateways\AkbankPos::class === $gatewayClass) {
+    } elseif (\Mews\Pos\Gateway\AkbankPos::class === $gatewayClass) {
         if (isset($lastResponse['recurring_id'])) {
             $order = [
                 'recurring_id' => $lastResponse['recurring_id'],
@@ -27,24 +39,20 @@ function createOrderHistoryOrder(string $gatewayClass, array $lastResponse): arr
                 'id' => $lastResponse['order_id'],
             ];
         }
-    } elseif (\Mews\Pos\Gateways\ToslaPos::class === $gatewayClass) {
+    } elseif (\Mews\Pos\Gateway\ToslaPos::class === $gatewayClass) {
         $order = [
             'id'               => $lastResponse['order_id'],
             'transaction_date' => $lastResponse['transaction_time'], // odeme tarihi
             'page'             => 1, // optional, default: 1
             'page_size'        => 10, // optional, default: 10
         ];
-    } elseif (\Mews\Pos\Gateways\PayForPos::class === $gatewayClass) {
-        $order = [
-            'id' => $lastResponse['order_id'],
-        ];
-    } elseif (\Mews\Pos\Gateways\GarantiPos::class === $gatewayClass) {
+    } elseif (\Mews\Pos\Gateway\GarantiPos::class === $gatewayClass) {
         $order = [
             'id'       => $lastResponse['order_id'],
             'currency' => $lastResponse['currency'],
             'ip'       => '127.0.0.1',
         ];
-    } elseif (\Mews\Pos\Gateways\VakifKatilimPos::class === $gatewayClass) {
+    } elseif (\Mews\Pos\Gateway\VakifKatilimPos::class === $gatewayClass) {
         /** @var \DateTimeImmutable $txTime */
         $txTime = $lastResponse['transaction_time'];
         $order  = [
@@ -55,23 +63,28 @@ function createOrderHistoryOrder(string $gatewayClass, array $lastResponse): arr
             'start_date' => $txTime->modify('-1 day'),
             'end_date'   => $txTime->modify('+1 day'),
         ];
+    } elseif (\Mews\Pos\Gateway\IyzicoPos::class === $gatewayClass) {
+        $order = [
+            'id' => $lastResponse['order_id'],
+        ];
+        if (isset($lastResponse['transaction_id'])) {
+            $order['transaction_id'] = $lastResponse['transaction_id'];
+        }
     }
 
     return $order;
 }
 
-$lastResponse = $session->get('last_response');
+$lastResponse = $_SESSION['last_response'] ?? null;
 
-$order = createOrderHistoryOrder(get_class($pos), $lastResponse);
+$order = createOrderHistoryOrder($pos::class, $lastResponse);
 dump($order);
 
 try {
-    $pos->orderHistory($order);
+    $response = $pos->orderHistory($order);
 } catch (Exception $e) {
     dd($e);
 }
-
-$response = $pos->getResponse();
 
 require '../../_templates/_simple_response_dump.php';
 require '../../_templates/_footer.php';

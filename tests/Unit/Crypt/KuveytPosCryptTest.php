@@ -6,29 +6,31 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
+use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\KuveytPosCrypt;
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\KuveytPosAccount;
-use Mews\Pos\Exceptions\NotImplementedException;
+use Mews\Pos\Model\Account\BoaPosAccount;
+use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\KuveytPos;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Crypt\KuveytPosCrypt
- * @covers \Mews\Pos\Crypt\AbstractCrypt
- */
+#[CoversClass(KuveytPosCrypt::class)]
+#[CoversClass(AbstractCrypt::class)]
 class KuveytPosCryptTest extends TestCase
 {
     public KuveytPosCrypt $crypt;
 
-    private KuveytPosAccount $account;
+    private BoaPosAccount $account;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->account = AccountFactory::createKuveytPosAccount(
+        $this->account = AccountFactory::createBoaPosAccount(
             'kuveytpos',
             '80',
             'apiuser',
@@ -38,6 +40,15 @@ class KuveytPosCryptTest extends TestCase
 
         $logger      = $this->createMock(LoggerInterface::class);
         $this->crypt = new KuveytPosCrypt($logger);
+    }
+
+    public function testSupports(): void
+    {
+        $supports = $this->crypt::supports(KuveytPos::class);
+        $this->assertTrue($supports);
+
+        $supports = $this->crypt::supports(AssecoPos::class);
+        $this->assertFalse($supports);
     }
 
     public function testHashString(): void
@@ -61,21 +72,12 @@ class KuveytPosCryptTest extends TestCase
         $this->crypt->check3DHash($this->account, []);
     }
 
-    /**
-     * @dataProvider hashCreateDataProvider
-     */
+    #[DataProvider('hashCreateDataProvider')]
     public function testCreateHash(array $requestData, string $expected): void
     {
         $actual = $this->crypt->createHash($this->account, $requestData);
 
         $this->assertSame($expected, $actual);
-    }
-
-    public function testCreateHashException(): void
-    {
-        $account = $this->createMock(AbstractPosAccount::class);
-        $this->expectException(\LogicException::class);
-        $this->crypt->createHash($account, []);
     }
 
     public static function hashCreateDataProvider(): array

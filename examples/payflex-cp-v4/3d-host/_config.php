@@ -3,19 +3,17 @@
 use Mews\Pos\PosInterface;
 
 require '../_payment_config.php';
+/** @var string $bankTestsUrl */
+/** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
+
 
 $baseUrl = $bankTestsUrl.'/3d-host/';
 
-$hostMerchantId = '000100000013506';
-$hostTerminalId = 'VP000579';
-$merchantPassword  = '123456';
-//account bilgileri kendi account bilgilerinizle degistiriniz
-$account = \Mews\Pos\Factory\AccountFactory::createPayFlexAccount(
+$account = \Mews\Pos\Factory\AccountFactory::createPayFlexPosAccount(
     'vakifbank-cp',
-    $hostMerchantId,
-    $merchantPassword,
-    $hostTerminalId,
-    PosInterface::MODEL_3D_HOST
+    getRequiredEnv('PAYFLEX_CP_MERCHANT_ID'),
+    getRequiredEnv('PAYFLEX_CP_MERCHANT_PASSWORD'),
+    getRequiredEnv('PAYFLEX_CP_TERMINAL_ID'),
 );
 
 $pos = getGateway($account, $eventDispatcher);

@@ -6,20 +6,22 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
+use LogicException;
+use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\AkbankPosCrypt;
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\AkbankPosAccount;
-use Mews\Pos\Exceptions\NotImplementedException;
+use Mews\Pos\Model\Account\AkbankPosAccount;
+use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
+use Mews\Pos\Gateway\AkbankPos;
+use Mews\Pos\Gateway\AssecoPos;
 use Mews\Pos\PosInterface;
-use Mews\Pos\Tests\Unit\DataMapper\ResponseDataMapper\AkbankPosResponseDataMapperTest;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Crypt\AkbankPosCrypt
- * @covers \Mews\Pos\Crypt\AbstractCrypt
- */
+#[CoversClass(AkbankPosCrypt::class)]
+#[CoversClass(AbstractCrypt::class)]
 class AkbankPosCryptTest extends TestCase
 {
     private AkbankPosAccount $account;
@@ -42,6 +44,15 @@ class AkbankPosCryptTest extends TestCase
         $this->crypt = new AkbankPosCrypt($logger);
     }
 
+    public function testSupports(): void
+    {
+        $supports = $this->crypt::supports(AkbankPos::class);
+        $this->assertTrue($supports);
+
+        $supports = $this->crypt::supports(AssecoPos::class);
+        $this->assertFalse($supports);
+    }
+
     public function testGenerateRandomString(): void
     {
         $str = $this->crypt->generateRandomString();
@@ -54,33 +65,27 @@ class AkbankPosCryptTest extends TestCase
         $this->crypt->createHash($this->account, []);
     }
 
-    /**
-     * @dataProvider hashStringDataProvider
-     */
+    #[DataProvider('hashStringDataProvider')]
     public function testHashString(string $str, string $expected): void
     {
-        $actual = $this->crypt->hashString($str, $this->account->getStoreKey());
+        $actual = $this->crypt->hashString($str, $this->account->getSecretKey());
         $this->assertSame($expected, $actual);
     }
 
     public function testHashStringException(): void
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->crypt->hashString('abc');
     }
 
-    /**
-     * @dataProvider create3DHashDataProvider
-     */
+    #[DataProvider('create3DHashDataProvider')]
     public function testCreate3DHash(array $requestData, string $expected): void
     {
         $actual = $this->crypt->create3DHash($this->account, $requestData);
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider threeDHashCheckDataProvider
-     */
+    #[DataProvider('threeDHashCheckDataProvider')]
     public function testCheck3DHash(bool $expected, array $responseData): void
     {
         $this->assertSame($expected, $this->crypt->check3DHash($this->account, $responseData));
@@ -89,28 +94,90 @@ class AkbankPosCryptTest extends TestCase
         $this->assertFalse($this->crypt->check3DHash($this->account, $responseData));
     }
 
-    public function testCheck3DHashException(): void
-    {
-        $account = $this->createMock(AbstractPosAccount::class);
-        $this->expectException(\LogicException::class);
-        $this->crypt->check3DHash($account, []);
-    }
-
-
     public static function threeDHashCheckDataProvider(): array
     {
         return [
             [
                 'expectedResult' => true,
-                'responseData'   => AkbankPosResponseDataMapperTest::threeDPaymentDataProvider()['success1']['threeDResponseData'],
+                'responseData'   => [
+                    'txnCode'         => '3001',
+                    'responseCode'    => 'VPS-0000',
+                    'responseMessage' => 'BAŞARILI',
+                    'txnDateTime'     => '2024-04-18T20:15:35.000',
+                    'merchantSafeId'  => '2023090417500272654BD9A49CF07574',
+                    'terminalSafeId'  => '2023090417500284633D137A249DBBEB',
+                    'orderId'         => '20240418BA6C',
+                    'secureEcomInd'   => '02',
+                    'secureId'        => 'VG8yV2tCRHpTSlpNN2VqcDJRS1k=',
+                    'secureData'      => 'kBM8+wZGAAAAAAAAAAAAAAAAAAAA',
+                    'secureMd'        => '08A86B192287C69B2C443E7A42B29B5F46436C41DF8E159B4A232BB3D961940F',
+                    'hashParams'      => 'txnCode+responseCode+responseMessage+txnDateTime+merchantSafeId+terminalSafeId+orderId+secureId+secureEcomInd+secureData+secureMd',
+                    'hash'            => 'bFYReNscRIyo3EQQm18qB9iZEW5eqtx1UBAjwRAoVJuigugPKr4Rjcf4PgBHtrjg1IYFYAz8k3TCFcKWS0b4Xg==',
+                ],
             ],
             [
                 'expectedResult' => true,
-                'responseData'   => AkbankPosResponseDataMapperTest::threeDPayPaymentDataProvider()['success1']['paymentData'],
+                'responseData'   => [
+                    'txnCode'                => '1000',
+                    'responseCode'           => 'VPS-0000',
+                    'responseMessage'        => 'BAŞARILI',
+                    'hostResponseCode'       => '00',
+                    'hostMessage'            => '000 ONAY KODU XXXXXX',
+                    'txnDateTime'            => '2024-04-18T20:27:45.000',
+                    'merchantSafeId'         => '2023090417500272654BD9A49CF07574',
+                    'terminalSafeId'         => '2023090417500284633D137A249DBBEB',
+                    'cardHolderName'         => 'TD**',
+                    'orderId'                => '2024041811DA',
+                    'authCode'               => '306456',
+                    'rrn'                    => '411024360235',
+                    'batchNumber'            => '43',
+                    'stan'                   => '86',
+                    'additionalInstallCount' => '0',
+                    'deferingMonth'          => '2',
+                    'ccbEarnedRewardAmount'  => '0.01',
+                    'ccbBalanceRewardAmount' => '215.62',
+                    'ccbRewardDesc'          => 'CHIP PARA',
+                    'pcbEarnedRewardAmount'  => '0.00',
+                    'pcbBalanceRewardAmount' => '0.00',
+                    'pcbRewardDesc'          => '',
+                    'xcbEarnedRewardAmount'  => '0.00',
+                    'xcbBalanceRewardAmount' => '0.00',
+                    'xcbRewardDesc'          => '',
+                    'hashParams'             => 'txnCode+responseCode+responseMessage+hostResponseCode+hostMessage+txnDateTime+merchantSafeId+terminalSafeId+orderId+cardHolderName+authCode+rrn+batchNumber+stan+additionalInstallCount+deferingMonth+ccbEarnedRewardAmount+ccbBalanceRewardAmount+ccbRewardDesc+pcbEarnedRewardAmount+pcbBalanceRewardAmount+xcbEarnedRewardAmount+xcbBalanceRewardAmount',
+                    'hash'                   => 'PO/pybfGrY7fesPoAq2U2B1bkpudx659yMyjTnnfP/Cw5MKR1t7mKvRnZdPBxu9nCC7qJFdr3mJSPTdMwYc3SA==',
+                ],
             ],
             [
                 'expectedResult' => true,
-                'responseData'   => AkbankPosResponseDataMapperTest::threeDHostPaymentDataProvider()['success1']['paymentData'],
+                'responseData'   => [
+                    'txnCode'                => '1000',
+                    'responseCode'           => 'VPS-0000',
+                    'responseMessage'        => 'BAŞARILI',
+                    'hostResponseCode'       => '00',
+                    'hostMessage'            => '000 ONAY KODU XXXXXX',
+                    'txnDateTime'            => '2024-04-18T20:56:28.000',
+                    'merchantSafeId'         => '2023090417500272654BD9A49CF07574',
+                    'terminalSafeId'         => '2023090417500284633D137A249DBBEB',
+                    'cardHolderName'         => 'TD**',
+                    'orderId'                => '2024041898FD',
+                    'authCode'               => '306460',
+                    'rrn'                    => '411024360239',
+                    'batchNumber'            => '43',
+                    'stan'                   => '90',
+                    'additionalInstallCount' => '0',
+                    'deferingMonth'          => '2',
+                    'ccbEarnedRewardAmount'  => '0.01',
+                    'ccbBalanceRewardAmount' => '215.66',
+                    'ccbRewardDesc'          => 'CHIP PARA',
+                    'pcbEarnedRewardAmount'  => '0.00',
+                    'pcbBalanceRewardAmount' => '0.00',
+                    'pcbRewardDesc'          => '',
+                    'xcbEarnedRewardAmount'  => '0.00',
+                    'xcbBalanceRewardAmount' => '0.00',
+                    'xcbRewardDesc'          => '',
+                    'hashParams'             => 'txnCode+responseCode+responseMessage+hostResponseCode+hostMessage+txnDateTime+merchantSafeId+terminalSafeId+orderId+cardHolderName+authCode+rrn+batchNumber+stan+additionalInstallCount+deferingMonth+ccbEarnedRewardAmount+ccbBalanceRewardAmount+ccbRewardDesc+pcbEarnedRewardAmount+pcbBalanceRewardAmount+xcbEarnedRewardAmount+xcbBalanceRewardAmount',
+                    'hash'                   => 'o8cVLBkljHc+1Icpoa35agcd7UPvD57gFY+bp7MQYznHnOr3f71vvsJwnbIQ2hGGVJj1nAdkZrh/lcVCdtMA+g==',
+                ],
             ],
         ];
     }
@@ -118,7 +185,7 @@ class AkbankPosCryptTest extends TestCase
     public static function create3DHashDataProvider(): array
     {
         return [
-            '3d_secure' => [
+            '3d_secure'                      => [
                 'requestData' => [
                     'paymentModel'    => '3D',
                     'txnCode'         => '3000',
@@ -170,7 +237,7 @@ class AkbankPosCryptTest extends TestCase
                 ],
                 'expected'    => 'blqnTrcdZ2JhQBjOmIhyYPhKvC4BlbG7oArE5IkCeuo8CwaYV69EJSOph7J1JKY9opIsmc5QoscGmltGMUJtTQ==',
             ],
-            '3d_host'   => [
+            '3d_host'                        => [
                 'requestData' => [
                     'paymentModel'    => 'MODEL_3D_HOST',
                     'txnCode'         => '3000',
@@ -200,7 +267,7 @@ class AkbankPosCryptTest extends TestCase
     {
         return [
             [
-                'string' => '{"terminal":{"merchantSafeId":"2023090417500272654BD9A49CF07574","terminalSafeId":"2023090417500284633D137A249DBBEB"},"version":"1.00","txnCode":"1010","requestDateTime":"2024-04-20T13:48:02.000","randomNumber":"59EED19EC4FA761B8D147F5175C915EFD69D193ED96114F9690505EDB02FF5FD3CB161A15FD5EFFB294177291DC27B2A9F58FB1DA6F2F4617762AF180A023A33","order":{"orderId":"2024042053E2"}}',
+                'string'   => '{"terminal":{"merchantSafeId":"2023090417500272654BD9A49CF07574","terminalSafeId":"2023090417500284633D137A249DBBEB"},"version":"1.00","txnCode":"1010","requestDateTime":"2024-04-20T13:48:02.000","randomNumber":"59EED19EC4FA761B8D147F5175C915EFD69D193ED96114F9690505EDB02FF5FD3CB161A15FD5EFFB294177291DC27B2A9F58FB1DA6F2F4617762AF180A023A33","order":{"orderId":"2024042053E2"}}',
                 'expected' => 'D07V9wUXfyPbn+L8jqd9plMfJKT3gSy22Z+yruzWsvuJBkQ63fz+wcWjTF2XurVjYtnR7wLGYTJYg0xjDCYAHA==',
             ],
         ];

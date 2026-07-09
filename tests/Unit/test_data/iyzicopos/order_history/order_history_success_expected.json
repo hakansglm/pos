@@ -1,0 +1,39 @@
+{
+    "order_id": "20260611C995",
+    "proc_return_code": "success",
+    "error_code": null,
+    "error_message": null,
+    "trans_count": 1,
+    "transactions": [
+        {
+            "auth_code": "099030",
+            "proc_return_code": null,
+            "transaction_id": 35790626,
+            "transaction_time": {
+                "date": "2026-06-11 23:29:31.000000",
+                "timezone_type": 3,
+                "timezone": "Z"
+            },
+            "capture_time": null,
+            "error_message": null,
+            "ref_ret_num": "mock00003iyzihostrfn",
+            "order_status": "TOTALLY_REFUNDED",
+            "transaction_type": "pay",
+            "first_amount": 10.01,
+            "capture_amount": 10.01,
+            "status": "approved",
+            "error_code": null,
+            "capture": true,
+            "currency": "TRY",
+            "masked_number": "460345******0000",
+            "payment_model": "regular",
+            "installment_count": 0,
+            "cancel_time": {
+                "date": "2026-06-11 23:29:34.000000",
+                "timezone_type": 3,
+                "timezone": "Z"
+            }
+        }
+    ],
+    "status": "approved"
+}

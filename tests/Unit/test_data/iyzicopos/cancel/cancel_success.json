@@ -1,0 +1,12 @@
+{
+    "status": "success",
+    "locale": "tr",
+    "systemTime": 1781209774684,
+    "conversationId": "20260611C995",
+    "paymentId": "35790626",
+    "price": 10.01,
+    "currency": "TRY",
+    "authCode": "911288",
+    "hostReference": "mock00003iyzihostrfn",
+    "cancelHostReference": "mock00003iyzihostrfn-02"
+}

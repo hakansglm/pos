@@ -7,20 +7,21 @@
 namespace Mews\Pos\Tests\Unit\Crypt;
 
 use Mews\Pos\Crypt\NullCrypt;
-use Mews\Pos\Entity\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\KuveytPos;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Crypt\NullCrypt
- */
+#[CoversClass(NullCrypt::class)]
 class NullCryptTest extends TestCase
 {
     private NullCrypt $crypt;
 
     /** @var AbstractPosAccount & MockObject */
-    private AbstractPosAccount $account;
+    private MockObject $account;
 
     protected function setUp(): void
     {
@@ -29,6 +30,15 @@ class NullCryptTest extends TestCase
         $this->account = $this->createMock(AbstractPosAccount::class);
 
         $this->crypt = new NullCrypt($this->createMock(LoggerInterface::class));
+    }
+
+    public function testSupports(): void
+    {
+        $supports = $this->crypt::supports(KuveytPos::class);
+        $this->assertTrue($supports);
+
+        $supports = $this->crypt::supports(AssecoPos::class);
+        $this->assertTrue($supports);
     }
 
     public function testCreate3DHash(): void

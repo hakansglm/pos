@@ -1,0 +1,493 @@
+<?php
+
+/**
+ * @license MIT
+ */
+
+namespace Mews\Pos\Tests\Unit\DataMapper\Request\Mapper;
+
+use PHPUnit\Framework\Attributes\DataProvider;
+use Mews\Pos\Exception\NotImplementedException;
+use DateTimeImmutable;
+use DateTime;
+use Mews\Pos\Crypt\CryptInterface;
+use Mews\Pos\DataMapper\Request\Mapper\AbstractRequestDataMapper;
+use Mews\Pos\DataMapper\Request\Mapper\ToslaPosRequestDataMapper;
+use Mews\Pos\DataMapper\Request\ValueFormatter\ToslaPosRequestValueFormatter;
+use Mews\Pos\DataMapper\Request\ValueMapper\ToslaPosRequestValueMapper;
+use Mews\Pos\Model\Account\ToslaPosAccount;
+use Mews\Pos\Model\Card\CreditCardInterface;
+use Mews\Pos\Factory\AccountFactory;
+use Mews\Pos\Factory\CreditCardFactory;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\ToslaPos;
+use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
+use Psr\EventDispatcher\EventDispatcherInterface;
+
+#[CoversClass(ToslaPosRequestDataMapper::class)]
+#[CoversClass(AbstractRequestDataMapper::class)]
+class ToslaPosRequestDataMapperTest extends TestCase
+{
+    private ToslaPosAccount $account;
+
+    private CreditCardInterface $card;
+
+    /** @var CryptInterface & MockObject */
+    private MockObject $crypt;
+
+    /** @var EventDispatcherInterface & MockObject */
+    private MockObject $dispatcher;
+
+    private ToslaPosRequestDataMapper $requestDataMapper;
+
+    private ToslaPosRequestValueFormatter $valueFormatter;
+
+    private ToslaPosRequestValueMapper $valueMapper;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->account = AccountFactory::createToslaPosAccount(
+            'tosla',
+            '1000000494',
+            'POS_ENT_Test_001',
+            'POS_ENT_Test_001!*!*',
+        );
+
+        $this->dispatcher     = $this->createMock(EventDispatcherInterface::class);
+        $this->crypt          = $this->createMock(CryptInterface::class);
+        $this->valueFormatter = new ToslaPosRequestValueFormatter();
+        $this->valueMapper    = new ToslaPosRequestValueMapper();
+
+        $this->requestDataMapper = new ToslaPosRequestDataMapper(
+            $this->valueMapper,
+            $this->valueFormatter,
+            $this->dispatcher,
+            $this->crypt,
+            PosInterface::LANG_EN
+        );
+
+        $this->card = CreditCardFactory::create('5555444433332222', '22', '01', '123', 'ahmet', CreditCardInterface::CARD_TYPE_VISA);
+    }
+
+    public function testSupports(): void
+    {
+        $result = $this->requestDataMapper::supports(ToslaPos::class);
+        $this->assertTrue($result);
+
+        $result = $this->requestDataMapper::supports(AssecoPos::class);
+        $this->assertFalse($result);
+    }
+
+    #[DataProvider('nonSecurePaymentPostRequestDataProvider')]
+    public function testCreateNonSecurePostAuthPaymentRequestData(array $order, array $expected): void
+    {
+        $requestDataWithoutHash = $expected;
+        unset($requestDataWithoutHash['hash']);
+
+        $this->crypt->expects(self::once())
+            ->method('generateRandomString')
+            ->willReturn($expected['rnd']);
+        $this->crypt->expects(self::once())
+            ->method('createHash')
+            ->with($this->account, $requestDataWithoutHash)
+            ->willReturn($expected['hash']);
+
+        $actual = $this->requestDataMapper->createNonSecurePostAuthPaymentRequestData($this->account, $order);
+        $this->assertSame($expected, $actual);
+    }
+
+    #[DataProvider('paymentRegisterRequestDataProvider')]
+    public function testCreate3DFormInitializeRequestData(array $order, string $paymentModel, string $txType, array $expected): void
+    {
+        $requestDataWithoutHash = $expected;
+        unset($requestDataWithoutHash['hash']);
+
+        $this->crypt->expects(self::once())
+            ->method('generateRandomString')
+            ->willReturn($expected['rnd']);
+        $this->crypt->expects(self::once())
+            ->method('createHash')
+            ->with($this->account, $requestDataWithoutHash)
+            ->willReturn($expected['hash']);
+
+        $actual = $this->requestDataMapper->create3DFormInitializeRequestData($this->account, $order, $paymentModel, $txType);
+        $this->assertSame($expected, $actual);
+    }
+
+    #[DataProvider('nonSecurePaymentRequestDataProvider')]
+    public function testCreateNonSecurePaymentRequestData(array $order, string $txType, array $expected): void
+    {
+        $requestDataWithoutHash = $expected;
+        unset($requestDataWithoutHash['hash']);
+
+        $this->crypt->expects(self::once())
+            ->method('generateRandomString')
+            ->willReturn($expected['rnd']);
+        $this->crypt->expects(self::once())
+            ->method('createHash')
+            ->with($this->account, $requestDataWithoutHash)
+            ->willReturn($expected['hash']);
+
+        $actual = $this->requestDataMapper->createNonSecurePaymentRequestData($this->account, $order, $txType, $this->card);
+        $this->assertSame($expected, $actual);
+    }
+
+    #[DataProvider('cancelRequestDataProvider')]
+    public function testCreateCancelRequestData(array $order, array $expected): void
+    {
+        $requestDataWithoutHash = $expected;
+        unset($requestDataWithoutHash['hash']);
+
+        $this->crypt->expects(self::once())
+            ->method('generateRandomString')
+            ->willReturn($expected['rnd']);
+        $this->crypt->expects(self::once())
+            ->method('createHash')
+            ->with($this->account, $requestDataWithoutHash)
+            ->willReturn($expected['hash']);
+
+        $actual = $this->requestDataMapper->createCancelRequestData($this->account, $order);
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[DataProvider('orderHistoryRequestDataProvider')]
+    public function testCreateOrderHistoryRequestData(array $order, array $expected): void
+    {
+        $requestDataWithoutHash = $expected;
+        unset($requestDataWithoutHash['hash']);
+
+        $this->crypt->expects(self::once())
+            ->method('generateRandomString')
+            ->willReturn($expected['rnd']);
+        $this->crypt->expects(self::once())
+            ->method('createHash')
+            ->with($this->account, $requestDataWithoutHash)
+            ->willReturn($expected['hash']);
+
+        $actual = $this->requestDataMapper->createOrderHistoryRequestData($this->account, $order);
+
+        $this->assertSame($expected, $actual);
+    }
+
+
+    #[DataProvider('threeDFormDataProvider')]
+    public function testGet3DFormData(array $order, string $txType, string $paymentModel, bool $withCard, string $gatewayURL, array $expected): void
+    {
+        $card = $withCard ? $this->card : null;
+
+        $this->crypt->expects(self::never())
+            ->method('create3DHash');
+
+        $this->crypt->expects(self::never())
+            ->method('generateRandomString');
+
+        $this->dispatcher->expects(self::never())
+            ->method('dispatch');
+
+        $actual = $this->requestDataMapper->create3DFormData(
+            $this->account,
+            $order,
+            $paymentModel,
+            $txType,
+            $gatewayURL,
+            $card
+        );
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[DataProvider('statusRequestDataProvider')]
+    public function testCreateStatusRequestData(array $order, array $expected): void
+    {
+        $requestDataWithoutHash = $expected;
+        unset($requestDataWithoutHash['hash']);
+
+        $this->crypt->expects(self::once())
+            ->method('generateRandomString')
+            ->willReturn($expected['rnd']);
+        $this->crypt->expects(self::once())
+            ->method('createHash')
+            ->with($this->account, $requestDataWithoutHash)
+            ->willReturn($expected['hash']);
+
+        $actualData = $this->requestDataMapper->createStatusRequestData($this->account, $order);
+
+        $this->assertSame($expected, $actualData);
+    }
+
+    #[DataProvider('refundRequestDataProvider')]
+    public function testCreateRefundRequestData(array $order, string $txType, array $expected): void
+    {
+        $requestDataWithoutHash = $expected;
+        unset($requestDataWithoutHash['hash']);
+
+        $this->crypt->expects(self::once())
+            ->method('generateRandomString')
+            ->willReturn($expected['rnd']);
+        $this->crypt->expects(self::once())
+            ->method('createHash')
+            ->with($this->account, $requestDataWithoutHash)
+            ->willReturn($expected['hash']);
+
+        $actual = $this->requestDataMapper->createRefundRequestData($this->account, $order, $txType);
+
+        ksort($actual);
+        ksort($expected);
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testCreate3DPaymentRequestData(): void
+    {
+        $this->expectException(NotImplementedException::class);
+        $this->requestDataMapper->create3DPaymentRequestData(
+            $this->account,
+            [],
+            PosInterface::TX_TYPE_PAY_AUTH,
+            []
+        );
+    }
+
+    public static function statusRequestDataProvider(): array
+    {
+        return [
+            [
+                'order'    => [
+                    'id'        => 'id-12',
+                    'time_span' => new DateTimeImmutable('20231209215355'),
+                ],
+                'expected' => [
+                    'clientId' => '1000000494',
+                    'apiUser'  => 'POS_ENT_Test_001',
+                    'orderId'  => 'id-12',
+                    'rnd'      => 'rand-212s',
+                    'timeSpan' => '20231209215355',
+                    'hash'     => 'jcgZOAf/m/E1uwYXmOPrdgqXRuEmVuG3Q14yri0okhULvRDbAicyAU8hflUP634yRRSZkOnIOeLZNqXfLhzz7g==',
+                ],
+            ],
+        ];
+    }
+
+    public static function cancelRequestDataProvider(): array
+    {
+        return [
+            [
+                'order'    => [
+                    'id'        => 'id-12',
+                    'time_span' => new DateTimeImmutable('20231209215355'),
+                ],
+                'expected' => [
+                    'clientId' => '1000000494',
+                    'apiUser'  => 'POS_ENT_Test_001',
+                    'orderId'  => 'id-12',
+                    'rnd'      => 'rand-212s',
+                    'timeSpan' => '20231209215355',
+                    'hash'     => 'jcgZOAf/m/E1uwYXmOPrdgqXRuEmVuG3Q14yri0okhULvRDbAicyAU8hflUP634yRRSZkOnIOeLZNqXfLhzz7g==',
+                ],
+            ],
+        ];
+    }
+
+    public static function refundRequestDataProvider(): array
+    {
+        return [
+            [
+                'order'    => [
+                    'id'        => 'id-12',
+                    'amount'    => 1.02,
+                    'time_span' => new DateTimeImmutable('20231209215355'),
+                ],
+                'tx_type'  => PosInterface::TX_TYPE_REFUND,
+                'expected' => [
+                    'clientId' => '1000000494',
+                    'apiUser'  => 'POS_ENT_Test_001',
+                    'orderId'  => 'id-12',
+                    'rnd'      => 'rand-212s',
+                    'timeSpan' => '20231209215355',
+                    'hash'     => 'jcgZOAf/m/E1uwYXmOPrdgqXRuEmVuG3Q14yri0okhULvRDbAicyAU8hflUP634yRRSZkOnIOeLZNqXfLhzz7g==',
+                    'amount'   => 102,
+                ],
+            ],
+        ];
+    }
+
+    public static function paymentRegisterRequestDataProvider(): array
+    {
+        $order = [
+            'id'          => 'order222',
+            'amount'      => 100.25,
+            'installment' => 0,
+            'currency'    => PosInterface::CURRENCY_TRY,
+            'success_url' => 'https://domain.com/success',
+            'time_span'   => new DateTimeImmutable('20231209214708'),
+        ];
+
+        return [
+            [
+                'order'        => $order,
+                'paymentModel' => PosInterface::MODEL_3D_PAY,
+                'txType'       => PosInterface::TX_TYPE_PAY_AUTH,
+                'expected'     => [
+                    'clientId'         => '1000000494',
+                    'apiUser'          => 'POS_ENT_Test_001',
+                    'callbackUrl'      => 'https://domain.com/success',
+                    'orderId'          => 'order222',
+                    'amount'           => 10025,
+                    'currency'         => 949,
+                    'installmentCount' => 0,
+                    'rnd'              => 'rand',
+                    'timeSpan'         => '20231209214708',
+                    'hash'             => '+XGO1qv+6W7nXZwSsYMaRrWXhi+99jffLvExGsFDodYyNadOG7OQKsygzly5ESDoNIS19oD2U+hSkVeT6UTAFA==',
+                ],
+            ],
+        ];
+    }
+
+    public static function nonSecurePaymentRequestDataProvider(): array
+    {
+        $order = [
+            'id'          => 'order222',
+            'amount'      => 100.25,
+            'installment' => 0,
+            'currency'    => PosInterface::CURRENCY_TRY,
+            'success_url' => 'https://domain.com/success',
+            'time_span'   => new DateTimeImmutable('20231209214708'),
+        ];
+
+        return [
+            [
+                'order'    => $order,
+                'txType'   => PosInterface::TX_TYPE_PAY_AUTH,
+                'expected' => [
+                    'clientId'         => '1000000494',
+                    'apiUser'          => 'POS_ENT_Test_001',
+                    'orderId'          => 'order222',
+                    'amount'           => 10025,
+                    'currency'         => 949,
+                    'installmentCount' => 0,
+                    'rnd'              => 'rand',
+                    'timeSpan'         => '20231209214708',
+                    'cardHolderName'   => 'ahmet',
+                    'cardNo'           => '5555444433332222',
+                    'expireDate'       => '0122',
+                    'cvv'              => '123',
+                    'hash'             => '+XGO1qv+6W7nXZwSsYMaRrWXhi+99jffLvExGsFDodYyNadOG7OQKsygzly5ESDoNIS19oD2U+hSkVeT6UTAFA==',
+                ],
+            ],
+        ];
+    }
+
+    public static function nonSecurePaymentPostRequestDataProvider(): array
+    {
+        return [
+            [
+                'order'    => [
+                    'id'        => '2020110828BC',
+                    'amount'    => 1.10,
+                    'time_span' => new DateTimeImmutable('20231209213944'),
+                ],
+                'expected' => [
+                    'clientId' => '1000000494',
+                    'apiUser'  => 'POS_ENT_Test_001',
+                    'orderId'  => '2020110828BC',
+                    'amount'   => 110,
+                    'rnd'      => 'raranra',
+                    'timeSpan' => '20231209213944',
+                    'hash'     => 'bLp8WNYiaKrnW+EfwHuUZ1ovao0laSeuU/DqUMhjI40QNWdcHJWRKpkoE+eb1U07GGDgsIKKvx9nh84s6K1+pQ==',
+                ],
+            ],
+        ];
+    }
+
+    public static function orderHistoryRequestDataProvider(): array
+    {
+        return [
+            [
+                'order'    => [
+                    'id'               => '2020110828BC',
+                    'time_span'        => new DateTimeImmutable('20231209215355'),
+                    'transaction_date' => new DateTime('2023-12-09 00:00:00'),
+                ],
+                'expected' => [
+                    'clientId'        => '1000000494',
+                    'apiUser'         => 'POS_ENT_Test_001',
+                    'orderId'         => '2020110828BC',
+                    'transactionDate' => '20231209',
+                    'page'            => 1,
+                    'pageSize'        => 10,
+                    'rnd'             => 'rand-123',
+                    'timeSpan'        => '20231209215355',
+                    'hash'            => 'csrJh00U/nYGim8jPp9uddRdRvEWZf8pYu9Elss5RtA9JQt6DRkXxrTTY4iYQt5iABp5bj+/RYhlnTflyD9eBw==',
+                ],
+            ],
+            [
+                'order'    => [
+                    'id'               => '2020110828BC',
+                    'time_span'        => new DateTimeImmutable('20231209215355'),
+                    'page'             => 2,
+                    'page_size'        => 5,
+                    'transaction_date' => new DateTime('2023-12-09 00:00:00'),
+                ],
+                'expected' => [
+                    'clientId'        => '1000000494',
+                    'apiUser'         => 'POS_ENT_Test_001',
+                    'orderId'         => '2020110828BC',
+                    'transactionDate' => '20231209',
+                    'page'            => 2,
+                    'pageSize'        => 5,
+                    'rnd'             => 'rand-123',
+                    'timeSpan'        => '20231209215355',
+                    'hash'            => 'csrJh00U/nYGim8jPp9uddRdRvEWZf8pYu9Elss5RtA9JQt6DRkXxrTTY4iYQt5iABp5bj+/RYhlnTflyD9eBw==',
+                ],
+            ],
+        ];
+    }
+
+    public static function threeDFormDataProvider(): array
+    {
+        return [
+            '3d_host_form_data' => [
+                'order'         => [
+                    'ThreeDSessionId' => 'A2A6E942BD2AE4A68BC42FE99D1BC917D67AFF54AB2BA44EBA675843744187708',
+                ],
+                'tx_type'       => PosInterface::TX_TYPE_PAY_AUTH,
+                'payment_model' => PosInterface::MODEL_3D_HOST,
+                'is_with_card'  => false,
+                'gateway'       => 'https://ent.akodepos.com/api/Payment/threeDSecure',
+                'expected'      => [
+                    'gateway' => 'https://ent.akodepos.com/api/Payment/threeDSecure/A2A6E942BD2AE4A68BC42FE99D1BC917D67AFF54AB2BA44EBA675843744187708',
+                    'method'  => 'GET',
+                    'inputs'  => [],
+                ],
+            ],
+            '3d_pay_form_data'  => [
+                'order'         => [
+                    'ThreeDSessionId' => 'P6D383818909442128AB50AB1EC7A4B83080874341688447DA74B90150C8857F2',
+                    'TransactionId'   => '2000000000032631',
+                    'Code'            => 0,
+                    'Message'         => 'Başarılı',
+                ],
+                'tx_type'       => PosInterface::TX_TYPE_PAY_AUTH,
+                'payment_model' => PosInterface::MODEL_3D_PAY,
+                'is_with_card'  => true,
+                'gateway'       => 'https://ent.akodepos.com/api/Payment/ProcessCardForm',
+                'expected'      => [
+                    'gateway' => 'https://ent.akodepos.com/api/Payment/ProcessCardForm',
+                    'method'  => 'POST',
+                    'inputs'  => [
+                        'ThreeDSessionId' => 'P6D383818909442128AB50AB1EC7A4B83080874341688447DA74B90150C8857F2',
+                        'CardHolderName'  => 'ahmet',
+                        'CardNo'          => '5555444433332222',
+                        'ExpireDate'      => '01/22',
+                        'Cvv'             => '123',
+                    ],
+                ],
+            ],
+        ];
+    }
+}

@@ -14,23 +14,19 @@ require './vendor/autoload.php';
 // AccountFactory'de kullanılacak method Gateway'e göre değişir!!!
 // /examples altındaki _config.php dosyalara bakınız
 // (örn: /examples/akbankpos/3d/_config.php)
-$account = \Mews\Pos\Factory\AccountFactory::createEstPosAccount(
+$account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
     'akbank', //pos config'deki ayarın index name'i
     'yourClientID',
     'yourKullaniciAdi',
     'yourSifre',
-    \Mews\Pos\PosInterface::MODEL_NON_SECURE,
-    '', // bankaya göre zorunlu
-    \Mews\Pos\PosInterface::LANG_TR
 );
 
 $eventDispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+$config = require __DIR__.'/pos_test_ayarlar.php';
 
 try {
-    $config = require __DIR__.'/pos_test_ayarlar.php';
-
-    $pos = \Mews\Pos\Factory\PosFactory::createPosGateway($account, $config, $eventDispatcher);
-} catch (\Mews\Pos\Exceptions\BankNotFoundException | \Mews\Pos\Exceptions\BankClassNullException $e) {
+    $pos = \Mews\Pos\Factory\PosFactory::create($account, $config['banks'][$account->getBankName()], $eventDispatcher);
+} catch (\Mews\Pos\Exception\GatewayClassNotConfiguredException $e) {
     var_dump($e));
     exit;
 }
@@ -42,6 +38,15 @@ try {
 
 require 'config.php';
 
+/**
+ * Ödeme durumu sorgulama işlemi için gereken istek verileri Gateway'den gateway'e değiştigine göre,
+ * Bu method verilen gateway göre istek verilerini oluşturur.
+ *
+ * @param class-string<\Mews\Pos\PosInterface> $gatewayClass
+ * @param array<string, mixed> $lastResponse ödeme işlemi sonrası Pos kütüphanesinden dönen response verisi
+ *
+ * @return array<string, mixed>
+ */
 function createStatusOrder(string $gatewayClass, array $lastResponse, string $ip): array
 {
     $statusOrder = [
@@ -49,10 +54,10 @@ function createStatusOrder(string $gatewayClass, array $lastResponse, string $ip
         'currency' => $lastResponse['currency'],
         'ip'       => filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? $ip : '127.0.0.1',
     ];
-    if (\Mews\Pos\Gateways\KuveytPos::class === $gatewayClass) {
+    if (\Mews\Pos\Gateway\KuveytPos::class === $gatewayClass) {
         $statusOrder['remote_order_id'] = $lastResponse['remote_order_id']; // OrderId
     }
-    if (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNet::class === $gatewayClass) {
+    if (\Mews\Pos\Gateway\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateway\PosNetPos::class === $gatewayClass) {
         /**
          * payment_model: siparis olusturulurken kullanilan odeme modeli.
          * orderId'yi dogru sekilde formatlamak icin zorunlu.
@@ -60,7 +65,7 @@ function createStatusOrder(string $gatewayClass, array $lastResponse, string $ip
         $statusOrder['payment_model'] = $lastResponse['payment_model'];
     }
     if (isset($lastResponse['recurring_id'])
-        && (\Mews\Pos\Gateways\EstPos::class === $gatewayClass || \Mews\Pos\Gateways\EstV3Pos::class === $gatewayClass)
+        && (\Mews\Pos\Gateway\AssecoPos::class === $gatewayClass)
     ) {
         // tekrarlanan odemenin durumunu sorgulamak icin:
         $statusOrder = [
@@ -72,17 +77,16 @@ function createStatusOrder(string $gatewayClass, array $lastResponse, string $ip
     return $statusOrder;
 }
 
-// odemeden aldiginiz cevap: $pos->getResponse();
-$lastResponse = $session->get('last_response');
+// ödeme işlemi sonrası dönen veriler
+$_SESSION['last_response'] ?? null
 $ip = '127.0.0.1';
 $order = createStatusOrder(get_class($pos), $lastResponse, $ip);
 
 try {
-    $pos->status($order);
+    $response = $pos->status($order);
 } catch (\Error $e) {
     var_dump($e);
     exit;
 }
-$response = $pos->getResponse();
 var_dump($response);
 ```

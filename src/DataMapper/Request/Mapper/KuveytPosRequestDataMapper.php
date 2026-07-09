@@ -1,0 +1,426 @@
+<?php
+
+/**
+ * @license MIT
+ */
+
+namespace Mews\Pos\DataMapper\Request\Mapper;
+
+use Mews\Pos\Crypt\CryptInterface;
+use Mews\Pos\Crypt\KuveytPosCrypt;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\BoaPosAccount;
+use Mews\Pos\Model\Card\CreditCardInterface;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Exception\UnsupportedTransactionTypeException;
+use Mews\Pos\Gateway\KuveytPos;
+use Mews\Pos\PosInterface;
+
+/**
+ * Creates request data for KuveytPos Gateway requests
+ *
+ * @internal
+ */
+class KuveytPosRequestDataMapper extends AbstractRequestDataMapper
+{
+    /** @var string */
+    public const API_VERSION = 'TDV2.0.0';
+
+    /** @var KuveytPosCrypt */
+    protected CryptInterface $crypt;
+
+    /**
+     * @inheritDoc
+     */
+    public static function supports(string $gatewayClass): bool
+    {
+        return KuveytPos::class === $gatewayClass;
+    }
+
+    /**
+     * @param BoaPosAccount $posAccount
+     *
+     * {@inheritDoc}
+     *
+     * @return array{APIVersion: string, HashData: string, CustomerIPAddress: mixed, KuveytTurkVPosAdditionalData: array{AdditionalData: array{Key: string, Data: mixed}}, TransactionType: string, InstallmentCount: mixed, Amount: mixed, DisplayAmount: int, CurrencyCode: mixed, MerchantOrderId: mixed, TransactionSecurity: mixed, MerchantId: string, CustomerId: string, UserName: string}
+     */
+    public function create3DPaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, array $responseData): array
+    {
+        $order = $this->applyPaymentDefaults($order);
+
+        $result = $this->getRequestAccountData($posAccount) + [
+                'APIVersion'                   => self::API_VERSION,
+                'HashData'                     => '',
+                'CustomerIPAddress'            => $order['ip'],
+                'KuveytTurkVPosAdditionalData' => [
+                    'AdditionalData' => [
+                        'Key'  => 'MD',
+                        'Data' => $responseData['MD'],
+                    ],
+                ],
+                'TransactionType'              => $this->valueMapper->mapTxType($txType),
+                'InstallmentCount'             => $responseData['VPosMessage']['InstallmentCount'],
+                'Amount'                       => $responseData['VPosMessage']['Amount'],
+                'DisplayAmount'                => $responseData['VPosMessage']['Amount'],
+                'CurrencyCode'                 => $responseData['VPosMessage']['CurrencyCode'],
+                'MerchantOrderId'              => $responseData['VPosMessage']['MerchantOrderId'],
+                'TransactionSecurity'          => $responseData['VPosMessage']['TransactionSecurity'],
+            ];
+
+        $result['HashData'] = $this->crypt->createHash($posAccount, $result);
+
+        return $result;
+    }
+
+    /**
+     * @phpstan-param PosInterface::MODEL_3D_*                                          $paymentModel
+     * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
+     *
+     * @param BoaPosAccount            $posAccount
+     * @param array<string, mixed>     $order
+     * @param string                   $paymentModel
+     * @param string                   $txType
+     * @param CreditCardInterface|null $creditCard
+     *
+     * @return array<string, mixed>
+     *
+     * @throws UnsupportedTransactionTypeException
+     */
+    public function create3DFormInitializeRequestData(AbstractPosAccount $posAccount, array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null): array
+    {
+        $order = $this->applyPaymentDefaults($order);
+
+        if (!isset($order['payment_channel'])) {
+            throw new \InvalidArgumentException('payment_channel is required in $order');
+        }
+
+        if (!isset($order['billing_address'])) {
+            throw new \InvalidArgumentException('billing_address is required in $order');
+        }
+
+        if (!isset($order['buyer'])) {
+            throw new \InvalidArgumentException('buyer is required in $order');
+        }
+
+        $requestData = $this->getRequestAccountData($posAccount) + [
+                'APIVersion'          => self::API_VERSION,
+                'TransactionType'     => $this->valueMapper->mapTxType($txType),
+                'TransactionSecurity' => $this->valueMapper->mapSecureType($paymentModel),
+                'InstallmentCount'    => $this->valueFormatter->formatInstallment($order['installment']),
+                'Amount'              => (int) $this->valueFormatter->formatAmount($order['amount']),
+                //DisplayAmount: Amount değeri ile aynı olacak şekilde gönderilmelidir.
+                'DisplayAmount'       => (int) $this->valueFormatter->formatAmount($order['amount']),
+                'CurrencyCode'        => $this->valueMapper->mapCurrency($order['currency']),
+                'MerchantOrderId'     => (string) $order['id'],
+                'OkUrl'               => (string) $order['success_url'],
+                'FailUrl'             => (string) $order['fail_url'],
+                'DeviceData'          => [
+                    'ClientIP'      => (string) $order['ip'],
+                    'DeviceChannel' => (string) $order['payment_channel'],
+                ],
+                'CardHolderData'      => [
+                    'BillAddrCity'     => (string) $order['billing_address']['city'],
+                    'BillAddrCountry'  => (string) $order['billing_address']['country'],
+                    'BillAddrLine1'    => (string) $order['billing_address']['address'],
+                    'BillAddrPostCode' => (string) $order['billing_address']['zip_code'],
+                    'BillAddrState'    => (string) $order['billing_address']['state'],
+                    'Email'            => (string) $order['buyer']['email'],
+                    'MobilePhone'      => [
+                        'Cc'         => (string) $order['buyer']['gsm_number_cc'],
+                        'Subscriber' => (string) $order['buyer']['gsm_number'],
+                    ],
+                ],
+            ];
+
+        if ($creditCard instanceof CreditCardInterface) {
+            $requestData['CardHolderName']      = (string) $creditCard->getHolderName();
+            $requestData['CardType']            = $creditCard->getType() !== null ? $this->valueMapper->mapCardType($creditCard->getType()) : '';
+            $requestData['CardNumber']          = $creditCard->getNumber();
+            $requestData['CardExpireDateYear']  = $this->valueFormatter->formatCardExpDate($creditCard->getExpirationDate(), 'CardExpireDateYear');
+            $requestData['CardExpireDateMonth'] = $this->valueFormatter->formatCardExpDate($creditCard->getExpirationDate(), 'CardExpireDateMonth');
+            $requestData['CardCVV2']            = $creditCard->getCvv();
+        }
+
+        $requestData['HashData'] = $this->crypt->createHash($posAccount, $requestData);
+
+        return $requestData;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function createNonSecurePostAuthPaymentRequestData(AbstractPosAccount $posAccount, array $order): array
+    {
+        throw new NotImplementedException();
+    }
+
+    /**
+     * @param BoaPosAccount $posAccount
+     *
+     * {@inheritDoc}
+     */
+    public function createNonSecurePaymentRequestData(AbstractPosAccount $posAccount, array $order, string $txType, CreditCardInterface $creditCard): array
+    {
+        $order = $this->applyPaymentDefaults($order);
+
+        $requestData = $this->getRequestAccountData($posAccount) + [
+                'APIVersion'          => self::API_VERSION,
+                'HashData'            => '',
+                'TransactionType'     => $this->valueMapper->mapTxType($txType),
+                'TransactionSecurity' => '1',
+                'MerchantOrderId'     => (string) $order['id'],
+                'Amount'              => $this->valueFormatter->formatAmount($order['amount']),
+                'DisplayAmount'       => $this->valueFormatter->formatAmount($order['amount']),
+                'CurrencyCode'        => $this->valueMapper->mapCurrency($order['currency']),
+                'InstallmentCount'    => $this->valueFormatter->formatInstallment($order['installment']),
+                'CardHolderName'      => $creditCard->getHolderName(),
+                'CardNumber'          => $creditCard->getNumber(),
+                'CardExpireDateYear'  => $this->valueFormatter->formatCardExpDate($creditCard->getExpirationDate(), 'CardExpireDateYear'),
+                'CardExpireDateMonth' => $this->valueFormatter->formatCardExpDate($creditCard->getExpirationDate(), 'CardExpireDateMonth'),
+                'CardCVV2'            => $creditCard->getCvv(),
+            ];
+
+        $requestData['HashData'] = $this->crypt->createHash($posAccount, $requestData);
+
+        return $requestData;
+    }
+
+    /**
+     * @param BoaPosAccount $posAccount
+     *
+     * {@inheritDoc}
+     */
+    public function createStatusRequestData(AbstractPosAccount $posAccount, array $order): array
+    {
+        /** @var array<string, mixed> $order */
+        $order = \array_merge($order, [
+            'id'         => $order['id'],
+            'currency'   => $order['currency'] ?? PosInterface::CURRENCY_TRY,
+            'start_date' => $order['start_date'] ?? date_create('-360 day'),
+            'end_date'   => $order['end_date'] ?? date_create(),
+        ]);
+
+        $result = [
+            'IsFromExternalNetwork' => true,
+            'BusinessKey'           => 0,
+            'ResourceId'            => 0,
+            'ActionId'              => 0,
+            'LanguageId'            => 0,
+            'CustomerId'            => $posAccount->getCustomerId(),
+            'MailOrTelephoneOrder'  => true,
+            'Amount'                => 0,
+            'MerchantId'            => $posAccount->getMerchantId(),
+            'MerchantOrderId'       => $order['id'],
+            /**
+             * Eğer döndüğümüz orderid ile aratılırsa yalnızca aranan işlem gelir.
+             * 0 değeri girilirse tarih aralığındaki aynı merchanorderid'ye ait tüm siparişleri getirir.
+             * uniq değer orderid'dir, işlemi birebir yakalamak için orderid değeri atanmalıdır.
+             */
+            'OrderId'               => $order['remote_order_id'] ?? 0,
+            /**
+             * Test ortamda denendiginde, StartDate ve EndDate her hangi bir tarih atandiginda istek calisiyor,
+             * siparisi buluyor.
+             * Ancak bu degerler gonderilmediginde veya gecersiz (orn. null) gonderildiginde SOAP server hata donuyor.
+             */
+            'StartDate'             => $this->valueFormatter->formatDateTime($order['start_date'], 'StartDate'),
+            'EndDate'               => $this->valueFormatter->formatDateTime($order['end_date'], 'EndDate'),
+            'TransactionType'       => 0,
+            'VPosMessage'           => $this->getRequestAccountData($posAccount) + [
+                    'APIVersion'                       => self::API_VERSION,
+                    'InstallmentMaturityCommisionFlag' => 0,
+                    'HashData'                         => '',
+                    'SubMerchantId'                    => 0,
+                    'CardType'                         => $this->valueMapper->mapCardType(CreditCardInterface::CARD_TYPE_VISA), //Default gönderilebilir.
+                    'BatchID'                          => 0,
+                    'TransactionType'                  => $this->valueMapper->mapTxType(PosInterface::TX_TYPE_STATUS),
+                    'InstallmentCount'                 => 0,
+                    'Amount'                           => 0,
+                    'DisplayAmount'                    => 0,
+                    'CancelAmount'                     => 0,
+                    'MerchantOrderId'                  => $order['id'],
+                    'CurrencyCode'                     => $this->valueMapper->mapCurrency($order['currency']),
+                    'FECAmount'                        => 0,
+                    'QeryId'                           => 0,
+                    'DebtId'                           => 0,
+                    'SurchargeAmount'                  => 0,
+                    'SGKDebtAmount'                    => 0,
+                    'TransactionSecurity'              => 1,
+                ],
+        ];
+
+        $result['VPosMessage']['HashData'] = $this->crypt->createHash($posAccount, $result['VPosMessage']);
+
+        return [$result['VPosMessage']['TransactionType'] => ['request' => $result]];
+    }
+
+    /**
+     * @param BoaPosAccount $posAccount
+     *
+     * {@inheritDoc}
+     */
+    public function createCancelRequestData(AbstractPosAccount $posAccount, array $order): array
+    {
+        /** @var array<string, mixed> $order */
+        $order = \array_merge($order, [
+            'id'              => $order['id'],
+            'remote_order_id' => $order['remote_order_id'],
+            'ref_ret_num'     => $order['ref_ret_num'],
+            'auth_code'       => $order['auth_code'],
+            'transaction_id'  => $order['transaction_id'],
+            'amount'          => $order['amount'],
+            'currency'        => $order['currency'] ?? PosInterface::CURRENCY_TRY,
+        ]);
+
+        $result = [
+            'IsFromExternalNetwork' => true,
+            'BusinessKey'           => 0,
+            'ResourceId'            => 0,
+            'ActionId'              => 0,
+            'LanguageId'            => 0,
+            'CustomerId'            => $posAccount->getCustomerId(),
+            'MailOrTelephoneOrder'  => true,
+            'Amount'                => $this->valueFormatter->formatAmount($order['amount']),
+            'MerchantId'            => $posAccount->getMerchantId(),
+            'OrderId'               => $order['remote_order_id'],
+            'RRN'                   => $order['ref_ret_num'],
+            'Stan'                  => $order['transaction_id'],
+            'ProvisionNumber'       => $order['auth_code'],
+            'VPosMessage'           => $this->getRequestAccountData($posAccount) + [
+                    'APIVersion'                       => self::API_VERSION,
+                    'InstallmentMaturityCommisionFlag' => 0,
+                    'HashData'                         => '',
+                    'SubMerchantId'                    => 0,
+                    'CardType'                         => $this->valueMapper->mapCardType(CreditCardInterface::CARD_TYPE_VISA), //Default gönderilebilir.
+                    'BatchID'                          => 0,
+                    'TransactionType'                  => $this->valueMapper->mapTxType(PosInterface::TX_TYPE_CANCEL),
+                    'InstallmentCount'                 => 0,
+                    'Amount'                           => $this->valueFormatter->formatAmount($order['amount']),
+                    'DisplayAmount'                    => $this->valueFormatter->formatAmount($order['amount']),
+                    'CancelAmount'                     => $this->valueFormatter->formatAmount($order['amount']),
+                    'MerchantOrderId'                  => $order['id'],
+                    'FECAmount'                        => 0,
+                    'CurrencyCode'                     => $this->valueMapper->mapCurrency($order['currency']),
+                    'QeryId'                           => 0,
+                    'DebtId'                           => 0,
+                    'SurchargeAmount'                  => 0,
+                    'SGKDebtAmount'                    => 0,
+                    'TransactionSecurity'              => 1,
+                ],
+        ];
+
+        $result['VPosMessage']['HashData'] = $this->crypt->createHash($posAccount, $result['VPosMessage']);
+
+        return [$result['VPosMessage']['TransactionType'] => ['request' => $result]];
+    }
+
+    /**
+     * @param BoaPosAccount $posAccount
+     *
+     * {@inheritDoc}
+     */
+    public function createRefundRequestData(AbstractPosAccount $posAccount, array $order, string $refundTxType): array
+    {
+        /** @var array<string, mixed> $order */
+        $order = \array_merge($order, [
+            'id'              => $order['id'],
+            'remote_order_id' => $order['remote_order_id'],
+            'ref_ret_num'     => $order['ref_ret_num'],
+            'auth_code'       => $order['auth_code'],
+            'transaction_id'  => $order['transaction_id'],
+            'amount'          => $order['amount'],
+            'currency'        => $order['currency'] ?? PosInterface::CURRENCY_TRY,
+        ]);
+
+        $result = [
+            'IsFromExternalNetwork' => true,
+            'BusinessKey'           => 0,
+            'ResourceId'            => 0,
+            'ActionId'              => 0,
+            'LanguageId'            => 0,
+            'CustomerId'            => $posAccount->getCustomerId(),
+            'MailOrTelephoneOrder'  => true,
+            'Amount'                => $this->valueFormatter->formatAmount($order['amount']),
+            'MerchantId'            => $posAccount->getMerchantId(),
+            'OrderId'               => $order['remote_order_id'],
+            'RRN'                   => $order['ref_ret_num'],
+            'Stan'                  => $order['transaction_id'],
+            'ProvisionNumber'       => $order['auth_code'],
+            'VPosMessage'           => $this->getRequestAccountData($posAccount) + [
+                    'APIVersion'                       => self::API_VERSION,
+                    'InstallmentMaturityCommisionFlag' => 0,
+                    'HashData'                         => '',
+                    'SubMerchantId'                    => 0,
+                    'CardType'                         => $this->valueMapper->mapCardType(CreditCardInterface::CARD_TYPE_VISA), //Default gönderilebilir.
+                    'BatchID'                          => 0,
+                    'TransactionType'                  => $this->valueMapper->mapTxType($refundTxType),
+                    'InstallmentCount'                 => 0,
+                    'Amount'                           => $this->valueFormatter->formatAmount($order['amount']),
+                    'DisplayAmount'                    => 0,
+                    'CancelAmount'                     => $this->valueFormatter->formatAmount($order['amount']),
+                    'MerchantOrderId'                  => $order['id'],
+                    'FECAmount'                        => 0,
+                    'CurrencyCode'                     => $this->valueMapper->mapCurrency($order['currency']),
+                    'QeryId'                           => 0,
+                    'DebtId'                           => 0,
+                    'SurchargeAmount'                  => 0,
+                    'SGKDebtAmount'                    => 0,
+                    'TransactionSecurity'              => 1,
+                ],
+        ];
+
+        $result['VPosMessage']['HashData'] = $this->crypt->createHash($posAccount, $result['VPosMessage']);
+
+        return [$result['VPosMessage']['TransactionType'] => ['request' => $result]];
+    }
+
+    /**
+     * Küveyt Türk kendisi hazır HTML form gönderiyor.
+     * {@inheritDoc}
+     */
+    public function create3DFormData(
+        AbstractPosAccount   $posAccount,
+        array                $order,
+        string               $paymentModel,
+        string               $txType,
+        string               $gatewayURL,
+        ?CreditCardInterface $creditCard = null,
+        ?array               $extraData = null
+    ) {
+        throw new NotImplementedException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function createOrderHistoryRequestData(AbstractPosAccount $posAccount, array $order): array
+    {
+        throw new NotImplementedException();
+    }
+
+    /**
+     * @param array<string, mixed> $order
+     *
+     * @return array<string, mixed>
+     */
+    private function applyPaymentDefaults(array $order): array
+    {
+        return \array_merge($order, [
+            'installment' => $order['installment'] ?? 0,
+            'currency'    => $order['currency'] ?? PosInterface::CURRENCY_TRY,
+        ]);
+    }
+
+    /**
+     * @param BoaPosAccount $posAccount
+     *
+     * @return array{MerchantId: string, CustomerId: string, UserName: string}
+     */
+    private function getRequestAccountData(AbstractPosAccount $posAccount): array
+    {
+        return [
+            'MerchantId' => $posAccount->getMerchantId(),
+            'CustomerId' => $posAccount->getCustomerId(),
+            'UserName'   => $posAccount->getUsername(),
+        ];
+    }
+}

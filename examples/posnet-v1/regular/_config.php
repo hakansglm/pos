@@ -3,19 +3,28 @@
 use Mews\Pos\PosInterface;
 
 require '../_payment_config.php';
+/** @var string $bankTestsUrl */
+/** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
+
 
 $baseUrl = $bankTestsUrl.'/regular/';
-//account bilgileri kendi account bilgilerinizle degistiriniz
-$account = \Mews\Pos\Factory\AccountFactory::createPosNetAccount(
+
+$account = \Mews\Pos\Factory\AccountFactory::createPosNetPosAccount(
     'albaraka',
-    '6702640212', // 10 haneli üye işyeri numarası
-    '67C16990', // 8 haneli üye işyeri terminal numarası
-    '1010062861356072', // 16 haneli üye işyeri EPOS numarası.
-    PosInterface::MODEL_NON_SECURE,
+    getRequiredEnv('POSNET_V1_MERCHANT_ID'), // 10 haneli üye işyeri numarası
+    getRequiredEnv('POSNET_V1_TERMINAL_ID'), // 8 haneli üye işyeri terminal numarası
+    getRequiredEnv('POSNET_V1_POS_ID'), // 16 haneli üye işyeri EPOS numarası.
     '10,10,10,10,10,10,10,10'
 );
 
 $pos = getGateway($account, $eventDispatcher);
+
+// İsteğe bağlı: KOI kampanya kodu (bankadan temin edilir).
+// $eventDispatcher->addListener(\Mews\Pos\Event\RequestDataPreparedEvent::class, function (\Mews\Pos\Event\RequestDataPreparedEvent $event): void {
+//     $data            = $event->getRequestData();
+//     $data['KOICode'] = '1'; // 1:Ek Taksit 2:Taksit Atlatma 3:Ekstra Puan 4:Kontur Kazanım 5:Ekstre Erteleme 6:Özel Vade Farkı
+//     $event->setRequestData($data);
+// });
 
 $templateTitle = 'Regular Payment';
 $paymentModel = PosInterface::MODEL_NON_SECURE;

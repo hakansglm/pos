@@ -15,17 +15,18 @@ $ cp ./vendor/mews/pos/config/pos_test.php ./pos_test_ayarlar.php
 ```
 
 **config.php (Ayar dosyası)**
+
 ```php
 <?php
 require './vendor/autoload.php';
 
-$sessionHandler = new \Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage([
-    'cookie_samesite' => 'None',
-    'cookie_secure'   => true,
-    'cookie_httponly' => true, // Javascriptin session'a erişimini engelliyoruz.
+// Configure session with security options
+session_set_cookie_params([
+    'samesite' => 'None',
+    'secure'   => true,
+    'httponly' => true, // Javascriptin session'a erişimini engelliyoruz.
 ]);
-$session        = new \Symfony\Component\HttpFoundation\Session\Session($sessionHandler);
-$session->start();
+session_start();
 
 $paymentModel = \Mews\Pos\PosInterface::MODEL_3D_HOST;
 $transactionType = \Mews\Pos\PosInterface::TX_TYPE_PAY_AUTH;
@@ -34,23 +35,19 @@ $transactionType = \Mews\Pos\PosInterface::TX_TYPE_PAY_AUTH;
 // AccountFactory'de kullanılacak method Gateway'e göre değişir!!!
 // /examples altındaki _config.php dosyalara bakınız
 // (örn: /examples/akbankpos/3d/_config.php)
-$account = \Mews\Pos\Factory\AccountFactory::createPayForAccount(
+$account = \Mews\Pos\Factory\AccountFactory::createPayForPosAccount(
     'qnbfinansbank-payfor', //pos config'deki ayarın index name'i
     'merchantId',
     'userCode',
     'userPassword',
-    $paymentModel,
-    'merchantPass',
-    \Mews\Pos\PosInterface::LANG_TR
+    'merchantPass'
 );
 
 $eventDispatcher = new Symfony\Component\EventDispatcher\EventDispatcher();
-
+$config = require __DIR__.'/pos_test_ayarlar.php';
 try {
-    $config = require __DIR__.'/pos_test_ayarlar.php';
-
-    $pos = \Mews\Pos\Factory\PosFactory::createPosGateway($account, $config, $eventDispatcher);
-} catch (\Mews\Pos\Exceptions\BankNotFoundException | \Mews\Pos\Exceptions\BankClassNullException $e) {
+    $pos = \Mews\Pos\Factory\PosFactory::create($account, $config['banks'][$account->getBankName()], $eventDispatcher);
+} catch (\Mews\Pos\Exception\GatewayClassNotConfiguredException $e) {
     var_dump($e);
     exit;
 }
@@ -75,24 +72,18 @@ $order = [
     'success_url' => 'https://example.com/response.php',
     'fail_url'    => 'https://example.com/response.php',
 
-    //lang degeri verilmezse account (EstPosAccount) dili kullanılacak
-    'lang' => \Mews\Pos\Gateways\PosInterface::LANG_TR, // Kullanıcının yönlendirileceği banka gateway sayfasının ve gateway'den dönen mesajların dili.
+    // lang degeri verilmezse config'de tanimlanan dil veya default olarak LANG_TR kullanılacak.
+    'lang' => \Mews\Pos\Gateway\PosInterface::LANG_TR, // Kullanıcının yönlendirileceği banka gateway sayfasının ve gateway'den dönen mesajların dili.
 ];
 
-$session->set('order', $order);
+$_SESSION['order'] = $order;
 $card = null;
 
 $formData = $pos->get3DFormData(
     $order,
     \Mews\Pos\PosInterface::MODEL_NON_SECURE, // QR code odeme icin MODEL_NON_SECURE kullanilir
     $transactionType,
-    $card,
-    /**
-     * MODEL_3D_SECURE veya MODEL_3D_PAY ödemelerde kredi kart verileri olmadan
-     * form verisini oluşturmak için true yapabilirsiniz.
-     * Yine de bazı gatewaylerde kartsız form verisi oluşturulamıyor.
-     */
-    true
+    $card
 );
 
 unset($formData['inputs']['Rnd']);
@@ -141,20 +132,22 @@ $formData['gateway'] = 'https://vpostest.qnb.com.tr/Gateway/QR/QRHost.aspx';
 
 require 'config.php';
 
-$order = $session->get('order');
+$order = $_SESSION['order'];
 $card  = null;
 
 // Sonuç işleniyor
+$gatewayResponseData = $_POST;
+if (get_class($pos) === \Mews\Pos\Gateway\PayFlexCPV4Pos::class) {
+    $gatewayResponseData = $_GET;
+}
 try  {
-    $pos->payment(
+    $response = $pos->payment(
         $paymentModel,
         $order,
         $transactionType,
-        $card
+        $card,
+        $gatewayResponseData
     );
-
-    // Sonuç çıktısı
-    $response = $pos->getResponse();
     var_dump($response);
     // response içeriği için /examples/template/_payment_response.php dosyaya bakınız.
 
@@ -162,7 +155,7 @@ try  {
     if ($pos->isSuccess()) {
         // NOT: Ödeme durum sorgulama, iptal ve iade işlemleri yapacaksanız $response değerini saklayınız.
     }
-} catch (\Mews\Pos\Exceptions\HashMismatchException $e) {
+} catch (\Mews\Pos\Exception\HashMismatchException $e) {
     /**
      * Bankadan gelen verilerin bankaya ait olmadığında bu exception oluşur.
      * Veya Banka API bilgileriniz hatalı ise de oluşur.

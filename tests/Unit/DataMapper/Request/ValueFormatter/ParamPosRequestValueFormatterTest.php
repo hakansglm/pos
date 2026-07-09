@@ -1,0 +1,97 @@
+<?php
+
+/**
+ * @license MIT
+ */
+
+namespace Mews\Pos\Tests\Unit\DataMapper\Request\ValueFormatter;
+
+use PHPUnit\Framework\Attributes\DataProvider;
+use DateTime;
+use InvalidArgumentException;
+use Mews\Pos\DataMapper\Request\ValueFormatter\ParamPosRequestValueFormatter;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\Param3DHostPos;
+use Mews\Pos\Gateway\ParamPos;
+use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
+use PHPUnit\Framework\TestCase;
+
+#[CoversClass(ParamPosRequestValueFormatter::class)]
+class ParamPosRequestValueFormatterTest extends TestCase
+{
+    private ParamPosRequestValueFormatter $formatter;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->formatter = new ParamPosRequestValueFormatter();
+    }
+
+    public function testSupports(): void
+    {
+        $result = $this->formatter::supports(ParamPos::class);
+        $this->assertTrue($result);
+        $result = $this->formatter::supports(Param3DHostPos::class);
+        $this->assertTrue($result);
+
+        $result = $this->formatter::supports(AssecoPos::class);
+        $this->assertFalse($result);
+    }
+
+    #[TestWith([0, '1'])]
+    #[TestWith([1, '1'])]
+    #[TestWith([2, '2'])]
+    public function testFormatInstallment(int $installment, string $expected): void
+    {
+        $actual = $this->formatter->formatInstallment($installment);
+        $this->assertSame($expected, $actual);
+    }
+
+    #[DataProvider('formatAmountDataProvider')]
+    public function testFormatAmount(float $amount, string $txType, string $expected): void
+    {
+        $actual = $this->formatter->formatAmount($amount, $txType);
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestWith(['KK_SK_Yil', '2024'])]
+    #[TestWith(['KK_SK_Ay', '04'])]
+    public function testFormatCreditCardExpDate(string $fieldName, string $expected): void
+    {
+        $expDate = new DateTime('2024-04-14T16:45:30.000');
+        $actual = $this->formatter->formatCardExpDate($expDate, $fieldName);
+        $this->assertSame($expected, $actual);
+    }
+
+    #[TestWith(['abc'])]
+    #[TestWith([''])]
+    public function testFormatCreditCardExpDateUnSupportedField(string $fieldName): void
+    {
+        $expDate = new DateTime('2024-04-14T16:45:30.000');
+        $this->expectException(InvalidArgumentException::class);
+        $this->formatter->formatCardExpDate($expDate, $fieldName);
+    }
+
+    public function testFormatDateTime(): void
+    {
+        $dateTime = new DateTime('2024-04-14T16:45:30.000');
+        $actual = $this->formatter->formatDateTime($dateTime);
+        $this->assertSame('14.04.2024 16:45:30', $actual);
+    }
+
+    public static function formatAmountDataProvider(): array
+    {
+        return [
+            [1.0, PosInterface::TX_TYPE_PAY_AUTH, '1,00'],
+            [1000.0, PosInterface::TX_TYPE_PAY_AUTH, '1000,00'],
+            [1.0, PosInterface::TX_TYPE_CANCEL, '1.00'],
+            [1000.0, PosInterface::TX_TYPE_CANCEL, '1000.00'],
+            [1.0, PosInterface::TX_TYPE_REFUND, '1.00'],
+            [1000.0, PosInterface::TX_TYPE_REFUND, '1000.00'],
+            [1.0, PosInterface::TX_TYPE_REFUND_PARTIAL, '1.00'],
+            [1000.0, PosInterface::TX_TYPE_REFUND_PARTIAL, '1000.00'],
+        ];
+    }
+}

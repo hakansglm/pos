@@ -1,15 +1,23 @@
 <?php
 
-use Mews\Pos\PosInterface;
-
 $templateTitle = 'Order Status';
-// ilgili bankanin _config.php dosyasi load ediyoruz.
-// ornegin /examples/finansbank-payfor/regular/_config.php
-require '_config.php';
-$transaction = PosInterface::TX_TYPE_STATUS;
+
+/** @var \Mews\Pos\PosInterface $pos */
+/** @var string $ip */
+
+$transaction = \Mews\Pos\PosInterface::TX_TYPE_STATUS;
 
 require '../../_templates/_header.php';
 
+/**
+ * Ödeme durumu sorgulama işlemi için gereken istek verileri Gateway'den gateway'e değiştigine göre,
+ * Bu method verilen gateway göre istek verilerini oluşturur.
+ *
+ * @param class-string<\Mews\Pos\PosInterface> $gatewayClass
+ * @param array<string, mixed> $lastResponse ödeme işlemi sonrası Pos kütüphanesinden dönen response verisi
+ *
+ * @return array<string, mixed>
+ */
 function createStatusOrder(string $gatewayClass, array $lastResponse, string $ip): array
 {
     $statusOrder = [
@@ -17,10 +25,15 @@ function createStatusOrder(string $gatewayClass, array $lastResponse, string $ip
         'currency' => $lastResponse['currency'],
         'ip'       => filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? $ip : '127.0.0.1',
     ];
-    if (\Mews\Pos\Gateways\KuveytPos::class === $gatewayClass) {
+    if (\Mews\Pos\Gateway\IyzicoPos::class === $gatewayClass) {
+        if (isset($lastResponse['transaction_id'])) {
+            $statusOrder['transaction_id'] = $lastResponse['transaction_id'];
+        }
+    }
+    if (\Mews\Pos\Gateway\KuveytPos::class === $gatewayClass) {
         $statusOrder['remote_order_id'] = $lastResponse['remote_order_id']; // OrderId
     }
-    if (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNet::class === $gatewayClass) {
+    if (\Mews\Pos\Gateway\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateway\PosNetPos::class === $gatewayClass) {
         /**
          * payment_model: siparis olusturulurken kullanilan odeme modeli.
          * orderId'yi dogru sekilde formatlamak icin zorunlu.
@@ -28,7 +41,7 @@ function createStatusOrder(string $gatewayClass, array $lastResponse, string $ip
         $statusOrder['payment_model'] = $lastResponse['payment_model'];
     }
     if (isset($lastResponse['recurring_id'])
-        && (\Mews\Pos\Gateways\EstPos::class === $gatewayClass || \Mews\Pos\Gateways\EstV3Pos::class === $gatewayClass)
+        && (\Mews\Pos\Gateway\AssecoPos::class === $gatewayClass)
     ) {
         // tekrarlanan odemenin durumunu sorgulamak icin:
         $statusOrder = [
@@ -40,12 +53,11 @@ function createStatusOrder(string $gatewayClass, array $lastResponse, string $ip
     return $statusOrder;
 }
 
-$order = createStatusOrder(get_class($pos), $session->get('last_response'), $ip);
+$lastResponse = $_SESSION['last_response'] ?? [];
+$order = createStatusOrder($pos::class, $lastResponse, $ip);
 dump($order);
 
-$pos->status($order);
-
-$response = $pos->getResponse();
+$response = $pos->status($order);
 
 require '../../_templates/_simple_response_dump.php';
 require '../../_templates/_footer.php';

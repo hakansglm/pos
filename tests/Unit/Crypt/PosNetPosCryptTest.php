@@ -1,0 +1,118 @@
+<?php
+
+/**
+ * @license MIT
+ */
+
+namespace Mews\Pos\Tests\Unit\Crypt;
+
+use PHPUnit\Framework\Attributes\DataProvider;
+use Mews\Pos\Crypt\AbstractCrypt;
+use Mews\Pos\Crypt\PosNetPosCrypt;
+use Mews\Pos\Model\Account\PosNetPosAccount;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Factory\AccountFactory;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\PosNetPos;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
+
+#[CoversClass(PosNetPosCrypt::class)]
+#[CoversClass(AbstractCrypt::class)]
+class PosNetPosCryptTest extends TestCase
+{
+    public PosNetPosCrypt $crypt;
+
+    private PosNetPosAccount $account;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->account = AccountFactory::createPosNetPosAccount(
+            'yapikredi',
+            '6706598320',
+            '67005551',
+            '27426',
+            '10,10,10,10,10,10,10,10'
+        );
+
+        $logger      = $this->createMock(LoggerInterface::class);
+        $this->crypt = new PosNetPosCrypt($logger);
+    }
+
+    public function testSupports(): void
+    {
+        $supports = $this->crypt::supports(PosNetPos::class);
+        $this->assertTrue($supports);
+
+        $supports = $this->crypt::supports(AssecoPos::class);
+        $this->assertFalse($supports);
+    }
+
+    public function testCreate3DHashException(): void
+    {
+        $this->expectException(NotImplementedException::class);
+
+        $this->crypt->create3DHash($this->account, []);
+    }
+
+    #[DataProvider('hashCreateDataProvider')]
+    public function testCreateHash(array $requestData, array $order, string $expected): void
+    {
+        $actual = $this->crypt->createHash($this->account, $requestData, $order);
+
+        $this->assertSame($expected, $actual);
+    }
+
+
+    #[DataProvider('threeDHashCheckDataProvider')]
+    public function testCheck3DHash(bool $expected, array $responseData): void
+    {
+        $this->assertSame($expected, $this->crypt->check3DHash($this->account, $responseData));
+
+        $responseData['amount'] = '';
+        $this->assertFalse($this->crypt->check3DHash($this->account, $responseData));
+    }
+
+    public static function hashCreateDataProvider(): array
+    {
+        return [
+            [
+                'requestData' => [
+                    'mid' => '6706598320',
+                    'tid' => '67005551',
+                ],
+                'order'       => [
+                    'id'          => 'TST_190620093100_024',
+                    'amount'      => 175,
+                    'installment' => 0,
+                    'currency'    => 'TL',
+                ],
+                'expected'    => 'nyeFSQ4J9NZVeCcEGCDomM8e2YIvoeIa/IDh2D3qaL4=',
+            ],
+        ];
+    }
+
+    public static function threeDHashCheckDataProvider(): array
+    {
+        return [
+            [
+                'expectedResult' => true,
+                'responseData'   => [
+                    'xid'            => '00000000000000000895',
+                    'amount'         => '100',
+                    'currency'       => 'TL',
+                    'installment'    => '00',
+                    'point'          => '0',
+                    'pointAmount'    => '0',
+                    'txStatus'       => 'N',
+                    'mdStatus'       => '9',
+                    'mdErrorMessage' => 'None 3D - Secure Transaction',
+                    'mac'            => '7I9ojRm7yzvZZTFNOYWocGIGSTv2Vmq23STR6X6X+c0=',
+                ],
+            ],
+        ];
+    }
+}

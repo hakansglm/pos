@@ -1,3 +1,10 @@
+<?php
+/** @var \Mews\Pos\PosInterface $pos */
+/** @var string $bankTestsUrl */
+/** @var string $paymentModel */
+/** @var array<string, mixed> $response */
+/** @var string $transaction */
+?>
 <div class="result">
     <h3 class="text-center text-<?= $pos->isSuccess() ? 'success' : 'danger'; ?>">
         <?php if (\Mews\Pos\PosInterface::TX_TYPE_PAY_AUTH === $transaction || \Mews\Pos\PosInterface::TX_TYPE_PAY_POST_AUTH === $transaction) : ?>
@@ -40,10 +47,6 @@
     <dl class="row">
         <dt class="col-sm-3">Error Code:</dt>
         <dd class="col-sm-9"><?= $response['error_code'] ?: '-'; ?></dd>
-    </dl>
-    <dl class="row">
-        <dt class="col-sm-3">Status Detail:</dt>
-        <dd class="col-sm-9"><?= $response['status_detail'] ?: '-'; ?></dd>
     </dl>
     <hr>
     <dl class="row">

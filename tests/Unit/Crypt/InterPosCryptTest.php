@@ -6,19 +6,20 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
+use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\InterPosCrypt;
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\InterPosAccount;
-use Mews\Pos\Exceptions\NotImplementedException;
+use Mews\Pos\Model\Account\InterPosAccount;
+use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
-use Mews\Pos\PosInterface;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\InterPos;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Crypt\InterPosCrypt
- * @covers \Mews\Pos\Crypt\AbstractCrypt
- */
+#[CoversClass(InterPosCrypt::class)]
+#[CoversClass(AbstractCrypt::class)]
 class InterPosCryptTest extends TestCase
 {
     private InterPosAccount $account;
@@ -39,7 +40,6 @@ class InterPosCryptTest extends TestCase
             $shopCode,
             $userCode,
             $userPass,
-            PosInterface::MODEL_3D_SECURE,
             $merchantPass
         );
 
@@ -47,9 +47,16 @@ class InterPosCryptTest extends TestCase
         $this->crypt = new InterPosCrypt($logger);
     }
 
-    /**
-     * @dataProvider threeDHashCheckDataProvider
-     */
+    public function testSupports(): void
+    {
+        $supports = $this->crypt::supports(InterPos::class);
+        $this->assertTrue($supports);
+
+        $supports = $this->crypt::supports(AssecoPos::class);
+        $this->assertFalse($supports);
+    }
+
+    #[DataProvider('threeDHashCheckDataProvider')]
     public function testCheck3DHash(array $responseData): void
     {
         $this->assertTrue($this->crypt->check3DHash($this->account, $responseData));
@@ -58,9 +65,7 @@ class InterPosCryptTest extends TestCase
         $this->assertFalse($this->crypt->check3DHash($this->account, $responseData));
     }
 
-    /**
-     * @dataProvider threeDHashCreateDataProvider
-     */
+    #[DataProvider('threeDHashCreateDataProvider')]
     public function testCreate3DHash(array $requestData, string $expected): void
     {
         $actual = $this->crypt->create3DHash($this->account, $requestData);
@@ -72,13 +77,6 @@ class InterPosCryptTest extends TestCase
     {
         $this->expectException(NotImplementedException::class);
         $this->crypt->createHash($this->account, []);
-    }
-
-    public function testCheck3DHashException(): void
-    {
-        $account = $this->createMock(AbstractPosAccount::class);
-        $this->expectException(\LogicException::class);
-        $this->crypt->check3DHash($account, []);
     }
 
     public static function threeDHashCheckDataProvider(): array

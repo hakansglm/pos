@@ -6,60 +6,95 @@
 
 namespace Mews\Pos\Tests\Unit\Factory;
 
-use Mews\Pos\DataMapper\RequestDataMapper\RequestDataMapperInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
+use DomainException;
+use stdClass;
+use Mews\Pos\Gateway\AkbankPos;
+use Mews\Pos\DataMapper\Response\Mapper\AkbankPosResponseDataMapper;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\DataMapper\Response\Mapper\AssecoPosResponseDataMapper;
+use Mews\Pos\Gateway\GarantiPos;
+use Mews\Pos\DataMapper\Response\Mapper\GarantiPosResponseDataMapper;
+use Mews\Pos\Gateway\InterPos;
+use Mews\Pos\DataMapper\Response\Mapper\InterPosResponseDataMapper;
+use Mews\Pos\Gateway\KuveytPos;
+use Mews\Pos\DataMapper\Response\Mapper\KuveytPosResponseDataMapper;
+use Mews\Pos\Gateway\ParamPos;
+use Mews\Pos\DataMapper\Response\Mapper\ParamPosResponseDataMapper;
+use Mews\Pos\Gateway\Param3DHostPos;
+use Mews\Pos\Gateway\PayFlexCPV4Pos;
+use Mews\Pos\DataMapper\Response\Mapper\PayFlexCPV4PosResponseDataMapper;
+use Mews\Pos\Gateway\PayFlexV4Pos;
+use Mews\Pos\DataMapper\Response\Mapper\PayFlexV4PosResponseDataMapper;
+use Mews\Pos\Gateway\PayForPos;
+use Mews\Pos\DataMapper\Response\Mapper\PayForPosResponseDataMapper;
+use Mews\Pos\Gateway\PayTrPos;
+use Mews\Pos\DataMapper\Response\Mapper\PayTrPosResponseDataMapper;
+use Mews\Pos\Gateway\PosNetPos;
+use Mews\Pos\DataMapper\Response\Mapper\PosNetPosResponseDataMapper;
+use Mews\Pos\Gateway\PosNetV1Pos;
+use Mews\Pos\DataMapper\Response\Mapper\PosNetV1PosResponseDataMapper;
+use Mews\Pos\Gateway\ToslaPos;
+use Mews\Pos\DataMapper\Response\Mapper\ToslaPosResponseDataMapper;
+use Mews\Pos\Gateway\VakifKatilimPos;
+use Mews\Pos\DataMapper\Response\Mapper\VakifKatilimPosResponseDataMapper;
+use Mews\Pos\DataMapper\Response\ValueFormatter\ResponseValueFormatterInterface;
+use Mews\Pos\DataMapper\Response\ValueMapper\ResponseValueMapperInterface;
 use Mews\Pos\Factory\ResponseDataMapperFactory;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Factory\ResponseDataMapperFactory
- */
+#[CoversClass(ResponseDataMapperFactory::class)]
 class ResponseDataMapperFactoryTest extends TestCase
 {
-    /**
-     * @dataProvider createGatewayResponseMapperDataProvider
-     */
-    public function testCreateGatewayResponseMapper(string $gatewayClass, string $mapperClass): void
+    #[DataProvider('createForGatewayProvider')]
+    public function testCreateForGateway(string $gatewayClass, string $mapperClass): void
     {
-        $requestDataMapper = $this->createMock(RequestDataMapperInterface::class);
-        $logger            = $this->createMock(LoggerInterface::class);
-        $mapper            = ResponseDataMapperFactory::createGatewayResponseMapper(
+        $responseDataMapper     = $this->createMock(ResponseValueMapperInterface::class);
+        $responseValueFormatter = $this->createMock(ResponseValueFormatterInterface::class);
+        $logger                 = $this->createMock(LoggerInterface::class);
+        $mapper                 = ResponseDataMapperFactory::createForGateway(
             $gatewayClass,
-            $requestDataMapper,
+            $responseValueFormatter,
+            $responseDataMapper,
             $logger
         );
         $this->assertInstanceOf($mapperClass, $mapper);
     }
 
-    public function testCreateGatewayResponseMapperUnsupported(): void
+    public function testCreateForGatewayUnsupported(): void
     {
-        $requestDataMapper = $this->createMock(RequestDataMapperInterface::class);
-        $logger            = $this->createMock(LoggerInterface::class);
-        $this->expectException(\DomainException::class);
-        ResponseDataMapperFactory::createGatewayResponseMapper(
-            \stdClass::class,
-            $requestDataMapper,
+        $responseDataMapper     = $this->createMock(ResponseValueMapperInterface::class);
+        $responseValueFormatter = $this->createMock(ResponseValueFormatterInterface::class);
+        $logger                 = $this->createMock(LoggerInterface::class);
+        $this->expectException(DomainException::class);
+        ResponseDataMapperFactory::createForGateway(
+            stdClass::class,
+            $responseValueFormatter,
+            $responseDataMapper,
             $logger
         );
     }
 
-    public static function createGatewayResponseMapperDataProvider(): array
+    public static function createForGatewayProvider(): array
     {
         return [
-            [\Mews\Pos\Gateways\AkbankPos::class, \Mews\Pos\DataMapper\ResponseDataMapper\AkbankPosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\EstPos::class, \Mews\Pos\DataMapper\ResponseDataMapper\EstPosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\EstV3Pos::class, \Mews\Pos\DataMapper\ResponseDataMapper\EstPosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\GarantiPos::class, \Mews\Pos\DataMapper\ResponseDataMapper\GarantiPosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\InterPos::class, \Mews\Pos\DataMapper\ResponseDataMapper\InterPosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\KuveytPos::class, \Mews\Pos\DataMapper\ResponseDataMapper\KuveytPosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\ParamPos::class, \Mews\Pos\DataMapper\ResponseDataMapper\ParamPosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\PayFlexCPV4Pos::class, \Mews\Pos\DataMapper\ResponseDataMapper\PayFlexCPV4PosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\PayFlexV4Pos::class, \Mews\Pos\DataMapper\ResponseDataMapper\PayFlexV4PosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\PayForPos::class, \Mews\Pos\DataMapper\ResponseDataMapper\PayForPosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\PosNet::class, \Mews\Pos\DataMapper\ResponseDataMapper\PosNetResponseDataMapper::class],
-            [\Mews\Pos\Gateways\PosNetV1Pos::class, \Mews\Pos\DataMapper\ResponseDataMapper\PosNetV1PosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\ToslaPos::class, \Mews\Pos\DataMapper\ResponseDataMapper\ToslaPosResponseDataMapper::class],
-            [\Mews\Pos\Gateways\VakifKatilimPos::class, \Mews\Pos\DataMapper\ResponseDataMapper\VakifKatilimPosResponseDataMapper::class],
+            [AkbankPos::class, AkbankPosResponseDataMapper::class],
+            [AssecoPos::class, AssecoPosResponseDataMapper::class],
+            [GarantiPos::class, GarantiPosResponseDataMapper::class],
+            [InterPos::class, InterPosResponseDataMapper::class],
+            [KuveytPos::class, KuveytPosResponseDataMapper::class],
+            [ParamPos::class, ParamPosResponseDataMapper::class],
+            [Param3DHostPos::class, ParamPosResponseDataMapper::class],
+            [PayFlexCPV4Pos::class, PayFlexCPV4PosResponseDataMapper::class],
+            [PayFlexV4Pos::class, PayFlexV4PosResponseDataMapper::class],
+            [PayForPos::class, PayForPosResponseDataMapper::class],
+            [PayTrPos::class, PayTrPosResponseDataMapper::class],
+            [PosNetPos::class, PosNetPosResponseDataMapper::class],
+            [PosNetV1Pos::class, PosNetV1PosResponseDataMapper::class],
+            [ToslaPos::class, ToslaPosResponseDataMapper::class],
+            [VakifKatilimPos::class, VakifKatilimPosResponseDataMapper::class],
         ];
     }
 }

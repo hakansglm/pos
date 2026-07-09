@@ -8,72 +8,88 @@ namespace Mews\Pos\Factory;
 
 use DomainException;
 use Mews\Pos\Crypt\CryptInterface;
-use Mews\Pos\DataMapper\RequestDataMapper\AkbankPosRequestDataMapper;
-use Mews\Pos\DataMapper\RequestDataMapper\EstPosRequestDataMapper;
-use Mews\Pos\DataMapper\RequestDataMapper\EstV3PosRequestDataMapper;
-use Mews\Pos\DataMapper\RequestDataMapper\GarantiPosRequestDataMapper;
-use Mews\Pos\DataMapper\RequestDataMapper\InterPosRequestDataMapper;
-use Mews\Pos\DataMapper\RequestDataMapper\KuveytPosRequestDataMapper;
-use Mews\Pos\DataMapper\RequestDataMapper\ParamPosRequestDataMapper;
-use Mews\Pos\DataMapper\RequestDataMapper\PayFlexCPV4PosRequestDataMapper;
-use Mews\Pos\DataMapper\RequestDataMapper\PayFlexV4PosRequestDataMapper;
-use Mews\Pos\DataMapper\RequestDataMapper\PayForPosRequestDataMapper;
-use Mews\Pos\DataMapper\RequestDataMapper\PosNetRequestDataMapper;
-use Mews\Pos\DataMapper\RequestDataMapper\PosNetV1PosRequestDataMapper;
-use Mews\Pos\DataMapper\RequestDataMapper\RequestDataMapperInterface;
-use Mews\Pos\DataMapper\RequestDataMapper\ToslaPosRequestDataMapper;
-use Mews\Pos\DataMapper\RequestDataMapper\VakifKatilimPosRequestDataMapper;
-use Mews\Pos\Gateways\AkbankPos;
-use Mews\Pos\Gateways\EstPos;
-use Mews\Pos\Gateways\EstV3Pos;
-use Mews\Pos\Gateways\GarantiPos;
-use Mews\Pos\Gateways\InterPos;
-use Mews\Pos\Gateways\KuveytPos;
-use Mews\Pos\Gateways\ParamPos;
-use Mews\Pos\Gateways\PayFlexCPV4Pos;
-use Mews\Pos\Gateways\PayFlexV4Pos;
-use Mews\Pos\Gateways\PayForPos;
-use Mews\Pos\Gateways\PosNet;
-use Mews\Pos\Gateways\PosNetV1Pos;
-use Mews\Pos\Gateways\ToslaPos;
-use Mews\Pos\Gateways\VakifKatilimPos;
+use Mews\Pos\DataMapper\Request\Mapper\AkbankPosRequestDataMapper;
+use Mews\Pos\DataMapper\Request\Mapper\IyzicoPosRequestDataMapper;
+use Mews\Pos\DataMapper\Request\Mapper\AssecoPosRequestDataMapper;
+use Mews\Pos\DataMapper\Request\Mapper\GarantiPosRequestDataMapper;
+use Mews\Pos\DataMapper\Request\Mapper\InterPosRequestDataMapper;
+use Mews\Pos\DataMapper\Request\Mapper\KuveytPosRequestDataMapper;
+use Mews\Pos\DataMapper\Request\Mapper\Param3DHostPosRequestDataMapper;
+use Mews\Pos\DataMapper\Request\Mapper\ParamPosRequestDataMapper;
+use Mews\Pos\DataMapper\Request\Mapper\PayFlexCPV4PosRequestDataMapper;
+use Mews\Pos\DataMapper\Request\Mapper\PayFlexV4PosRequestDataMapper;
+use Mews\Pos\DataMapper\Request\Mapper\PayForPosRequestDataMapper;
+use Mews\Pos\DataMapper\Request\Mapper\PosNetPosRequestDataMapper;
+use Mews\Pos\DataMapper\Request\Mapper\PosNetV1PosRequestDataMapper;
+use Mews\Pos\DataMapper\Request\Mapper\RequestDataMapperInterface;
+use Mews\Pos\DataMapper\Request\Mapper\PayTrPosRequestDataMapper;
+use Mews\Pos\DataMapper\Request\Mapper\ToslaPosRequestDataMapper;
+use Mews\Pos\DataMapper\Request\Mapper\VakifKatilimPosRequestDataMapper;
+use Mews\Pos\DataMapper\Request\ValueFormatter\RequestValueFormatterInterface;
+use Mews\Pos\DataMapper\Request\ValueMapper\RequestValueMapperInterface;
 use Mews\Pos\PosInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
  * RequestDataMapperFactory
+ *
+ * @internal
  */
 class RequestDataMapperFactory
 {
     /**
-     * @param class-string<PosInterface>              $gatewayClass
-     * @param EventDispatcherInterface                $eventDispatcher
-     * @param CryptInterface                          $crypt
-     * @param array<PosInterface::CURRENCY_*, string> $currencies
+     * @var class-string<RequestDataMapperInterface>[]
+     */
+    private static array $requestDataMapperClasses = [
+        AkbankPosRequestDataMapper::class,
+        AssecoPosRequestDataMapper::class,
+        GarantiPosRequestDataMapper::class,
+        InterPosRequestDataMapper::class,
+        IyzicoPosRequestDataMapper::class,
+        KuveytPosRequestDataMapper::class,
+        ParamPosRequestDataMapper::class,
+        Param3DHostPosRequestDataMapper::class,
+        PayFlexCPV4PosRequestDataMapper::class,
+        PayFlexV4PosRequestDataMapper::class,
+        PayForPosRequestDataMapper::class,
+        PosNetPosRequestDataMapper::class,
+        PosNetV1PosRequestDataMapper::class,
+        ToslaPosRequestDataMapper::class,
+        VakifKatilimPosRequestDataMapper::class,
+        PayTrPosRequestDataMapper::class,
+    ];
+
+    /**
+     * @param class-string<PosInterface>     $gatewayClass
+     * @param RequestValueMapperInterface    $valueMapper
+     * @param RequestValueFormatterInterface $valueFormatter
+     * @param EventDispatcherInterface       $eventDispatcher
+     * @param CryptInterface                 $crypt
+     * @param PosInterface::LANG_*           $defaultLang
      *
      * @return RequestDataMapperInterface
      */
-    public static function createGatewayRequestMapper(string $gatewayClass, EventDispatcherInterface $eventDispatcher, CryptInterface $crypt, array $currencies = []): RequestDataMapperInterface
-    {
-        $classMappings = [
-            AkbankPos::class       => AkbankPosRequestDataMapper::class,
-            EstPos::class          => EstPosRequestDataMapper::class,
-            EstV3Pos::class        => EstV3PosRequestDataMapper::class,
-            GarantiPos::class      => GarantiPosRequestDataMapper::class,
-            InterPos::class        => InterPosRequestDataMapper::class,
-            KuveytPos::class       => KuveytPosRequestDataMapper::class,
-            ParamPos::class        => ParamPosRequestDataMapper::class,
-            PayFlexCPV4Pos::class  => PayFlexCPV4PosRequestDataMapper::class,
-            PayFlexV4Pos::class    => PayFlexV4PosRequestDataMapper::class,
-            PayForPos::class       => PayForPosRequestDataMapper::class,
-            PosNet::class          => PosNetRequestDataMapper::class,
-            PosNetV1Pos::class     => PosNetV1PosRequestDataMapper::class,
-            ToslaPos::class        => ToslaPosRequestDataMapper::class,
-            VakifKatilimPos::class => VakifKatilimPosRequestDataMapper::class,
-        ];
-        if (isset($classMappings[$gatewayClass])) {
-            return new $classMappings[$gatewayClass]($eventDispatcher, $crypt, $currencies);
+    public static function createForGateway(
+        string                         $gatewayClass,
+        RequestValueMapperInterface    $valueMapper,
+        RequestValueFormatterInterface $valueFormatter,
+        EventDispatcherInterface       $eventDispatcher,
+        CryptInterface                 $crypt,
+        string                         $defaultLang
+    ): RequestDataMapperInterface {
+        /** @var class-string<RequestDataMapperInterface> $requestDataMapperClass */
+        foreach (self::$requestDataMapperClasses as $requestDataMapperClass) {
+            if ($requestDataMapperClass::supports($gatewayClass)) {
+                return new $requestDataMapperClass(
+                    $valueMapper,
+                    $valueFormatter,
+                    $eventDispatcher,
+                    $crypt,
+                    $defaultLang
+                );
+            }
         }
+
 
         throw new DomainException(\sprintf('Request data mapper not found for the gateway %s', $gatewayClass));
     }

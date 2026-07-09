@@ -30,7 +30,7 @@ body:
       label: Gateway PHP sınıfı
       options:
         - AkbankPos
-        - EstV3Pos
+        - AssecoPos
         - GarantiPos
         - InterPos
         - KuveytPos
@@ -38,10 +38,12 @@ body:
         - PayFlexCPV4Pos
         - PayFlexV4Pos
         - PayForPos
-        - PosNet
+        - PayTr
+        - PosNetPos
         - PosNetV1Pos
         - ToslaPos
         - VakifKatilimPos
+        - IyzicoPos
       default: 0
     validations:
       required: true

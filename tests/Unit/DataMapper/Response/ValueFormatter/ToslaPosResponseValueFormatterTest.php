@@ -1,0 +1,57 @@
+<?php
+
+/**
+ * @license MIT
+ */
+
+namespace Mews\Pos\Tests\Unit\DataMapper\Response\ValueFormatter;
+
+use PHPUnit\Framework\Attributes\DataProvider;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\DataMapper\Response\ValueFormatter\ToslaPosResponseValueFormatter;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\ToslaPos;
+use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\TestCase;
+
+#[CoversClass(ToslaPosResponseValueFormatter::class)]
+class ToslaPosResponseValueFormatterTest extends TestCase
+{
+    private ToslaPosResponseValueFormatter $formatter;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->formatter = new ToslaPosResponseValueFormatter();
+    }
+
+    public function testSupports(): void
+    {
+        $result = $this->formatter::supports(ToslaPos::class);
+        $this->assertTrue($result);
+
+        $result = $this->formatter::supports(AssecoPos::class);
+        $this->assertFalse($result);
+    }
+
+    #[DataProvider('formatAmountProvider')]
+    public function testFormatAmount(string $amount, string $txType, float $expected): void
+    {
+        $actual = $this->formatter->formatAmount($amount, $txType);
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testFormatInstallment(): void
+    {
+        $this->expectException(NotImplementedException::class);
+        $this->formatter->formatInstallment("2", PosInterface::TX_TYPE_PAY_AUTH);
+    }
+
+    public static function formatAmountProvider(): array
+    {
+        return [
+            ['1001', '', 10.01],
+        ];
+    }
+}

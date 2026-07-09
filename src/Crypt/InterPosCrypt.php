@@ -6,11 +6,23 @@
 
 namespace Mews\Pos\Crypt;
 
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Exceptions\NotImplementedException;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\InterPos;
 
+/**
+ * @internal
+ */
 class InterPosCrypt extends AbstractCrypt
 {
+    /**
+     * @inheritDoc
+     */
+    public static function supports(string $gatewayClass): bool
+    {
+        return InterPos::class === $gatewayClass;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -25,7 +37,7 @@ class InterPosCrypt extends AbstractCrypt
             $formInputs['TxnType'],
             $formInputs['InstallmentCount'],
             $formInputs['Rnd'],
-            $posAccount->getStoreKey(),
+            $posAccount->getSecretKey(),
         ];
 
         $hashStr = \implode(static::HASH_SEPARATOR, $hashData);
@@ -38,13 +50,9 @@ class InterPosCrypt extends AbstractCrypt
      */
     public function check3DHash(AbstractPosAccount $posAccount, array $data): bool
     {
-        if (null === $posAccount->getStoreKey()) {
-            throw new \LogicException('Account storeKey eksik!');
-        }
+        $actualHash = $this->hashFromParams($posAccount, $data, $data['HASHPARAMS'], ':');
 
-        $actualHash = $this->hashFromParams($posAccount->getStoreKey(), $data, 'HASHPARAMS', ':');
-
-        if ($data['HASH'] === $actualHash) {
+        if (\hash_equals($data['HASH'], $actualHash)) {
             $this->logger->debug('hash check is successful');
 
             return true;

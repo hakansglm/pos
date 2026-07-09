@@ -6,18 +6,19 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\GarantiPosCrypt;
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\GarantiPosAccount;
+use Mews\Pos\Model\Account\GarantiPosAccount;
 use Mews\Pos\Factory\AccountFactory;
-use Mews\Pos\PosInterface;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\GarantiPos;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Crypt\GarantiPosCrypt
- * @covers \Mews\Pos\Crypt\AbstractCrypt
- */
+#[CoversClass(GarantiPosCrypt::class)]
+#[CoversClass(AbstractCrypt::class)]
 class GarantiPosCryptTest extends TestCase
 {
     private GarantiPosAccount $account;
@@ -34,7 +35,6 @@ class GarantiPosCryptTest extends TestCase
             'PROVAUT',
             '123qweASD/',
             '30691298',
-            PosInterface::MODEL_3D_SECURE,
             '12345678',
             'PROVRFN',
             '123qweASD/'
@@ -44,22 +44,22 @@ class GarantiPosCryptTest extends TestCase
         $this->crypt = new GarantiPosCrypt($logger);
     }
 
-    /**
-     * @dataProvider threeDHashCheckDataProvider
-     */
+    public function testSupports(): void
+    {
+        $supports = $this->crypt::supports(GarantiPos::class);
+        $this->assertTrue($supports);
+
+        $supports = $this->crypt::supports(AssecoPos::class);
+        $this->assertFalse($supports);
+    }
+
+    #[DataProvider('threeDHashCheckDataProvider')]
     public function testCheck3DHash(bool $expected, array $responseData): void
     {
         $this->assertSame($expected, $this->crypt->check3DHash($this->account, $responseData));
 
         $responseData['mdstatus'] = '';
         $this->assertFalse($this->crypt->check3DHash($this->account, $responseData));
-    }
-
-    public function testCheck3DHashException(): void
-    {
-        $account = $this->createMock(AbstractPosAccount::class);
-        $this->expectException(\LogicException::class);
-        $this->crypt->check3DHash($account, []);
     }
 
     /**
@@ -84,9 +84,7 @@ class GarantiPosCryptTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider hashCreateDataProvider
-     */
+    #[DataProvider('hashCreateDataProvider')]
     public function testCreateHash(array $requestData, string $expected): void
     {
         $actual = $this->crypt->createHash($this->account, $requestData);

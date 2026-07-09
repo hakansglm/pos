@@ -1,24 +1,25 @@
 <?php
 
+/** @var \Mews\Pos\PosInterface $pos */
+/** @var string $baseUrl */
+/** @var string $ip */
+/** @var PosInterface::MODEL_* $paymentModel */
+
 use Mews\Pos\PosInterface;
 
-// ilgili bankanin _config.php dosyasi load ediyoruz.
-// ornegin /examples/finansbank-payfor/regular/_config.php
-require_once '_config.php';
-
-$transaction = $request->get('tx', PosInterface::TX_TYPE_PAY_AUTH);
+$transaction = $_POST['tx'] ?? PosInterface::TX_TYPE_PAY_AUTH;
 
 $order = createPaymentOrder(
     $pos,
     $paymentModel,
     $baseUrl,
     $ip,
-    $request->get('currency', PosInterface::CURRENCY_TRY),
-    $request->get('installment'),
-    $request->get('is_recurring', 0) == 1,
-    $request->get('lang', PosInterface::LANG_TR)
+    $_POST['currency'] ?? PosInterface::CURRENCY_TRY,
+    $_POST['installment'] ?? 0,
+    ($_POST['is_recurring'] ?? 0) == 1,
+    $_POST['lang'] ?? PosInterface::LANG_TR
 );
 
-$card = createCard($pos, $request->request->all());
+$card = createCard($pos, $_POST);
 
 require '../../_templates/_finish_non_secure_payment.php';

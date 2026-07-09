@@ -6,13 +6,25 @@
 
 namespace Mews\Pos\Crypt;
 
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Exceptions\NotImplementedException;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\ToslaPos;
 
+/**
+ * @internal
+ */
 class ToslaPosCrypt extends AbstractCrypt
 {
     /** @var string */
     protected const HASH_ALGORITHM = 'sha512';
+
+    /**
+     * @inheritDoc
+     */
+    public static function supports(string $gatewayClass): bool
+    {
+        return ToslaPos::class === $gatewayClass;
+    }
 
     /**
      * {@inheritDoc}
@@ -27,16 +39,12 @@ class ToslaPosCrypt extends AbstractCrypt
      */
     public function check3DHash(AbstractPosAccount $posAccount, array $data): bool
     {
-        if (null === $posAccount->getStoreKey()) {
-            throw new \LogicException('Account storeKey eksik!');
-        }
-
-        $data['ClientId'] = $posAccount->getClientId();
+        $data['ClientId'] = $posAccount->getMerchantId();
         $data['ApiUser']  = $posAccount->getUsername();
 
-        $actualHash = $this->hashFromParams($posAccount->getStoreKey(), $data, 'HashParameters', ',');
+        $actualHash = $this->hashFromParams($posAccount, $data, $data['HashParameters'], ',');
 
-        if ($data['Hash'] === $actualHash) {
+        if (\hash_equals($data['Hash'], $actualHash)) {
             $this->logger->debug('hash check is successful');
 
             return true;
@@ -57,7 +65,7 @@ class ToslaPosCrypt extends AbstractCrypt
     public function createHash(AbstractPosAccount $posAccount, array $requestData): string
     {
         $hashData = [
-            $posAccount->getStoreKey(),
+            $posAccount->getSecretKey(),
             $requestData['clientId'],
             $requestData['apiUser'],
             $requestData['rnd'],

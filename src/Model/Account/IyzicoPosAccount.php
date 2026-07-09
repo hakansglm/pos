@@ -1,0 +1,33 @@
+<?php
+
+/**
+ * @license MIT
+ */
+
+namespace Mews\Pos\Model\Account;
+
+class IyzicoPosAccount extends AbstractPosAccount
+{
+    /**
+     * @param string      $bankName
+     * @param string      $apiKey
+     * @param string      $secretKey
+     * @param string|null $subMerchantKey
+     */
+    public function __construct(
+        string  $bankName,
+        string  $apiKey,
+        string  $secretKey,
+        ?string $subMerchantKey = null
+    ) {
+        parent::__construct($bankName, $apiKey, '', '', $secretKey, null, $subMerchantKey);
+    }
+
+    /**
+     * Iyzico API key (stored as merchantId in the base class).
+     */
+    public function getApiKey(): string
+    {
+        return $this->merchantId;
+    }
+}

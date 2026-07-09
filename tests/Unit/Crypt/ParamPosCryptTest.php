@@ -6,25 +6,28 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
+use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\ParamPosCrypt;
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\ParamPosAccount;
-use Mews\Pos\Exceptions\NotImplementedException;
-use Mews\Pos\Tests\Unit\DataMapper\RequestDataMapper\ParamPosRequestDataMapperTest;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\ParamPosAccount;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\Param3DHostPos;
+use Mews\Pos\Gateway\ParamPos;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Crypt\ParamPosCrypt
- * @covers \Mews\Pos\Crypt\AbstractCrypt
- */
+#[CoversClass(ParamPosCrypt::class)]
+#[CoversClass(AbstractCrypt::class)]
 class ParamPosCryptTest extends TestCase
 {
     /**
      * @var AbstractPosAccount&MockObject
      */
-    private AbstractPosAccount $account;
+    private MockObject $account;
 
     private ParamPosCrypt $crypt;
 
@@ -37,22 +40,31 @@ class ParamPosCryptTest extends TestCase
         $this->crypt   = new ParamPosCrypt($logger);
     }
 
+    public function testSupports(): void
+    {
+        $supports = $this->crypt::supports(ParamPos::class);
+        $this->assertTrue($supports);
+        $supports = $this->crypt::supports(Param3DHostPos::class);
+        $this->assertTrue($supports);
+
+        $supports = $this->crypt::supports(AssecoPos::class);
+        $this->assertFalse($supports);
+    }
+
     public function testCreate3DHash(): void
     {
         $this->expectException(NotImplementedException::class);
         $this->crypt->create3DHash($this->account, []);
     }
 
-    /**
-     * @dataProvider threeDHashCheckDataProvider
-     */
+    #[DataProvider('threeDHashCheckDataProvider')]
     public function testCheck3DHash(array $responseData): void
     {
         $this->account->expects($this->any())
-            ->method('getClientId')
+            ->method('getMerchantId')
             ->willReturn('10738');
-        $this->account->expects($this->atLeastOnce())
-            ->method('getStoreKey')
+        $this->account->expects($this->any())
+            ->method('getSecretKey')
             ->willReturn('0c13d406-873b-403b-9c09-a5766840d98c');
 
         $this->assertTrue($this->crypt->check3DHash($this->account, $responseData));
@@ -68,19 +80,7 @@ class ParamPosCryptTest extends TestCase
         $this->assertFalse($this->crypt->check3DHash($this->account, $responseData));
     }
 
-    /**
-     * @dataProvider threeDHashCheckDataProvider
-     */
-    public function testCheck3DHashException(array $responseData): void
-    {
-        $account = $this->createMock(AbstractPosAccount::class);
-        $this->expectException(\LogicException::class);
-        $this->crypt->check3DHash($account, $responseData);
-    }
-
-    /**
-     * @dataProvider hashCreateDataProvider
-     */
+    #[DataProvider('hashCreateDataProvider')]
     public function testCreateHash(array $requestData, string $expected): void
     {
         $actual = $this->crypt->createHash($this->account, $requestData);
@@ -181,19 +181,124 @@ class ParamPosCryptTest extends TestCase
                 'expected'    => 'jsLYSB3lJ81leFgDLw4D8PbXURs=',
             ],
             '3d_pay'                     => [
-                'requestData' => ParamPosRequestDataMapperTest::paymentRegisterRequestDataProvider()['3d_pay']['expected']['soap:Body'],
+                'requestData' => [
+                    'Pos_Odeme' => [
+                        'G'                  => [
+                            'CLIENT_CODE'     => '10738',
+                            'CLIENT_USERNAME' => 'Test1',
+                            'CLIENT_PASSWORD' => 'Test2',
+                        ],
+                        'GUID'               => '0c13d406-873b-403b-9c09-a5766840d98c',
+                        '@xmlns'             => 'https://turkpos.com.tr/',
+                        'Islem_Guvenlik_Tip' => '3D',
+                        'Islem_ID'           => '3344914AAB82284E39742F4C',
+                        'IPAdr'              => '127.0.0.1',
+                        'Siparis_ID'         => 'order222',
+                        'Islem_Tutar'        => '1000,25',
+                        'Toplam_Tutar'       => '1000,25',
+                        'Basarili_URL'       => 'https://domain.com/success',
+                        'Hata_URL'           => 'https://domain.com/fail',
+                        'Taksit'             => '1',
+                        'KK_Sahibi'          => 'ahmet',
+                        'KK_No'              => '5555444433332222',
+                        'KK_SK_Ay'           => '01',
+                        'KK_SK_Yil'          => '2022',
+                        'KK_CVC'             => '123',
+                        'KK_Sahibi_GSM'      => '',
+                        'Islem_Hash'         => 'LFZ+Sl0mW+ybGvLr1u0ehZoxhxM=',
+                    ],
+                ],
                 'expected'    => 'qsIY8qDvdTsnALe7AYJiEA5kY20=',
             ],
             '3d_pay_installment'         => [
-                'requestData' => ParamPosRequestDataMapperTest::paymentRegisterRequestDataProvider()['3d_pay_installment']['expected']['soap:Body'],
+                'requestData' => [
+                    'Pos_Odeme' => [
+                        'G'                  => [
+                            'CLIENT_CODE'     => '10738',
+                            'CLIENT_USERNAME' => 'Test1',
+                            'CLIENT_PASSWORD' => 'Test2',
+                        ],
+                        'GUID'               => '0c13d406-873b-403b-9c09-a5766840d98c',
+                        '@xmlns'             => 'https://turkpos.com.tr/',
+                        'Islem_Guvenlik_Tip' => '3D',
+                        'Islem_ID'           => '3344914AAB82284E39742F4C',
+                        'IPAdr'              => '127.0.0.1',
+                        'Siparis_ID'         => 'order222',
+                        'Islem_Tutar'        => '1000,25',
+                        'Toplam_Tutar'       => '1000,25',
+                        'Basarili_URL'       => 'https://domain.com/success',
+                        'Hata_URL'           => 'https://domain.com/fail',
+                        'Taksit'             => '2',
+                        'KK_Sahibi'          => 'ahmet',
+                        'KK_No'              => '5555444433332222',
+                        'KK_SK_Ay'           => '01',
+                        'KK_SK_Yil'          => '2022',
+                        'KK_CVC'             => '123',
+                        'KK_Sahibi_GSM'      => '',
+                        'Islem_Hash'         => 'LFZ+Sl0mW+ybGvLr1u0ehZoxhxM=',
+                    ],
+                ],
                 'expected'    => 'zdIBpbUnRfvlCIgHo01yfIfMXXQ=',
             ],
             '3d_secure_foreign_currency' => [
-                'requestData' => ParamPosRequestDataMapperTest::paymentRegisterRequestDataProvider()['3d_secure_foreign_currency']['expected']['soap:Body'],
+                'requestData' => [
+                    'TP_Islem_Odeme_WD' => [
+                        'G'                  => [
+                            'CLIENT_CODE'     => '10738',
+                            'CLIENT_USERNAME' => 'Test1',
+                            'CLIENT_PASSWORD' => 'Test2',
+                        ],
+                        'GUID'               => '0c13d406-873b-403b-9c09-a5766840d98c',
+                        '@xmlns'             => 'https://turkpos.com.tr/',
+                        'Islem_Guvenlik_Tip' => '3D',
+                        'Islem_ID'           => '3344914AAB82284E39742F4C',
+                        'IPAdr'              => '127.0.0.1',
+                        'Siparis_ID'         => 'order222',
+                        'Islem_Tutar'        => '1000,25',
+                        'Toplam_Tutar'       => '1000,25',
+                        'Basarili_URL'       => 'https://domain.com/success',
+                        'Hata_URL'           => 'https://domain.com/fail',
+                        'Taksit'             => '1',
+                        'KK_Sahibi'          => 'ahmet',
+                        'KK_No'              => '5555444433332222',
+                        'KK_SK_Ay'           => '01',
+                        'KK_SK_Yil'          => '2022',
+                        'KK_CVC'             => '123',
+                        'KK_Sahibi_GSM'      => '',
+                        'Doviz_Kodu'         => '1001',
+                        'Islem_Hash'         => 'LFZ+Sl0mW+ybGvLr1u0ehZoxhxM=',
+                    ],
+                ],
                 'expected'    => 'LFZ+Sl0mW+ybGvLr1u0ehZoxhxM=',
             ],
             '3d_secure_pre_payment'      => [
-                'requestData' => ParamPosRequestDataMapperTest::paymentRegisterRequestDataProvider()['3d_secure_pre_payment']['expected']['soap:Body'],
+                'requestData' => [
+                    'TP_Islem_Odeme_OnProv_WMD' => [
+                        'G'                  => [
+                            'CLIENT_CODE'     => '10738',
+                            'CLIENT_USERNAME' => 'Test1',
+                            'CLIENT_PASSWORD' => 'Test2',
+                        ],
+                        'GUID'               => '0c13d406-873b-403b-9c09-a5766840d98c',
+                        '@xmlns'             => 'https://turkpos.com.tr/',
+                        'Islem_Guvenlik_Tip' => '3D',
+                        'Islem_ID'           => '3344914AAB82284E39742F4C',
+                        'IPAdr'              => '127.0.0.1',
+                        'Siparis_ID'         => 'order222',
+                        'Islem_Tutar'        => '1000,25',
+                        'Toplam_Tutar'       => '1000,25',
+                        'Basarili_URL'       => 'https://domain.com/success',
+                        'Hata_URL'           => 'https://domain.com/fail',
+                        'Taksit'             => '1',
+                        'KK_Sahibi'          => 'ahmet',
+                        'KK_No'              => '5555444433332222',
+                        'KK_SK_Ay'           => '01',
+                        'KK_SK_Yil'          => '2022',
+                        'KK_CVC'             => '123',
+                        'KK_Sahibi_GSM'      => '',
+                        'Islem_Hash'         => 'LFZ+Sl0mW+ybGvLr1u0ehZoxhxM=',
+                    ],
+                ],
                 'expected'    => 'LFZ+Sl0mW+ybGvLr1u0ehZoxhxM=',
             ],
         ];

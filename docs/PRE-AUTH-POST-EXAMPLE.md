@@ -1,5 +1,10 @@
 
-## 3D Secure ile Ön otorizasyon ve Ön Otorizasyon kapama örneği
+## 3D Secure ile Ön Otorizasyon ve Ön Otorizasyon kapama örneği
+
+Ön Otorizasyon/Provizyon işlemi hem _NonSecure_ hem de _3D_ ödemeler için desteklenmektedir.
+Aşağıdaki örnek 3D Secure ödeme model örneğidir.
+
+Ön Otorizasyon/Provizyon Kapama işlemi ise sadece _NonSecure_ ödeme modeli ile gerçekleştirilir.
 
 ```sh
 $ cp ./vendor/mews/pos/config/pos_test.php ./pos_test_ayarlar.php
@@ -10,13 +15,13 @@ $ cp ./vendor/mews/pos/config/pos_test.php ./pos_test_ayarlar.php
 <?php
 require './vendor/autoload.php';
 
-$sessionHandler = new \Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage([
-    'cookie_samesite' => 'None',
-    'cookie_secure'   => true,
-    'cookie_httponly' => true, // Javascriptin session'a erişimini engelliyoruz.
+// Configure session with security options
+session_set_cookie_params([
+    'samesite' => 'None',
+    'secure'   => true,
+    'httponly' => true, // Javascriptin session'a erişimini engelliyoruz.
 ]);
-$session        = new \Symfony\Component\HttpFoundation\Session\Session($sessionHandler);
-$session->start();
+session_start();
 
 // Ön otorizasyon için kullanılması gereken ödeme modeli değişir.
 $paymentModel = \Mews\Pos\PosInterface::MODEL_3D_SECURE;
@@ -26,23 +31,18 @@ $transactionType = \Mews\Pos\PosInterface::TX_TYPE_PAY_PRE_AUTH;
 // AccountFactory'de kullanılacak method Gateway'e göre değişir!!!
 // /examples altındaki _config.php dosyalara bakınız
 // (örn: /examples/akbankpos/3d/_config.php)
-$account = \Mews\Pos\Factory\AccountFactory::createEstPosAccount(
+$account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
     'akbank', //pos config'deki ayarın index name'i
     'yourClientID',
     'yourKullaniciAdi',
     'yourSifre',
-    $paymentModel,
-    '', // bankaya göre zorunlu
-    \Mews\Pos\PosInterface::LANG_TR
 );
 
 $eventDispatcher = new Symfony\Component\EventDispatcher\EventDispatcher();
-
+$config = require __DIR__.'/pos_test_ayarlar.php';
 try {
-    $config = require __DIR__.'/pos_test_ayarlar.php';
-
-    $pos = \Mews\Pos\Factory\PosFactory::createPosGateway($account, $config, $eventDispatcher);
-} catch (\Mews\Pos\Exceptions\BankNotFoundException | \Mews\Pos\Exceptions\BankClassNullException $e) {
+    $pos = \Mews\Pos\Factory\PosFactory::create($account, $config['banks'][$account->getBankName()], $eventDispatcher);
+} catch (\Mews\Pos\Exception\GatewayClassNotConfiguredException $e) {
     var_dump($e));
     exit;
 }
@@ -64,10 +64,11 @@ $order = [
     'amount'      => 1.01,
     'currency'    => \Mews\Pos\PosInterface::CURRENCY_TRY, //optional. default: TRY
     'installment' => 0, //0 ya da 1'den büyük değer, optional. default: 0
-    // lang degeri verilmezse account (EstPosAccount) dili kullanılacak
-    'lang' => \Mews\Pos\Gateways\PosInterface::LANG_TR, // Kullanıcının yönlendirileceği banka gateway sayfasının ve gateway'den dönen mesajların dili.
+
+    // lang degeri verilmezse config'de tanimlanan dil veya default olarak LANG_TR kullanılacak.
+    'lang' => \Mews\Pos\Gateway\PosInterface::LANG_TR, // Kullanıcının yönlendirileceği banka gateway sayfasının ve gateway'den dönen mesajların dili.
 ];
-    if ($pos instanceof \Mews\Pos\Gateways\ParamPos
+    if ($pos instanceof \Mews\Pos\Gateway\ParamPos
         || in_array($paymentModel, [
         PosInterface::MODEL_3D_SECURE,
         PosInterface::MODEL_3D_PAY,
@@ -81,7 +82,7 @@ $order = [
     }
 
 
-$session->set('order', $order);
+$_SESSION['order'] = $order;
 
 // Kredi kartı bilgileri
 try {
@@ -94,18 +95,18 @@ $card = \Mews\Pos\Factory\CreditCardFactory::createForGateway(
         $_POST['card_name'],
 
         // kart tipi Gateway'e göre zorunlu, alabileceği örnek değer: "visa"
-        // alabileceği alternatif değerler için \Mews\Pos\Entity\Card\CreditCardInterface'a bakınız.
+        // alabileceği alternatif değerler için \Mews\Pos\Model\Card\CreditCardInterface'a bakınız.
         $_POST['card_type'] ?? null
   );
-} catch (\Mews\Pos\Exceptions\CardTypeRequiredException $e) {
+} catch (\Mews\Pos\Exception\CardTypeRequiredException $e) {
     // bu gateway için kart tipi zorunlu
-} catch (\Mews\Pos\Exceptions\CardTypeNotSupportedException $e) {
+} catch (\Mews\Pos\Exception\CardTypeNotSupportedException $e) {
     // sağlanan kart tipi bu gateway tarafından desteklenmiyor
 }
 
-if (get_class($pos) === \Mews\Pos\Gateways\PayFlexV4Pos::class) {
+if (get_class($pos) === \Mews\Pos\Gateway\PayFlexV4Pos::class) {
     // bu gateway için ödemeyi tamamlarken tekrar kart bilgisi lazım olacak.
-    $session->set('card', $_POST);
+    $_SESSION['card'] = $_POST;
 }
 
 try {
@@ -113,8 +114,7 @@ try {
         $order,
         $paymentModel,
         $transactionType,
-        $card,
-        false
+        $card
     );
 } catch (\Exception|\Error $e) {
     var_dump($e);
@@ -124,7 +124,9 @@ try {
 ```php
 <?php if (is_string($formData)): ?>
     <?= $formData ?>
-<?php else: ?>
+<?php elseif ($formData['method'] === 'GET' && $formData['inputs'] === []):
+        header('Location: '.$formData['gateway']);
+else: ?>
     <!-- $formData içeriği HTML forma render ediyoruz ve kullanıcıyı banka gateway'ine yönlendiriyoruz. -->
     <form method="<?= $formData['method']; ?>" action="<?= $formData['gateway']; ?>"  class="redirect-form" role="form">
         <?php foreach ($formData['inputs'] as $key => $value) : ?>
@@ -145,11 +147,11 @@ try {
 
 require 'config.php';
 
-$order = $session->get('order');
+$order = $_SESSION['order'];
 $card  = null;
-if (get_class($pos) === \Mews\Pos\Gateways\PayFlexV4Pos::class) {
+if (get_class($pos) === \Mews\Pos\Gateway\PayFlexV4Pos::class) {
     // bu gateway için ödemeyi tamamlarken tekrar kart bilgisi lazım.
-    $cardData = $session->get('card');
+    $cardData = $_SESSION['card'];;
     $card = \Mews\Pos\Factory\CreditCardFactory::createForGateway(
         $pos,
         $cardData['card_number'],
@@ -162,25 +164,28 @@ if (get_class($pos) === \Mews\Pos\Gateways\PayFlexV4Pos::class) {
 }
 
 // Pre Auth Ödeme tamamlanıyor,
+$gatewayResponseData = $_POST;
+if (get_class($pos) === \Mews\Pos\Gateway\PayFlexCPV4Pos::class) {
+    $gatewayResponseData = $_GET;
+}
 try  {
-    $pos->payment(
+    $response = $pos->payment(
         $paymentModel,
         $order,
         $transactionType,
-        $card
+        $card,
+        $gatewayResponseData
     );
 
     // Ödeme başarılı mı?
     $pos->isSuccess();
-    // Sonuç çıktısı
-    $response = $pos->getResponse();
     var_dump($response);
     // response içeriği için /examples/template/_payment_response.php dosyaya bakınız.
 
     if ($pos->isSuccess()) {
-        $session->set('last_response', $response);
+        $_SESSION['last_response'] = $response;
     }
-} catch (\Mews\Pos\Exceptions\HashMismatchException $e) {
+} catch (\Mews\Pos\Exception\HashMismatchException $e) {
     /**
      * Bankadan gelen verilerin bankaya ait olmadığında bu exception oluşur.
      * Veya Banka API bilgileriniz hatalı ise de oluşur.
@@ -204,8 +209,19 @@ require 'config.php';
 // Ön otorizasyon kapama işlemi MODEL_NON_SECURE ile gerçekleşir.
 $paymentModel = \Mews\Pos\PosInterface::MODEL_NON_SECURE;
 $transactionType = \Mews\Pos\PosInterface::TX_TYPE_PAY_POST_AUTH;
-$lastResponse = $session->get('last_response');
+$_SESSION['last_response'] ?? null
 
+/**
+ * Ön provizyon kapama işlemi için gereken istek verileri Gateway'den gateway'e değiştigine göre,
+ * bu method verilen gateway göre istek verilerini oluşturur.
+ *
+ * @param class-string<\Mews\Pos\PosInterface> $gatewayClass
+ * @param array<string, mixed> $lastResponse ön provizyon açma işlemi sonrası Pos kütüphanesinden dönen response verisi
+ * @param string $ip
+ * @param float|null $postAuthAmount ön provizyon başlatılan amount kapatılmak istenen amount'tan farklı olduğunda kullanilir.
+ *
+ * @return array<string, mixed>
+ */
 function createPostPayOrder(string $gatewayClass, array $lastResponse, string $ip, ?float $postAuthAmount = null): array
 {
     $postAuth = [
@@ -216,10 +232,10 @@ function createPostPayOrder(string $gatewayClass, array $lastResponse, string $i
         'ip'              => filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? $ip : '127.0.0.1',
     ];
 
-    if (\Mews\Pos\Gateways\GarantiPos::class === $gatewayClass) {
+    if (\Mews\Pos\Gateway\GarantiPos::class === $gatewayClass) {
         $postAuth['ref_ret_num'] = $lastResponse['ref_ret_num'];
     }
-    if (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNet::class === $gatewayClass) {
+    if (\Mews\Pos\Gateway\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateway\PosNetPos::class === $gatewayClass) {
         $postAuth['installment'] = $lastResponse['installment_count'];
         $postAuth['ref_ret_num'] = $lastResponse['ref_ret_num'];
     }
@@ -227,7 +243,7 @@ function createPostPayOrder(string $gatewayClass, array $lastResponse, string $i
     return $postAuth;
 }
 
-$lastResponse = $session->get('last_response');
+$_SESSION['last_response'] ?? null
 
 $preAuthAmount = $lastResponse['amount'];
 // Bazi gatewaylerde otorizasyon kapama amount'u ön otorizasyon amount'tan daha fazla olabilir.

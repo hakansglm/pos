@@ -9,15 +9,9 @@ return RectorConfig::configure()
     ->withPaths([
         __DIR__.'/config',
         __DIR__.'/src',
-        __DIR__.'/tests',
-    ])
-    ->withSkip([
-        \Rector\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector::class => [
-            __DIR__.'/src/Exceptions',
-        ],
     ])
     ->withSets([
-        LevelSetList::UP_TO_PHP_74,
+        LevelSetList::UP_TO_PHP_80,
     ])
     ->withSkip([
         \Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector::class,
@@ -31,14 +25,20 @@ return RectorConfig::configure()
         \Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchExprVariableRector::class,
 
         \Rector\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarReturnsRector::class,
+        \Rector\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRector::class,
         \Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictParamRector::class,
+        \Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector::class,
+
+        \Rector\CodeQuality\Rector\CallLike\AddNameToBooleanArgumentRector::class,
+        \Rector\CodeQuality\Rector\CallLike\AddNameToNullArgumentRector::class,
+        \Rector\DeadCode\Rector\MethodCall\RemoveNullNamedArgOnNullDefaultParamRector::class,
     ])
     ->withPreparedSets(
         true,
         true,
         true,
         true,
-        true,
+        false,
         true,
         true,
         true,

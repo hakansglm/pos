@@ -1,0 +1,390 @@
+<?php
+
+/**
+ * @license MIT
+ */
+
+namespace Mews\Pos\Tests\Unit\Client;
+
+use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
+use InvalidArgumentException;
+use Generator;
+use Mews\Pos\Client\AbstractHttpClient;
+use Mews\Pos\Client\HttpClientInterface;
+use Mews\Pos\Client\ToslaPosHttpClient;
+use Mews\Pos\Crypt\CryptInterface;
+use Mews\Pos\DataMapper\Request\ValueMapper\RequestValueMapperInterface;
+use Mews\Pos\Exception\UnsupportedTransactionTypeException;
+use Mews\Pos\Factory\PosHttpClientFactory;
+use Mews\Pos\Gateway\PosNetPos;
+use Mews\Pos\Gateway\ToslaPos;
+use Mews\Pos\PosInterface;
+use Mews\Pos\PosQuery\PosQueryInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Serializer\Exception\NotEncodableValueException;
+
+#[CoversClass(ToslaPosHttpClient::class)]
+#[CoversClass(AbstractHttpClient::class)]
+class ToslaPosHttpClientTest extends TestCase
+{
+    use HttpClientTestTrait;
+
+    private ToslaPosHttpClient $client;
+
+    /** @var LoggerInterface & MockObject */
+    private MockObject $logger;
+
+    /**
+     * @var ClientInterface&MockObject
+     */
+    private MockObject $psrClient;
+
+    /**
+     * @var RequestFactoryInterface& MockObject
+     */
+    private MockObject $requestFactory;
+
+    /**
+     * @var StreamFactoryInterface&MockObject
+     */
+    private MockObject $streamFactory;
+
+    /**
+     * @var RequestValueMapperInterface&MockObject
+     */
+    private MockObject $requestValueMapper;
+
+    protected function setUp(): void
+    {
+        $this->logger             = $this->createMock(LoggerInterface::class);
+        $crypt                    = $this->createMock(CryptInterface::class);
+        $this->requestValueMapper = $this->createMock(RequestValueMapperInterface::class);
+        $this->psrClient          = $this->createMock(ClientInterface::class);
+        $this->requestFactory     = $this->createMock(RequestFactoryInterface::class);
+        $this->streamFactory      = $this->createMock(StreamFactoryInterface::class);
+
+        $this->client = PosHttpClientFactory::create(
+            ToslaPosHttpClient::class,
+            'https://ent.akodepos.com/api/Payment',
+            $crypt,
+            $this->requestValueMapper,
+            $this->logger,
+            $this->psrClient,
+            $this->requestFactory,
+            $this->streamFactory
+        );
+    }
+
+    #[DataProvider('getApiUrlDataProvider')]
+    public function testGetApiUrl(string $txType, string $paymentModel, string $expected): void
+    {
+        $actual = $this->client->getApiURL($txType, $paymentModel);
+
+        $this->assertSame($expected, $actual);
+    }
+
+    #[DataProvider('getApiUrlExceptionDataProvider')]
+    public function testGetApiUrlException(?string $txType, ?string $paymentModel, string $exceptionClass): void
+    {
+        $this->expectException($exceptionClass);
+        $this->client->getApiURL($txType, $paymentModel);
+    }
+
+    public function testSupports(): void
+    {
+        $this->assertTrue($this->client::supports(ToslaPos::class, HttpClientInterface::API_NAME_PAYMENT_API));
+        $this->assertFalse($this->client::supports(PosNetPos::class, HttpClientInterface::API_NAME_PAYMENT_API));
+    }
+
+    #[DataProvider('supportsTxDataProvider')]
+    public function testSupportsTx(string $txType, string $paymentModel, bool $expected): void
+    {
+        $this->assertSame($expected, $this->client->supportsTx($txType, $paymentModel));
+    }
+
+    public static function supportsTxDataProvider(): array
+    {
+        return [
+            'custom_query'        => [PosQueryInterface::QUERY_TYPE_CUSTOM_QUERY, PosInterface::MODEL_NON_SECURE, true],
+            'supported_tx_type'   => [PosInterface::TX_TYPE_PAY_AUTH, PosInterface::MODEL_NON_SECURE, true],
+            'unsupported_tx_type' => [PosQueryInterface::QUERY_TYPE_HISTORY, PosInterface::MODEL_NON_SECURE, false],
+        ];
+    }
+
+    #[DataProvider('requestDataProvider')]
+    public function testRequest(
+        string $txType,
+        string $paymentModel,
+        array  $requestData,
+        string $encodedRequestData,
+        array  $order,
+        string $expectedApiUrl
+    ): void {
+        $request     = $this->prepareHttpRequest($encodedRequestData, [
+            [
+                'name'  => 'Content-Type',
+                'value' => 'application/json',
+            ],
+        ]);
+
+        $decodedResponse = ['decoded' => 'response'];
+        $responseContent = '{"decoded":"response"}';
+        $response        = $this->prepareHttpResponse($responseContent, 200);
+
+
+        $this->requestFactory->expects($this->once())
+            ->method('createRequest')
+            ->with('POST', $expectedApiUrl)
+            ->willReturn($request);
+
+        $this->psrClient->expects($this->once())
+            ->method('sendRequest')
+            ->with($request)
+            ->willReturn($response);
+
+        $actual = $this->client->request(
+            $txType,
+            $paymentModel,
+            $requestData,
+            $order,
+            $expectedApiUrl
+        );
+
+        $this->assertSame($decodedResponse, $actual);
+    }
+
+    public function testRequestEmptyResponse(): void
+    {
+        $txType         = PosInterface::TX_TYPE_PAY_AUTH;
+        $paymentModel   = PosInterface::MODEL_3D_SECURE;
+        $requestData    = ['request-data' => 'abc'];
+        $order          = ['id' => 123];
+        $expectedApiUrl = 'https://entegrasyon.asseco-see.com.tr/fim/api';
+
+        $request     = $this->prepareHttpRequest('{"request-data":"abc"}', [
+            [
+                'name'  => 'Content-Type',
+                'value' => 'application/json',
+            ],
+        ]);
+
+        $responseContent = '';
+        $response        = $this->prepareHttpResponse($responseContent, 204);
+
+        $this->requestFactory->expects($this->once())
+            ->method('createRequest')
+            ->with('POST', $expectedApiUrl)
+            ->willReturn($request);
+
+        $this->psrClient->expects($this->once())
+            ->method('sendRequest')
+            ->with($request)
+            ->willReturn($response);
+
+        $actual = $this->client->request(
+            $txType,
+            $paymentModel,
+            $requestData,
+            $order,
+            $expectedApiUrl,
+        );
+
+        $this->assertSame([], $actual);
+    }
+
+    public function testRequestBadRequest(): void
+    {
+        $txType         = PosInterface::TX_TYPE_PAY_AUTH;
+        $paymentModel   = PosInterface::MODEL_3D_PAY;
+        $requestData    = ['request-data' => 'abc'];
+        $order          = ['id' => 123];
+
+        $request     = $this->prepareHttpRequest('{"request-data":"abc"}', [
+            [
+                'name'  => 'Content-Type',
+                'value' => 'application/json',
+            ],
+        ]);
+
+        $responseContent = 'response-content';
+        $response        = $this->prepareHttpResponse($responseContent, 500);
+
+        $this->requestFactory->expects($this->once())
+            ->method('createRequest')
+            ->willReturn($request);
+
+        $this->psrClient->expects($this->once())
+            ->method('sendRequest')
+            ->with($request)
+            ->willReturn($response);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('İstek Başarısız!');
+
+        $this->client->request(
+            $txType,
+            $paymentModel,
+            $requestData,
+            $order,
+        );
+    }
+
+    public function testRequestUndecodableResponse(): void
+    {
+        $txType         = PosInterface::TX_TYPE_PAY_AUTH;
+        $paymentModel   = PosInterface::MODEL_3D_PAY;
+        $requestData    = ['request-data' => 'abc'];
+        $order          = ['id' => 123];
+
+        $request     = $this->prepareHttpRequest('{"request-data":"abc"}', [
+            [
+                'name'  => 'Content-Type',
+                'value' => 'application/json',
+            ],
+        ]);
+
+        $responseContent = 'not-valid-json';
+        $response        = $this->prepareHttpResponse($responseContent, 400);
+
+        $this->requestFactory->expects($this->once())
+            ->method('createRequest')
+            ->willReturn($request);
+
+        $this->psrClient->expects($this->once())
+            ->method('sendRequest')
+            ->willReturn($response);
+
+        $this->expectException(NotEncodableValueException::class);
+        $this->client->request(
+            $txType,
+            $paymentModel,
+            $requestData,
+            $order
+        );
+    }
+
+    public function testRequestApiUrlNotFound(): void
+    {
+        $this->psrClient->expects($this->never())
+            ->method('sendRequest');
+
+        $this->expectException(UnsupportedTransactionTypeException::class);
+        $this->client->request(
+            PosQueryInterface::QUERY_TYPE_HISTORY,
+            PosInterface::MODEL_NON_SECURE,
+            ['request-data'],
+            ['id' => 123]
+        );
+    }
+
+    public static function getApiUrlDataProvider(): array
+    {
+        return [
+            [
+                'txType'       => PosInterface::TX_TYPE_PAY_AUTH,
+                'paymentModel' => PosInterface::MODEL_3D_PAY,
+                'expected'     => 'https://ent.akodepos.com/api/Payment/threeDPayment',
+            ],
+            [
+                'txType'       => PosInterface::TX_TYPE_PAY_PRE_AUTH,
+                'paymentModel' => PosInterface::MODEL_3D_PAY,
+                'expected'     => 'https://ent.akodepos.com/api/Payment/threeDPreAuth',
+            ],
+            [
+                'txType'       => PosInterface::TX_TYPE_PAY_AUTH,
+                'paymentModel' => PosInterface::MODEL_3D_HOST,
+                'expected'     => 'https://ent.akodepos.com/api/Payment/threeDPayment',
+            ],
+            [
+                'txType'       => PosInterface::TX_TYPE_PAY_PRE_AUTH,
+                'paymentModel' => PosInterface::MODEL_3D_HOST,
+                'expected'     => 'https://ent.akodepos.com/api/Payment/threeDPreAuth',
+            ],
+            [
+                'txType'       => PosInterface::TX_TYPE_PAY_AUTH,
+                'paymentModel' => PosInterface::MODEL_NON_SECURE,
+                'expected'     => 'https://ent.akodepos.com/api/Payment/Payment',
+            ],
+            [
+                'txType'       => PosInterface::TX_TYPE_PAY_POST_AUTH,
+                'paymentModel' => PosInterface::MODEL_NON_SECURE,
+                'expected'     => 'https://ent.akodepos.com/api/Payment/postAuth',
+            ],
+            [
+                'txType'       => PosInterface::TX_TYPE_STATUS,
+                'paymentModel' => PosInterface::MODEL_NON_SECURE,
+                'expected'     => 'https://ent.akodepos.com/api/Payment/inquiry',
+            ],
+            [
+                'txType'       => PosInterface::TX_TYPE_CANCEL,
+                'paymentModel' => PosInterface::MODEL_NON_SECURE,
+                'expected'     => 'https://ent.akodepos.com/api/Payment/void',
+            ],
+            [
+                'txType'       => PosInterface::TX_TYPE_REFUND,
+                'paymentModel' => PosInterface::MODEL_NON_SECURE,
+                'expected'     => 'https://ent.akodepos.com/api/Payment/refund',
+            ],
+            [
+                'txType'       => PosInterface::TX_TYPE_REFUND_PARTIAL,
+                'paymentModel' => PosInterface::MODEL_NON_SECURE,
+                'expected'     => 'https://ent.akodepos.com/api/Payment/refund',
+            ],
+            [
+                'txType'       => PosInterface::TX_TYPE_ORDER_HISTORY,
+                'paymentModel' => PosInterface::MODEL_NON_SECURE,
+                'expected'     => 'https://ent.akodepos.com/api/Payment/history',
+            ],
+        ];
+    }
+
+    public static function getApiUrlExceptionDataProvider(): array
+    {
+        return [
+            [
+                'txType'          => PosQueryInterface::QUERY_TYPE_HISTORY,
+                'paymentModel'    => PosInterface::MODEL_NON_SECURE,
+                'exception_class' => UnsupportedTransactionTypeException::class,
+            ],
+            [
+                'txType'          => PosInterface::TX_TYPE_PAY_AUTH,
+                'paymentModel'    => PosInterface::MODEL_3D_SECURE,
+                'exception_class' => UnsupportedTransactionTypeException::class,
+            ],
+            [
+                'txType'          => null,
+                'paymentModel'    => null,
+                'exception_class' => InvalidArgumentException::class,
+            ],
+            [
+                'txType'          => PosInterface::TX_TYPE_PAY_AUTH,
+                'paymentModel'    => null,
+                'exception_class' => InvalidArgumentException::class,
+            ],
+            [
+                'txType'          => null,
+                'paymentModel'    => PosInterface::MODEL_3D_PAY,
+                'exception_class' => InvalidArgumentException::class,
+            ],
+        ];
+    }
+
+    public static function requestDataProvider(): Generator
+    {
+        yield [
+            'txType'             => PosInterface::TX_TYPE_PAY_AUTH,
+            'paymentModel'       => PosInterface::MODEL_3D_PAY,
+            'requestData'        => ['request-data'],
+            'encodedRequestData' => '["request-data"]',
+            'order'              => ['id' => 123],
+            'expectedApiUrl'     => 'https://ent.akodepos.com/api/Payment/threeDPayment',
+        ];
+    }
+}

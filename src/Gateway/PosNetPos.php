@@ -1,0 +1,298 @@
+<?php
+
+/**
+ * @license MIT
+ */
+
+namespace Mews\Pos\Gateway;
+
+use Mews\Pos\DataMapper\Request\Mapper\PosNetPosRequestDataMapper;
+use Mews\Pos\DataMapper\Request\Mapper\RequestDataMapperInterface;
+use Mews\Pos\DataMapper\Response\Mapper\PosNetPosResponseDataMapper;
+use Mews\Pos\DataMapper\Response\Mapper\ResponseDataMapperInterface;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\PosNetPosAccount;
+use Mews\Pos\Model\Card\CreditCardInterface;
+use Mews\Pos\Event\RequestDataPreparedEvent;
+use Mews\Pos\Exception\HashMismatchException;
+use Mews\Pos\Exception\UnsupportedFormFormatException;
+use Mews\Pos\Exception\UnsupportedPaymentModelException;
+use Mews\Pos\Exception\UnsupportedTransactionTypeException;
+use Mews\Pos\PosInterface;
+use Psr\Http\Client\ClientExceptionInterface;
+
+/**
+ * Class PosNetPos
+ */
+class PosNetPos extends AbstractGateway
+{
+    /** @var string */
+    public const NAME = 'PosNetPos';
+
+    /** @var PosNetPosAccount */
+    protected AbstractPosAccount $account;
+
+    /** @var PosNetPosRequestDataMapper */
+    protected RequestDataMapperInterface $requestDataMapper;
+
+    /** @var PosNetPosResponseDataMapper */
+    protected ResponseDataMapperInterface $responseDataMapper;
+
+    /** @inheritdoc */
+    protected static array $supportedTransactions = [
+        PosInterface::TX_TYPE_PAY_AUTH       => [
+            PosInterface::MODEL_3D_SECURE,
+            PosInterface::MODEL_NON_SECURE,
+        ],
+        PosInterface::TX_TYPE_PAY_PRE_AUTH   => [
+            PosInterface::MODEL_3D_SECURE,
+            PosInterface::MODEL_NON_SECURE,
+        ],
+        PosInterface::TX_TYPE_PAY_POST_AUTH  => true,
+        PosInterface::TX_TYPE_STATUS         => true,
+        PosInterface::TX_TYPE_CANCEL         => true,
+        PosInterface::TX_TYPE_REFUND         => true,
+        PosInterface::TX_TYPE_REFUND_PARTIAL => true,
+        PosInterface::TX_TYPE_ORDER_HISTORY  => false,
+    ];
+
+    /**
+     * Kullanıcı doğrulama sonucunun sorgulanması ve verilerin doğruluğunun teyit edilmesi için kullanılır.
+     *
+     * @inheritDoc
+     */
+    public function make3DPayment(array $gatewayResponseData, array $order, string $txType, ?CreditCardInterface $creditCard = null): array
+    {
+        $paymentModel   = PosInterface::MODEL_3D_SECURE;
+
+        $this->logger->debug('getting merchant request data');
+        $requestData = $this->requestDataMapper->create3DResolveMerchantRequestData(
+            $this->account,
+            $order,
+            $gatewayResponseData
+        );
+
+        $event = new RequestDataPreparedEvent(
+            $requestData,
+            $this->account->getBankName(),
+            $txType,
+            static::class,
+            $order,
+            $paymentModel
+        );
+        /** @var RequestDataPreparedEvent $event */
+        $event = $this->eventDispatcher->dispatch($event);
+        if ($requestData !== $event->getRequestData()) {
+            $this->logger->debug('Request data is changed via listeners', [
+                'txType'      => $event->getTxType(),
+                'bankName'    => $event->getBankName(),
+                'initialData' => $requestData,
+                'updatedData' => $event->getRequestData(),
+            ]);
+            $requestData = $event->getRequestData();
+        }
+
+        /** @var array<string, mixed> $userVerifyResponse */
+        $userVerifyResponse = $this->clientStrategy->getClient(
+            $txType,
+            $paymentModel,
+        )->request(
+            $txType,
+            $paymentModel,
+            $requestData,
+            $order
+        );
+
+        if (!$this->is3dAuthSuccess($userVerifyResponse)) {
+            $this->response = $this->responseDataMapper->map3DPaymentData($userVerifyResponse, null, $txType, $order);
+            $this->logger->debug('finished 3D payment', ['mapped_response' => $this->response]);
+
+            return $this->response;
+        }
+
+        if (
+            !$this->is3DHashCheckDisabled()
+            && !$this->crypt->check3DHash($this->account, $userVerifyResponse['oosResolveMerchantDataResponse'])
+        ) {
+            throw new HashMismatchException();
+        }
+
+        $requestData  = $this->requestDataMapper->create3DPaymentRequestData(
+            $this->account,
+            $order,
+            $txType,
+            $gatewayResponseData
+        );
+
+        $event = new RequestDataPreparedEvent(
+            $requestData,
+            $this->account->getBankName(),
+            $txType,
+            static::class,
+            $order,
+            $paymentModel
+        );
+        /** @var RequestDataPreparedEvent $event */
+        $event = $this->eventDispatcher->dispatch($event);
+        if ($requestData !== $event->getRequestData()) {
+            $this->logger->debug('Request data is changed via listeners', [
+                'txType'      => $event->getTxType(),
+                'bankName'    => $event->getBankName(),
+                'initialData' => $requestData,
+                'updatedData' => $event->getRequestData(),
+            ]);
+            $requestData = $event->getRequestData();
+        }
+
+        /** @var array<string, mixed> $bankResponse */
+        $bankResponse = $this->clientStrategy->getClient(
+            $txType,
+            $paymentModel,
+        )->request(
+            $txType,
+            $paymentModel,
+            $requestData,
+            $order
+        );
+
+        $this->response = $this->responseDataMapper->map3DPaymentData($userVerifyResponse, $bankResponse, $txType, $order);
+        $this->logger->debug('finished 3D payment', ['mapped_response' => $this->response]);
+
+        return $this->response;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function make3DPayPayment(array $gatewayResponseData, array $order, string $txType): array
+    {
+        throw new UnsupportedPaymentModelException();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function make3DHostPayment(array $gatewayResponseData, array $order, string $txType): array
+    {
+        throw new UnsupportedPaymentModelException();
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @return array{gateway: string, method: 'POST'|'GET', inputs: array<string, string>}
+     */
+    public function get3DFormData(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null, bool $createWithoutCard = false, ?string $formFormat = null): array
+    {
+        $this->check3DFormInputs($paymentModel, $txType, $creditCard);
+
+        if (PosInterface::FORM_FORMAT_HTML === $formFormat) {
+            throw new UnsupportedFormFormatException();
+        }
+
+        if (!$creditCard instanceof CreditCardInterface) {
+            throw new \LogicException('Bu işlem için kredi kartı bilgileri gereklidir.');
+        }
+
+        $data = $this->getOosTransactionData($order, $txType, $paymentModel, $creditCard);
+
+        if ($this->responseDataMapper::PROCEDURE_SUCCESS_CODE !== $data['approved']) {
+            $this->logger->error('enrollment fail response', $data);
+            throw new \RuntimeException($data['respText']);
+        }
+
+        $this->logger->debug('preparing 3D form data');
+
+        if (!isset($data['oosRequestDataResponse'])) {
+            throw new \RuntimeException('Beklenmeyen yanıt: oosRequestDataResponse eksik.');
+        }
+
+        /** @var array{data1: string, data2: string, sign: string} $responseData */
+        $responseData = $data['oosRequestDataResponse'];
+
+        return $this->requestDataMapper->create3DFormData(
+            $this->account,
+            $order,
+            $paymentModel,
+            $txType,
+            $this->get3DGatewayURL($paymentModel),
+            null,
+            $responseData
+        );
+    }
+
+    /** @return PosNetPosAccount */
+    public function getAccount(): AbstractPosAccount
+    {
+        return $this->account;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function orderHistory(array $order): array
+    {
+        throw new UnsupportedTransactionTypeException();
+    }
+
+    /**
+     * Get OOS transaction data
+     * siparis bilgileri ve kart bilgilerinin şifrelendiği adımdır.
+     *
+     * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
+     * @phpstan-param PosInterface::MODEL_3D_*                                          $paymentModel
+     *
+     * @param array<string, int|string|float|null> $order
+     * @param string                               $txType
+     * @param string                               $paymentModel
+     * @param CreditCardInterface                  $creditCard
+     *
+     * @return array{approved: string, respCode: string, respText: string, oosRequestDataResponse?: array{data1: string, data2: string, sign: string}}
+     *
+     * @throws UnsupportedTransactionTypeException
+     * @throws ClientExceptionInterface
+     */
+    private function getOosTransactionData(array $order, string $txType, string $paymentModel, CreditCardInterface $creditCard): array
+    {
+        $requestData = $this->requestDataMapper->create3DFormInitializeRequestData(
+            $this->account,
+            $order,
+            $paymentModel,
+            $txType,
+            $creditCard
+        );
+
+        $event = new RequestDataPreparedEvent(
+            $requestData,
+            $this->account->getBankName(),
+            $txType,
+            static::class,
+            $order,
+            $paymentModel
+        );
+        /** @var RequestDataPreparedEvent $event */
+        $event = $this->eventDispatcher->dispatch($event);
+        if ($requestData !== $event->getRequestData()) {
+            $this->logger->debug('Request data is changed via listeners', [
+                'txType'      => $event->getTxType(),
+                'bankName'    => $event->getBankName(),
+                'initialData' => $requestData,
+                'updatedData' => $event->getRequestData(),
+            ]);
+            $requestData = $event->getRequestData();
+        }
+
+        /** @var array{approved: string, respCode: string, respText: string, oosRequestDataResponse?: array{data1: string, data2: string, sign: string}} $result */
+        $result = $this->clientStrategy->getClient(
+            $txType,
+            $paymentModel,
+        )->request(
+            $txType,
+            $paymentModel,
+            $requestData,
+            $order
+        );
+
+        return $result;
+    }
+}

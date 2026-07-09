@@ -1,8 +1,24 @@
 <?php
 
-use Mews\Pos\Gateways\AkbankPos;
+/**
+ * Tüm örneklerin giriş noktası. Her bankanın _payment_config.php dosyası bu dosyayı yükler.
+ *
+ * DOSYA YÜKLEMESİ ZİNCİRİ
+ *   examples/{banka}/_payment_config.php  ← $account, $pos, $bankTestsUrl, $testCards tanımlar
+ *       └─ _main_config.php               ← bu dosya; autoloader, logger, event dispatcher başlatır
+ *
+ *   examples/_common-codes/{model}/
+ *       index.php    ← kart formunu gösterir
+ *       form.php     ← sipariş ve kart oluşturur, ödemeyi başlatır
+ *       response.php ← banka callback'ini işler, sonucu gösterir
+ *
+ * BANKA DEĞİŞTİRMEK İÇİN: sadece ilgili bankanın _payment_config.php
+ * (veya model klasörü altındaki _config.php) dosyasını güncelleyin.
+ * Geri kalan her şey paylaşımlıdır ve bankadan bağımsızdır.
+ */
+
+use Mews\Pos\Gateway\AkbankPos;
 use Mews\Pos\PosInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -11,16 +27,15 @@ error_reporting(E_ALL);
 $root = realpath(__DIR__);
 require_once "$root/../vendor/autoload.php";
 
-$request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
-$ip = $request->getClientIp();
+$ip = getUserIp();
 
-$sessionHandler = new \Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage([
-    'cookie_samesite' => 'None',
-    'cookie_secure'   => true,
-    'cookie_httponly' => true, // Javascriptin session'a erişimini engelliyoruz.
+// Configure session with security options
+session_set_cookie_params([
+    'samesite' => 'None',
+    'secure'   => true,
+    'httponly' => true, // Javascriptin session'a erişimini engelliyoruz.
 ]);
-$session        = new Session($sessionHandler);
-$session->start();
+session_start();
 
 $hostUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')."://$_SERVER[HTTP_HOST]";
 $subMenu = [];
@@ -40,38 +55,80 @@ $installments = [
 
 $paymentModel  = null;
 $posClass      = null;
+$posQueryClass = null;
 $transaction   = null;
 
-function doPayment(PosInterface $pos, string $paymentModel, string $transaction, array $order, ?\Mews\Pos\Entity\Card\CreditCardInterface $card)
+/**
+ * @param PosInterface::MODEL_* $paymentModel
+ * @param PosInterface::TX_TYPE_* $transaction
+ * @param array<string, mixed> $order
+ * @return array<string, mixed>
+ */
+function doPayment(PosInterface $pos, string $paymentModel, string $transaction, array $order, ?\Mews\Pos\Model\Card\CreditCardInterface $card): array
 {
     if (!$pos::isSupportedTransaction($transaction, $paymentModel)) {
         throw new \LogicException(
             sprintf('"%s %s" işlemi %s tarafından desteklenmiyor', $transaction, $paymentModel, get_class($pos))
         );
     }
-    if (get_class($pos) === \Mews\Pos\Gateways\PayFlexV4Pos::class
-        && in_array($transaction, [PosInterface::TX_TYPE_PAY_AUTH, PosInterface::TX_TYPE_PAY_PRE_AUTH], true)
-        && PosInterface::MODEL_3D_SECURE === $paymentModel
-    ) {
-        /**
-         * diger banklaradan farkli olarak 3d islemler icin de PayFlex bu asamada kredi kart bilgileri istiyor
-         */
-        $pos->payment($paymentModel, $order, $transaction, $card);
 
-    } elseif ($paymentModel === PosInterface::MODEL_NON_SECURE
-        && in_array($transaction, [PosInterface::TX_TYPE_PAY_AUTH, PosInterface::TX_TYPE_PAY_PRE_AUTH], true)
-    ) {
-        // bu asamada $card regular/non secure odemede lazim.
-        $pos->payment($paymentModel, $order, $transaction, $card);
-    } else {
-        $pos->payment($paymentModel, $order, $transaction);
+    if (PosInterface::MODEL_NON_SECURE === $paymentModel) {
+        if (in_array($transaction, [PosInterface::TX_TYPE_PAY_AUTH, PosInterface::TX_TYPE_PAY_PRE_AUTH], true)) {
+            // bu işlemlerde kredi kart bilgileri zorunlu.
+            return $pos->payment($paymentModel, $order, $transaction, $card);
+        }
+        if (PosInterface::TX_TYPE_PAY_POST_AUTH === $transaction) {
+            return $pos->payment($paymentModel, $order, $transaction);
+        }
+
+        throw new \LogicException('Hatalı işlem');
     }
+
+    if (in_array($paymentModel, [
+            PosInterface::MODEL_3D_SECURE,
+            PosInterface::MODEL_3D_PAY,
+            PosInterface::MODEL_3D_HOST,
+            PosInterface::MODEL_3D_PAY_HOSTING,
+        ],
+        true
+    )) {
+        if (!in_array($transaction, [PosInterface::TX_TYPE_PAY_AUTH, PosInterface::TX_TYPE_PAY_PRE_AUTH], true)) {
+            throw new \LogicException('Hatalı işlem');
+        }
+        $gatewayResponseData = $_POST; // 3D otorizasyon sonrası bankadan gelen yanıt verileri.
+        if (get_class($pos) === \Mews\Pos\Gateway\PayFlexCPV4Pos::class) {
+            $gatewayResponseData = $_GET;
+        }
+        if (get_class($pos) === \Mews\Pos\Gateway\PayFlexV4Pos::class) {
+            /**
+             * diğer banklaradan farklı olarak 3d işlemler için de PayFlex bu aşamada kredi kart bilgileri istiyor.
+             */
+            return $pos->payment($paymentModel, $order, $transaction, $card, $gatewayResponseData);
+        }
+
+        return $pos->payment($paymentModel, $order, $transaction, null, $gatewayResponseData);
+    }
+
+    throw new \LogicException('Hatalı işlem');
 }
 
-function getGateway(\Mews\Pos\Entity\Account\AbstractPosAccount $account, \Psr\EventDispatcher\EventDispatcherInterface $eventDispatcher): ?PosInterface
+function getPosQuery(
+    \Mews\Pos\Model\Account\AbstractPosAccount    $account,
+    \Psr\EventDispatcher\EventDispatcherInterface $eventDispatcher
+): \Mews\Pos\PosQuery\PosQueryInterface {
+    $config = require __DIR__.'/../config/pos_test.php';
+    global $logger;
+
+    return \Mews\Pos\Factory\PosQueryFactory::create($account, $config['banks'][$account->getBankName()], $eventDispatcher, null, $logger);
+}
+
+function getGateway(
+    \Mews\Pos\Model\Account\AbstractPosAccount $account,
+    \Psr\EventDispatcher\EventDispatcherInterface $eventDispatcher
+): PosInterface
 {
     try {
-/*        $client = new HttpClient(
+/*  $client = new HttpClient(
             new \Http\Client\Curl\Client(),
             new \Slim\Psr7\Factory\RequestFactory(),
             new \Slim\Psr7\Factory\StreamFactory()
@@ -79,15 +136,34 @@ function getGateway(\Mews\Pos\Entity\Account\AbstractPosAccount $account, \Psr\E
         $config = require __DIR__.'/../config/pos_test.php';
         global $logger;
 
-        $pos = \Mews\Pos\Factory\PosFactory::createPosGateway($account, $config, $eventDispatcher, null, $logger);
+        /**
+         * @var array{
+         *      class: class-string<PosInterface>,
+         *      gateway_configs?: array{
+         *          lang?: PosInterface::LANG_*,
+         *          test_mode?: bool,
+         *          disable_3d_hash_check?: bool
+         *      },
+         *      gateway_endpoints: array{
+         *          payment_api: non-empty-string,
+         *          query_api?: non-empty-string,
+         *          gateway_3d?: non-empty-string,
+         *          gateway_3d_host?: non-empty-string
+         * }
+         *      } $bankConfig
+         */
+        $bankConfig = $config['banks'][$account->getBankName()];
 
-        return $pos;
+        return \Mews\Pos\Factory\PosFactory::create($account, $bankConfig, $eventDispatcher, null, null, $logger);
     } catch (Exception $e) {
         dd($e);
     }
 }
 
-function createCard(PosInterface $pos, array $card): \Mews\Pos\Entity\Card\CreditCardInterface
+/**
+ * @param array<string, mixed> $card
+ */
+function createCard(PosInterface $pos, array $card): \Mews\Pos\Model\Card\CreditCardInterface
 {
     try {
         return \Mews\Pos\Factory\CreditCardFactory::createForGateway(
@@ -99,10 +175,10 @@ function createCard(PosInterface $pos, array $card): \Mews\Pos\Entity\Card\Credi
             $card['name'],
             $card['type'] ?? null
         );
-    } catch (\Mews\Pos\Exceptions\CardTypeRequiredException $e) {
+    } catch (\Mews\Pos\Exception\CardTypeRequiredException $e) {
         // bu gateway için kart tipi zorunlu
         dd($e);
-    } catch (\Mews\Pos\Exceptions\CardTypeNotSupportedException $e) {
+    } catch (\Mews\Pos\Exception\CardTypeNotSupportedException $e) {
         // sağlanan kart tipi bu gateway tarafından desteklenmiyor
         dd($e);
     } catch (\Exception $e) {
@@ -110,6 +186,9 @@ function createCard(PosInterface $pos, array $card): \Mews\Pos\Entity\Card\Credi
     }
 }
 
+/**
+ * @return array<string, mixed>
+ */
 function createPaymentOrder(
     PosInterface $pos,
     string $paymentModel,
@@ -122,9 +201,9 @@ function createPaymentOrder(
 ): array {
     if ($tekrarlanan && get_class($pos) === AkbankPos::class) {
         // AkbankPos'ta recurring odemede orderTrackId/orderId en az 36 karakter olmasi gerekiyor
-        $orderId = date('Ymd').strtoupper(substr(uniqid(sha1(time())), 0, 28));
+        $orderId = date('Ymd').strtoupper(substr(uniqid(sha1((string)time())), 0, 28));
     } else {
-        $orderId = date('Ymd').strtoupper(substr(uniqid(sha1(time())), 0, 4));
+        $orderId = date('Ymd').strtoupper(substr(uniqid(sha1((string)time())), 0, 4));
     }
 
     $order = [
@@ -135,7 +214,7 @@ function createPaymentOrder(
         'ip'          => filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ? $ip : '127.0.0.1',
     ];
 
-    if ($pos instanceof \Mews\Pos\Gateways\ParamPos
+    if ($pos instanceof \Mews\Pos\Gateway\ParamPos
         || in_array($paymentModel, [
             PosInterface::MODEL_3D_SECURE,
             PosInterface::MODEL_3D_PAY,
@@ -147,12 +226,19 @@ function createPaymentOrder(
     }
 
     if ($lang) {
-        //lang degeri verilmezse account (EstPosAccount) dili kullanilacak
+        //lang degeri verilmezse account (AssecoPosAccount) dili kullanilacak
         $order['lang'] = $lang;
     }
 
+    if ($pos instanceof \Mews\Pos\Gateway\IyzicoPos
+        || $pos instanceof \Mews\Pos\Gateway\KuveytPos
+        || $pos instanceof \Mews\Pos\Gateway\PayTrPos
+    ) {
+        $order = array_merge($order, createGatewaySpecificOrderFields($ip, $paymentModel));
+    }
+
     if ($tekrarlanan) {
-        // Desteleyen Gatewayler: GarantiPos, EstPos, PayFlexV4, AkbankPos
+        // Desteleyen Gatewayler: GarantiPos, AssecoPos, PayFlexV4, AkbankPos
 
         $order['installment'] = 0; // Tekrarlayan ödemeler taksitli olamaz.
 
@@ -170,4 +256,35 @@ function createPaymentOrder(
     }
 
     return $order;
+}
+
+/**
+ * @return non-empty-string
+ * @throws \RuntimeException if the environment variable is missing or empty
+ */
+function getRequiredEnv(string $name): string
+{
+    $value = getenv($name);
+    if ($value === false || $value === '') {
+        throw new \RuntimeException("Required environment variable \"{$name}\" is not set.");
+    }
+
+    return $value;
+}
+
+function getUserIp(): string
+{
+    // Get client IP address
+    $ip = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        $ip = $_SERVER['HTTP_CLIENT_IP'];
+    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $ip = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
+    }
+    // Validate IP
+    if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+        $ip = '127.0.0.1';
+    }
+
+    return $ip;
 }

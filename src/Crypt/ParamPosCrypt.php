@@ -6,11 +6,25 @@
 
 namespace Mews\Pos\Crypt;
 
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Exceptions\NotImplementedException;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\Param3DHostPos;
+use Mews\Pos\Gateway\ParamPos;
 
+/**
+ * @internal
+ */
 class ParamPosCrypt extends AbstractCrypt
 {
+    /**
+     * @inheritDoc
+     */
+    public static function supports(string $gatewayClass): bool
+    {
+        return ParamPos::class === $gatewayClass
+            || Param3DHostPos::class === $gatewayClass;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -28,10 +42,6 @@ class ParamPosCrypt extends AbstractCrypt
             return $this->check3DPayOr3DHostHash($posAccount, $data);
         }
 
-        if (null === $posAccount->getStoreKey()) {
-            throw new \LogicException('Account storeKey eksik!');
-        }
-
         $hashParamsArr = [
             'islemGUID',
             'md',
@@ -39,11 +49,11 @@ class ParamPosCrypt extends AbstractCrypt
             'orderId',
         ];
 
-        $hashStr = $this->buildHashString($data, $hashParamsArr, '', $posAccount->getStoreKey());
+        $hashStr = $this->buildHashString($data, $hashParamsArr, '', $posAccount->getSecretKey());
 
         $actualHash = $this->hashString($hashStr);
 
-        if ($data['islemHash'] === $actualHash) {
+        if (\hash_equals($data['islemHash'], $actualHash)) {
             $this->logger->debug('hash check is successful');
 
             return true;
@@ -120,10 +130,6 @@ class ParamPosCrypt extends AbstractCrypt
      */
     private function check3DPayOr3DHostHash(AbstractPosAccount $posAccount, array $data): bool
     {
-        if (null === $posAccount->getStoreKey()) {
-            throw new \LogicException('Account storeKey eksik!');
-        }
-
         $hashParamsArr = [
             'TURKPOS_RETVAL_GUID',
             'TURKPOS_RETVAL_Dekont_ID',
@@ -133,11 +139,11 @@ class ParamPosCrypt extends AbstractCrypt
         ];
 
         $hashStr = $this->buildHashString($data, $hashParamsArr, '');
-        $hashStr = $posAccount->getClientId().$hashStr;
+        $hashStr = $posAccount->getMerchantId().$hashStr;
 
         $actualHash = $this->hashString($hashStr);
 
-        if ($data['TURKPOS_RETVAL_Hash'] === $actualHash) {
+        if (\hash_equals($data['TURKPOS_RETVAL_Hash'], $actualHash)) {
             $this->logger->debug('hash check is successful');
 
             return true;

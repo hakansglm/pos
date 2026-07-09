@@ -6,16 +6,29 @@
 
 namespace Mews\Pos\Crypt;
 
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Exceptions\NotImplementedException;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Exception\NotImplementedException;
+use Mews\Pos\Gateway\AkbankPos;
 
+/**
+ * @internal
+ */
 class AkbankPosCrypt extends AbstractCrypt
 {
     /** @var string */
     protected const HASH_ALGORITHM = 'sha512';
 
     /**
+     * @inheritDoc
+     */
+    public static function supports(string $gatewayClass): bool
+    {
+        return AkbankPos::class === $gatewayClass;
+    }
+
+    /**
      * returns base16 string
+     *
      * @inheritDoc
      */
     public function generateRandomString(int $length = 128): string
@@ -58,7 +71,7 @@ class AkbankPosCrypt extends AbstractCrypt
 
         $hashStr = \implode(static::HASH_SEPARATOR, $hashData);
 
-        return $this->hashString($hashStr, $posAccount->getStoreKey());
+        return $this->hashString($hashStr, $posAccount->getSecretKey());
     }
 
     /**
@@ -66,13 +79,9 @@ class AkbankPosCrypt extends AbstractCrypt
      */
     public function check3DHash(AbstractPosAccount $posAccount, array $data): bool
     {
-        if (null === $posAccount->getStoreKey()) {
-            throw new \LogicException('Account storeKey eksik!');
-        }
+        $actualHash = $this->hashFromParams($posAccount, $data, $data['hashParams'], '+');
 
-        $actualHash = $this->hashFromParams($posAccount->getStoreKey(), $data, 'hashParams', '+');
-
-        if ($data['hash'] === $actualHash) {
+        if (\hash_equals($data['hash'], $actualHash)) {
             $this->logger->debug('hash check is successful');
 
             return true;

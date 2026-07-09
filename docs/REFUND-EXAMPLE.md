@@ -14,23 +14,18 @@ require './vendor/autoload.php';
 // AccountFactory'de kullanılacak method Gateway'e göre değişir!!!
 // /examples altındaki _config.php dosyalara bakınız
 // (örn: /examples/akbankpos/3d/_config.php)
-$account = \Mews\Pos\Factory\AccountFactory::createEstPosAccount(
+$account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
     'akbank', //pos config'deki ayarın index name'i
     'yourClientID',
     'yourKullaniciAdi',
     'yourSifre',
-    \Mews\Pos\PosInterface::MODEL_NON_SECURE,
-    '', // bankaya göre zorunlu
-    \Mews\Pos\PosInterface::LANG_TR
 );
 
 $eventDispatcher = new Symfony\Component\EventDispatcher\EventDispatcher();
-
+$config = require __DIR__.'/pos_test_ayarlar.php';
 try {
-    $config = require __DIR__.'/pos_test_ayarlar.php';
-
-    $pos = \Mews\Pos\Factory\PosFactory::createPosGateway($account, $config, $eventDispatcher);
-} catch (\Mews\Pos\Exceptions\BankNotFoundException | \Mews\Pos\Exceptions\BankClassNullException $e) {
+    $pos = \Mews\Pos\Factory\PosFactory::create($account, $config['banks'][$account->getBankName()], $eventDispatcher);
+} catch (\Mews\Pos\Exception\GatewayClassNotConfiguredException $e) {
     var_dump($e));
     exit;
 }
@@ -42,6 +37,15 @@ try {
 
 require 'config.php';
 
+/**
+ * İade işlemi için gereken istek verileri Gateway'den gateway'e değiştigine göre,
+ * Bu method verilen gateway göre istek verilerini oluşturur.
+ *
+ * @param class-string<\Mews\Pos\PosInterface> $gatewayClass
+ * @param array<string, mixed> $lastResponse ödeme işlemi sonrası Pos kütüphanesinden dönen response verisi
+ *
+ * @return array<string, mixed>
+ */
 function createRefundOrder(string $gatewayClass, array $lastResponse, string $ip, ?float $refundAmount = null): array
 {
     $refundOrder = [
@@ -56,18 +60,18 @@ function createRefundOrder(string $gatewayClass, array $lastResponse, string $ip
         'ip'           => filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? $ip : '127.0.0.1',
     ];
 
-    if (\Mews\Pos\Gateways\KuveytPos::class === $gatewayClass) {
+    if (\Mews\Pos\Gateway\KuveytPos::class === $gatewayClass) {
         $refundOrder['remote_order_id'] = $lastResponse['remote_order_id']; // banka tarafındaki order id
         $refundOrder['auth_code']       = $lastResponse['auth_code'];
         $refundOrder['transaction_id']  = $lastResponse['transaction_id'];
-    } elseif (\Mews\Pos\Gateways\VakifKatilimPos::class === $gatewayClass) {
+    } elseif (\Mews\Pos\Gateway\VakifKatilimPos::class === $gatewayClass) {
         $refundOrder['remote_order_id']  = $lastResponse['remote_order_id']; // banka tarafındaki order id
         // on otorizasyon islemin iadesi icin PosInterface::TX_TYPE_PAY_PRE_AUTH saglanmasi gerekiyor
         $refundOrder['transaction_type'] = $lastResponse['transaction_type'] ?? PosInterface::TX_TYPE_PAY_AUTH;
-    } elseif (\Mews\Pos\Gateways\PayFlexV4Pos::class === $gatewayClass || \Mews\Pos\Gateways\PayFlexCPV4Pos::class === $gatewayClass) {
+    } elseif (\Mews\Pos\Gateway\PayFlexV4Pos::class === $gatewayClass || \Mews\Pos\Gateway\PayFlexCPV4Pos::class === $gatewayClass) {
         // çalışmazsa $lastResponse['all']['ReferenceTransactionId']; ile denenmesi gerekiyor.
         $refundOrder['transaction_id'] = $lastResponse['transaction_id'];
-    } elseif (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNet::class === $gatewayClass) {
+    } elseif (\Mews\Pos\Gateway\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateway\PosNetPos::class === $gatewayClass) {
         /**
          * payment_model: siparis olusturulurken kullanilan odeme modeli.
          * orderId'yi dogru şekilde formatlamak icin zorunlu.
@@ -77,7 +81,7 @@ function createRefundOrder(string $gatewayClass, array $lastResponse, string $ip
 
     if (isset($lastResponse['recurring_id'])) {
         // tekrarlanan odemeyi iade etmek icin:
-        if (\Mews\Pos\Gateways\AkbankPos::class === $gatewayClass) {
+        if (\Mews\Pos\Gateway\AkbankPos::class === $gatewayClass) {
             // odemesi gerceklesmis recurring taksidinin iadesi:
             $refundOrder += [
                 'recurring_id'                    => $lastResponse['recurring_id'],
@@ -89,8 +93,8 @@ function createRefundOrder(string $gatewayClass, array $lastResponse, string $ip
     return $refundOrder;
 }
 
-// odemeden aldiginiz cevap: $pos->getResponse();
-$lastResponse = $session->get('last_response');
+// ödeme işlemi sonrası dönen veriler:
+$_SESSION['last_response'] ?? null
 
 // tam iade:
 $refundAmount = $lastResponse['amount'];
@@ -101,12 +105,10 @@ $ip = '127.0.0.1';
 $order = createRefundOrder(get_class($pos), $lastResponse, $ip, $refundAmount);
 
 try {
-    $pos->refund($order);
+    $response = $pos->refund($order);
 } catch (\Error $e) {
     var_dump($e);
     exit;
 }
-
-$response = $pos->getResponse();
 var_dump($response);
 ```

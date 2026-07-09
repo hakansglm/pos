@@ -12,3 +12,5 @@ services:
       - ./var/log:/var/www/var/log
     ports:
       - "80:80"
+    env_file:
+      - ./examples/.env

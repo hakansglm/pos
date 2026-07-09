@@ -2,38 +2,35 @@
 
 use Mews\Pos\PosInterface;
 
-// ilgili bankanin _config.php dosyasi load ediyoruz.
-// ornegin /examples/finansbank-payfor/3d/_config.php
 require '_config.php';
+/** @var \Mews\Pos\PosInterface $pos */
+/** @var string $baseUrl */
+/** @var string $ip */
+/** @var \Mews\Pos\PosInterface::MODEL_* $paymentModel */
 
-$transaction = $request->get('tx', PosInterface::TX_TYPE_PAY_AUTH);
+
+$transaction = $_POST['tx'] ?? PosInterface::TX_TYPE_PAY_AUTH;
 $order       = createPaymentOrder(
     $pos,
     $paymentModel,
     $baseUrl,
     $ip,
-    $request->get('currency', PosInterface::CURRENCY_TRY),
-    $request->get('installment'),
-    $request->get('is_recurring', 0) == 1,
-    $request->get('lang', PosInterface::LANG_TR)
+    $_POST['currency'] ?? PosInterface::CURRENCY_TRY,
+    $_POST['installment'] ?? 0,
+    ($_POST['is_recurring'] ?? 0) == 1,
+    $_POST['lang'] ?? PosInterface::LANG_TR
 );
-$session->set('order', $order);
-$session->set('tx', $transaction);
+$_SESSION['order'] = $order;
+$_SESSION['tx'] = $transaction;
 
 try {
     $formData = $pos->get3DFormData(
         $order,
-        PosInterface::MODEL_NON_SECURE,
-        $transaction,
-        null,
-        /**
-         * MODEL_3D_SECURE veya MODEL_3D_PAY ödemelerde kredi kart verileri olmadan
-         * form verisini oluşturmak için true yapabilirsiniz.
-         * Yine de bazı gatewaylerde kartsız form verisi oluşturulamıyor.
-         */
-        true
+        PosInterface::MODEL_NON_SECURE, // @phpstan-ignore-line argument.type
+        $transaction
     );
 
+    \assert(\is_array($formData));
     unset($formData['inputs']['Rnd']);
     unset($formData['inputs']['Hash']);
     $formData['inputs']['UserPass'] = $pos->getAccount()->getPassword();

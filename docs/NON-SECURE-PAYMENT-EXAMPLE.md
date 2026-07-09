@@ -17,23 +17,19 @@ $transactionType = \Mews\Pos\PosInterface::TX_TYPE_PAY_AUTH;
 // AccountFactory'de kullanılacak method Gateway'e göre değişir!!!
 // /examples altındaki _config.php dosyalara bakınız
 // (örn: /examples/akbankpos/3d/_config.php)
-$account = \Mews\Pos\Factory\AccountFactory::createEstPosAccount(
+$account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
     'akbank', //pos config'deki ayarın index name'i
     'yourClientID',
     'yourKullaniciAdi',
     'yourSifre',
-    $paymentModel,
-    '', // bankaya göre zorunlu
-    \Mews\Pos\PosInterface::LANG_TR
 );
 
 $eventDispatcher = new Symfony\Component\EventDispatcher\EventDispatcher();
 
+$config = require __DIR__.'/pos_test_ayarlar.php';
 try {
-    $config = require __DIR__.'/pos_test_ayarlar.php';
-
-    $pos = \Mews\Pos\Factory\PosFactory::createPosGateway($account, $config, $eventDispatcher);
-} catch (\Mews\Pos\Exceptions\BankNotFoundException | \Mews\Pos\Exceptions\BankClassNullException $e) {
+    $pos = \Mews\Pos\Factory\PosFactory::create($account, $config['banks'][$account->getBankName()], $eventDispatcher);
+} catch (\Mews\Pos\Exception\GatewayClassNotConfiguredException $e) {
     var_dump($e));
     exit;
 }
@@ -53,8 +49,8 @@ $order = [
     'currency'    => \Mews\Pos\PosInterface::CURRENCY_TRY, //optional. default: TRY
     'installment' => 0, //0 ya da 1'den büyük değer, optional. default: 0
 
-    //lang degeri verilmezse account (EstPosAccount) dili kullanılacak
-    'lang' => \Mews\Pos\Gateways\PosInterface::LANG_TR, // Kullanıcının yönlendirileceği banka gateway sayfasının ve gateway'den dönen mesajların dili.
+    // lang degeri verilmezse config'de tanimlanan dil veya default olarak LANG_TR kullanılacak.
+    'lang' => \Mews\Pos\Gateway\PosInterface::LANG_TR, // Kullanıcının yönlendirileceği banka gateway sayfasının ve gateway'den dönen mesajların  dili.
 ];
 
 // Kredi kartı bilgileri
@@ -68,18 +64,18 @@ $card = \Mews\Pos\Factory\CreditCardFactory::createForGateway(
         $_POST['card_name'],
 
         // kart tipi Gateway'e göre zorunlu, alabileceği örnek değer: "visa"
-        // alabileceği alternatif değerler için \Mews\Pos\Entity\Card\CreditCardInterface'a bakınız.
+        // alabileceği alternatif değerler için \Mews\Pos\Model\Card\CreditCardInterface'a bakınız.
         $_POST['card_type'] ?? null
   );
-} catch (\Mews\Pos\Exceptions\CardTypeRequiredException $e) {
+} catch (\Mews\Pos\Exception\CardTypeRequiredException $e) {
     // bu gateway için kart tipi zorunlu
-} catch (\Mews\Pos\Exceptions\CardTypeNotSupportedException $e) {
+} catch (\Mews\Pos\Exception\CardTypeNotSupportedException $e) {
     // sağlanan kart tipi bu gateway tarafından desteklenmiyor
 }
 
 // Ödeme tamamlanıyor
 try {
-    $pos->payment(
+    $response = $pos->payment(
         $paymentModel,
         $order,
         $transactionType,
@@ -89,9 +85,6 @@ try {
     var_dump($e);
     exit;
 }
-
-// Sonuç çıktısı
-$response = $pos->getResponse();
 
 var_dump($response);
 // response içeriği için /examples/template/_payment_response.php dosyaya bakınız.

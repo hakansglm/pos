@@ -1,3 +1,6 @@
+<?php
+/** @var array{gateway: string, inputs: array<string, string>, method: 'GET'|'POST'} $formData */
+?>
 <form method="<?= $formData['method']; ?>" action="<?= $formData['gateway']; ?>"  class="redirect-form" role="form">
     <?php foreach ($formData['inputs'] as $key => $value) : ?>
         <input type="hidden" name="<?= $key; ?>" value="<?= $value; ?>">

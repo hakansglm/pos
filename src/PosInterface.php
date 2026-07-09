@@ -6,13 +6,13 @@
 
 namespace Mews\Pos;
 
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Card\CreditCardInterface;
-use Mews\Pos\Exceptions\HashMismatchException;
-use Mews\Pos\Exceptions\UnsupportedPaymentModelException;
-use Mews\Pos\Exceptions\UnsupportedTransactionTypeException;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Model\Card\CreditCardInterface;
+use Mews\Pos\Exception\HashMismatchException;
+use Mews\Pos\Exception\UnsupportedFormFormatException;
+use Mews\Pos\Exception\UnsupportedPaymentModelException;
+use Mews\Pos\Exception\UnsupportedTransactionTypeException;
 use Psr\Http\Client\ClientExceptionInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Interface PosInterface
@@ -49,11 +49,21 @@ interface PosInterface
     /** @var string */
     public const TX_TYPE_ORDER_HISTORY = 'order_history';
 
-    /** @var string */
-    public const TX_TYPE_HISTORY = 'history';
+    /**
+     * It is used when building 3D/3D Host/3D Pay form data
+     * in case Payment Gateway requires an API call to generate 3D form data.
+     *
+     * @var string
+     */
+    public const TX_TYPE_INTERNAL_3D_FORM_BUILD = '3d_form_build';
 
-    /** @var string */
-    public const TX_TYPE_CUSTOM_QUERY = 'custom_query';
+    /**
+     * It is used for fetching the result of 3D/3D Host/3D Pay results
+     * when does not send it in POST data when redirecting back to the ecommerce website.
+     *
+     * @var string
+     */
+    public const TX_TYPE_INTERNAL_3D_PAYMENT_STATUS = '3d_payment_status';
 
     /** @var string */
     public const MODEL_3D_SECURE = '3d';
@@ -109,107 +119,127 @@ interface PosInterface
     /** @var string */
     public const PAYMENT_STATUS_PRE_AUTH_COMPLETED = 'PRE_AUTH_COMPLETED';
 
+    /** @var string */
+    public const FORM_FORMAT_ARRAY = 'array';
+
+    /** @var string */
+    public const FORM_FORMAT_HTML = 'html';
+
     /**
      * returns form data, key values, necessary for 3D payment
      *
      * @phpstan-param PosInterface::MODEL_3D_*                                          $paymentModel
      * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
+     * @phpstan-param PosInterface::FORM_FORMAT_* $formFormat
      *
      * @param array<string, mixed>     $order
      * @param string                   $paymentModel
      * @param string                   $txType
      * @param CreditCardInterface|null $creditCard
      * @param bool                     $createWithoutCard 3D ve 3D_PAY ödemelerde kart bilgisi olmadan 3D formu oluşturulmasına izin verir.
+     * @param string|null              $formFormat        İstenen dönüş formatı. Null ise gateway'in varsayılan formatı kullanılır.
      *
      * @return non-empty-string|array{gateway: string, method: 'POST'|'GET', inputs: array<string, string>} Banka response'u HTML olduğu durumda string döner.
      *
-     * @throws \RuntimeException when request to the bank to get 3D form data failed
-     * @throws ClientExceptionInterface when request to the bank to get 3D form data failed
-     * @throws \InvalidArgumentException when card data is not provided when it is required for the given payment model
-     * @throws \LogicException when given payment model or transaction type is not supported
+     * @throws \RuntimeException                   when request to the bank to get 3D form data failed
+     * @throws ClientExceptionInterface            when request to the bank to get 3D form data failed
+     * @throws \InvalidArgumentException           when card data is not provided when it is required for the given payment model
+     * @throws \LogicException                     when given payment model or transaction type is not supported
      * @throws UnsupportedTransactionTypeException
+     * @throws UnsupportedFormFormatException      when the requested $formFormat is not supported by the gateway
      * @throws ClientExceptionInterface
      */
-    public function get3DFormData(array $order, string $paymentModel, string $txType, ?CreditCardInterface $creditCard = null, bool $createWithoutCard = true);
+    public function get3DFormData(
+        array $order,
+        string $paymentModel,
+        string $txType,
+        ?CreditCardInterface $creditCard = null,
+        bool $createWithoutCard = false,
+        ?string $formFormat = null
+    );
 
     /**
-     * Regular Payment
+     * Regular/NonSecure payment without any 3D Authentication.
+     *
      * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
      *
      * @param array<string, mixed> $order
      * @param CreditCardInterface  $creditCard
      * @param string               $txType
      *
-     * @return PosInterface
+     * @return array<string, mixed>
      *
      * @throws \LogicException
      * @throws UnsupportedTransactionTypeException
      * @throws ClientExceptionInterface
      */
-    public function makeRegularPayment(array $order, CreditCardInterface $creditCard, string $txType): PosInterface;
+    public function makeRegularPayment(array $order, CreditCardInterface $creditCard, string $txType): array;
 
     /**
      * Ön Provizyon kapama işlemi
      *
      * @param array<string, mixed> $order
      *
-     * @return PosInterface
+     * @return array<string, mixed>
      *
      * @throws UnsupportedPaymentModelException
      * @throws UnsupportedTransactionTypeException
      * @throws ClientExceptionInterface
      */
-    public function makeRegularPostPayment(array $order): PosInterface;
+    public function makeRegularPostPayment(array $order): array;
 
     /**
      * Make 3D Payment
+     *
      * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
      *
-     * @param Request                  $request
+     * @param array<string, string>    $gatewayResponseData 3D otorizasyon sonucunda gateway tarafından POST/GET edilen veriler.
      * @param array<string, mixed>     $order
      * @param string                   $txType
-     * @param CreditCardInterface|null $creditCard simdilik sadece PayFlexV4Pos icin card isteniyor.
+     * @param CreditCardInterface|null $creditCard          simdilik sadece PayFlexV4Pos icin card isteniyor.
      *
-     * @return PosInterface
+     * @return array<string, mixed>
      *
      * @throws HashMismatchException
      * @throws UnsupportedTransactionTypeException
      * @throws UnsupportedPaymentModelException
      * @throws ClientExceptionInterface
      */
-    public function make3DPayment(Request $request, array $order, string $txType, ?CreditCardInterface $creditCard = null): PosInterface;
+    public function make3DPayment(array $gatewayResponseData, array $order, string $txType, ?CreditCardInterface $creditCard = null): array;
 
     /**
      * Just returns formatted data of 3d_pay payment response
+     *
      * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
      *
-     * @param Request              $request
-     * @param array<string, mixed> $order
-     * @param string               $txType
+     * @param array<string, string> $gatewayResponseData Ödeme sonucu gateway tarafından POST/GET edilen veriler.
+     * @param array<string, mixed>  $order
+     * @param string                $txType
      *
-     * @return PosInterface
+     * @return array<string, mixed>
      *
      * @throws HashMismatchException
      * @throws UnsupportedTransactionTypeException
      * @throws UnsupportedPaymentModelException
      */
-    public function make3DPayPayment(Request $request, array $order, string $txType): PosInterface;
+    public function make3DPayPayment(array $gatewayResponseData, array $order, string $txType): array;
 
     /**
      * Just returns formatted data of host payment response
+     *
      * @phpstan-param PosInterface::TX_TYPE_PAY_AUTH|PosInterface::TX_TYPE_PAY_PRE_AUTH $txType
      *
-     * @param Request              $request
-     * @param array<string, mixed> $order
-     * @param string               $txType
+     * @param array<string, string> $gatewayResponseData Ödeme sonucu gateway tarafından POST/GET edilen veriler.
+     * @param array<string, mixed>  $order
+     * @param string                $txType
      *
-     * @return PosInterface
+     * @return array<string, mixed>
      *
      * @throws HashMismatchException
      * @throws UnsupportedTransactionTypeException
      * @throws UnsupportedPaymentModelException
      */
-    public function make3DHostPayment(Request $request, array $order, string $txType): PosInterface;
+    public function make3DHostPayment(array $gatewayResponseData, array $order, string $txType): array;
 
     /**
      * Main Payment method
@@ -219,95 +249,68 @@ interface PosInterface
      * @phpstan-param PosInterface::MODEL_*       $paymentModel
      * @phpstan-param PosInterface::TX_TYPE_PAY_* $txType
      *
-     * @param string                   $paymentModel
-     * @param array<string, mixed>     $order
-     * @param string                   $txType
-     * @param CreditCardInterface|null $creditCard
+     * @param string                     $paymentModel
+     * @param array<string, mixed>       $order
+     * @param string                     $txType
+     * @param CreditCardInterface|null   $creditCard
+     * @param array<string, string>|null $gatewayResponseData 3D tür ödeme sonrası gateway tarafından POST/GET edilen veriler.
      *
-     * @return PosInterface
+     * @return array<string, mixed>
      *
      * @throws UnsupportedPaymentModelException
      * @throws UnsupportedTransactionTypeException
      * @throws \LogicException
      * @throws ClientExceptionInterface
      */
-    public function payment(string $paymentModel, array $order, string $txType, ?CreditCardInterface $creditCard = null): PosInterface;
+    public function payment(string $paymentModel, array $order, string $txType, ?CreditCardInterface $creditCard = null, ?array $gatewayResponseData = null): array;
 
     /**
      * Refund Order
      *
      * @param array<string, mixed> $order
      *
-     * @return PosInterface
+     * @return array<string, mixed>
      *
      * @throws UnsupportedTransactionTypeException
      * @throws ClientExceptionInterface
      */
-    public function refund(array $order): PosInterface;
+    public function refund(array $order): array;
 
     /**
      * Cancel Order
      *
      * @param array<string, mixed> $order
      *
-     * @return PosInterface
+     * @return array<string, mixed>
      *
      * @throws UnsupportedTransactionTypeException
      * @throws ClientExceptionInterface
      */
-    public function cancel(array $order): PosInterface;
+    public function cancel(array $order): array;
 
     /**
      * Order Status
      *
      * @param array<string, mixed> $order
      *
-     * @return PosInterface
+     * @return array<string, mixed>
      *
      * @throws UnsupportedTransactionTypeException
      * @throws ClientExceptionInterface
      */
-    public function status(array $order): PosInterface;
+    public function status(array $order): array;
 
     /**
      * Order History
      *
      * @param array<string, mixed> $order
      *
-     * @return PosInterface
+     * @return array<string, mixed>
      *
      * @throws UnsupportedTransactionTypeException
      * @throws ClientExceptionInterface
      */
-    public function orderHistory(array $order): PosInterface;
-
-    /**
-     * @param array<string, mixed> $data
-     *
-     * @return PosInterface
-     *
-     * @throws UnsupportedTransactionTypeException
-     * @throws ClientExceptionInterface
-     */
-    public function history(array $data): PosInterface;
-
-
-    /**
-     * Kütüphanenin desteği olmadığı özel istekleri bu methodla yapabilirsiniz.
-     * requestData içinde API hesap bilgileri, hash verisi ve bazi sabit değerler
-     * eğer zaten bulunmuyorsa kütüphane otomatik ekler.
-     *
-     * Bankadan dönen cevap array'e dönüştürülür,
-     * ancak diğer transaction'larda olduğu gibi mapping/normalization yapılmaz.
-     *
-     * @param array<string, mixed>  $requestData API'a gönderilecek veri.
-     * @param non-empty-string|null $apiUrl
-     *
-     * @return PosInterface
-     *
-     * @throws ClientExceptionInterface
-     */
-    public function customQuery(array $requestData, ?string $apiUrl = null): PosInterface;
+    public function orderHistory(array $order): array;
 
     /**
      * Is success
@@ -322,17 +325,6 @@ interface PosInterface
      * @return array<string, mixed>|null
      */
     public function getResponse(): ?array;
-
-    /**
-     * Enable/Disable test mode
-     *
-     * @param bool $testMode
-     *
-     * @return PosInterface
-     *
-     * @deprecated set via configuration file instead.
-     */
-    public function setTestMode(bool $testMode): PosInterface;
 
     /**
      * Enable/Disable test mode

@@ -6,47 +6,52 @@
 
 namespace Mews\Pos\Tests\Unit\Crypt;
 
+use Mews\Pos\Crypt\AbstractCrypt;
 use Mews\Pos\Crypt\PayForPosCrypt;
-use Mews\Pos\Entity\Account\PayForAccount;
-use Mews\Pos\Exceptions\NotImplementedException;
+use Mews\Pos\Model\Account\PayForPosAccount;
+use Mews\Pos\Exception\NotImplementedException;
 use Mews\Pos\Factory\AccountFactory;
-use Mews\Pos\PosInterface;
+use Mews\Pos\Gateway\AssecoPos;
+use Mews\Pos\Gateway\PayForPos;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \Mews\Pos\Crypt\PayForPosCrypt
- * @covers \Mews\Pos\Crypt\AbstractCrypt
- */
+#[CoversClass(PayForPosCrypt::class)]
+#[CoversClass(AbstractCrypt::class)]
 class PayForPosCryptTest extends TestCase
 {
     public PayForPosCrypt $crypt;
 
-    private PayForAccount $account;
+    private PayForPosAccount $account;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->account = AccountFactory::createPayForAccount(
+        $this->account = AccountFactory::createPayForPosAccount(
             'qnbfinansbank-payfor',
             '085300000009704',
             'QNB_API_KULLANICI_3DPAY',
             'UcBN0',
-            PosInterface::MODEL_3D_SECURE,
-            '12345678',
-            PosInterface::LANG_TR,
-            PayForAccount::MBR_ID_ZIRAAT_KATILIM
+            '12345678'
         );
 
         $logger      = $this->createMock(LoggerInterface::class);
         $this->crypt = new PayForPosCrypt($logger);
     }
 
+    public function testSupports(): void
+    {
+        $supports = $this->crypt::supports(PayForPos::class);
+        $this->assertTrue($supports);
 
-    /**
-     * @dataProvider threeDHashCreateDataProvider
-     */
+        $supports = $this->crypt::supports(AssecoPos::class);
+        $this->assertFalse($supports);
+    }
+
+    #[DataProvider('threeDHashCreateDataProvider')]
     public function testCreate3DHash(array $requestData, string $expected): void
     {
         $actual = $this->crypt->create3DHash($this->account, $requestData);
@@ -54,9 +59,7 @@ class PayForPosCryptTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider threeDHashCheckDataProvider
-     */
+    #[DataProvider('threeDHashCheckDataProvider')]
     public function testCheck3DHash(bool $expected, array $responseData): void
     {
         $this->assertSame($expected, $this->crypt->check3DHash($this->account, $responseData));
@@ -106,5 +109,4 @@ class PayForPosCryptTest extends TestCase
             ],
         ];
     }
-
 }

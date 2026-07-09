@@ -3,14 +3,17 @@
 use Mews\Pos\PosInterface;
 
 require '../_payment_config.php';
+/** @var string $bankTestsUrl */
+/** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
+
 
 $baseUrl = $bankTestsUrl.'/3d-host/';
-//account bilgileri kendi account bilgilerinizle degistiriniz
+
 $account = \Mews\Pos\Factory\AccountFactory::createToslaPosAccount(
     'tosla',
-    '1000000494',
-    'POS_ENT_Test_001',
-    'POS_ENT_Test_001!*!*',
+    getRequiredEnv('TOSLA_MERCHANT_ID'),
+    getRequiredEnv('TOSLA_USERNAME'),
+    getRequiredEnv('TOSLA_PASSWORD'),
 );
 
 $pos = getGateway($account, $eventDispatcher);

@@ -2,12 +2,22 @@
 
 use Mews\Pos\PosInterface;
 
-// ilgili bankanin _config.php dosyasi load ediyoruz.
-// ornegin /examples/finansbank-payfor/regular/_config.php
-require '_config.php';
+/** @var \Mews\Pos\PosInterface $pos */
+/** @var string $ip */
 
 $templateTitle = 'Post Auth Order (ön provizyonu kapama)';
 
+/**
+ * Ön provizyon kapama işlemi için gereken istek verileri Gateway'den gateway'e değiştigine göre,
+ * bu method verilen gateway göre istek verilerini oluşturur.
+ *
+ * @param class-string<\Mews\Pos\PosInterface> $gatewayClass
+ * @param array<string, mixed> $lastResponse ön provizyon açma işlemi sonrası Pos kütüphanesinden dönen response verisi
+ * @param string $ip
+ * @param float|null $postAuthAmount ön provizyon başlatılan amount kapatılmak istenen amount'tan farklı olduğunda kullanilir.
+ *
+ * @return array<string, mixed>
+ */
 function createPostPayOrder(string $gatewayClass, array $lastResponse, string $ip, ?float $postAuthAmount = null): array
 {
     $postAuth = [
@@ -18,26 +28,26 @@ function createPostPayOrder(string $gatewayClass, array $lastResponse, string $i
         'ip'              => filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? $ip : '127.0.0.1',
     ];
 
-    if (\Mews\Pos\Gateways\GarantiPos::class === $gatewayClass) {
+    if (\Mews\Pos\Gateway\GarantiPos::class === $gatewayClass) {
         $postAuth['ref_ret_num'] = $lastResponse['ref_ret_num'];
     }
-    if (\Mews\Pos\Gateways\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateways\PosNet::class === $gatewayClass) {
+    if (\Mews\Pos\Gateway\PosNetV1Pos::class === $gatewayClass || \Mews\Pos\Gateway\PosNetPos::class === $gatewayClass) {
         $postAuth['installment'] = $lastResponse['installment_count'];
         $postAuth['ref_ret_num'] = $lastResponse['ref_ret_num'];
     }
-    if (\Mews\Pos\Gateways\PayFlexV4Pos::class === $gatewayClass) {
+    if (\Mews\Pos\Gateway\PayFlexV4Pos::class === $gatewayClass || \Mews\Pos\Gateway\IyzicoPos::class === $gatewayClass) {
         $postAuth['transaction_id'] = $lastResponse['transaction_id'];
     }
 
     return $postAuth;
 }
 
-$lastResponse = $session->get('last_response');
+$lastResponse = $_SESSION['last_response'] ?? null;
 
 $preAuthAmount = $lastResponse['amount'];
 // otorizasyon kapama amount'u ön otorizasyon amount'tan daha fazla olabilir.
 $postAuthAmount = $lastResponse['amount'] + 0.20;
-$gatewayClass = get_class($pos);
+$gatewayClass = $pos::class;
 
 $order = createPostPayOrder(
     $gatewayClass,
@@ -45,8 +55,6 @@ $order = createPostPayOrder(
     $ip,
     $postAuthAmount
 );
-
-dump($order);
 
 $transaction = PosInterface::TX_TYPE_PAY_POST_AUTH;
 

@@ -1,3 +1,10 @@
+<?php
+/** @var \Mews\Pos\Gateway\AbstractGateway $pos */
+/** @var \Mews\Pos\Model\Card\CreditCardInterface $card */
+/** @var array<int, string> $installments */
+/** @var \Mews\Pos\PosInterface::MODEL_* $paymentModel */
+/** @var string $url */
+?>
 <form method="post" action="<?= $url; ?>" role="form">
     <div class="row">
         <div class="row">
@@ -27,7 +34,7 @@
                 <select name="month" id="month" class="form-select input-lg">
                     <option value="">Month</option>
                     <?php for ($i = 1; $i <= 12; $i++) : ?>
-                        <option value="<?= $i; ?>" <?= $i == $card->getExpireMonth()  ? 'selected': null ?>><?= str_pad($i, 2, 0, STR_PAD_LEFT); ?></option>
+                        <option value="<?= $i; ?>" <?= $i == $card->getExpirationDate()->format('m')  ? 'selected': null ?>><?= str_pad((string)$i, 2, '0', STR_PAD_LEFT); ?></option>
                     <?php endfor; ?>
                 </select>
             </div>
@@ -36,7 +43,7 @@
                 <select name="year" id="year" class="form-select input-lg">
                     <option value="">Year</option>
                     <?php for ($i = date('Y'); $i <= date('Y') + 30; $i++) : ?>
-                        <option value="<?= $i; ?>" <?= $i == $card->getExpireYear('Y') ? 'selected': null ?>><?= $i; ?></option>
+                        <option value="<?= $i; ?>" <?= $i == $card->getExpirationDate()->format('Y') ? 'selected': null ?>><?= $i; ?></option>
                     <?php endfor; ?>
                 </select>
             </div>
@@ -52,15 +59,13 @@
                 <?php endforeach; ?>
                 </select>
             </div>
-            <?php if ([] !== $pos->getCurrencies()): ?>
-                <div class="mb-3 col-md-4">
-                    <select name="currency" id="currency" class="form-select input-lg">
-                        <?php foreach ($pos->getCurrencies() as $currency) : ?>
-                            <option value="<?= $currency; ?>" <?= $currency === \Mews\Pos\PosInterface::CURRENCY_TRY ? 'selected': null ?>><?= $currency; ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-            <?php endif; ?>
+            <div class="mb-3 col-md-4">
+                <select name="currency" id="currency" class="form-select input-lg">
+                    <?php foreach ($pos->getCurrencies() as $currency) : ?>
+                        <option value="<?= $currency; ?>" <?= $currency === \Mews\Pos\PosInterface::CURRENCY_TRY ? 'selected': null ?>><?= $currency; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
             <div class="mb-3 col-md-4">
                 <select name="tx" id="currency" class="form-select input-lg">
                     <option value="<?= \Mews\Pos\PosInterface::TX_TYPE_PAY_AUTH; ?>" selected>Ödeme</option>
@@ -70,11 +75,13 @@
                 </select>
             </div>
             <div class="mb-3 col-md-4">
+                <?php if ([] !== $pos->getLanguages()): ?>
                 <select name="lang" id="lang" class="form-select input-lg">
                     <?php foreach ($pos->getLanguages() as $lang) : ?>
                         <option value="<?= $lang; ?>" <?= $lang === \Mews\Pos\PosInterface::LANG_TR ? 'selected': null ?>><?= strtoupper($lang); ?></option>
                     <?php endforeach; ?>
                 </select>
+                <?php endif; ?>
             </div>
             <div class="mb-3 col-md-4">
                 <div class="form-group">
@@ -93,7 +100,7 @@
                     </div>
                     <div class="form-check form-check-inline">
                         <input type="radio" class="form-check-input" name="payment_flow_type" value="by_iframe">
-                        <label class="form-check-label">Modal box'da ödeme</label>
+                        <label class="form-check-label">Modal box'da iFrame ile ödeme</label>
                     </div>
                     <div class="form-check form-check-inline">
                         <input type="radio" class="form-check-input" name="payment_flow_type" value="by_popup_window">

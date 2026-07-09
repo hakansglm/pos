@@ -6,16 +6,29 @@
 
 namespace Mews\Pos\Crypt;
 
-use Mews\Pos\Entity\Account\AbstractPosAccount;
-use Mews\Pos\Entity\Account\GarantiPosAccount;
+use Mews\Pos\Model\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\GarantiPosAccount;
+use Mews\Pos\Gateway\GarantiPos;
 
+/**
+ * @internal
+ */
 class GarantiPosCrypt extends AbstractCrypt
 {
     /** @var string */
     protected const HASH_ALGORITHM = 'sha512';
 
     /**
+     * @inheritDoc
+     */
+    public static function supports(string $gatewayClass): bool
+    {
+        return GarantiPos::class === $gatewayClass;
+    }
+
+    /**
      * @param GarantiPosAccount $posAccount
+     *
      * {@inheritDoc}
      */
     public function create3DHash(AbstractPosAccount $posAccount, array $formInputs): string
@@ -29,8 +42,12 @@ class GarantiPosCrypt extends AbstractCrypt
             $formInputs['errorurl'],
             $formInputs['txntype'],
             $formInputs['txninstallmentcount'],
-            $posAccount->getStoreKey(),
-            $this->createSecurityData($posAccount, $formInputs['terminalid'], $formInputs['txntype']),
+            $posAccount->getSecretKey(),
+            $this->createSecurityData(
+                $posAccount,
+                (string) $formInputs['terminalid'],
+                (string) $formInputs['txntype']
+            ),
         ];
 
         return $this->hashStringUpperCase(\implode(static::HASH_SEPARATOR, $map), self::HASH_ALGORITHM);
@@ -41,13 +58,9 @@ class GarantiPosCrypt extends AbstractCrypt
      */
     public function check3DHash(AbstractPosAccount $posAccount, array $data): bool
     {
-        if (null === $posAccount->getStoreKey()) {
-            throw new \LogicException('Account storeKey eksik!');
-        }
+        $actualHash = $this->hashFromParams($posAccount, $data, $data['hashparams'], ':');
 
-        $actualHash = $this->hashFromParams($posAccount->getStoreKey(), $data, 'hashparams', ':');
-
-        if ($data['hash'] === $actualHash) {
+        if (\hash_equals($data['hash'], $actualHash)) {
             $this->logger->debug('hash check is successful');
 
             return true;
@@ -66,6 +79,7 @@ class GarantiPosCrypt extends AbstractCrypt
      * Make Hash Data
      *
      * @param GarantiPosAccount $posAccount
+     *
      * {@inheritDoc}
      */
     public function createHash(AbstractPosAccount $posAccount, array $requestData): string
@@ -114,7 +128,7 @@ class GarantiPosCrypt extends AbstractCrypt
     /**
      * @param string $str
      *
-     * @return string
+     * @return non-empty-string
      */
     private function hashStringUpperCase(string $str, string $algorithm): string
     {

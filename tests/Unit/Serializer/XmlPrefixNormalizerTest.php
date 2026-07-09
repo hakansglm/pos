@@ -7,11 +7,10 @@
 namespace Mews\Pos\Tests\Unit\Serializer;
 
 use Mews\Pos\Serializer\XmlPrefixNormalizer;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\Serializer\XmlPrefixNormalizer
- */
+#[CoversClass(XmlPrefixNormalizer::class)]
 class XmlPrefixNormalizerTest extends TestCase
 {
     private XmlPrefixNormalizer $normalizer;
@@ -60,18 +59,18 @@ class XmlPrefixNormalizerTest extends TestCase
         $data = [
             'a' => [
                 'b' => [
-                    'c' => 'value'
-                ]
-            ]
+                    'c' => 'value',
+                ],
+            ],
         ];
         $context = ['xml_prefix' => 'pre'];
 
         $expected = [
             'pre:a' => [
                 'pre:b' => [
-                    'pre:c' => 'value'
-                ]
-            ]
+                    'pre:c' => 'value',
+                ],
+            ],
         ];
 
         $this->assertSame($expected, $this->normalizer->normalize($data, 'xml', $context));

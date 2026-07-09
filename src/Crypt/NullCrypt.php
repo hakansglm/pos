@@ -6,13 +6,23 @@
 
 namespace Mews\Pos\Crypt;
 
-use Mews\Pos\Entity\Account\AbstractPosAccount;
+use Mews\Pos\Model\Account\AbstractPosAccount;
 
 /**
  * Dummy crypt that can be used if there is no cryptography logic needed.
+ *
+ * @internal
  */
 class NullCrypt extends AbstractCrypt
 {
+    /**
+     * @inheritDoc
+     */
+    public static function supports(string $gatewayClass): bool
+    {
+        return true;
+    }
+
     /**
      * {@inheritDoc}
      */

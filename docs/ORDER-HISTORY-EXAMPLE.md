@@ -14,23 +14,19 @@ require './vendor/autoload.php';
 // AccountFactory'de kullanılacak method Gateway'e göre değişir!!!
 // /examples altındaki _config.php dosyalara bakınız
 // (örn: /examples/akbankpos/3d/_config.php)
-$account = \Mews\Pos\Factory\AccountFactory::createEstPosAccount(
+$account = \Mews\Pos\Factory\AccountFactory::createAssecoPosAccount(
     'akbank', //pos config'deki ayarın index name'i
     'yourClientID',
     'yourKullaniciAdi',
     'yourSifre',
-    \Mews\Pos\PosInterface::MODEL_NON_SECURE,
-    '', // bankaya göre zorunlu
-    \Mews\Pos\PosInterface::LANG_TR
 );
 
 $eventDispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+$config = require __DIR__.'/pos_test_ayarlar.php';
 
 try {
-    $config = require __DIR__.'/pos_test_ayarlar.php';
-
-    $pos = \Mews\Pos\Factory\PosFactory::createPosGateway($account, $config, $eventDispatcher);
-} catch (\Mews\Pos\Exceptions\BankNotFoundException | \Mews\Pos\Exceptions\BankClassNullException $e) {
+    $pos = \Mews\Pos\Factory\PosFactory::create($account, $config['banks'][$account->getBankName()], $eventDispatcher);
+} catch (\Mews\Pos\Exception\GatewayClassNotConfiguredException $e) {
     var_dump($e));
     exit;
 }
@@ -42,14 +38,23 @@ try {
 
 require 'config.php';
 
+/**
+ * Ödeme tarihçesini sorgulama işlemi için gereken istek verileri Gateway'den gateway'e değiştigine göre,
+ * Bu method verilen gateway göre istek verilerini oluşturur.
+ *
+ * @param class-string<\Mews\Pos\PosInterface> $gatewayClass
+ * @param array<string, mixed> $lastResponse ödeme işlemi sonrası Pos kütüphanesinden dönen response verisi
+ *
+ * @return array<string, mixed>
+ */
 function createOrderHistoryOrder(string $gatewayClass, array $lastResponse): array
 {
     $order = [];
-    if (EstPos::class === $gatewayClass || EstV3Pos::class === $gatewayClass) {
+    if (AssecoPos::class === $gatewayClass) {
         $order = [
             'id' => $lastResponse['order_id'],
         ];
-    } elseif (\Mews\Pos\Gateways\AkbankPos::class === $gatewayClass) {
+    } elseif (\Mews\Pos\Gateway\AkbankPos::class === $gatewayClass) {
         if (isset($lastResponse['recurring_id'])) {
             $order = [
                 'recurring_id' => $lastResponse['recurring_id'],
@@ -75,7 +80,7 @@ function createOrderHistoryOrder(string $gatewayClass, array $lastResponse): arr
             'currency' => $lastResponse['currency'],
             'ip'       => '127.0.0.1',
         ];
-    } elseif (\Mews\Pos\Gateways\VakifKatilimPos::class === $gatewayClass) {
+    } elseif (\Mews\Pos\Gateway\VakifKatilimPos::class === $gatewayClass) {
         /** @var DateTimeImmutable $txTime */
         $txTime = $lastResponse['transaction_time'];
         $order  = [
@@ -88,17 +93,16 @@ function createOrderHistoryOrder(string $gatewayClass, array $lastResponse): arr
     return $order;
 }
 
-// odemeden aldiginiz cevap: $pos->getResponse();
-$lastResponse = $session->get('last_response');
+// ödeme işlemi sonrası dönen veriler:
+$_SESSION['last_response'] ?? null
 
 $order = createOrderHistoryOrder(get_class($pos), $lastResponse);
 
 try {
-    $pos->orderHistory($order);
+    $response = $pos->orderHistory($order);
 } catch (\Error $e) {
     var_dump($e);
     exit;
 }
-$response = $pos->getResponse();
 var_dump($response);
 ```

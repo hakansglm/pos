@@ -1,0 +1,22 @@
+{
+    "payment_model": "regular",
+    "batch_num": null,
+    "masked_number": "460345******0000",
+    "order_id": "202606118557",
+    "transaction_id": "35790641",
+    "transaction_time": {
+        "date": "2026-06-11 20:29:36.000000",
+        "timezone_type": 3,
+        "timezone": "UTC"
+    },
+    "transaction_type": "pre",
+    "installment_count": 0,
+    "currency": "TRY",
+    "amount": 10.01,
+    "auth_code": "063255",
+    "ref_ret_num": "mock00003iyzihostrfn",
+    "proc_return_code": "success",
+    "status": "approved",
+    "error_code": null,
+    "error_message": null
+}

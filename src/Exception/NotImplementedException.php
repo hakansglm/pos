@@ -1,0 +1,21 @@
+<?php
+
+/**
+ * @license MIT
+ */
+
+namespace Mews\Pos\Exception;
+
+use BadMethodCallException;
+use Throwable;
+
+class NotImplementedException extends BadMethodCallException implements PosException
+{
+    /**
+     * @inheritDoc
+     */
+    public function __construct(string $message = 'Not implemented!', int $code = 500, ?Throwable $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
+}

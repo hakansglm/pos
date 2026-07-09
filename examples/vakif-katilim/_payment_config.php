@@ -1,11 +1,14 @@
 <?php
 
-use Mews\Pos\Entity\Card\CreditCardInterface;
+use Mews\Pos\Model\Card\CreditCardInterface;
 
 require __DIR__.'/../_main_config.php';
+/** @var string $hostUrl */
+
 
 $bankTestsUrl = $hostUrl.'/vakif-katilim';
-$posClass     = \Mews\Pos\Gateways\VakifKatilimPos::class;
+$posClass      = \Mews\Pos\Gateway\VakifKatilimPos::class;
+$posQueryClass = \Mews\Pos\Factory\PosQueryFactory::getPosQueryClassForGateway($posClass);
 
 $testCards = [
     'visa1' => [

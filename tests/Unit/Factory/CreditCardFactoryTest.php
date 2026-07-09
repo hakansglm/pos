@@ -6,16 +6,15 @@
 
 namespace Mews\Pos\Tests\Unit\Factory;
 
-use Mews\Pos\Entity\Card\CreditCardInterface;
-use Mews\Pos\Exceptions\CardTypeNotSupportedException;
-use Mews\Pos\Exceptions\CardTypeRequiredException;
+use Mews\Pos\Model\Card\CreditCardInterface;
+use Mews\Pos\Exception\CardTypeNotSupportedException;
+use Mews\Pos\Exception\CardTypeRequiredException;
 use Mews\Pos\Factory\CreditCardFactory;
 use Mews\Pos\PosInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Mews\Pos\Factory\CreditCardFactory
- */
+#[CoversClass(CreditCardFactory::class)]
 class CreditCardFactoryTest extends TestCase
 {
     /**
@@ -39,9 +38,7 @@ class CreditCardFactoryTest extends TestCase
         );
 
         $this->assertSame('4444555566667777', $card->getNumber());
-        $this->assertSame('2022', $card->getExpireYear('Y'));
-        $this->assertSame('02', $card->getExpireMonth('m'));
-        $this->assertSame('202202', $card->getExpirationDate('Ym'));
+        $this->assertSame('202202', $card->getExpirationDate()->format('Ym'));
         $this->assertSame('john', $card->getHolderName());
         $this->assertSame('123', $card->getCvv());
     }
